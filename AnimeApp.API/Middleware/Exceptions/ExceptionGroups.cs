@@ -12,7 +12,7 @@ public static class ExceptionGroups
         [
             typeof(KeyNotFoundException),
             typeof(FileNotFoundException),
-            typeof(EntityNotFoundException)
+            typeof(EntityNotFoundException)            
         ],
         [HttpStatusCode.Conflict] =
         [
@@ -29,7 +29,8 @@ public static class ExceptionGroups
             typeof(ArgumentException),
             typeof(EmailAlreadyExistsException),
             typeof(AuthenticationException),
-            typeof(InvalidUserIdFormatException)            
+            typeof(InvalidUserIdFormatException),
+            typeof(ArgumentNullException)
         ],
         [HttpStatusCode.FailedDependency] =
         [

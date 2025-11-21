@@ -1,6 +1,8 @@
 ﻿using AnimeApp.API.Dto;
 using AnimeApp.Application.Contracts;
+using AnimeApp.Application.Dto.Anime;
 using AnimeApp.Application.Dto.Studio;
+using AnimeApp.Application.Services;
 using AnimeApp.Core.Filters;
 using AnimeApp.Core.Models;
 using AutoMapper;
@@ -93,26 +95,32 @@ namespace AnimeApp.Api.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult<Studio>> Create([FromForm] CreateStudioRequest request)
+        public async Task<ActionResult<Studio>> Create([FromBody] CreateStudioRequest request)
         {
             var studio = await _studioService.CreateAsync(request);
             return CreatedAtAction(nameof(GetById), new { id = studio.Id }, studio);
         }
 
-
-        [HttpPost("batch")]
-        public async Task<ActionResult<List<StudioCreationResult>>> CreateMany([FromForm] List<CreateStudioRequest> studios)
+        [HttpPut("{id}/UploadFiles")]
+        public async Task<ActionResult<Studio>> UploadFiles(int id, IFormFile? Poster)
         {
-            var result = await _studioService.CreateManyWithErrorsAsync(studios);
-            return Ok(result);
+            var anime = await _studioService.UpdateFilesAsync(id, Poster);
+
+            return NoContent();
         }
 
-
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromForm] UpdateStudioRequest request)
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateStudioRequest request)
         {
             await _studioService.UpdateAsync(id, request);
             return NoContent();
+        }
+
+        [HttpPost("batch")]
+        public async Task<ActionResult<List<StudioCreationResult>>> CreateMany([FromBody] List<CreateStudioRequest> studios)
+        {
+            var result = await _studioService.CreateManyWithErrorsAsync(studios);
+            return Ok(result);
         }
 
         [HttpDelete("{id}")]

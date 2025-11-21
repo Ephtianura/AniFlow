@@ -24,6 +24,7 @@ namespace AnimeApp.Application.Dto.Anime
          int? EpisodesAired,
          int? Duration,
 
-         string? Description
+         string? Description,
+         List<RelatedsAnimeRequest>? RelatedsAnimes
     );
 }

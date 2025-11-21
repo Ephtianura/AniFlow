@@ -4,6 +4,8 @@ using AnimeApp.Application.Exceptions;
 using AnimeApp.Core.Filters;
 using AnimeApp.Core.Models;
 using AnimeApp.DataAccess.Repositories;
+using Microsoft.AspNetCore.Http;
+using System.Xml.Linq;
 
 namespace AnimeApp.Application.Services
 {
@@ -29,19 +31,30 @@ namespace AnimeApp.Application.Services
             if (string.IsNullOrWhiteSpace(request.Name))
                 throw new ArgumentNullException("Studio name cannot be empty");
 
-            string? posterFileName = null;
-            if (request.Poster != null)
-            {
-                using var stream = request.Poster.OpenReadStream();
-                posterFileName = await _fileStorage.UploadFileAsync(stream, request.Poster.FileName, "studio-posters");
-            }
-
-            var studio = Studio.Create(request.Name, request.Description, posterFileName);
+            var studio = Studio.Create(request.Name, request.Description);
 
             await _studios.AddAsync(studio);
             return studio;
         }
 
+        public async Task<Studio> UpdateFilesAsync(int id, IFormFile? poster)
+        {
+            var studio = await GetStudioByIdAsync(id);
+
+            // ===================== Файли =====================
+            if (poster != null)
+            {
+                using var stream = poster.OpenReadStream();
+                var posterFileName = await _fileStorage.UploadFileAsync(stream, poster.FileName, "studio-posters");
+                studio.ChangePoster(posterFileName);
+            }
+            if (poster == null)
+                throw new ArgumentException("At least 1 poster or 1 screenshot must be uploaded.");
+
+            await _studios.UpdateAsync(studio);
+            return studio;
+
+        }
         public async Task<List<StudioCreationResult>> CreateManyWithErrorsAsync(IEnumerable<CreateStudioRequest> studiosData)
         {
             var tasks = studiosData.Select(async g =>
@@ -52,14 +65,8 @@ namespace AnimeApp.Application.Services
                     if (string.IsNullOrWhiteSpace(g.Name))
                         throw new ArgumentException("Studio name cannot be empty");
 
-                    string? posterFileName = null;
-                    if (g.Poster != null)
-                    {
-                        using var stream = g.Poster.OpenReadStream();
-                        posterFileName = await _fileStorage.UploadFileAsync(stream, g.Poster.FileName, "studio-posters");
-                    }
 
-                    var studio = Studio.Create(g.Name, g.Description, posterFileName);
+                    var studio = Studio.Create(g.Name, g.Description);
 
                     await _studios.AddAsync(studio);
 
@@ -85,7 +92,6 @@ namespace AnimeApp.Application.Services
             public string? Error { get; set; }
         }
 
-
         public async Task UpdateAsync(int id, UpdateStudioRequest request)
         {
             var studio = await GetStudioByIdAsync(id);
@@ -96,14 +102,6 @@ namespace AnimeApp.Application.Services
                     studio.ChangeName(request.Name);
                 else
                     throw new ArgumentException("Studio name cannot be empty");
-            }
-
-            if (request.Poster != null)
-            {
-                string? posterFileName = null;
-                using var stream = request.Poster.OpenReadStream();
-                posterFileName = await _fileStorage.UploadFileAsync(stream, request.Poster.FileName, "studio-posters");
-                studio.ChangePoster(posterFileName);
             }
 
             if (request.Description != null)

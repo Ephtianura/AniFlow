@@ -253,11 +253,53 @@ namespace AnimeApp.Application.Services
                 if (officialRomaji != null)
                 {
                     var url = officialRomaji.Value.Trim().ToLower().Replace(" ", "-");
-                    anime.UpdateUrl(url);
+                    anime.UpdateUrl($"{url}-{anime.Id}");
                 }
             }
+            // ===================== Relateds =====================
+            if (request.RelatedsAnimes != null)
+            {
+                var newRelations = request.RelatedsAnimes;
 
-            
+                // 1. Видаляємо старі зв'язки, яких немає у новому списку
+                var existingIds = anime.Relateds.Select(r => r.RelatedAnimeId).ToList();
+                var newIds = newRelations.Select(r => r.RelatedAnimeId).ToList();
+
+                var toRemove = existingIds.Except(newIds).ToList();
+
+                foreach (var relatedId in toRemove)
+                {
+                    anime.RemoveRelated(relatedId);
+
+                    // Двостороннє видалення (якщо було)
+                    var relatedAnime = await GetAnimeByIdAsync(relatedId);
+                    relatedAnime.RemoveRelated(anime.Id);
+                }
+
+                // 2. Додаємо нові зв'язки (або оновлюємо старі)
+                foreach (var rel in newRelations)
+                {
+                    var relatedAnime = await GetAnimeByIdAsync(rel.RelatedAnimeId);
+
+                    // Прямий зв'язок
+                    anime.AddRelated(relatedAnime, rel.RelationKind);
+
+                    // Зворотний зв'язок, якщо є мапінг
+                    var reverse = RelationKindMap.GetReverse(rel.RelationKind);
+                    if (reverse != null)
+                    {
+                        relatedAnime.AddRelated(anime, reverse.Value);
+                    }
+                }
+            }
+            else
+            {
+                //Якщо налл не чипати 
+            }
+
+
+
+
 
             // ===================== Інші =====================
             if (!string.IsNullOrWhiteSpace(request.Description) && request.Description != anime.Description)

@@ -6,9 +6,7 @@ namespace AnimeApp.Application.Services
     {
         public record UpdateStudioRequest(
            string? Name,
-           IFormFile? Poster,
            string? Description = ""
-
            );
     }
 }

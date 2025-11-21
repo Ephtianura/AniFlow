@@ -45,6 +45,7 @@ namespace AnimeApp.DataAccess.Repositories
             var query = _dbContext.Animes
                 .Include(a => a.Titles)
                 .Include(a => a.Genres)
+                .Include(a => a.Studio)
                 .AsQueryable();
 
             // =================== SEARCH ===================

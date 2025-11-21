@@ -31,16 +31,22 @@ namespace AnimeApp.Api.Controllers
             var response = _mapper.Map<AnimeResponse>(anime);
 
             if (!string.IsNullOrWhiteSpace(anime.PosterFileName))
-                response = response with { PosterUrl = _fileUrl.GetUrl(anime.PosterFileName) };
+                response.PosterUrl = _fileUrl.GetUrl(anime.PosterFileName);
 
             if (anime.ScreenshotsFileName != null && anime.ScreenshotsFileName.Any())
             {
-                response = response with
+                response.ScreenshotsUrls = anime.ScreenshotsFileName
+                    .Select(f => _fileUrl.GetUrl(f))
+                    .ToList();
+            }
+            if (response.Relateds != null)
+            {
+                foreach (var related in response.Relateds)
                 {
-                    ScreenshotsUrls = anime.ScreenshotsFileName
-                        .Select(f => _fileUrl.GetUrl(f))
-                        .ToList()
-                };
+                    var relatedAnime = anime.Relateds.FirstOrDefault(r => r.RelatedAnime.Id == related.Id)?.RelatedAnime;
+                    if (relatedAnime != null && !string.IsNullOrWhiteSpace(relatedAnime.PosterFileName))
+                        related.PosterUrl = _fileUrl.GetUrl(relatedAnime.PosterFileName);
+                }
             }
 
             return Ok(response);
@@ -53,16 +59,13 @@ namespace AnimeApp.Api.Controllers
             var response = _mapper.Map<AnimeResponse>(anime);
 
             if (!string.IsNullOrWhiteSpace(anime.PosterFileName))
-                response = response with { PosterUrl = _fileUrl.GetUrl(anime.PosterFileName) };
+                response.PosterUrl = _fileUrl.GetUrl(anime.PosterFileName);
 
             if (anime.ScreenshotsFileName != null && anime.ScreenshotsFileName.Any())
             {
-                response = response with
-                {
-                    ScreenshotsUrls = anime.ScreenshotsFileName
-                        .Select(f => _fileUrl.GetUrl(f))
-                        .ToList()
-                };
+                response.ScreenshotsUrls = anime.ScreenshotsFileName
+                    .Select(f => _fileUrl.GetUrl(f))
+                    .ToList();
             }
 
             return Ok(response);
@@ -101,15 +104,13 @@ namespace AnimeApp.Api.Controllers
             var response = _mapper.Map<AnimeResponse>(anime);
 
             if (!string.IsNullOrWhiteSpace(anime.PosterFileName))
-                response = response with { PosterUrl = _fileUrl.GetUrl(anime.PosterFileName) };
+                response.PosterUrl = _fileUrl.GetUrl(anime.PosterFileName);
+
             if (anime.ScreenshotsFileName != null && anime.ScreenshotsFileName.Any())
             {
-                response = response with
-                {
-                    ScreenshotsUrls = anime.ScreenshotsFileName
-                        .Select(f => _fileUrl.GetUrl(f))
-                        .ToList()
-                };
+                response.ScreenshotsUrls = anime.ScreenshotsFileName
+                    .Select(f => _fileUrl.GetUrl(f))
+                    .ToList();
             }
 
             return CreatedAtAction(nameof(GetById), new { id = anime.Id }, response);
@@ -123,37 +124,33 @@ namespace AnimeApp.Api.Controllers
             var response = _mapper.Map<AnimeResponse>(anime);
 
             if (!string.IsNullOrWhiteSpace(anime.PosterFileName))
-                response = response with { PosterUrl = _fileUrl.GetUrl(anime.PosterFileName) };
+                response.PosterUrl = _fileUrl.GetUrl(anime.PosterFileName);
+
             if (anime.ScreenshotsFileName != null && anime.ScreenshotsFileName.Any())
             {
-                response = response with
-                {
-                    ScreenshotsUrls = anime.ScreenshotsFileName
-                        .Select(f => _fileUrl.GetUrl(f))
-                        .ToList()
-                };
+                response.ScreenshotsUrls = anime.ScreenshotsFileName
+                    .Select(f => _fileUrl.GetUrl(f))
+                    .ToList();
             }
 
             return Ok(response);
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<AnimeResponse>> Update(int id, [FromForm] AnimeUpdateRequest request)
+        public async Task<ActionResult<AnimeResponse>> Update(int id, [FromBody] AnimeUpdateRequest request)
         {
             var anime = await _animeService.UpdateAsync(id, request);
 
             var response = _mapper.Map<AnimeResponse>(anime);
 
             if (!string.IsNullOrWhiteSpace(anime.PosterFileName))
-                response = response with { PosterUrl = _fileUrl.GetUrl(anime.PosterFileName) };
+                response.PosterUrl = _fileUrl.GetUrl(anime.PosterFileName);
+
             if (anime.ScreenshotsFileName != null && anime.ScreenshotsFileName.Any())
             {
-                response = response with
-                {
-                    ScreenshotsUrls = anime.ScreenshotsFileName
-                        .Select(f => _fileUrl.GetUrl(f))
-                        .ToList()
-                };
+                response.ScreenshotsUrls = anime.ScreenshotsFileName
+                    .Select(f => _fileUrl.GetUrl(f))
+                    .ToList();
             }
 
             return Ok(response);
