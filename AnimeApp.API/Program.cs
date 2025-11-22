@@ -68,7 +68,6 @@ builder.Services.AddScoped<IStudioService, StudioService>();
 
 // DI Infrastructure
 
-
 //S3 File Service
 builder.Services.AddScoped<IAmazonS3>(sp =>
 {

@@ -181,31 +181,102 @@ namespace AnimeApp.Application.Services
         {
             var anime = await GetAnimeByIdAsync(id);
 
-            // ===================== Файли =====================
+            // ===================== Обновление постера =====================
             if (request.Poster != null)
             {
                 using var stream = request.Poster.OpenReadStream();
                 var posterFileName = await _fileStorage.UploadFileAsync(stream, request.Poster.FileName, "anime-posters");
                 anime.UpdatePosterFileName(posterFileName);
             }
+            else if (!string.IsNullOrWhiteSpace(request.PosterUrl))
+            {
+                try
+                {
+                    using var http = new HttpClient();
+                    var response = await http.GetAsync(request.PosterUrl);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var bytes = await response.Content.ReadAsByteArrayAsync();
+                        var ext = response.Content.Headers.ContentType?.MediaType switch
+                        {
+                            "image/png" => ".png",
+                            "image/webp" => ".webp",
+                            _ => ".jpg"
+                        };
 
+                        var fileName = $"{Guid.NewGuid()}{ext}";
+                        using var ms = new MemoryStream(bytes);
+                        var saved = await _fileStorage.UploadFileAsync(ms, fileName, "anime-posters");
+                        anime.UpdatePosterFileName(saved);
+                    }
+                }
+                catch
+                {
+                    // Игнорируем ошибки загрузки по URL
+                }
+            }
+
+            // ===================== Обновление скриншотов =====================
+            var screenshotFiles = new List<string>();
+
+            // Файлы с локальной машины
             if (request.Screenshots != null && request.Screenshots.Any())
             {
-                var screenshotFiles = new List<string>();
                 foreach (var file in request.Screenshots)
                 {
+                    if (file.Length == 0) continue;
+
                     using var stream = file.OpenReadStream();
                     var uploadedFile = await _fileStorage.UploadFileAsync(stream, file.FileName, "anime-screenshots");
                     screenshotFiles.Add(uploadedFile);
                 }
-                anime.UpdateScreenshotsFileName(screenshotFiles);
             }
-            if (request.Poster == null && request.Screenshots == null)
-                throw new ArgumentException("At least 1 poster or 1 screenshot must be uploaded.");
+
+            // Скриншоты по URL
+            if (request.ScreenshotUrls != null && request.ScreenshotUrls.Any())
+            {
+                foreach (var url in request.ScreenshotUrls)
+                {
+                    try
+                    {
+                        using var http = new HttpClient();
+                        var response = await http.GetAsync(url);
+                        if (!response.IsSuccessStatusCode) continue;
+
+                        var bytes = await response.Content.ReadAsByteArrayAsync();
+                        var ext = response.Content.Headers.ContentType?.MediaType switch
+                        {
+                            "image/png" => ".png",
+                            "image/webp" => ".webp",
+                            _ => ".jpg"
+                        };
+
+                        var fileName = $"{Guid.NewGuid()}{ext}";
+                        using var ms = new MemoryStream(bytes);
+                        var saved = await _fileStorage.UploadFileAsync(ms, fileName, "anime-screenshots");
+                        screenshotFiles.Add(saved);
+                    }
+                    catch
+                    {
+                        // Игнорируем ошибки отдельных URL
+                    }
+                }
+            }
+
+            if (screenshotFiles.Any())
+                anime.UpdateScreenshotsFileName(screenshotFiles);
+
+            if ((request.Poster == null && string.IsNullOrWhiteSpace(request.PosterUrl)) &&
+                ((request.Screenshots == null || !request.Screenshots.Any()) &&
+                 (request.ScreenshotUrls == null || !request.ScreenshotUrls.Any())))
+            {
+                throw new ArgumentException("Необходимо загрузить хотя бы постер или один скриншот.");
+            }
 
             await _animes.UpdateAsync(anime);
             return anime;
         }
+
 
 
         // Оновити аніме
