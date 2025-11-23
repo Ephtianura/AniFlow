@@ -6,7 +6,7 @@ namespace AnimeApp.Core.Models
 {
     public class User
     {
-        protected User() { }
+        public User() { }
       
         private User(string nickname, string email, string passwordHash)
         {

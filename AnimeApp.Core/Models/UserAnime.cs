@@ -6,7 +6,7 @@ namespace AnimeApp.Core.Models
     public class UserAnime
     {
         // ===================== Конструктор =====================
-        protected UserAnime() { }
+        public UserAnime() { }
         
         // Ctor
         private UserAnime(User user, Anime anime)
@@ -25,7 +25,7 @@ namespace AnimeApp.Core.Models
 
         // Info
         public MyListEnum MyList { get; private set; }       // Дивлюсь / Планую / Подивився
-        public byte? Rating { get; private set; }             // Оцінка аниме від юзера
+        public int? Rating { get; private set; }             // Оцінка аниме від юзера
         public DateTime UpdatedAt { get; private set; }
 
         // Nav
@@ -58,7 +58,7 @@ namespace AnimeApp.Core.Models
             MyList = newMyList;
             Touch();
         }
-        public void ChangeRating(byte? newRating)
+        public void ChangeRating(int? newRating)
         {
             if (Rating == newRating) return;
             if (newRating < 1 || newRating > 10)

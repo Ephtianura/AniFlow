@@ -1,14 +1,13 @@
 using AnimeApp.Application.Contracts;
 using AnimeApp.Application.Dto.Anime;
 using AnimeApp.Application.Services;
+using AnimeApp.Core.Contracts;
 using AnimeApp.Core.Enums;
 using AnimeApp.Core.Filters;
 using AnimeApp.Core.Models;
-using AnimeApp.DataAccess.Repositories;
 using AnimeApplication.Core.Enums;
 using FluentAssertions;
 using FluentValidation;
-using GenreApp.DataAccess.Repositories;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using System.Threading.Tasks;

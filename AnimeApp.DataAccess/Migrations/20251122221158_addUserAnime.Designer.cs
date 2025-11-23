@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using AnimeApp.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AnimeApp.DataAccess.Migrations
 {
     [DbContext(typeof(AnimeAppDbContext))]
-    partial class AnimeAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251122221158_addUserAnime")]
+    partial class addUserAnime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -58,6 +61,9 @@ namespace AnimeApp.DataAccess.Migrations
                     b.Property<int>("Rating")
                         .HasColumnType("integer");
 
+                    b.Property<int>("RatingsCount")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime?>("ReleasedOn")
                         .HasColumnType("timestamp with time zone");
 
@@ -75,9 +81,6 @@ namespace AnimeApp.DataAccess.Migrations
                         .HasColumnType("integer");
 
                     b.Property<int?>("StudiosId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("TotalScores")
                         .HasColumnType("integer");
 
                     b.Property<string>("Url")
@@ -218,7 +221,7 @@ namespace AnimeApp.DataAccess.Migrations
                     b.Property<int>("MyList")
                         .HasColumnType("integer");
 
-                    b.Property<short?>("Rating")
+                    b.Property<byte?>("Rating")
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("UpdatedAt")

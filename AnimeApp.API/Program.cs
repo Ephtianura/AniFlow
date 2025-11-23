@@ -1,17 +1,21 @@
 using Amazon.Runtime;
 using Amazon.S3;
+using AnimeApp.API.Extensions;
 using AnimeApp.API.Mapping;
 using AnimeApp.API.Middleware.Exceptions;
 using AnimeApp.Application.Contracts;
 using AnimeApp.Application.Services;
 using AnimeApp.Application.Validation.AnimeValidator;
 using AnimeApp.Application.Validation.UserValidator;
+using AnimeApp.Core.Contracts;
 using AnimeApp.DataAccess;
 using AnimeApp.DataAccess.Repositories;
+using AnimeApp.Infrastructure.Auth;
 using AnimeApp.Infrastructure.FileStorage;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using GenreApp.DataAccess.Repositories;
+using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -40,9 +44,9 @@ builder.Services.AddValidatorsFromAssemblyContaining<AnimeCreateValidator>();
 // Auto Mapper
 builder.Services.AddAutoMapper(cfg =>
 {
-    //cfg.AddProfile<UserProfile>();
     cfg.AddProfile<AnimeProfile>();
     cfg.AddProfile<StudioProfile>();
+    cfg.AddProfile<UserProfile>();
 
 });
 
@@ -60,13 +64,24 @@ builder.Services.AddDbContext<AnimeAppDbContext>(
 builder.Services.AddScoped<IAnimeRepository, AnimeRepository>();
 builder.Services.AddScoped<IGenreRepository, GenreRepository>();
 builder.Services.AddScoped<IStudioRepository, StudioRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserAnimeRepository, UserAnimeRepository>();
 
 // DI Services
 builder.Services.AddScoped<IAnimeService, AnimeService>();
 builder.Services.AddScoped<IGenreService, GenreService>();
 builder.Services.AddScoped<IStudioService, StudioService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 // DI Infrastructure
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IJwtProvider, JwtProvider>();
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+
+// Налаштування JWT токену
+builder.Services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOptions)));
+var jwtOptions = configuration.GetSection(nameof(JwtOptions)).Get<JwtOptions>()!;
+builder.Services.AddApiAuthentication(jwtOptions);
 
 //S3 File Service
 builder.Services.AddScoped<IAmazonS3>(sp =>
@@ -89,40 +104,54 @@ builder.Services.AddScoped<IS3FileStorageService>(sp =>
     new S3FileStorageService(sp.GetRequiredService<IAmazonS3>(), builder.Configuration["AWS:BucketName"], sp.GetRequiredService<IConfiguration>())
 );
 
-
+// Коментарі свагера
 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-
 builder.Services.AddSwaggerGen(c =>
 {
     c.IncludeXmlComments(xmlPath);
 });
 
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy => policy
+            .WithOrigins("http://localhost:3000")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials());
+
+});
+
 
 var app = builder.Build();
 
+// Свагер
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+// Дозволення фронта
 
-app.UseCors(builder =>
-    builder
-        .AllowAnyHeader()
-        .AllowAnyMethod()
-        .AllowCredentials()
-        .WithOrigins("http://localhost:3000")
-);
+app.UseCors("AllowFrontend");
 
+// Параметри кукі
+app.UseCookiePolicy(new CookiePolicyOptions
+{
+    MinimumSameSitePolicy = SameSiteMode.None,
+    HttpOnly = HttpOnlyPolicy.Always,
+    Secure = CookieSecurePolicy.Always,
+});
 
 // Обробник помилок
 app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

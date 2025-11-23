@@ -8,8 +8,8 @@ namespace AnimeApp.Application.Validation.UserValidator
     {
         public UserRegisterValidator()
         {
-            RuleFor(u => u.FullName)
-                .NotEmpty().WithMessage("Full name is required")
+            RuleFor(u => u.Nickname)
+                .NotEmpty().WithMessage("Nickname is required")
                 .MaximumLength(100).WithMessage("Maximum name length is 100 characters.");
 
             RuleFor(u => u.Email)

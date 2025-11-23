@@ -1,5 +1,6 @@
 ﻿using AnimeApp.Application.Contracts;
 using AnimeApp.Core.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static AnimeApp.Application.Services.GenreService;
 
@@ -28,6 +29,7 @@ namespace AnimeApp.Api.Controllers
             return Ok(genre);
         }
 
+        [Authorize(Policy = "AdminPolicy")]
         [HttpPost]
         public async Task<ActionResult<Genre>> Create([FromBody] CreateGenreRequest request)
         {
@@ -35,6 +37,7 @@ namespace AnimeApp.Api.Controllers
             return CreatedAtAction(nameof(GetById), new { id = genre.Id }, genre);
         }
 
+        [Authorize(Policy = "AdminPolicy")]
         [HttpPost("batch")]
         public async Task<ActionResult<IEnumerable<Genre>>> CreateMany([FromBody] IEnumerable<CreateGenreRequest> requests)
         {
@@ -42,6 +45,7 @@ namespace AnimeApp.Api.Controllers
             return Ok(genres);
         }
 
+        [Authorize(Policy = "AdminPolicy")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateGenreRequest request)
         {
@@ -49,6 +53,7 @@ namespace AnimeApp.Api.Controllers
             return NoContent();
         }
 
+        [Authorize(Policy = "AdminPolicy")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

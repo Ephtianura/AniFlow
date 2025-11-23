@@ -1,7 +1,7 @@
 ﻿using AnimeApp.Core.Filters;
 using AnimeApp.Core.Models;
 
-namespace AnimeApp.DataAccess.Repositories
+namespace AnimeApp.Core.Contracts
 {
     public interface IStudioRepository
     {

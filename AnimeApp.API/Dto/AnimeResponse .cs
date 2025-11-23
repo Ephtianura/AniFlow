@@ -13,6 +13,7 @@ namespace AnimeApp.API.Dto
         public DateTime? AiredOn { get; set; } = null;
         public DateTime? ReleasedOn { get; set; } = null;
         public double Score { get; set; } = 0;
+        public int TotalScores { get; set; } = 0;
         public int Episodes { get; set; } = 0;
         public int EpisodesAired { get; set; } = 0;
         public int Duration { get; set; } = 0;

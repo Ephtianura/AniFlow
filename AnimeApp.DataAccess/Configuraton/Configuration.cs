@@ -6,37 +6,85 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace AnimeApp.DataAccess.Configurations
 {
     // ===================== USER =====================
-    //public class UserConfiguration : IEntityTypeConfiguration<User>
-    //{
-    //    public void Configure(EntityTypeBuilder<User> builder)
-    //    {
-    //        builder.ToTable("Users");
+    public class UserConfiguration : IEntityTypeConfiguration<User>
+    {
+        public void Configure(EntityTypeBuilder<User> builder)
+        {
+            builder.ToTable("Users");
 
-    //        builder.HasKey(u => u.Id);
+            builder.HasKey(u => u.Id);
 
-    //        builder.Property(u => u.FullName)
-    //            .IsRequired()
-    //            .HasMaxLength(100);
-    //        builder.Property(u => u.Email)
-    //            .IsRequired()
-    //            .HasMaxLength(255);
-    //        builder.Property(u => u.PasswordHash)
-    //            .IsRequired();
-    //        builder.Property(u => u.Phone)
-    //            .HasMaxLength(20)
-    //            .IsRequired(false);
-    //        builder.Property(u => u.Role)
-    //            .HasConversion<int>()
-    //            .IsRequired();
-    //        builder.Property(u => u.RegistrationDate)
-    //            .IsRequired();
-    //        builder.Property(u => u.UpdatedDate)
-    //            .IsRequired();
+           builder.Property(u => u.Nickname)
+                .IsRequired()
+                .HasMaxLength(50);
 
-    //        builder.HasIndex(u => u.Email)
-    //            .IsUnique();
-    //    }
-    //}
+            builder.Property(u => u.Email)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            builder.Property(u => u.PasswordHash)
+                .IsRequired()
+                .HasMaxLength(200);
+
+            builder.Property(u => u.Role)
+                .IsRequired()
+                .HasConversion<int>(); 
+
+            builder.Property(u => u.Theme)
+                .IsRequired()
+                .HasConversion<int>(); 
+
+            builder.Property(u => u.AvatarFileName)
+                .HasMaxLength(200)
+                .IsRequired(false);
+
+            builder.Property(u => u.DateOfRegistration)
+                .IsRequired();
+
+            // Навігація
+            builder.HasMany(u => u.UserAnimes)
+                .WithOne(ua => ua.User)
+                .HasForeignKey(ua => ua.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+        }
+    }
+
+    public class UserAnimeConfiguration : IEntityTypeConfiguration<UserAnime>
+    {
+        public void Configure(EntityTypeBuilder<UserAnime> builder)
+        {
+            builder.ToTable("UserAnimes");
+
+            builder.HasKey(ua => new { ua.UserId, ua.AnimeId });
+
+            builder.Property(ua => ua.MyList)
+                .IsRequired()
+                .HasConversion<int>(); 
+
+            builder.Property(ua => ua.Rating)
+                .HasColumnType("smallint")
+                .IsRequired(false); 
+
+            builder.Property(ua => ua.UpdatedAt)
+                .IsRequired();
+
+            // Навігація
+            builder.HasOne(ua => ua.User)
+                .WithMany(u => u.UserAnimes)
+                .HasForeignKey(ua => ua.UserId);
+
+            builder.HasOne(ua => ua.Anime)
+                .WithMany(a => a.UserAnimes)
+                .HasForeignKey(ua => ua.AnimeId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Індексація
+            builder.HasIndex(ua => ua.Rating);
+            builder.HasIndex(ua => ua.MyList);
+        }
+    }
+
 
     // ===================== ANIME =====================
     public class AnimeConfiguration : IEntityTypeConfiguration<Anime>
@@ -92,9 +140,14 @@ namespace AnimeApp.DataAccess.Configurations
 
             //Many - to - Many: Animes
             builder.HasMany(a => a.Relateds)
-             .WithOne(r => r.Anime) // Навигация обратно на "основное аниме"
+             .WithOne(r => r.Anime) 
              .HasForeignKey(r => r.AnimeId)
-             .OnDelete(DeleteBehavior.Cascade); // например
+             .OnDelete(DeleteBehavior.Cascade); 
+
+
+            builder.HasMany(a => a.UserAnimes)
+             .WithOne(ua => ua.Anime)
+             .HasForeignKey(ua => ua.AnimeId);
         }
     }
 

@@ -1,9 +1,9 @@
 ﻿using AnimeApp.Application.Contracts;
 using AnimeApp.Application.Dto.Studio;
 using AnimeApp.Application.Exceptions;
+using AnimeApp.Core.Contracts;
 using AnimeApp.Core.Filters;
 using AnimeApp.Core.Models;
-using AnimeApp.DataAccess.Repositories;
 using Microsoft.AspNetCore.Http;
 using System.Xml.Linq;
 

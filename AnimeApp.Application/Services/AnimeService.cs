@@ -1,79 +1,47 @@
 ﻿using AnimeApp.Application.Contracts;
 using AnimeApp.Application.Dto.Anime;
 using AnimeApp.Application.Exceptions;
+using AnimeApp.Core.Contracts;
 using AnimeApp.Core.Enums;
 using AnimeApp.Core.Filters;
 using AnimeApp.Core.Models;
-using AnimeApp.DataAccess.Repositories;
 using FluentValidation;
-using GenreApp.DataAccess.Repositories;
 using System.IO;
 using System.Security.Policy;
 using System.Xml.Linq;
 
 namespace AnimeApp.Application.Services
 {
-    public class AnimeService : IAnimeService
+    public class AnimeService(
+        IAnimeRepository animes,
+        IStudioRepository studios,
+        IGenreRepository genres,
+        IS3FileStorageService fileStorage, IUserAnimeRepository userAnimes) : IAnimeService
+
     {
-        private readonly IAnimeRepository _animes;
-        private readonly IStudioRepository _studios;
-        private readonly IGenreRepository _genres;
-        private readonly IValidator<AnimeCreateRequest> _createValidator;
-        private readonly IValidator<AnimeUpdateRequest> _updateValidator;
-        private readonly IValidator<AnimeFilter> _filterValidator;
-        private readonly IS3FileStorageService _fileStorage;
+        private readonly IAnimeRepository _animes = animes;
+        private readonly IStudioRepository _studios = studios;
+        private readonly IGenreRepository _genres = genres;
+        private readonly IS3FileStorageService _fileStorage = fileStorage;
+        private readonly IUserAnimeRepository _userAnimes = userAnimes;
 
-        public AnimeService
-            (
-            IAnimeRepository animes,
-            IStudioRepository studios,
-            IGenreRepository genres,
-            IValidator<AnimeCreateRequest> createValidator,
-            IValidator<AnimeUpdateRequest> updateValidator,
-            IValidator<AnimeFilter> filterValidator,
-            IS3FileStorageService fileStorage
-            )
-        {
-            _animes = animes;
-            _studios = studios;
-            _genres = genres;
-
-            _createValidator = createValidator;
-            _updateValidator = updateValidator;
-            _filterValidator = filterValidator;
-            _fileStorage = fileStorage;
-
-        }
 
         // Отримати аніме по ID
-        public async Task<Anime> GetByIdAsync(int id)
-        {
-            return await GetAnimeByIdAsync(id);
-        }
+        public async Task<Anime> GetByIdAsync(int id) => 
+            await GetAnimeByIdAsync(id);
 
-        public async Task<Anime> GetRandomAsync()
-        {
-            var anime = await _animes.GetRandomAsync();
-            if (anime is null)
-                throw new EntityNotFoundException("Anime");
-            return anime;
-        }
+        // Отримати рандомне аніме
+        public async Task<Anime> GetRandomAsync() => 
+            await _animes.GetRandomAsync() ?? throw new EntityNotFoundException("Anime");
 
         // Отримати аніме за фільтром
-        public async Task<PagedResult<Anime>> GetFilteredAsync(AnimeFilter filter)
-        {
-            // Валідація фільтра
-            await _filterValidator.ValidateAndThrowAsync(filter);
-
-            return await _animes.GetFilteredAsync(filter);
-        }
+        public async Task<PagedResult<Anime>> GetFilteredAsync(AnimeFilter filter) => 
+            await _animes.GetFilteredAsync(filter);
 
         // Створити аніме
         public async Task<Anime> CreateAsync(AnimeCreateRequest request)
         {
-            await _createValidator.ValidateAndThrowAsync(request);
-
-            // Валидируем, что есть хотя бы один Romaji
+            // Валідуємо, що є хоча б один Romaji
             if (!request.Titles.Any(t => t.Language == TitleLanguage.Romaji))
                 throw new ArgumentException("Anime must have at least one title in Romaji.");
 
@@ -282,8 +250,6 @@ namespace AnimeApp.Application.Services
         // Оновити аніме
         public async Task<Anime> UpdateAsync(int id, AnimeUpdateRequest request)
         {
-            await _updateValidator.ValidateAndThrowAsync(request);
-
             var anime = await GetAnimeByIdAsync(id);
 
             // ===================== Studio =====================
@@ -367,10 +333,6 @@ namespace AnimeApp.Application.Services
             {
                 //Якщо налл не чипати 
             }
-
-
-
-
 
             // ===================== Інші =====================
             if (!string.IsNullOrWhiteSpace(request.Description) && request.Description != anime.Description)

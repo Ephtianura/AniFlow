@@ -6,6 +6,7 @@ using AnimeApp.Application.Services;
 using AnimeApp.Core.Filters;
 using AnimeApp.Core.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using static AnimeApp.Application.Services.StudioService;
@@ -57,7 +58,6 @@ namespace AnimeApp.Api.Controllers
             return Ok(response);
         }
 
-
         [HttpGet]
         public async Task<ActionResult> GetFiltered([FromQuery] StudioFilter filter)
         {
@@ -93,7 +93,7 @@ namespace AnimeApp.Api.Controllers
             return Ok(response);
         }
 
-
+        [Authorize(Policy = "AdminPolicy")]
         [HttpPost]
         public async Task<ActionResult<Studio>> Create([FromBody] CreateStudioRequest request)
         {
@@ -101,6 +101,7 @@ namespace AnimeApp.Api.Controllers
             return CreatedAtAction(nameof(GetById), new { id = studio.Id }, studio);
         }
 
+        [Authorize(Policy = "AdminPolicy")]
         [HttpPut("{id}/UploadFiles")]
         public async Task<ActionResult<Studio>> UploadFiles(int id, IFormFile? Poster)
         {
@@ -109,6 +110,7 @@ namespace AnimeApp.Api.Controllers
             return NoContent();
         }
 
+        [Authorize(Policy = "AdminPolicy")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateStudioRequest request)
         {
@@ -116,6 +118,7 @@ namespace AnimeApp.Api.Controllers
             return NoContent();
         }
 
+        [Authorize(Policy = "AdminPolicy")]
         [HttpPost("batch")]
         public async Task<ActionResult<List<StudioCreationResult>>> CreateMany([FromBody] List<CreateStudioRequest> studios)
         {
@@ -123,6 +126,7 @@ namespace AnimeApp.Api.Controllers
             return Ok(result);
         }
 
+        [Authorize(Policy = "AdminPolicy")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

@@ -14,6 +14,8 @@ namespace AnimeApp.DataAccess
         public DbSet<Anime> Animes => Set<Anime>();
         public DbSet<Genre> Genres => Set<Genre>();
         public DbSet<Studio> Studios => Set<Studio>();
+        public DbSet<User> Users => Set<User>();
+        public DbSet<UserAnime> UserAnimes => Set<UserAnime>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

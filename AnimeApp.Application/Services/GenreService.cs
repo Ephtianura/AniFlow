@@ -1,7 +1,7 @@
 ﻿using AnimeApp.Application.Contracts;
 using AnimeApp.Application.Exceptions;
+using AnimeApp.Core.Contracts;
 using AnimeApp.Core.Models;
-using GenreApp.DataAccess.Repositories;
 
 namespace AnimeApp.Application.Services
 {

@@ -74,6 +74,7 @@ namespace AnimeApp.Core.Models
 
         // Статистика
         public double Score { get; private set; } // 0 - 10
+        public int TotalScores { get; private set; }
         public int Episodes { get; private set; } // *Загальна кількість епізодів*
         public int EpisodesAired { get; private set; } // Скільки епізодів *вийшло в ефір*
         public int Duration { get; private set; } // Середній час однієї серії
@@ -99,6 +100,7 @@ namespace AnimeApp.Core.Models
         public List<Genre> Genres { get; private set; } = new(); // Жанри  Many-to-Many
 
         public List<AnimeRelated> Relateds { get; private set; } = new(); // Пов'язані аніме Many-to-Many
+        public ICollection<UserAnime> UserAnimes { get; private set; } = new List<UserAnime>();
 
 
 
@@ -233,7 +235,9 @@ namespace AnimeApp.Core.Models
         public void UpdateEpisodesAired(int episodesAired)
         {
             if (episodesAired < 0)
-                throw new ArgumentOutOfRangeException(nameof(episodesAired), "EpisodesAired cannot be negative.");
+                throw new ArgumentOutOfRangeException(nameof(episodesAired), "Episodes Aired cannot be negative.");
+            if (episodesAired > Episodes)
+                throw new ArgumentOutOfRangeException(nameof(episodesAired), "Episodes Aired can't be more than episodes.");
             EpisodesAired = episodesAired;
         }
         public void UpdateDuration(int duration)

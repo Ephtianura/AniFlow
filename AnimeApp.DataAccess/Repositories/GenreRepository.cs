@@ -1,4 +1,5 @@
-﻿using AnimeApp.Core.Models;
+﻿using AnimeApp.Core.Contracts;
+using AnimeApp.Core.Models;
 using AnimeApp.DataAccess;
 using Microsoft.EntityFrameworkCore;
 

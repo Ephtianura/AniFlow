@@ -3,7 +3,7 @@
 namespace AnimeApp.Application.Dto.User
 {
     public record RegisterUserRequest(
-            [Required] string FullName,
+            [Required] string Nickname,
             [Required] string Email,
             [Required] string Password);
 

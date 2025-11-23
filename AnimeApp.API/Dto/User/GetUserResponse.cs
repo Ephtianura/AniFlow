@@ -1,11 +1,10 @@
 ﻿namespace AnimeApp.API.Dto.User
 {
-    public record GetUserResponse(
-      Guid Id,
-      string FullName,
+    public record GetUserMeResponse(
+      int Id,
+      string Nickname,
       string Email,
-      string? Phone
-      //DateTimeOffset RegistrationDate,
-      //DateTimeOffset UpdatedDate
+      int Role
+        //DateTimeOffset RegistrationDate
   );
 }

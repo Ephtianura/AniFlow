@@ -3,6 +3,7 @@ using AnimeApp.Application.Contracts;
 using AnimeApp.Application.Dto.Anime;
 using AnimeApp.Core.Filters;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -10,18 +11,11 @@ namespace AnimeApp.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AnimesController : ControllerBase
+    public class AnimesController(IAnimeService animeService, IMapper mapper, IS3FileStorageService fileUrl) : ControllerBase
     {
-        private readonly IAnimeService _animeService;
-        private readonly IMapper _mapper;
-        private readonly IS3FileStorageService _fileUrl;
-
-        public AnimesController(IAnimeService animeService, IMapper mapper, IS3FileStorageService fileUrl)
-        {
-            _animeService = animeService;
-            _mapper = mapper;
-            _fileUrl = fileUrl;
-        }
+        private readonly IAnimeService _animeService = animeService;
+        private readonly IMapper _mapper = mapper;
+        private readonly IS3FileStorageService _fileUrl = fileUrl;
 
         [HttpGet("{id}")]
         public async Task<ActionResult<AnimeResponse>> GetById(int id)
@@ -97,6 +91,7 @@ namespace AnimeApp.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<ActionResult<AnimeResponse>> Create([FromBody] AnimeCreateRequest request)
         {
             var anime = await _animeService.CreateAsync(request);
@@ -117,6 +112,7 @@ namespace AnimeApp.Api.Controllers
         }
 
         [HttpPut("{id}/UploadFiles")]
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<ActionResult<AnimeResponse>> UploadFiles(int id, [FromForm] AnimeUpdateFilesRequest request)
         {
             var anime = await _animeService.UpdateFilesAsync(id, request);
@@ -137,6 +133,7 @@ namespace AnimeApp.Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<ActionResult<AnimeResponse>> Update(int id, [FromBody] AnimeUpdateRequest request)
         {
             var anime = await _animeService.UpdateAsync(id, request);
@@ -157,6 +154,7 @@ namespace AnimeApp.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> Delete(int id)
         {
             await _animeService.DeleteAsync(id);

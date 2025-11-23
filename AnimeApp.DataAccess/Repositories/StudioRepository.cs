@@ -1,4 +1,5 @@
-﻿using AnimeApp.Core.Enums;
+﻿using AnimeApp.Core.Contracts;
+using AnimeApp.Core.Enums;
 using AnimeApp.Core.Filters;
 using AnimeApp.Core.Models;
 using Microsoft.EntityFrameworkCore;

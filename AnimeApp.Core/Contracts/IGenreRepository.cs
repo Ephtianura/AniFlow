@@ -1,6 +1,6 @@
 ﻿using AnimeApp.Core.Models;
 
-namespace GenreApp.DataAccess.Repositories
+namespace AnimeApp.Core.Contracts
 {
     public interface IGenreRepository
     {
