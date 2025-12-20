@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@theme {
+  /* Фон */
+  --color-bg-light: #E9EBEE;
+  --color-bg-dark: #343A40;  
+
+  /* 🎨 Основні кольори  */
+--color-primary: #9457FF;
+--color-primary-black: #212529;
+
+  /* Кнопки */
+--color-btn-hover: #F0F0F0;
+--color-btn-hover-dark: #DCDCDC ;
+--color-btn-sidebar-hover: #F7F7F7 ;
+
+--color-primary-grey: #CCCCCC;
+--color-btn-grey-hover: #EBECEE;
+
+--color-hr-clr: #E5E5E5;
+--color-btn-border-light: #E6E6E6;
+--color-btn-border-dark: #CCCCCC;
+
+
+  /* Текст */
+  --color-gray-dark: #666666;
+  --color-gray-text: #999999;
+  --color-gray-text-light: #868E96;
+  --color-gray-text-dark: #495057;
+}
+
+:root {
+  /* Фон */
+  --color-bg-light: #E9EBEE;
+  --color-bg-dark: #343A40;  
+
+  /* 🎨 Основні кольори  */
+--color-primary: #9457FF;
+--color-primary-black: #212529;
+
+  /* Кнопки */
+--color-btn-hover: #F0F0F0;
+--color-btn-hover-dark: #DCDCDC ;
+--color-btn-sidebar-hover: #F7F7F7 ;
+
+
+--color-primary-grey: #CCCCCC;
+--color-btn-grey-hover: #EBECEE;
+
+--color-hr-clr: #E5E5E5;
+--color-btn-border-light: #E6E6E6;
+--color-btn-border-dark: #CCCCCC;
+
+  /* Текст */
+    --color-gray-dark: #666666;
+  --color-gray-text: #999999;
+  --color-gray-text-light: #868E96;
+  --color-gray-text-dark: #495057;
+} 
+
+body {
+   font-family:  "Segoe UI",  sans-serif;
+}
+
+@layer components {
+  .btn-primary {
+    @apply w-full px-3 py-[6px] bg-white text-gray-text-dark 
+           shadow-sm rounded-xs border border-btn-border-light 
+           transition-colors duration-200 
+           hover:border-btn-border-dark 
+           focus:outline-none focus:border-btn-border-dark 
+           focus:shadow-[0_0_5px_rgba(0,0,0,0.1)];
+  }
+}

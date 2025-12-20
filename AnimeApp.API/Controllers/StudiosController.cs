@@ -1,14 +1,12 @@
-﻿using AnimeApp.API.Dto;
+﻿using AnimeApp.Application.Dto.Responses.Anime;
 using AnimeApp.Application.Contracts;
-using AnimeApp.Application.Dto.Anime;
-using AnimeApp.Application.Dto.Studio;
-using AnimeApp.Application.Services;
+using AnimeApp.Application.Dto.Requests.Studio;
 using AnimeApp.Core.Filters;
 using AnimeApp.Core.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using AnimeApp.Application.Dto.Responses.Studio;
 using static AnimeApp.Application.Services.StudioService;
 
 namespace AnimeApp.Api.Controllers

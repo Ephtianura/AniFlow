@@ -1,5 +1,5 @@
 ﻿using AnimeApp.Core.Enums;
-using AnimeApplication.Core.Enums;
+using AnimeApp.Core.Enums;
 
 namespace AnimeApp.Core.Models
 {
@@ -198,10 +198,9 @@ namespace AnimeApp.Core.Models
         {
             if (relatedAnime == null) throw new ArgumentNullException(nameof(relatedAnime));
             if (Relateds.Any(r => r.RelatedAnimeId == relatedAnime.Id))
-                throw new InvalidOperationException("Relation already exists");
+                return; 
 
             Relateds.Add(AnimeRelated.Create(Id, relatedAnime.Id, type));
-
         }
         public void RemoveRelated(int relatedAnimeId)
         {

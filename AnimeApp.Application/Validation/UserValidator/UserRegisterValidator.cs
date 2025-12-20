@@ -1,4 +1,4 @@
-﻿using AnimeApp.Application.Dto.User;
+﻿using AnimeApp.Application.Dto.Requests.User;
 using FluentValidation;
 
 namespace AnimeApp.Application.Validation.UserValidator

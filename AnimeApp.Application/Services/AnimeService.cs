@@ -1,13 +1,13 @@
 ﻿using AnimeApp.Application.Contracts;
-using AnimeApp.Application.Dto.Anime;
+using AnimeApp.Application.Dto.Requests.Anime;
+using AnimeApp.Application.Dto.Responses.Anime;
 using AnimeApp.Application.Exceptions;
+using AnimeApp.Application.Mapping;
 using AnimeApp.Core.Contracts;
 using AnimeApp.Core.Enums;
 using AnimeApp.Core.Filters;
 using AnimeApp.Core.Models;
-using FluentValidation;
-using System.IO;
-using System.Security.Policy;
+using AutoMapper;
 using System.Xml.Linq;
 
 namespace AnimeApp.Application.Services
@@ -16,30 +16,81 @@ namespace AnimeApp.Application.Services
         IAnimeRepository animes,
         IStudioRepository studios,
         IGenreRepository genres,
-        IS3FileStorageService fileStorage, IUserAnimeRepository userAnimes) : IAnimeService
+        IS3FileStorageService fileStorage,
+        IMapper mapper,
+        IS3FileStorageService fileUrl) : IAnimeService
 
     {
         private readonly IAnimeRepository _animes = animes;
         private readonly IStudioRepository _studios = studios;
         private readonly IGenreRepository _genres = genres;
         private readonly IS3FileStorageService _fileStorage = fileStorage;
-        private readonly IUserAnimeRepository _userAnimes = userAnimes;
+        private readonly IMapper _mapper = mapper;
+        private readonly IS3FileStorageService _fileUrl = fileUrl;
 
+       
 
         // Отримати аніме по ID
-        public async Task<Anime> GetByIdAsync(int id) => 
-            await GetAnimeByIdAsync(id);
+        public async Task<AnimeResponse> GetByIdAsync(int id)
+        {
+            var anime = await GetAnimeByIdAsync(id);
+
+            var response = _mapper.Map<AnimeResponse>(anime);
+
+            response.PosterUrl = GetPosterUrl(anime.PosterFileName);
+            response.ScreenshotsUrls = GetScreenshotsUrls(anime.ScreenshotsFileName);
+
+            if (response.Relateds != null)
+            {
+                foreach (var related in response.Relateds)
+                {
+                    var relatedAnime = anime.Relateds.FirstOrDefault(r => r.RelatedAnime.Id == related.Id)?.RelatedAnime;
+                    if (relatedAnime != null && !string.IsNullOrWhiteSpace(relatedAnime.PosterFileName))
+                        related.PosterUrl = _fileUrl.GetUrl(relatedAnime.PosterFileName);
+                }
+            }
+
+            return response;
+        }
 
         // Отримати рандомне аніме
-        public async Task<Anime> GetRandomAsync() => 
-            await _animes.GetRandomAsync() ?? throw new EntityNotFoundException("Anime");
+        public async Task<AnimeResponse> GetRandomAsync()
+        {
+            var anime = await _animes.GetRandomAsync() ?? throw new EntityNotFoundException("Anime");
+            var response = _mapper.Map<AnimeResponse>(anime);
+
+            response.PosterUrl = GetPosterUrl(anime.PosterFileName);
+            response.ScreenshotsUrls = GetScreenshotsUrls(anime.ScreenshotsFileName);
+
+            return response;
+        }
 
         // Отримати аніме за фільтром
-        public async Task<PagedResult<Anime>> GetFilteredAsync(AnimeFilter filter) => 
-            await _animes.GetFilteredAsync(filter);
+        public async Task<PagedResult<AnimesResponse>> GetFilteredAsync(AnimeFilter filter)
+        {
+            var pagedResult = await _animes.GetFilteredAsync(filter);
+
+            var mappedItems = pagedResult.Items.Select(anime =>
+            {
+                var animeDto = _mapper.Map<AnimesResponse>(anime);
+
+                if (!string.IsNullOrWhiteSpace(anime.PosterFileName))
+                    animeDto = animeDto with { PosterUrl = _fileUrl.GetUrl(anime.PosterFileName) };
+
+                return animeDto;
+            }).ToList();
+
+            var response = new PagedResult<AnimesResponse>(
+                items: mappedItems,
+                totalCount: pagedResult.TotalCount,
+                page: pagedResult.Page,
+                pageSize: pagedResult.PageSize
+            );
+            return response;
+        }
 
         // Створити аніме
-        public async Task<Anime> CreateAsync(AnimeCreateRequest request)
+        public async Task<AnimeResponse> CreateAsync(AnimeCreateRequest request)
         {
             // Валідуємо, що є хоча б один Romaji
             if (!request.Titles.Any(t => t.Language == TitleLanguage.Romaji))
@@ -81,28 +132,6 @@ namespace AnimeApp.Application.Services
                 .ToLower()
                 .Replace(" ", "-");
 
-            // ===================== Загрузка файлів =====================
-            //string? posterFileName = null;
-
-            //if (request.Poster != null)
-            //{
-            //    using var stream = request.Poster.OpenReadStream();
-            //    posterFileName = await _fileStorage.UploadFileAsync(stream, request.Poster.FileName, "anime-posters");
-            //}
-
-            //List<string>? screenshotFiles = null;
-            //if (request.Screenshots != null && request.Screenshots.Any())
-            //{
-            //    screenshotFiles = new List<string>();
-            //    foreach (var file in request.Screenshots)
-            //    {
-            //        using var stream = file.OpenReadStream();
-            //        var uploadedFile = await _fileStorage.UploadFileAsync(stream, file.FileName, "anime-screenshots");
-            //        screenshotFiles.Add(uploadedFile);
-            //    }
-            //}
-            //studioPosterFileName = await _fileStorage.UploadFileAsync(stream, studioPoster.FileName, "studio-posters");
-
             DateTime? airedOnUtc = request.AiredOn?.ToUniversalTime();
             DateTime? releasedOnUtc = request.ReleasedOn?.ToUniversalTime();
 
@@ -142,14 +171,22 @@ namespace AnimeApp.Application.Services
             anime.UpdateUrl($"{url}-{anime.Id}");
 
             await _animes.UpdateAsync(anime);
-            return anime;
+
+
+            var response = _mapper.Map<AnimeResponse>(anime);
+
+            response.PosterUrl = GetPosterUrl(anime.PosterFileName);
+            response.ScreenshotsUrls = GetScreenshotsUrls(anime.ScreenshotsFileName);
+
+            return response;
         }
 
-        public async Task<Anime> UpdateFilesAsync(int id, AnimeUpdateFilesRequest request)
+        // Оновити файли аніме
+        public async Task<AnimeResponse> UpdateFilesAsync(int id, AnimeUpdateFilesRequest request)
         {
             var anime = await GetAnimeByIdAsync(id);
 
-            // ===================== Обновление постера =====================
+            // ===================== Оновлення постера =====================
             if (request.Poster != null)
             {
                 using var stream = request.Poster.OpenReadStream();
@@ -180,14 +217,13 @@ namespace AnimeApp.Application.Services
                 }
                 catch
                 {
-                    // Игнорируем ошибки загрузки по URL
                 }
             }
 
-            // ===================== Обновление скриншотов =====================
+            // ===================== Оновлення скриншотів =====================
             var screenshotFiles = new List<string>();
 
-            // Файлы с локальной машины
+            // Файли
             if (request.Screenshots != null && request.Screenshots.Any())
             {
                 foreach (var file in request.Screenshots)
@@ -200,7 +236,7 @@ namespace AnimeApp.Application.Services
                 }
             }
 
-            // Скриншоты по URL
+            // Скріншоти по URL
             if (request.ScreenshotUrls != null && request.ScreenshotUrls.Any())
             {
                 foreach (var url in request.ScreenshotUrls)
@@ -226,7 +262,6 @@ namespace AnimeApp.Application.Services
                     }
                     catch
                     {
-                        // Игнорируем ошибки отдельных URL
                     }
                 }
             }
@@ -238,17 +273,22 @@ namespace AnimeApp.Application.Services
                 ((request.Screenshots == null || !request.Screenshots.Any()) &&
                  (request.ScreenshotUrls == null || !request.ScreenshotUrls.Any())))
             {
-                throw new ArgumentException("Необходимо загрузить хотя бы постер или один скриншот.");
+                throw new ArgumentException("Необхідно завантажити хоча б постер чи один скріншот.");
             }
 
             await _animes.UpdateAsync(anime);
-            return anime;
+
+            var animeResponse = _mapper.Map<AnimeResponse>(anime);
+
+            animeResponse.PosterUrl = GetPosterUrl(anime.PosterFileName);
+            animeResponse.ScreenshotsUrls = GetScreenshotsUrls(anime.ScreenshotsFileName);
+
+            return animeResponse;
         }
 
 
-
         // Оновити аніме
-        public async Task<Anime> UpdateAsync(int id, AnimeUpdateRequest request)
+        public async Task<AnimeResponse> UpdateAsync(int id, AnimeUpdateRequest request)
         {
             var anime = await GetAnimeByIdAsync(id);
 
@@ -377,7 +417,13 @@ namespace AnimeApp.Application.Services
                 anime.UpdateDuration(request.Duration.Value);
 
             await _animes.UpdateAsync(anime);
-            return anime;
+
+            var response = _mapper.Map<AnimeResponse>(anime);
+
+            response.PosterUrl = GetPosterUrl(anime.PosterFileName);
+            response.ScreenshotsUrls = GetScreenshotsUrls(anime.ScreenshotsFileName);
+
+            return response;
         }
 
 
@@ -388,13 +434,8 @@ namespace AnimeApp.Application.Services
             await _animes.DeleteAsync(anime);
         }
 
-        private async Task<Anime> GetAnimeByIdAsync(int id)
-        {
-            var anime = await _animes.GetByIdAsync(id);
-            if (anime is null)
-                throw new EntityNotFoundException("Anime", id);
-            return anime;
-        }
+        private async Task<Anime> GetAnimeByIdAsync(int id) =>
+            await _animes.GetByIdAsync(id) ?? throw new EntityNotFoundException("Anime", id);
 
         private SeasonEnum GetSeasonFromDate(DateTime date)
         {
@@ -407,5 +448,23 @@ namespace AnimeApp.Application.Services
                 _ => SeasonEnum.Unknown
             };
         }
+
+        private string? GetPosterUrl(string? posterFileName)
+        {
+            return string.IsNullOrWhiteSpace(posterFileName)
+                ? null
+                : _fileUrl.GetUrl(posterFileName);
+        }
+
+        private List<string>? GetScreenshotsUrls(List<string>? screenshotsFileNames)
+        {
+            return screenshotsFileNames?.Any() == true
+                ? screenshotsFileNames
+                    .Select(_fileUrl.GetUrl)
+                    .ToList()
+                : null;
+        }
+
+        public Task<List<int>> GetIdsAsync() => _animes.GetAllIdsAsync();
     }
 }

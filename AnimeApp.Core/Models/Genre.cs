@@ -3,7 +3,7 @@
     // ================= GENRES =================
     public class Genre 
     {
-        private Genre() { }
+        public Genre() { }
 
         private Genre(string nameEn, string? nameUa = null, string? nameRu = null)
         {

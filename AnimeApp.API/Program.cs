@@ -1,30 +1,30 @@
 using Amazon.Runtime;
 using Amazon.S3;
 using AnimeApp.API.Extensions;
-using AnimeApp.API.Mapping;
 using AnimeApp.API.Middleware.Exceptions;
 using AnimeApp.Application.Contracts;
+using AnimeApp.Application.Mapping;
 using AnimeApp.Application.Services;
 using AnimeApp.Application.Validation.AnimeValidator;
-using AnimeApp.Application.Validation.UserValidator;
 using AnimeApp.Core.Contracts;
 using AnimeApp.DataAccess;
 using AnimeApp.DataAccess.Repositories;
 using AnimeApp.Infrastructure.Auth;
 using AnimeApp.Infrastructure.FileStorage;
+using AnimeApp.Infrastructure.RedisCache;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using GenreApp.DataAccess.Repositories;
 using Microsoft.AspNetCore.CookiePolicy;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+using StackExchange.Redis;
 using System.Reflection;
 using System.Text.Json.Serialization;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
+var configuration = builder.Configuration;
 
 builder.Services.AddControllers()
     .AddJsonOptions(o =>
@@ -50,8 +50,23 @@ builder.Services.AddAutoMapper(cfg =>
 
 });
 
+// Redis 
+builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
+{
+    return ConnectionMultiplexer.Connect(configuration.GetConnectionString("Redis"));
+});
 
-var configuration = builder.Configuration;
+// Cache Decorator 
+builder.Services.AddScoped<AnimeService>(); 
+builder.Services.AddScoped<IAnimeService>(sp =>
+{
+    var service = sp.GetRequiredService<AnimeService>();
+    var cache = sp.GetRequiredService<IRedisCache>();
+
+    return new AnimeCacheDecorator(cache, service);
+});
+
+
 
 builder.Services.AddDbContext<AnimeAppDbContext>(
     options =>
@@ -68,7 +83,6 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserAnimeRepository, UserAnimeRepository>();
 
 // DI Services
-builder.Services.AddScoped<IAnimeService, AnimeService>();
 builder.Services.AddScoped<IGenreService, GenreService>();
 builder.Services.AddScoped<IStudioService, StudioService>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -77,6 +91,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtProvider, JwtProvider>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+builder.Services.AddScoped<IRedisCache, RedisCache>();
 
 // Налаштування JWT токену
 builder.Services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOptions)));
@@ -84,7 +99,7 @@ var jwtOptions = configuration.GetSection(nameof(JwtOptions)).Get<JwtOptions>()!
 builder.Services.AddApiAuthentication(jwtOptions);
 
 //S3 File Service
-builder.Services.AddScoped<IAmazonS3>(sp =>
+builder.Services.AddSingleton<IAmazonS3>(sp =>
 {
     var config = new AmazonS3Config
     {
@@ -100,7 +115,7 @@ builder.Services.AddScoped<IAmazonS3>(sp =>
     return new AmazonS3Client(credentials, config);
 });
 
-builder.Services.AddScoped<IS3FileStorageService>(sp =>
+builder.Services.AddSingleton<IS3FileStorageService>(sp =>
     new S3FileStorageService(sp.GetRequiredService<IAmazonS3>(), builder.Configuration["AWS:BucketName"], sp.GetRequiredService<IConfiguration>())
 );
 
@@ -135,7 +150,6 @@ if (app.Environment.IsDevelopment())
 }
 
 // Дозволення фронта
-
 app.UseCors("AllowFrontend");
 
 // Параметри кукі

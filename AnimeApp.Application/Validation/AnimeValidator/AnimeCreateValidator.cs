@@ -1,4 +1,4 @@
-﻿using AnimeApp.Application.Dto.Anime;
+﻿using AnimeApp.Application.Dto.Requests.Anime;
 using AnimeApp.Core.Enums;
 using FluentValidation;
 using System.Text.Json;

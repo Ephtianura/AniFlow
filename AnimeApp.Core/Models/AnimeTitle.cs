@@ -4,7 +4,7 @@ namespace AnimeApp.Core.Models
 {
     public class AnimeTitle
     {
-        private AnimeTitle() { }
+        public AnimeTitle() { }
         private AnimeTitle(int animeId, string value, TitleLanguage language, TitleType type)
         {
             AnimeId = animeId;

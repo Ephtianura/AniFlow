@@ -40,6 +40,19 @@ namespace AnimeApp.DataAccess.Repositories
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<List<int>> GetAllIdsAsync(int count = 100)
+        {
+            var totalCount = await _dbContext.Animes.CountAsync();
+
+            var randomAnimeIds = await _dbContext.Animes
+               .OrderBy(x => Guid.NewGuid())
+               .Select(x => x.Id)
+               .Take(count)
+               .ToListAsync();
+
+            return randomAnimeIds;
+        }
+
 
         public async Task<PagedResult<Anime>> GetFilteredAsync(AnimeFilter filter)
         {

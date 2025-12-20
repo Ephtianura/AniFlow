@@ -43,6 +43,8 @@ namespace AnimeApp.DataAccess.Repositories
             if (filter.Role.HasValue)
                 query = query.Where(u => u.Role == filter.Role);
 
+
+
             // 📅 Діапазон по датам реєстрації
             if (filter.RegisteredFrom.HasValue)
                 query = query.Where(u => u.DateOfRegistration >= filter.RegisteredFrom);

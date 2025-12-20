@@ -1,10 +1,10 @@
-﻿using AnimeApplication.Core.Enums;
+﻿using AnimeApp.Core.Enums;
 
 namespace AnimeApp.Core.Models
 {
     public class AnimeRelated
     {
-        private AnimeRelated() { } 
+        public AnimeRelated() { } 
 
         private AnimeRelated(int animeId, int relatedAnimeId, RelationKindEnum type)
         {

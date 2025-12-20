@@ -1,4 +1,4 @@
-﻿using AnimeApp.Application.Dto.Anime;
+﻿using AnimeApp.Application.Dto.Requests.Anime;
 using AnimeApp.Application.Validation.AnimeValidator;
 using FluentValidation;
 

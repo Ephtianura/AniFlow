@@ -1,4 +1,5 @@
-﻿using AnimeApp.Application.Dto.Anime;
+﻿using AnimeApp.Application.Dto.Requests.Anime;
+using AnimeApp.Application.Dto.Responses.Anime;
 using AnimeApp.Core.Filters;
 using AnimeApp.Core.Models;
 
@@ -6,12 +7,13 @@ namespace AnimeApp.Application.Contracts
 {
     public interface IAnimeService
     {
-        Task<Anime> CreateAsync(AnimeCreateRequest request);
+        Task<AnimeResponse> CreateAsync(AnimeCreateRequest request);
         Task DeleteAsync(int id);
-        Task<Anime> GetByIdAsync(int id);
-        Task<PagedResult<Anime>> GetFilteredAsync(AnimeFilter filter);
-        Task<Anime> GetRandomAsync();
-        Task<Anime> UpdateAsync(int id, AnimeUpdateRequest request);
-        Task<Anime> UpdateFilesAsync(int id, AnimeUpdateFilesRequest request);
+        Task<AnimeResponse> GetByIdAsync(int id);
+        Task<PagedResult<AnimesResponse>> GetFilteredAsync(AnimeFilter filter);
+        Task<List<int>> GetIdsAsync();
+        Task<AnimeResponse> GetRandomAsync();
+        Task<AnimeResponse> UpdateAsync(int id, AnimeUpdateRequest request);
+        Task<AnimeResponse> UpdateFilesAsync(int id, AnimeUpdateFilesRequest request);
     }
 }

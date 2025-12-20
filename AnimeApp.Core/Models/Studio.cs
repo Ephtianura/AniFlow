@@ -3,7 +3,7 @@
     // ================= STUDIO =================
     public class Studio
     {
-        private Studio() { }
+        public Studio() { }
         private Studio(string name, string description = "", string? posterFileName = null)
         {
             ChangeName(name);

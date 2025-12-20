@@ -1,5 +1,5 @@
 ﻿using AnimeApp.Application.Contracts;
-using AnimeApp.Application.Dto.Studio;
+using AnimeApp.Application.Dto.Requests.Studio;
 using AnimeApp.Application.Exceptions;
 using AnimeApp.Core.Contracts;
 using AnimeApp.Core.Filters;

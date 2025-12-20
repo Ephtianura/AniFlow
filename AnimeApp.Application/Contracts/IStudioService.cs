@@ -1,4 +1,4 @@
-﻿using AnimeApp.Application.Dto.Studio;
+﻿using AnimeApp.Application.Dto.Requests.Studio;
 using AnimeApp.Application.Services;
 using AnimeApp.Core.Filters;
 using AnimeApp.Core.Models;

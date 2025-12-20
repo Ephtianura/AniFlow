@@ -1,0 +1,87 @@
+services:
+
+# База
+  postgres:
+    image: postgres:16
+    container_name: postgres_animeapp
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "54321"
+      POSTGRES_DB: AnimeAppDb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+# Адмінка
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin_animeapp
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    volumes:
+      - ./pgadmin:/var/lib/pgadmin
+      - ./backup:/backup
+
+# Апішка
+  api:
+    build:
+      context: .
+      dockerfile: AnimeApp.API/Dockerfile
+    container_name: api_animeapp
+    ports:
+      - "5000:5000"
+    depends_on:
+      - postgres
+    environment:
+      # - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=AnimeAppDb;Username=postgres;Password=54321
+
+# Кеш
+  redis:
+    image: redis:7
+    container_name: redis_animeapp
+    ports:
+      - "6379:6379"
+    command: [
+      "redis-server",
+      "--appendonly", "yes",
+      "--maxmemory", "4gb",
+      "--maxmemory-policy", "allkeys-lru"]
+
+# S3
+  minio:
+    image: minio/minio
+    container_name: minio_animeapp
+    ports:
+      - "9000:9000"  # S3 API
+      - "9001:9001"  # MinIO Console
+    environment:
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: secret123
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+
+#  Фронт
+  frontend:
+    container_name: frontend_animeapp
+    build:
+      context: ./AnimeApp.Frontend/animeapp
+      target: prod
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./AnimeApp.Frontend/animeapp:/app:cached
+      - /app/node_modules
+    # environment:
+    #   - NODE_ENV=production
+
+volumes:
+  postgres_data:
+  minio_data:

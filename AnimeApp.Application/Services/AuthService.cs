@@ -1,5 +1,5 @@
 ﻿using AnimeApp.Application.Contracts;
-using AnimeApp.Application.Dto.User;
+using AnimeApp.Application.Dto.Requests.User;
 using AnimeApp.Application.Exceptions;
 using AnimeApp.Core.Contracts;
 using AnimeApp.Core.Models;

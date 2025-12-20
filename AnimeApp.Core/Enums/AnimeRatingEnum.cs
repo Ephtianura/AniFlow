@@ -1,4 +1,4 @@
-﻿namespace AnimeApplication.Core.Enums
+﻿namespace AnimeApp.Core.Enums
 {
     public enum AnimeRatingEnum
     {

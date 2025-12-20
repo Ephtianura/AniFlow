@@ -1,8 +1,8 @@
-﻿using AnimeApp.API.Dto;
-using AnimeApp.API.Dto.User;
+﻿using AnimeApp.Application.Dto.Responses.User;
 using AnimeApp.Application.Contracts;
-using AnimeApp.Application.Dto.User;
+using AnimeApp.Application.Dto.Requests.User;
 using AnimeApp.Application.Exceptions;
+using AnimeApp.Application.Services;
 using AnimeApp.Core.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -71,14 +71,30 @@ namespace AnimeApp.API.Controllers
             return NoContent();
         }
 
-        ///// <summary>Оновити аватар</summary>
-        //[HttpPut("UpdateProfile")]
-        //public async Task<IActionResult> UpdateFiles([FromForm] UserUpdateFilesRequest request)
-        //{
-        //    var userId = GetUserId();
-        //    await _userService.UpdateFilesAsync(userId, request);
-        //    return NoContent();
-        //}
+        /// <summary>Оновити аватар</summary>
+        [HttpPut("UpdateFiles")]
+        public async Task<IActionResult> UpdateFiles([FromForm] UserUpdateFilesRequest request)
+        {
+            var userId = GetUserId();
+            await _userService.UpdateFilesAsync(userId, request);
+            return NoContent();
+        }
+
+        /// <summary>Оновити рейтинг аніме або список</summary>
+        [HttpPut("UpdateUserAnime")]
+        public async Task<IActionResult> UpdateUserAnime([FromBody] int animeId, MyListEnum? myList, int? rating)
+        {
+            var userId = GetUserId();
+            var request = new UpdateUserRatingOrList()
+            {
+                UserId = userId,
+                AnimeId = animeId,
+                List = myList,
+                Rating = rating
+            };
+            await _userService.AddOrUpdateAnimeAsync(request);
+            return NoContent();
+        }
 
         // Достати userId з токену
         private int GetUserId()
