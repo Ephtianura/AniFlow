@@ -58,12 +58,12 @@ namespace AnimeApp.DataAccess.Configurations
             builder.HasKey(ua => new { ua.UserId, ua.AnimeId });
 
             builder.Property(ua => ua.MyList)
-                .IsRequired()
-                .HasConversion<int>(); 
+                .IsRequired(false)
+                .HasConversion<int>();
 
             builder.Property(ua => ua.Rating)
                 .HasColumnType("smallint")
-                .IsRequired(false); 
+                .IsRequired(false);
 
             builder.Property(ua => ua.UpdatedAt)
                 .IsRequired();

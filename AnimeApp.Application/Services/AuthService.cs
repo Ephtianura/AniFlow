@@ -3,17 +3,14 @@ using AnimeApp.Application.Dto.Requests.User;
 using AnimeApp.Application.Exceptions;
 using AnimeApp.Core.Contracts;
 using AnimeApp.Core.Models;
-using FluentValidation;
 
 namespace AnimeApp.Application.Services
 {
     //================== AUTH ==================
     public class AuthService
-        (
-        IUserRepository users,
+        (IUserRepository users,
         IPasswordHasher passwordHasher,
-        IJwtProvider jwtProvider
-            ) : IAuthService
+        IJwtProvider jwtProvider) : IAuthService
     {
         private readonly IUserRepository _users = users;
         private readonly IPasswordHasher _passwordHasher = passwordHasher;

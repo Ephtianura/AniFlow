@@ -1,24 +1,18 @@
 ﻿using AnimeApp.Application.Contracts;
 using AnimeApp.Application.Dto.Requests.Studio;
+using AnimeApp.Application.Dto.Responses.Studio;
 using AnimeApp.Application.Exceptions;
 using AnimeApp.Core.Contracts;
 using AnimeApp.Core.Filters;
 using AnimeApp.Core.Models;
 using Microsoft.AspNetCore.Http;
-using System.Xml.Linq;
 
 namespace AnimeApp.Application.Services
 {
-    public partial class StudioService : IStudioService
+    public class StudioService(IStudioRepository studios, IS3FileStorageService fileStorage) : IStudioService
     {
-        private readonly IStudioRepository _studios;
-        private readonly IS3FileStorageService _fileStorage;
-
-        public StudioService(IStudioRepository studios, IS3FileStorageService fileStorage)
-        {
-            _studios = studios;
-            _fileStorage = fileStorage;
-        }
+        private readonly IStudioRepository _studios = studios;
+        private readonly IS3FileStorageService _fileStorage = fileStorage;
 
         public async Task<Studio?> GetByIdAsync(int id) =>
             await GetStudioByIdAsync(id);
@@ -83,13 +77,6 @@ namespace AnimeApp.Application.Services
             var results = await Task.WhenAll(tasks);
 
             return results.ToList();
-        }
-
-        public class StudioCreationResult
-        {
-            public Studio? Studio { get; set; }
-            public CreateStudioRequest? Request { get; set; }
-            public string? Error { get; set; }
         }
 
         public async Task UpdateAsync(int id, UpdateStudioRequest request)

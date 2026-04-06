@@ -150,7 +150,7 @@
                     return newFiles;
                 });
             } catch {
-                console.warn("Не удалось загрузить файл с URL");
+                console.warn("Не вдалося завантажити файл з URL");
             }
         };
 
@@ -199,7 +199,7 @@
                     await apiFetch(`/Animes/${animeId}/UploadFiles`, { method: "PUT", body: formData });
                 }
 
-                toast.success("Аніме обновлено!");
+                toast.success("Аніме оновлено!");
             } catch (err: any) {
                 console.error(err);
 

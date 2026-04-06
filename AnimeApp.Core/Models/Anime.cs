@@ -1,5 +1,5 @@
 ﻿using AnimeApp.Core.Enums;
-using AnimeApp.Core.Enums;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace AnimeApp.Core.Models
 {
@@ -219,12 +219,20 @@ namespace AnimeApp.Core.Models
         {
             ReleasedOn = releasedOn;
         }
-        public void UpdateScore(double score)
+        public void Rate(double score)
         {
             if (score < 0 || score > 10)
                 throw new ArgumentOutOfRangeException(nameof(score), "Score must be between 0 and 10.");
             Score = score;
         }
+
+        public void UpdateTotalScores(int scores)
+        {
+            if (scores < 0)
+                throw new ArgumentOutOfRangeException(nameof(scores), "The count of scores cannot be negative");
+            TotalScores = scores;
+        }
+
         public void UpdateEpisodes(int episodes)
         {
             if (episodes < 0)

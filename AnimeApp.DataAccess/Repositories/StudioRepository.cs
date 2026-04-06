@@ -1,5 +1,4 @@
 ﻿using AnimeApp.Core.Contracts;
-using AnimeApp.Core.Enums;
 using AnimeApp.Core.Filters;
 using AnimeApp.Core.Models;
 using Microsoft.EntityFrameworkCore;
@@ -7,10 +6,9 @@ using Microsoft.EntityFrameworkCore;
 namespace AnimeApp.DataAccess.Repositories
 {
     // ===================== ANIME =====================
-    public class StudioRepository : IStudioRepository
+    public class StudioRepository(AnimeAppDbContext db) : IStudioRepository
     {
-        private readonly AnimeAppDbContext _dbContext;
-        public StudioRepository(AnimeAppDbContext db) => _dbContext = db;
+        private readonly AnimeAppDbContext _dbContext = db;
 
         public async Task<Studio?> GetByIdAsync(int id)
         {
@@ -23,21 +21,21 @@ namespace AnimeApp.DataAccess.Repositories
         {
             var query = _dbContext.Studios.AsQueryable();
 
-            // =================== SEARCH ===================
+            // =================== Пошук ===================
             if (!string.IsNullOrWhiteSpace(filter.Search))
             {
                 var term = filter.Search.Trim().ToLower();
                 query = query.Where(s => s.Name.ToLower().Contains(term));
             }
 
-            // =================== SORTING ===================
+            // =================== Сортування ===================
             query = filter.SortBy?.ToLower() switch
             {
                 "name" => filter.SortDesc ? query.OrderByDescending(s => s.Name) : query.OrderBy(s => s.Name),
                 _ => query.OrderBy(s => s.Id) // default
             };
 
-            // =================== PAGINATION ===================
+            // =================== Пагінація ===================
             var totalCount = await query.CountAsync();
             var items = await query
                 .Skip((filter.Page - 1) * filter.PageSize)

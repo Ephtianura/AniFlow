@@ -22,7 +22,7 @@
                      {
                          Id = r.RelatedAnime.Id,
                          RelationKind = r.Type,
-                         Titles = r.RelatedAnime.Titles.ToList(),
+                         Titles = ctx.Mapper.Map<List<TitleResponse>>(r.RelatedAnime.Titles),
                          Url = r.RelatedAnime.Url,
                          PosterUrl = r.RelatedAnime.PosterFileName,
                          Score = r.RelatedAnime.Score,

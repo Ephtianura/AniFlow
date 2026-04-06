@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { apiFetch } from "@/lib/api"; // путь поправь под себя
+import { apiFetch } from "@/lib/api"; 
 
 export function useAuth() {
     const [loading, setLoading] = useState(false);

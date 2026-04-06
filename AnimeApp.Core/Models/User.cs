@@ -85,8 +85,5 @@ namespace AnimeApp.Core.Models
         {
             AvatarFileName = avatarFileName;
         }
-
-
-
     }
 }

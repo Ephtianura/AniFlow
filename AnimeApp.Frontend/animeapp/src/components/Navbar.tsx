@@ -41,7 +41,7 @@ export default function Navbar() {
                 alt="AnimeApp Logo"
                 className="w-9 h-9"
               />
-              AnimeApp
+              AniFlow
             </Link>
           </div>
 

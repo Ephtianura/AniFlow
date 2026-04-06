@@ -1,11 +1,8 @@
-﻿namespace AnimeApp.Application.Services
+﻿namespace AnimeApp.Application.Dto.Requests.Genre
 {
-    public partial class GenreService
-    {
-        public record UpdateGenreRequest(
-            string? NameEn, 
-            string? NameUa, 
-            string? NameRu
-            );
-    }
+    public record UpdateGenreRequest(
+        string? NameEn,
+        string? NameUa,
+        string? NameRu
+        );
 }

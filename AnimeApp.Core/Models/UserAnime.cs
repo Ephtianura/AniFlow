@@ -1,7 +1,4 @@
-﻿using AnimeApp.Core.Enums;
-using System.Data;
-
-namespace AnimeApp.Core.Models
+﻿namespace AnimeApp.Core.Models
 {
     public class UserAnime
     {
@@ -13,7 +10,7 @@ namespace AnimeApp.Core.Models
         {
             SetUser(user);
             SetAnime(anime);
-            MyList = MyListEnum.None;
+            MyList = null;
             Rating = null;
             Touch();
         }
@@ -24,7 +21,7 @@ namespace AnimeApp.Core.Models
         public int AnimeId { get; private set; }
 
         // Info
-        public MyListEnum MyList { get; private set; }       // Дивлюсь / Планую / Подивився
+        public MyListEnum? MyList { get; private set; }       // Дивлюсь / Планую / Подивився
         public int? Rating { get; private set; }             // Оцінка аниме від юзера
         public DateTime UpdatedAt { get; private set; }
 
@@ -51,19 +48,19 @@ namespace AnimeApp.Core.Models
         }
 
         // ===================== Оновлення =====================
-        public void ChangeMyList(MyListEnum newMyList)
+        public void MoveToList(MyListEnum list)
         {
-            if (!Enum.IsDefined(typeof(MyListEnum), newMyList))
+            if (!Enum.IsDefined(typeof(MyListEnum), list))
                 throw new ArgumentException("Invalid type in MyList");
-            MyList = newMyList;
+            MyList = list;
             Touch();
         }
-        public void ChangeRating(int? newRating)
+        public void Rate(int? rating)
         {
-            if (Rating == newRating) return;
-            if (newRating < 1 || newRating > 10)
+            if (Rating == rating) return;
+            if (rating is not null && (rating < 1 || rating > 10))
                 throw new ArgumentException("The rating must be between 1 and 10");
-            Rating = newRating;
+            Rating = rating;
             Touch();
         }
 
@@ -85,5 +82,4 @@ namespace AnimeApp.Core.Models
             UpdatedAt = DateTime.UtcNow;
         }
     }
-
 }

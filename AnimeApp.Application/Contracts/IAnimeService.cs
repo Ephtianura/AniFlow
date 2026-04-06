@@ -1,7 +1,6 @@
 ﻿using AnimeApp.Application.Dto.Requests.Anime;
 using AnimeApp.Application.Dto.Responses.Anime;
 using AnimeApp.Core.Filters;
-using AnimeApp.Core.Models;
 
 namespace AnimeApp.Application.Contracts
 {

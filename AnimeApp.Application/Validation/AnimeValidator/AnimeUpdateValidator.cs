@@ -70,19 +70,6 @@ public class AnimeUpdateRequestValidator : AbstractValidator<AnimeUpdateRequest>
             .When(r => r.Rating.HasValue)
             .WithMessage("Invalid anime rating.");
 
-        RuleFor(r => r.Season)
-            .IsInEnum()
-            .When(r => r.Season.HasValue)
-            .WithMessage("Invalid anime season.");
-
-
-        // ================= Year ===================
-        RuleFor(r => r.Year)
-            .InclusiveBetween(1900, DateTime.Now.Year + 10)
-            .When(r => r.Year.HasValue)
-            .WithMessage("Year must be between 1900 and next 10 years.");
-
-
         // ================= Score ==================
         RuleFor(r => r.Score)
             .InclusiveBetween(0, 10)

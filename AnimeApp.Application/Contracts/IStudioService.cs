@@ -1,10 +1,8 @@
 ﻿using AnimeApp.Application.Dto.Requests.Studio;
-using AnimeApp.Application.Services;
+using AnimeApp.Application.Dto.Responses.Studio;
 using AnimeApp.Core.Filters;
 using AnimeApp.Core.Models;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using static AnimeApp.Application.Services.StudioService;
 
 namespace AnimeApp.Application.Contracts
 {

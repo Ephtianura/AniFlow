@@ -1,18 +1,14 @@
 ﻿using AnimeApp.Application.Contracts;
+using AnimeApp.Application.Dto.Requests.Genre;
 using AnimeApp.Application.Exceptions;
 using AnimeApp.Core.Contracts;
 using AnimeApp.Core.Models;
 
 namespace AnimeApp.Application.Services
 {
-    public partial class GenreService : IGenreService
+    public class GenreService(IGenreRepository genres) : IGenreService
     {
-        private readonly IGenreRepository _genres;
-
-        public GenreService(IGenreRepository genres)
-        {
-            _genres = genres;
-        }
+        private readonly IGenreRepository _genres = genres;
 
         public async Task<Genre?> GetByIdAsync(int id) =>
             await GetGenreByIdAsync(id);

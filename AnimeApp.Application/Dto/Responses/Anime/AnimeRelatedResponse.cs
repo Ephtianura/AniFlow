@@ -8,7 +8,7 @@ namespace AnimeApp.Application.Dto.Responses.Anime
         public int Id { get; set; }
 
         public RelationKindEnum RelationKind { get; set; }
-        public List<AnimeTitle> Titles { get; set; }
+        public List<TitleResponse>? Titles { get; set; } = [];
         public string Url { get; set; } = string.Empty;
 
         public string? PosterUrl { get; set; }

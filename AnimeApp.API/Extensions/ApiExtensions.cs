@@ -52,11 +52,7 @@ namespace AnimeApp.API.Extensions
 
                 options.AddPolicy("UserPolicy", policy =>
                     policy.RequireRole("User", "Moderator", "Admin"));
-
-                
             });
-
         }
-
     }
 }

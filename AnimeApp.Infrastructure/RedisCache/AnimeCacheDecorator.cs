@@ -2,7 +2,6 @@
 using AnimeApp.Application.Dto.Requests.Anime;
 using AnimeApp.Application.Dto.Responses.Anime;
 using AnimeApp.Core.Filters;
-using AnimeApp.Core.Models;
 using AnimeApp.Infrastructure.RedisCache.AnimeApp.Core.Filters;
 
 
@@ -95,8 +94,6 @@ namespace AnimeApp.Infrastructure.RedisCache
             await _cache.RemoveByPrefixAsync("anime:filter:");
             await _cache.RemoveAsync("anime:random:ids");
 
-            await _cache.SetAsync(key, anime, TimeSpan.FromMinutes(15));
-
             return anime;
         }
 
@@ -110,8 +107,6 @@ namespace AnimeApp.Infrastructure.RedisCache
             await _cache.RemoveByPrefixAsync("anime:filter:");
             await _cache.RemoveAsync("anime:random:ids");
 
-            await _cache.SetAsync(key, anime, TimeSpan.FromMinutes(15));
-
             return anime;
         }
 
@@ -121,10 +116,9 @@ namespace AnimeApp.Infrastructure.RedisCache
 
             var key = "anime:id:" + anime.Id;
 
+            await _cache.RemoveAsync(key);
             await _cache.RemoveByPrefixAsync("anime:filter:");
             await _cache.RemoveAsync("anime:random:ids");
-
-            await _cache.SetAsync(key, anime, TimeSpan.FromMinutes(15));
 
             return anime;
         }

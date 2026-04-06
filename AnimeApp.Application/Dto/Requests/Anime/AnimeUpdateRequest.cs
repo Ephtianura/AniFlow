@@ -16,8 +16,6 @@ namespace AnimeApp.Application.Dto.Requests.Anime
          AnimeKindEnum? Kind,
          AnimeStatusEnum? Status,
          AnimeRatingEnum? Rating, 
-         SeasonEnum? Season,
-         int? Year,
 
          double? Score,
          int? Episodes,

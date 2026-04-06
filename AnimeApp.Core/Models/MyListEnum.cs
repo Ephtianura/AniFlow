@@ -2,7 +2,6 @@
 {
     public enum MyListEnum
     {
-        None,
         Planned,
         Watching,
         Completed,

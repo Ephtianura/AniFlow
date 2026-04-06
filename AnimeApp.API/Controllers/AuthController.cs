@@ -9,14 +9,9 @@ namespace AnimeApp.API.Controllers
     // ================= AUTH =================
     [ApiController]
     [Route("api/auth")]
-    public class AuthController : ControllerBase
+    public class AuthController(IAuthService authService) : ControllerBase
     {
-        private readonly IAuthService _authService;
-
-        public AuthController(IAuthService authService)
-        {
-            _authService = authService;
-        }
+        private readonly IAuthService _authService = authService;
 
         /// <summary>Реєстрація нового користувача</summary>
         [HttpPost("register")]
@@ -74,10 +69,12 @@ namespace AnimeApp.API.Controllers
             return Ok("Moderator endpoint works");
         }
 
+        /// <summary>
+        /// Метод, що встановлює кукі у відповідь
+        /// </summary>
         private void SetAuthCookie(string token)
         {
             HttpContext.Response.Cookies.Append("cookies", token);
         }
-
     }
 }

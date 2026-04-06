@@ -1,5 +1,4 @@
 ﻿using AnimeApp.Core.Enums;
-using AnimeApp.Core.Enums;
 
 namespace AnimeApp.Core.Filters
 {

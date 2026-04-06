@@ -5,10 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AnimeApp.DataAccess.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository(AnimeAppDbContext db) : IUserRepository
     {
-        private readonly AnimeAppDbContext _dbContext;
-        public UserRepository(AnimeAppDbContext db) => _dbContext = db;
+        private readonly AnimeAppDbContext _dbContext = db;
 
         public async Task<User?> GetByIdAsync(int id) =>
             await _dbContext.Users.FindAsync(id);

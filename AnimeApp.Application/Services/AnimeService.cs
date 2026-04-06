@@ -8,7 +8,6 @@ using AnimeApp.Core.Enums;
 using AnimeApp.Core.Filters;
 using AnimeApp.Core.Models;
 using AutoMapper;
-using System.Xml.Linq;
 
 namespace AnimeApp.Application.Services
 {
@@ -28,12 +27,12 @@ namespace AnimeApp.Application.Services
         private readonly IMapper _mapper = mapper;
         private readonly IS3FileStorageService _fileUrl = fileUrl;
 
-       
-
-        // Отримати аніме по ID
-        public async Task<AnimeResponse> GetByIdAsync(int id)
+        /// <summary>
+        /// Повертає аніме по ID
+        /// </summary>
+        public async Task<AnimeResponse> GetByIdAsync(int animeId)
         {
-            var anime = await GetAnimeByIdAsync(id);
+            var anime = await GetAnimeByIdAsync(animeId);
 
             var response = _mapper.Map<AnimeResponse>(anime);
 
@@ -53,7 +52,9 @@ namespace AnimeApp.Application.Services
             return response;
         }
 
-        // Отримати рандомне аніме
+        /// <summary>
+        /// Повертає рандомне аніме
+        /// </summary>
         public async Task<AnimeResponse> GetRandomAsync()
         {
             var anime = await _animes.GetRandomAsync() ?? throw new EntityNotFoundException("Anime");
@@ -65,7 +66,9 @@ namespace AnimeApp.Application.Services
             return response;
         }
 
-        // Отримати аніме за фільтром
+        /// <summary>
+        /// Повертає аніме за фільтром
+        /// </summary>
         public async Task<PagedResult<AnimesResponse>> GetFilteredAsync(AnimeFilter filter)
         {
             var pagedResult = await _animes.GetFilteredAsync(filter);
@@ -89,7 +92,9 @@ namespace AnimeApp.Application.Services
             return response;
         }
 
-        // Створити аніме
+        /// <summary>
+        /// Створює аніме
+        /// </summary>
         public async Task<AnimeResponse> CreateAsync(AnimeCreateRequest request)
         {
             // Валідуємо, що є хоча б один Romaji
@@ -181,7 +186,10 @@ namespace AnimeApp.Application.Services
             return response;
         }
 
-        // Оновити файли аніме
+        /// <summary>
+        /// Оновлює файли аніме (скріншоти, постер)
+        /// </summary>
+        /// <exception cref="ArgumentException"></exception>
         public async Task<AnimeResponse> UpdateFilesAsync(int id, AnimeUpdateFilesRequest request)
         {
             var anime = await GetAnimeByIdAsync(id);
@@ -287,7 +295,10 @@ namespace AnimeApp.Application.Services
         }
 
 
-        // Оновити аніме
+        /// <summary>
+        /// Оновлює інформацію про аніме
+        /// </summary>
+        /// <exception cref="EntityNotFoundException"></exception>
         public async Task<AnimeResponse> UpdateAsync(int id, AnimeUpdateRequest request)
         {
             var anime = await GetAnimeByIdAsync(id);
@@ -396,17 +407,14 @@ namespace AnimeApp.Application.Services
             if (request.Rating.HasValue && request.Rating != anime.Rating)
                 anime.UpdateRating(request.Rating.Value);
 
-            if (request.Season.HasValue && request.Season != anime.Season)
+            if (request.AiredOn.HasValue)
             {
-                anime.UpdateSeason(request.Season.Value);
-            }
-            if (request.Year.HasValue && request.Year != anime.Year)
-            {
-                anime.UpdateYear(request.Year.Value);
+                anime.UpdateYear(request.AiredOn.Value.Year);
+                anime.UpdateSeason(GetSeasonFromDate(request.AiredOn.Value));
             }
 
             if (request.Score.HasValue && request.Score != anime.Score)
-                anime.UpdateScore(request.Score.Value);
+                anime.Rate(request.Score.Value);
 
             if (request.Episodes.HasValue && request.Episodes != anime.Episodes)
                 anime.UpdateEpisodes(request.Episodes.Value);
@@ -427,16 +435,31 @@ namespace AnimeApp.Application.Services
         }
 
 
-        // Видалити аніме
-        public async Task DeleteAsync(int id)
+        /// <summary>
+        /// Видаляє аніме
+        /// </summary>
+        public async Task DeleteAsync(int animeId)
         {
-            var anime = await GetAnimeByIdAsync(id);
+            var anime = await GetAnimeByIdAsync(animeId);
             await _animes.DeleteAsync(anime);
         }
 
-        private async Task<Anime> GetAnimeByIdAsync(int id) =>
-            await _animes.GetByIdAsync(id) ?? throw new EntityNotFoundException("Anime", id);
 
+
+        // ==================================================================
+
+
+
+        /// <summary>
+        /// Повертає сутність аніме по айді
+        /// </summary>
+        /// <exception cref="EntityNotFoundException"></exception>
+        private async Task<Anime> GetAnimeByIdAsync(int animeId) =>
+            await _animes.GetByIdAsync(animeId) ?? throw new EntityNotFoundException("Anime", animeId);
+
+        /// <summary>
+        /// Розраховує та повертає сезон по місяцю випуску
+        /// </summary>
         private SeasonEnum GetSeasonFromDate(DateTime date)
         {
             return date.Month switch

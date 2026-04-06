@@ -1,12 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-
-namespace AnimeApp.Application.Services
+﻿namespace AnimeApp.Application.Dto.Requests.Studio
 {
-    public partial class StudioService
-    {
-        public record UpdateStudioRequest(
-           string? Name,
-           string? Description = ""
-           );
-    }
+    public record UpdateStudioRequest(
+       string? Name,
+       string? Description = ""
+       );
 }

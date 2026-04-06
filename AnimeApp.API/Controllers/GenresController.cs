@@ -1,19 +1,20 @@
 ﻿using AnimeApp.Application.Contracts;
+using AnimeApp.Application.Dto.Requests.Genre;
 using AnimeApp.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using static AnimeApp.Application.Services.GenreService;
 
 namespace AnimeApp.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class GenresController : ControllerBase
+    public class GenresController(IGenreService genreService) : ControllerBase
     {
-        private readonly IGenreService _genreService;
+        private readonly IGenreService _genreService = genreService;
 
-        public GenresController(IGenreService genreService) => _genreService = genreService;
-
+        /// <summary>
+        /// Повертає всі жанри
+        /// </summary>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Genre>>> GetAll()
         {
@@ -21,6 +22,9 @@ namespace AnimeApp.Api.Controllers
             return Ok(genres);
         }
 
+        /// <summary>
+        /// Повертає жанр за айді
+        /// </summary>
         [HttpGet("{id}")]
         public async Task<ActionResult<Genre>> GetById(int id)
         {
@@ -29,6 +33,9 @@ namespace AnimeApp.Api.Controllers
             return Ok(genre);
         }
 
+        /// <summary>
+        /// Створює один жанр
+        /// </summary>
         [Authorize(Policy = "AdminPolicy")]
         [HttpPost]
         public async Task<ActionResult<Genre>> Create([FromBody] CreateGenreRequest request)
@@ -37,6 +44,9 @@ namespace AnimeApp.Api.Controllers
             return CreatedAtAction(nameof(GetById), new { id = genre.Id }, genre);
         }
 
+        /// <summary>
+        /// Створює багато жанрів за раз
+        /// </summary>
         [Authorize(Policy = "AdminPolicy")]
         [HttpPost("batch")]
         public async Task<ActionResult<IEnumerable<Genre>>> CreateMany([FromBody] IEnumerable<CreateGenreRequest> requests)
@@ -45,14 +55,20 @@ namespace AnimeApp.Api.Controllers
             return Ok(genres);
         }
 
+        /// <summary>
+        /// Оновлює жанр
+        /// </summary>
         [Authorize(Policy = "AdminPolicy")]
-        [HttpPut("{id}")]
+        [HttpPatch("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateGenreRequest request)
         {
             await _genreService.UpdateAsync(id, request);
             return NoContent();
         }
 
+        /// <summary>
+        /// Видаляє жанр
+        /// </summary>
         [Authorize(Policy = "AdminPolicy")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)

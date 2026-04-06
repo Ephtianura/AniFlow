@@ -7,10 +7,9 @@ using Microsoft.EntityFrameworkCore;
 namespace AnimeApp.DataAccess.Repositories
 {
     // ===================== ANIME =====================
-    public class AnimeRepository : IAnimeRepository
+    public class AnimeRepository(AnimeAppDbContext db) : IAnimeRepository
     {
-        private readonly AnimeAppDbContext _dbContext;
-        public AnimeRepository(AnimeAppDbContext db) => _dbContext = db;
+        private readonly AnimeAppDbContext _dbContext = db;
 
         public async Task<Anime?> GetByIdAsync(int id)
         {
@@ -60,6 +59,7 @@ namespace AnimeApp.DataAccess.Repositories
                 .Include(a => a.Titles)
                 .Include(a => a.Genres)
                 .Include(a => a.Studio)
+                .AsNoTracking()
                 .AsQueryable();
 
             // =================== SEARCH ===================

@@ -1,7 +1,5 @@
 "use client";
 import Link from 'next/link';
-import { TbLogout } from "react-icons/tb";
-import { MdOutlineSearch } from "react-icons/md";
 
 export default function Footer() {
 
@@ -15,10 +13,10 @@ export default function Footer() {
                     <p>
                         У разі порушення авторських прав або інших повідомлень — звертайтесь на пошту{" "}
                         <a
-                            href="mailto:info@animeapp.org"
+                            href="mailto:info@aniflow.org"
                             className="text-primary hover:underline"
                         >
-                            info@animeapp.org
+                            info@aniflow.org
                         </a>
                     </p>
                 </div>
@@ -46,7 +44,7 @@ export default function Footer() {
                     </div>
 
                     <div>
-                        &copy; AmimeApp 2024-{new Date().getFullYear()}
+                        &copy; AniFlow 2024-{new Date().getFullYear()}
                     </div>
                 </div>
 

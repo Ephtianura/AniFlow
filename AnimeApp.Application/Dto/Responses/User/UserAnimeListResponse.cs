@@ -1,5 +1,4 @@
 ﻿using AnimeApp.Application.Dto.Responses.Anime;
-using AnimeApp.Core.Models;
 
 namespace AnimeApp.Application.Dto.Responses.User
 {

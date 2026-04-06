@@ -215,7 +215,7 @@ namespace AnimeApp.DataAccess.Migrations
                     b.Property<int>("AnimeId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("MyList")
+                    b.Property<int?>("MyList")
                         .HasColumnType("integer");
 
                     b.Property<short?>("Rating")

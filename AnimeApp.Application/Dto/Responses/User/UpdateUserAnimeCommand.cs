@@ -1,10 +1,9 @@
 ﻿using AnimeApp.Core.Models;
 
-namespace AnimeApp.Application.Services
+namespace AnimeApp.Application.Dto.Responses.User
 {
-    public class UpdateUserRatingOrList
+    public class UpdateUserAnimeCommand
     {
-
         public int UserId {get; set;}
         public int AnimeId {get; set;}
         public MyListEnum? List { get; set; } = null;

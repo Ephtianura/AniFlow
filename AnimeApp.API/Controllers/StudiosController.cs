@@ -7,24 +7,20 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using AnimeApp.Application.Dto.Responses.Studio;
-using static AnimeApp.Application.Services.StudioService;
 
 namespace AnimeApp.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class StudiosController : ControllerBase
+    public class StudiosController(IStudioService studioService, IMapper mapper, IS3FileStorageService fileUrl) : ControllerBase
     {
-        private readonly IStudioService _studioService;
-        private readonly IMapper _mapper;
-        private readonly IS3FileStorageService _fileUrl;
-        public StudiosController(IStudioService studioService, IMapper mapper, IS3FileStorageService fileUrl)
-        {
-            _studioService = studioService;
-            _mapper = mapper;
-            _fileUrl = fileUrl;
-        }
+        private readonly IStudioService _studioService = studioService;
+        private readonly IMapper _mapper = mapper;
+        private readonly IS3FileStorageService _fileUrl = fileUrl;
 
+        /// <summary>
+        /// Повертає інформацію про студію за айді
+        /// </summary>
         [HttpGet("{id}")]
         public async Task<ActionResult> GetById(int id)
         {
@@ -56,6 +52,9 @@ namespace AnimeApp.Api.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Повертає студію за фільтром
+        /// </summary>
         [HttpGet]
         public async Task<ActionResult> GetFiltered([FromQuery] StudioFilter filter)
         {
@@ -91,6 +90,11 @@ namespace AnimeApp.Api.Controllers
             return Ok(response);
         }
 
+        // ==================== Адмін права ====================
+
+        /// <summary>
+        /// Створює нову студію
+        /// </summary>
         [Authorize(Policy = "AdminPolicy")]
         [HttpPost]
         public async Task<ActionResult<Studio>> Create([FromBody] CreateStudioRequest request)
@@ -99,23 +103,31 @@ namespace AnimeApp.Api.Controllers
             return CreatedAtAction(nameof(GetById), new { id = studio.Id }, studio);
         }
 
+        /// <summary>
+        /// Завантажити постер для студії
+        /// </summary>
         [Authorize(Policy = "AdminPolicy")]
-        [HttpPut("{id}/UploadFiles")]
+        [HttpPatch("{id}/files")]
         public async Task<ActionResult<Studio>> UploadFiles(int id, IFormFile? Poster)
         {
-            var anime = await _studioService.UpdateFilesAsync(id, Poster);
-
+            await _studioService.UpdateFilesAsync(id, Poster);
             return NoContent();
         }
 
+        /// <summary>
+        /// Оновити інформацію про студію
+        /// </summary>
         [Authorize(Policy = "AdminPolicy")]
-        [HttpPut("{id}")]
+        [HttpPatch("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateStudioRequest request)
         {
             await _studioService.UpdateAsync(id, request);
             return NoContent();
         }
 
+        /// <summary>
+        /// Створити багато студій
+        /// </summary>
         [Authorize(Policy = "AdminPolicy")]
         [HttpPost("batch")]
         public async Task<ActionResult<List<StudioCreationResult>>> CreateMany([FromBody] List<CreateStudioRequest> studios)
@@ -124,6 +136,9 @@ namespace AnimeApp.Api.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Видаляє студію
+        /// </summary>
         [Authorize(Policy = "AdminPolicy")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)

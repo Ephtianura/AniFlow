@@ -6,10 +6,9 @@ using Microsoft.EntityFrameworkCore;
 namespace GenreApp.DataAccess.Repositories
 {
     // ===================== GENRE =====================
-    public class GenreRepository : IGenreRepository
+    public class GenreRepository(AnimeAppDbContext db) : IGenreRepository
     {
-        private readonly AnimeAppDbContext _dbContext;
-        public GenreRepository(AnimeAppDbContext db) => _dbContext = db;
+        private readonly AnimeAppDbContext _dbContext = db;
 
         public async Task<Genre?> GetByIdAsync(int id) => await _dbContext.Genres
                .FirstOrDefaultAsync(a => a.Id == id);
