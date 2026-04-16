@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using AnimeApp.Application.Exceptions;
 using FluentValidation;
 
 namespace AnimeApp.API.Middleware.Exceptions

@@ -15,11 +15,11 @@ namespace AnimeApp.Application.Exceptions
             : base("Invalid email or password.") { }
     }
 
-    public class EntityNotFoundException : Exception
+    public class NotFoundException : Exception
     {
-        public EntityNotFoundException(string entityName, int id)
+        public NotFoundException(string entityName, int id)
             : base($"{entityName} with id {id} not found.") { }
-        public EntityNotFoundException(string entityName)
+        public NotFoundException(string entityName)
             : base($"{entityName} not found.") { }
     }
     public class EntityAlreadyExistsException : Exception

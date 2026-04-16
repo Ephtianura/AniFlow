@@ -3,20 +3,18 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { VscSettings } from "react-icons/vsc";
-import { FaSort } from "react-icons/fa";
 import noUiSlider, { API as noUiSliderAPI, PipsMode } from "nouislider";
+import { apiFetch } from "@/lib/api";
+import { AnimeStatusMap } from "@/core/AnimeStatus";
+import { AnimeKindMap } from "@/core/AnimeKind";
+import { AnimeRatingEnum, AnimeRatingMap } from "@/core/AnimeRating";
 import 'nouislider/dist/nouislider.css';
 import '@/styles/nouislider-custom.css';
-import { apiFetch } from "@/lib/api";
-import { AnimeStatusMap } from "@/core/enums/AnimeStatus";
-import { AnimeKindMap } from "@/core/enums/AnimeKind";
-import { AnimeRatingEnum, AnimeRatingMap } from "@/core/enums/AnimeRating";
-
+import CustomSelect from "./CustomSelect";
+import MultiSelect from "./MultiSelect";
 
 export default function AnimeFilter() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-
   const [isOpenGenres, setIsOpenGenres] = useState(false);
   const [genres, setGenres] = useState<{ id: number; nameUa: string }[]>([]);
 
@@ -31,6 +29,27 @@ export default function AnimeFilter() {
   const currentYear = new Date().getFullYear();
 
 
+  const kindOptions = [
+    { value: null, label: "Оберіть тип" }, // Placeholder как опция
+    ...Object.entries(AnimeKindMap)
+      .filter(([key]) => key !== "Unknown")
+      .map(([key, value]) => ({ value: key, label: value }))
+  ];
+  const statusOptions = [
+    { value: null, label: "Оберіть статус" },
+    ...Object.entries(AnimeStatusMap)
+      .filter(([key]) => key !== "Unknowntation")
+      .map(([key, label]) => ({ value: key, label: label as string }))
+  ];
+  const ratingOptions = [
+    { value: null, label: "Оберіть рейтинг" },
+    ...Object.keys(AnimeRatingEnum)
+      .filter(key => isNaN(Number(key)) && key !== "Unknown")
+      .map(key => ({
+        value: key,
+        label: `${key} (${AnimeRatingMap[key as keyof typeof AnimeRatingMap]})`
+      }))
+  ];
 
   useEffect(() => {
     apiFetch("/Genres").then(setGenres);
@@ -53,8 +72,8 @@ export default function AnimeFilter() {
         from: (v) => Number(v),
       },
       pips: {
-        mode: PipsMode.Count, 
-        values: Math.min(totalYears, maxTicks), 
+        mode: PipsMode.Count,
+        values: Math.min(totalYears, maxTicks),
         density: 4,
         format: {
           to: (v) => String(Math.round(v)),
@@ -100,7 +119,7 @@ export default function AnimeFilter() {
   };
 
   return (
-    <div className="bg-white shadow-[0_0_10px_rgba(0,0,0,0.05)] border border-[#DFDFDF] w-85">
+    <div className="bg-white shadow-[0_0_10px_rgba(0,0,0,0.05)] border border-[#DFDFDF] hidden lg:block w-85">
       <header className="bg-bg-dark text-white">
         <div
           className="bg-primary flex items-center gap-2 px-4 py-3"
@@ -122,111 +141,54 @@ export default function AnimeFilter() {
         {/* Жанри */}
         <div>
           <h3 className="font-medium py-2">Жанри</h3>
-          <div className="relative">
-            <button
-              onClick={() => setIsOpenGenres(!isOpenGenres)}
-              className="btn-primary flex items-center justify-between w-full"
-            >
-              {localGenres.length > 0
-                ? genres.filter(g => localGenres.includes(g.id)).map(g => g.nameUa).join(", ")
-                : "Оберіть жанри"}
-              <FaSort className="w-4 h-4" />
-            </button>
-
-            {isOpenGenres && (
-              <div className="absolute z-50 w-full max-h-60 overflow-y-auto bg-white border border-btn-border-light mt-1 rounded shadow">
-                {genres.map(g => (
-                  <label key={g.id} className="flex items-center px-3 py-1 hover:bg-gray-100 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      className="mr-2"
-                      checked={localGenres.includes(g.id)}
-                      onChange={() =>
-                        setLocalGenres(prev =>
-                          prev.includes(g.id) ? prev.filter(x => x !== g.id) : [...prev, g.id]
-                        )
-                      }
-                    />
-                    {g.nameUa}
-                  </label>
-                ))}
-              </div>
-            )}
-          </div>
+          <MultiSelect
+            options={genres}
+            selectedIds={localGenres}
+            onChange={setLocalGenres}
+            idKey="id"
+            labelKey="nameUa"
+            placeholder="Оберіть жанри"
+          />
         </div>
 
         {/* Тип */}
         <div>
           <h3 className="font-medium py-2">Тип</h3>
-
-          <div className="relative">
-            <select
-              value={localKind || ""}
-              onChange={e => setLocalKind(e.target.value || null)}
-              className="btn-primary w-full appearance-none"
-            >
-              <option value="">Оберіть тип</option>
-              {Object.entries(AnimeKindMap)
-                .filter(([key]) => key !== "Unknown")
-                .map(([key, value]) => (
-                  <option key={key} value={key}>{value}</option>
-                ))
-              }
-            </select>
-            <FaSort className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-text-dark" />
-          </div>
+          <CustomSelect
+            value={localKind}
+            onChange={setLocalKind}
+            options={kindOptions}
+            placeholder="Оберіть тип"
+          />
         </div>
 
         {/* Статус */}
         <div>
           <h3 className="font-medium py-2">Статус</h3>
-          <div className="relative">
-            <select
-              value={localStatus || ""}
-              onChange={e => setLocalStatus(e.target.value || null)}
-              className="btn-primary w-full appearance-none"
-            >
-              <option value="">Оберіть статус</option>
-              {Object.entries(AnimeStatusMap)
-                .filter(([key]) => key !== "Unknowntation")
-                .map(([key, label]) => (
-                  <option key={key} value={key}>{label}</option>
-                ))}
-            </select>
-            <FaSort className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-text-dark" />
-          </div>
+          <CustomSelect
+            value={localStatus}
+            onChange={setLocalStatus}
+            options={statusOptions}
+            placeholder="Оберіть статус"
+          />
         </div>
 
         {/* Рейтинг */}
         <div>
           <h3 className="font-medium py-2">Рейтинг</h3>
-          <div className="relative">
-            <select
-              value={localRating || ""}
-              onChange={e => setLocalRating(e.target.value || null)}
-              className="btn-primary w-full appearance-none"
-            >
-              <option value="">Оберіть рейтинг</option>
-              {Object.keys(AnimeRatingEnum)
-                .filter(key => isNaN(Number(key)) && key !== "Unknown")
-                .map(key => (
-                  <option key={key} value={key}>
-                    {key} ({AnimeRatingMap[key]})
-                  </option>
-                ))}
-            </select>
-            <FaSort className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-text-dark" />
-          </div>
+          <CustomSelect
+            value={localRating}
+            onChange={setLocalRating}
+            options={ratingOptions}
+            placeholder="Оберіть рейтинг"
+          />
         </div>
 
 
         {/* Кнопка apply */}
         <button
           onClick={handleApply}
-          className="mt-4 px-4 py-2 bg-primary text-white rounded-xs shadow-none hover:bg-purple-600 transition cursor-pointer
-          border-4 border-white
-          active:bg-purple-700
-          active:border-4 active:border-purple-300/80"
+          className="btn-purple px-4 py-2 text-white  mt-4"
         >
           Шукати
         </button>

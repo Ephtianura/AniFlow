@@ -3,8 +3,8 @@
 import { useState, useRef, useEffect } from "react";
 import { MdOutlineSearch } from "react-icons/md";
 import Link from "next/link";
-import WhiteCard from "./WhiteCard";
-import { AnimeKindMap } from "@/core/enums/AnimeKind";
+import { AnimeKindMap } from "@/core/AnimeKind";
+import WhiteCard from "../WhiteCard";
 
 export default function SearchBar() {
     const [open, setOpen] = useState(false);
@@ -66,7 +66,7 @@ export default function SearchBar() {
                 onClick={() => setOpen(o => !o)}
                 className="flex items-center px-3 py-2"
             >
-                <div className="border-x-1 px-4 border-gray-text-light">
+                <div className="border-x px-4 border-gray-text-light">
                     <MdOutlineSearch className="w-5 h-6 hover:text-btn-hover-dark transition-colors duration-200 cursor-pointer" />
                 </div>
             </button>
@@ -76,8 +76,8 @@ export default function SearchBar() {
                 className={`
                 absolute top-1/2 -translate-y-1/2 
                 right-full mr-2 
-                transition-all duration-300 ease-out
-                ${open ? "opacity-100 w-[350px]" : "opacity-0 w-0 pointer-events-none"}`}>
+                transition-all duration-300 ease-out 
+                ${open ? "opacity-100 w-[60vw] sm:w-[350px]" : "opacity-0 w-0 pointer-events-none"}`}>
 
 
                 <input
@@ -91,14 +91,14 @@ export default function SearchBar() {
                 {/* Дропдаун */}
                 {open && (results.length > 0 || loading) && (
 
-                    <div className="absolute z-50 top-full left-0 w-full shadow-lg rounded-xs mt-1 max-h-[550px] overflow-y-auto">
+                    <div className="absolute z-50 top-full left-0 w-full shadow-lg rounded-xs mt-1 max-h-[550px] overflow-y-auto overflow-x-hidden">
                         <WhiteCard>
                             <div className="">
-                                <div className="flex items-center gap-2  -mt-2 pb-2 border-b-2 border-primary">
+                                <div className="flex items-center gap-2 -mt-2 pb-2 border-b-2 border-primary">
                                     <h1 className="text-primary-black text-lg font-medium">
                                         Аніме знайдено:
                                     </h1>
-                                    <div className="w-[20px] h-[17px] rounded-full bg-bg-dark 
+                                    <div className="px-1 py-px rounded-full bg-bg-dark 
                                     text-white text-center flex items-center justify-center text-xs font-normal">
                                         {results.length}
                                     </div>
@@ -136,21 +136,21 @@ export default function SearchBar() {
                                                     <img
                                                         src={anime.posterUrl || "/404.gif"}
                                                         alt={ua || romaji}
-                                                        className="w-14 h-20 object-cover rounded-xs"
+                                                        className="w-14 aspect-5/7 object-cover shrink-0 rounded-xs"
                                                     />
 
                                                     {/* Блок с текстом */}
-                                                    <div className="flex flex-col justify-between h-[80px]">
+                                                    <div className="flex flex-col justify-between">
                                                         <div>
                                                             <p className="font-medium text-primary text-xl line-clamp-1">{ua || romaji}</p>
                                                             <p className="font- text-gray-text-dark text-sm -mt-1 line-clamp-1">{romaji}</p>
                                                         </div>
 
-                                                        <div className="text-primary-black font-normal flex gap-1">
+                                                        <div className="text-primary-black font-normal flex flex-col sm:flex-row gap-1">
                                                             <Link href="" className="underline hover:text-primary">
                                                                 {anime.year ? `${anime.year}` : ""}
                                                             </Link>
-                                                            <span className="text-gray-text-dark">/</span>
+                                                            <span className="text-gray-text-dark hidden sm:block">/</span>
                                                             <Link href="" className="underline hover:text-primary">
                                                                 {anime.kind ? `${[AnimeKindMap[anime.kind]]}` : ""}
                                                             </Link>
@@ -159,16 +159,13 @@ export default function SearchBar() {
                                                 </Link>
 
                                                 {!isLast && <hr className="text-hr-clr" />}
-                                                {isLast && <hr className="border-1 text-primary" />}
+                                                {isLast && <hr className="border text-primary" />}
                                             </div>
                                         );
                                     })}
                             </div>
-
                         </WhiteCard>
-
                     </div>
-
                 )}
             </div>
         </div>

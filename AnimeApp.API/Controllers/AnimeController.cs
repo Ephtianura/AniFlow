@@ -15,9 +15,7 @@ namespace AnimeApp.Api.Controllers
         private readonly IAnimeService _animeService = animeService;
         private readonly IAnimeStatsService _animeStatsService = animeStatsService;
 
-        /// <summary>
-        /// Повертає повну інформацію про аніме по айді
-        /// </summary>
+        /// <summary> Повертає повну інформацію про аніме по ID. </summary>
         [HttpGet("{id}")]
         public async Task<ActionResult<AnimeResponse>> GetById(int id)
         {
@@ -25,9 +23,7 @@ namespace AnimeApp.Api.Controllers
             return Ok(anime);
         }
 
-        /// <summary>
-        /// Повертає рандомне аніме
-        /// </summary>
+        /// <summary> Повертає рандомне аніме. </summary>
         [HttpGet("random")]
         public async Task<ActionResult<AnimeResponse>> GetRandom()
         {
@@ -35,9 +31,7 @@ namespace AnimeApp.Api.Controllers
             return Ok(anime);
         }
 
-        /// <summary>
-        /// Повертає аніме за фільтром
-        /// </summary>
+        /// <summary> Повертає аніме за фільтром. </summary>
         [HttpGet]
         public async Task<ActionResult<PagedResult<AnimesResponse>>> GetFiltered([FromQuery] AnimeFilter filter)
         {
@@ -47,9 +41,7 @@ namespace AnimeApp.Api.Controllers
 
         // ==================== Адмін права ====================
 
-        /// <summary>
-        /// Створює аніме
-        /// </summary>
+        /// <summary> Створює аніме. </summary>
         [HttpPost]
         [Authorize(Policy = "AdminPolicy")]
         public async Task<ActionResult<AnimeResponse>> Create([FromBody] AnimeCreateRequest request)
@@ -59,9 +51,7 @@ namespace AnimeApp.Api.Controllers
             return CreatedAtAction(nameof(GetById), new { id = anime.Id }, anime);
         }
 
-        /// <summary>
-        /// Оновлює текстову інформацію про аніме через FromBody
-        /// </summary>
+        /// <summary> Оновлює текстову інформацію про аніме. </summary>
         [HttpPatch("{id}")]
         [Authorize(Policy = "AdminPolicy")]
         public async Task<ActionResult<AnimeResponse>> Update(int id, [FromBody] AnimeUpdateRequest request)
@@ -70,9 +60,7 @@ namespace AnimeApp.Api.Controllers
             return Ok(anime);
         }
 
-        /// <summary>
-        /// Окремий метод FromForm, щоб завантажити/оновити файли (постер, скріншоти)
-        /// </summary>
+        /// <summary> Завантажує/оновлює файли (постер, скріншоти) через multipart/form-data. </summary>
         [HttpPatch("{id}/files")]
         [Authorize(Policy = "AdminPolicy")]
         public async Task<ActionResult<AnimeResponse>> UpdateFiles(int id, [FromForm] AnimeUpdateFilesRequest request)
@@ -81,9 +69,7 @@ namespace AnimeApp.Api.Controllers
             return Ok(anime);
         }
 
-        /// <summary>
-        /// Повністю видаляє аніме
-        /// </summary>
+        /// <summary> Повністю видаляє аніме. </summary>
         [HttpDelete("{id}")]
         [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> Delete(int id)
@@ -92,9 +78,7 @@ namespace AnimeApp.Api.Controllers
             return NoContent();
         }
 
-        /// <summary>
-        /// Перераховує рейтинг для всіх аніме
-        /// </summary>
+        /// <summary> Перераховує рейтинг для всіх аніме. </summary>
         [HttpPost("recalculate-ratings")]
         [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> RecalculateRatings()

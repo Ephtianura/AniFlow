@@ -9,7 +9,7 @@ export default function WhiteCard({
 }: WhiteCardProps) {
   return (
     <div
-      className="p-4 bg-white shadow-[0_0_10px_rgba(0,0,0,0.05)] border-1 border-[#DFDFDF]">
+      className="p-4 bg-white shadow-[0_0_10px_rgba(0,0,0,0.05)] border border-[#DFDFDF]">
       {children}
     </div>
   );

@@ -1,4 +1,4 @@
-// src/core/enums/AnimeStatus.ts
+// src/core/AnimeStatus.ts
 export const AnimeStatusMap: Record<string, string> = {
   Unknown: "Невідомо",
   Anons: "Анонсовано",

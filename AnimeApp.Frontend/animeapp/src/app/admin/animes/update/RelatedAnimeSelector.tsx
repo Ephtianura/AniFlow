@@ -2,9 +2,9 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { apiFetch } from "@/lib/api";
-import { RelationKindEnum, RelationKindMap } from "@/core/enums/RelationKind";
+import { RelationKindEnum, RelationKindMap } from "@/core/RelationKind";
 import { BiSolidStar } from "react-icons/bi";
-import { AnimeKindMap } from "@/core/enums/AnimeKind";
+import { AnimeKindMap } from "@/core/AnimeKind";
 import { IoClose } from "react-icons/io5";
 
 interface RelatedAnime {

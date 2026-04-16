@@ -48,10 +48,8 @@
         }
 
         // ===================== Оновлення =====================
-        public void MoveToList(MyListEnum list)
+        public void MoveToList(MyListEnum? list)
         {
-            if (!Enum.IsDefined(typeof(MyListEnum), list))
-                throw new ArgumentException("Invalid type in MyList");
             MyList = list;
             Touch();
         }

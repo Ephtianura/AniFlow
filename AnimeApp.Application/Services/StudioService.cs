@@ -107,7 +107,7 @@ namespace AnimeApp.Application.Services
         {
             var studio = await _studios.GetByIdAsync(id);
             if (studio is null)
-                throw new EntityNotFoundException("Studio", id);
+                throw new NotFoundException("Studio", id);
             return studio;
         }
     }

@@ -1,5 +1,4 @@
 ﻿using AnimeApp.Core.Enums;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace AnimeApp.Core.Models
 {
@@ -33,6 +32,9 @@ namespace AnimeApp.Core.Models
             int episodes,
             int episodesAired,
             int duration
+
+
+
         )
         {
 
@@ -92,6 +94,7 @@ namespace AnimeApp.Core.Models
         public List<string>? ScreenshotsFileName { get; private set; } = new(); // Назви скріншотів в S3
         public string Url { get; private set; } = string.Empty; // Для фронта наприклад  anime/ jujutsu_kaisen
 
+        //public DateTime
 
         // Навігація
         public int? StudiosId { get; private set; } // Айді студії One-to-Many

@@ -26,7 +26,7 @@ export default function PosterViewer({ posterUrl }: PosterViewerProps) {
         setClosing(true);
         setTimeout(() => {
             setOpen(false);
-            setClosing(false); // сбросим closing
+            setClosing(false); 
         }, 300);
     };
 
@@ -37,7 +37,7 @@ export default function PosterViewer({ posterUrl }: PosterViewerProps) {
     return (
         <>
             {/* Превью с hover-лупой */}
-            <div className="relative cursor-pointer w-[250px] h-[350px]" onClick={() => setOpen(true)}>
+            <div className="relative cursor-pointer w-full sm:w-[250px] aspect-5/7 shrink-0" onClick={() => setOpen(true)}>
                 <img
                     src={posterUrl || "/404.gif"}
                     alt="poster"
@@ -53,7 +53,7 @@ export default function PosterViewer({ posterUrl }: PosterViewerProps) {
                 <div
                     id="poster-backdrop"
                     onClick={handleBackdropClick}
-                    className={`fixed inset-0 bg-black/80 z-[9999] flex items-center justify-center transition-opacity duration-300 ${closing ? "opacity-0" : "opacity-100"
+                    className={`fixed inset-0 bg-black/80 z-9999 flex items-center justify-center transition-opacity duration-300 ${closing ? "opacity-0" : "opacity-100"
                         }`}
                 >
                     <div className="absolute top-0 w-full h-13 bg-black/40  backdrop-blur flex items-center justify-between px-6 text-white text-lg">

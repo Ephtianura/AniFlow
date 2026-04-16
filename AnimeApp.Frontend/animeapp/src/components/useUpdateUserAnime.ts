@@ -17,10 +17,10 @@ export function useUpdateUserAnime() {
         const params = new URLSearchParams();
         if (list !== null) params.append("myList", list);
         if (rating !== null) params.append("rating", rating.toString());
-
+// TODO
         try {
-            const res = await fetch(`/api/user/UpdateUserAnime?${params.toString()}`, {
-                method: "PUT",
+            const res = await fetch(`/api/user/me/${animeId}?${params.toString()}`, {
+                method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ animeId }),
             });

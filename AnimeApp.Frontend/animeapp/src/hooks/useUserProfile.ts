@@ -25,13 +25,20 @@ export function useUserProfile() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<any>(null);
 
-  const formatTime = (t: string) => {
-    const [h, m] = t.split(":").map(Number);
-    const days = Math.floor(h / 24);
-    const hours = h % 24;
-    return `${days} д. ${hours} год. ${m} хв.`;
-  };
-const formatDate = (iso: string) => {
+  const formatTime = (t: string | null) => {
+    if (!t) return "0 д. 0 год. 0 хв.";
+
+    const match = t.match(/(?:(\d+)\.)?(\d+):(\d+):(\d+)/);
+
+    if (!match) return t; 
+
+    const days = parseInt(match[1] || "0");
+    const hours = parseInt(match[2]);
+    const minutes = parseInt(match[3]);
+
+    return `${days} д. ${hours} год. ${minutes} хв.`;
+};
+  const formatDate = (iso: string) => {
   const d = new Date(iso);
 
   return d.toLocaleDateString("uk-UA", {
@@ -44,13 +51,14 @@ const formatDate = (iso: string) => {
   const loadProfile = async () => {
     setLoading(true);
     try {
-      const data: UserProfile = await apiFetch("/user/profile");
+      const data: UserProfile = await apiFetch("/user/me/profile");
       setProfile(data);
       setError(null);
     } catch (e) {
       console.error("Profile load error:", e);
       setError(e);
       setProfile(null);
+      throw new Error();
     } finally {
       setLoading(false);
     }

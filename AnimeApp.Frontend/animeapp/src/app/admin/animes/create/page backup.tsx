@@ -3,17 +3,17 @@
 import { AdminLayout } from "@/components/AdminLayout";
 import { useEffect, useState } from "react";
 import { apiFetch } from "@/lib/api";
-import { AnimeKindEnum } from "@/core/enums/AnimeKind";
-import { AnimeRatingEnum } from "@/core/enums/AnimeRating";
-import { AnimeStatusEnum } from "@/core/enums/AnimeStatus";
-import { TitleLanguage } from "@/core/enums/TitleLanguage";
-import { TitleType } from "@/core/enums/TitleType";
+import { AnimeKindEnum } from "@/core/AnimeKind";
+import { AnimeRatingEnum } from "@/core/AnimeRating";
+import { AnimeStatusEnum } from "@/core/AnimeStatus";
+import { TitleLanguage } from "@/core/types";
+import { TitleType } from "@/core/types";
 import { IoClose } from "react-icons/io5";
 import { TbFileUpload } from "react-icons/tb";
 import { RiFolderUploadLine } from "react-icons/ri";
 import { ToastContainer, toast } from "react-toastify";
-import { AnimesLayout } from "@/app/admin/animes/components/AnimesLayout";
-import { AnimeTitlesEditor } from "../components/AnimeTitlesEditor";
+import { AnimesLayout } from "@/app/admin/animes/_components/AnimesLayout";
+import { AnimeTitlesEditor } from "../_components/AnimeTitlesEditor";
 
 export default function CreateAnime() {
     const [errors, setErrors] = useState<Record<string, string[]>>({});
@@ -141,7 +141,7 @@ export default function CreateAnime() {
             // Отправка
             if (formData.has("Poster") || formData.has("PosterUrl") || formData.has("Screenshots") || formData.has("ScreenshotUrls")) {
                 await apiFetch(`/Animes/${createdAnime.id}/UploadFiles`, {
-                    method: "PUT",
+                    method: "PATCH",
                     body: formData,
                 });
             }

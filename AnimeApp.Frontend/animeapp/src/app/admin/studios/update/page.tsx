@@ -7,7 +7,6 @@ import { apiFetch } from "@/lib/api";
 import { ToastContainer, toast } from "react-toastify";
 import { IoClose } from "react-icons/io5";
 import { TbFileUpload } from "react-icons/tb";
-import SearchBar from "@/components/SearchBar";
 
 export default function UpdateStudio() {
     const [studioId, setStudioId] = useState<number | "">("");
@@ -15,7 +14,6 @@ export default function UpdateStudio() {
     const [searchResults, setSearchResults] = useState<any[]>([]);
     const [showDropdown, setShowDropdown] = useState(false);
     const [selectedStudio, setSelectedStudio] = useState<any | null>(null);
-    const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState<Record<string, string[]>>({});
 
     const [name, setName] = useState("");
@@ -84,7 +82,7 @@ export default function UpdateStudio() {
             };
 
             await apiFetch(`/Studios/${studioId}`, {
-                method: "PUT",
+                method: "PATCH",
                 body: JSON.stringify(payload),
                 headers: { "Content-Type": "application/json" },
             });
@@ -94,8 +92,8 @@ export default function UpdateStudio() {
                 const fd = new FormData();
                 fd.append("Poster", poster);
 
-                await apiFetch(`/Studios/${studioId}/UploadFiles`, {
-                    method: "PUT",
+                await apiFetch(`/Studios/${studioId}/files`, {
+                    method: "PATCH",
                     body: fd,
                 });
             }

@@ -23,7 +23,7 @@ namespace AnimeApp.Api.Controllers
         }
 
         /// <summary>
-        /// Повертає жанр за айді
+        /// Повертає жанр за ID.
         /// </summary>
         [HttpGet("{id}")]
         public async Task<ActionResult<Genre>> GetById(int id)

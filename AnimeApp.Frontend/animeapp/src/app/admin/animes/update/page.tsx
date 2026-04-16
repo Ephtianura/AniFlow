@@ -1,15 +1,15 @@
 "use client";
 
 import { AdminLayout } from "@/components/AdminLayout";
-import { AnimesLayout } from "@/app/admin/animes/components/AnimesLayout";
+import { AnimesLayout } from "@/app/admin/animes/_components/AnimesLayout";
 
-import { AnimeTitlesEditor } from "../components/AnimeTitlesEditor";
-import { AnimePosterUploader } from "../components/AnimePosterUploader";
-import { AnimeScreenshotsUploader } from "../components/AnimeScreenshotsUploader";
-import { AnimeGenresSelector } from "../components/AnimeGenresSelector";
-import { AnimeStudioSelector } from "../components/AnimeStudioSelector";
-import { AnimeMainData } from "../components/AnimeMainData";
-import { FormErrors } from "../components/FormErrors";
+import { AnimeTitlesEditor } from "../_components/AnimeTitlesEditor";
+import { AnimePosterUploader } from "../_components/AnimePosterUploader";
+import { AnimeScreenshotsUploader } from "../_components/AnimeScreenshotsUploader";
+import { AnimeGenresSelector } from "../_components/AnimeGenresSelector";
+import { AnimeStudioSelector } from "../_components/AnimeStudioSelector";
+import { AnimeMainData } from "../_components/AnimeMainData";
+import { FormErrors } from "../_components/FormErrors";
 import { RelatedAnimeSelector } from "./RelatedAnimeSelector";
 
 import { PrimaryButton } from "../../PrimaryButton";

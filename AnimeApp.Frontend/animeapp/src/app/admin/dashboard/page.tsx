@@ -6,10 +6,10 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, PieChart, Pie, Cell, CartesianGri
 import WhiteCard from '@/components/WhiteCard';
 import { ResponsiveContainer } from "recharts";
 import { AiOutlineNumber } from "react-icons/ai";
-import { AnimeKindEnum, AnimeKindMap } from "@/core/enums/AnimeKind";
-import { AnimeStatusEnum, AnimeStatusMap } from "@/core/enums/AnimeStatus";
-import { AnimeRatingEnum, AnimeRatingMap } from "@/core/enums/AnimeRating";
-import { SeasonEnum, SeasonMap } from "@/core/enums/Season";
+import { AnimeKindEnum, AnimeKindMap } from "@/core/AnimeKind";
+import { AnimeStatusEnum, AnimeStatusMap } from "@/core/AnimeStatus";
+import { AnimeRatingEnum, AnimeRatingMap } from "@/core/AnimeRating";
+import { SeasonEnum, SeasonMap } from "@/core/types";
 
 
 import { FaCalendarDays } from "react-icons/fa6";
@@ -177,7 +177,7 @@ export default function AdminDashboard() {
                                 <YAxis
                                     type="category"
                                     dataKey="name"
-                                    width={40}         // нормальная ширина под жанры
+                                    width={40}        
                                     tick={{ fontSize: 16 }}
                                 />
 

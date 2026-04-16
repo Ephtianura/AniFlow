@@ -6,6 +6,8 @@ using AnimeApp.Application.Dto.Responses.User;
 using AnimeApp.Application.Exceptions;
 using AnimeApp.Core.Contracts;
 using AnimeApp.Core.Models;
+using AnimeApp.DataAccess.Repositories;
+using Newtonsoft.Json.Linq;
 
 namespace AnimeApp.Application.Services
 {
@@ -38,6 +40,8 @@ namespace AnimeApp.Application.Services
                 .Select(ua => ua.Rating.Value)
                 .DefaultIfEmpty(0)
                 .Average();
+
+            averageScore = Math.Round(averageScore, 1);
 
             // Весь час затрачений на перегляд аніме
             TimeSpan totalTime = TimeSpan.FromMinutes(
@@ -202,14 +206,43 @@ namespace AnimeApp.Application.Services
         /// </summary>
         public async Task<UserAnimeStatus> GetUserAnimeStatusAsync(int userId, int animeId)
         {
-            UserAnime? userAnime = await _userAnimesRepository.GetUserAnimeStatusAsync(userId, animeId);
-
-            UserAnimeStatus userStatus = new(
+            UserAnime userAnime = await _userAnimesRepository.GetUserAnimeStatusAsync(userId, animeId) 
+                ?? throw new NotFoundException("UserAnimeStatus");
+            return new(
                 userAnime?.MyList,
-                userAnime?.Rating
-                );
+                userAnime?.Rating );
+        }
 
-            return userStatus;
+        /// <summary>
+        /// Повертає користувача по ID
+        /// </summary>
+        public async Task<User> GetUserByIdAsync(int userId) =>
+            await _usersRepository.GetByIdAsync(userId) ?? throw new NotFoundException("User", userId);
+
+        /// <summary>
+        /// Повертає користувача по ID із списком його аніме
+        /// </summary>
+        public async Task<User> GetUserWithAnimeByIdAsync(int userId) =>
+             await _usersRepository.GetWithAnimeListAsync(userId) ?? throw new NotFoundException("User", userId);
+
+        public async Task RemoveUserStatusAsync(int userId, int animeId, DeleteStatusTargets target)
+        {
+            UserAnime? userAnime = await _userAnimesRepository.GetUserAnimeStatusAsync(userId, animeId);
+            if (userAnime == null) return;
+
+            if (target.Rating)
+                userAnime.Rate(null);
+
+            if (target.List)
+                userAnime.MoveToList(null);
+
+            // Если после изменений не осталось ни списка, ни рейтинга — удаляем строку
+            if (userAnime.MyList == null && userAnime.Rating == null)
+                await _userAnimesRepository.DeleteAsync(userAnime);
+
+            // Если что-то из полей всё еще заполнено — просто сохраняем изменения
+            else
+                await _userAnimesRepository.UpdateAsync(userAnime);
         }
 
         /// <summary>
@@ -226,7 +259,7 @@ namespace AnimeApp.Application.Services
         /// <item><c>TotalAnime</c> — загальна кількість аніме у списку користувача</item>
         /// </list>
         /// </returns>
-        private (int Watching, int Completed, int Planned, int Dropped, int Rewatching, int TotalAnime) 
+        private static (int Watching, int Completed, int Planned, int Dropped, int Rewatching, int TotalAnime)
             CalculateUserStatistic(ICollection<UserAnime> userAnimes)
         {
             if (userAnimes == null || userAnimes.Count == 0)
@@ -244,21 +277,9 @@ namespace AnimeApp.Application.Services
         }
 
         /// <summary>
-        /// Повертає користувача по ID
-        /// </summary>
-        public async Task<User> GetUserByIdAsync(int userId) =>
-            await _usersRepository.GetByIdAsync(userId) ?? throw new EntityNotFoundException("User", userId);
-
-        /// <summary>
-        /// Повертає користувача по ID із списком його аніме
-        /// </summary>
-        public async Task<User> GetUserWithAnimeByIdAsync(int userId) =>
-             await _usersRepository.GetWithAnimeListAsync(userId) ?? throw new EntityNotFoundException("User", userId);
-
-        /// <summary>
         /// Повертає сутніть аніме
         /// </summary>
         private async Task<Anime> GetAnimeByIdAsync(int animeId) =>
-           await _animesRepository.GetByIdAsync(animeId) ?? throw new EntityNotFoundException("Anime", animeId);
+           await _animesRepository.GetByIdAsync(animeId) ?? throw new NotFoundException("Anime", animeId);
     }
 }

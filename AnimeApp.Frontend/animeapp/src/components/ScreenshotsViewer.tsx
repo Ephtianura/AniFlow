@@ -38,7 +38,7 @@ export default function ScreenshotsViewer({ images, currentIndex, onClose, onCha
         <div
             id="backdrop"
             onClick={handleBackdropClick}
-            className={`fixed inset-0 bg-black/80 z-[9999] flex flex-col items-center justify-center transition-opacity duration-300 ${
+            className={`fixed inset-0 bg-black/80 z-9999 flex flex-col items-center justify-center transition-opacity duration-300 ${
                 closing ? "opacity-0" : "opacity-100"
             }`}
         >

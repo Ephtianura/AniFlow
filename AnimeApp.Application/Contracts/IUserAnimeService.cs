@@ -12,6 +12,7 @@ namespace AnimeApp.Application.Contracts
         Task<User> GetUserByIdAsync(int userId);
         Task<UserProfileResponse> GetUserProfileAsync(int userId);
         Task<User> GetUserWithAnimeByIdAsync(int userId);
+        Task RemoveUserStatusAsync(int userId, int animeId, DeleteStatusTargets target);
         Task UpdateAnimeStatusAsync(UpdateUserAnimeCommand request);
     }
 }

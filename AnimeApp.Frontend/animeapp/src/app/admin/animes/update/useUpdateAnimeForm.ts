@@ -2,12 +2,12 @@
     import { useState, useEffect } from "react";
     import { apiFetch } from "@/lib/api";
     import { toast } from "react-toastify";
-    import { TitleLanguage } from "@/core/enums/TitleLanguage";
-    import { TitleType } from "@/core/enums/TitleType";
-    import { AnimeKindEnum } from "@/core/enums/AnimeKind";
-    import { AnimeStatusEnum } from "@/core/enums/AnimeStatus";
-    import { AnimeRatingEnum } from "@/core/enums/AnimeRating";
-    import { RelationKindEnum } from "@/core/enums/RelationKind";
+    import { TitleLanguage } from "@/core/types";
+    import { TitleType } from "@/core/types";
+    import { AnimeKindEnum } from "@/core/AnimeKind";
+    import { AnimeStatusEnum } from "@/core/AnimeStatus";
+    import { AnimeRatingEnum } from "@/core/AnimeRating";
+    import { RelationKindEnum } from "@/core/RelationKind";
 
 
     interface Genre { id: number; nameUa: string; }
@@ -184,7 +184,7 @@
 
             try {
                 await apiFetch(`/Animes/${animeId}`, {
-                    method: "PUT",
+                    method: "PATCH",
                     body: JSON.stringify(body),
                     headers: { "Content-Type": "application/json" }
                 });
@@ -196,7 +196,7 @@
                     screenshots.forEach(f => f && f.size > 0 && formData.append("Screenshots", f));
                     previews.filter(src => src.startsWith("http")).forEach(url => formData.append("ScreenshotUrls", url));
 
-                    await apiFetch(`/Animes/${animeId}/UploadFiles`, { method: "PUT", body: formData });
+                    await apiFetch(`/Animes/${animeId}/files`, { method: "PATCH", body: formData });
                 }
 
                 toast.success("Аніме оновлено!");

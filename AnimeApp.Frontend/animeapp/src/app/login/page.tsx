@@ -18,7 +18,7 @@ export default function LoginPage() {
         const res = await login(form);
 
         if (res) {
-            window.location.href = "/animes"; 
+            window.location.href = "/animes";
         }
     }
 
@@ -46,28 +46,27 @@ export default function LoginPage() {
 
                     <div>
                         <h3 className="text-gray-text-dark text-lg">Пароль</h3>
-                            <input
-                                type="password"
-                                placeholder="Пароль"
-                                className="input mt-1 w-full h-11 btn-primary text-gray-text-dark font-medium text-lg shadow-inner"
-                                value={form.password}
-                                onChange={e => setForm({ ...form, password: e.target.value })}
-                            />
+                        <input
+                            type="password"
+                            placeholder="Пароль"
+                            className="input mt-1 w-full h-11 btn-primary text-gray-text-dark font-medium text-lg shadow-inner"
+                            value={form.password}
+                            onChange={e => setForm({ ...form, password: e.target.value })}
+                        />
                     </div>
 
 
                     {error && <p className="text-red-500 mt-2">{error}</p>}
 
-                    <button className="mx-auto rounded-sm mt-4 cursor-pointer text-white text-lg font-medium bg-primary px-10 py-2
-                    border-3 active:border-purple-400/90 active:bg-purple-700 hover:bg-purple-600  active:shadow-inner shadow-black/30 
-                    transition-colors" disabled={loading}>
+                    <button className="btn-purple mx-auto rounded-sm mt-4 cursor-pointer text-white text-lg font-medium px-10 py-2" 
+                    disabled={loading}>
                         {loading ? "Входимо..." : "Увійти"}
                     </button>
 
                     <p className="mt-3 text-sm text-center text-primary">
                         Немає акаунту?
                     </p>
-                    <Link href="/register" className="text-blue-600 btn-primary text-gray-text-dark text-center ">
+                    <Link href="/register" className="btn-primary text-gray-text-dark text-center ">
                         Зареєструватись
                     </Link>
                 </form>

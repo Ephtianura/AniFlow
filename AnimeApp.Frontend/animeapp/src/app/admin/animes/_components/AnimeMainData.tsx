@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
-import { AnimeKindEnum, AnimeKindMap } from "@/core/enums/AnimeKind";
-import { AnimeStatusEnum, AnimeStatusMap } from "@/core/enums/AnimeStatus";
-import { AnimeRatingEnum } from "@/core/enums/AnimeRating";
+import { AnimeKindEnum, AnimeKindMap } from "@/core/AnimeKind";
+import { AnimeStatusEnum, AnimeStatusMap } from "@/core/AnimeStatus";
+import { AnimeRatingEnum } from "@/core/AnimeRating";
 
 interface AnimeMainDataProps {
     airedOn: string;

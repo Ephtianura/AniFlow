@@ -21,7 +21,7 @@ export function useAnimes() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-    apiFetch("/Animes")
+    apiFetch("/animes")
     .then((data: { items: AnimeResponse[] }) => {
         const sanitized = data.items.map((item: AnimeResponse) => ({
             ...item,

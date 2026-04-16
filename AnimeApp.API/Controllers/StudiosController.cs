@@ -19,7 +19,7 @@ namespace AnimeApp.Api.Controllers
         private readonly IS3FileStorageService _fileUrl = fileUrl;
 
         /// <summary>
-        /// Повертає інформацію про студію за айді
+        /// Повертає інформацію про студію за ID
         /// </summary>
         [HttpGet("{id}")]
         public async Task<ActionResult> GetById(int id)
@@ -104,7 +104,7 @@ namespace AnimeApp.Api.Controllers
         }
 
         /// <summary>
-        /// Завантажити постер для студії
+        /// Завантажує постер для студії через form-data
         /// </summary>
         [Authorize(Policy = "AdminPolicy")]
         [HttpPatch("{id}/files")]
@@ -115,7 +115,7 @@ namespace AnimeApp.Api.Controllers
         }
 
         /// <summary>
-        /// Оновити інформацію про студію
+        /// Оновлює інформацію про студію
         /// </summary>
         [Authorize(Policy = "AdminPolicy")]
         [HttpPatch("{id}")]
@@ -126,7 +126,7 @@ namespace AnimeApp.Api.Controllers
         }
 
         /// <summary>
-        /// Створити багато студій
+        /// Створює багато студій
         /// </summary>
         [Authorize(Policy = "AdminPolicy")]
         [HttpPost("batch")]

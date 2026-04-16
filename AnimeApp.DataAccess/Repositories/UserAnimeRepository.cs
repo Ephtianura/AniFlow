@@ -30,7 +30,7 @@ namespace AnimeApp.DataAccess.Repositories
             await _dbContext.UserAnimes.FindAsync(userId, animeId);
 
         /// <summary>
-        /// Перераховує середній рейтинг для кожного з аніме в базі (Одним запитом до БД)
+        /// Перераховує середній рейтинг для кожного з аніме в базі
         /// </summary>
         public async Task RecalculateAnimeRatings()
         {
@@ -63,10 +63,24 @@ namespace AnimeApp.DataAccess.Repositories
                 else
                 {
                     anime.UpdateTotalScores(0);
-                    anime.Rate(0);
                 }
             }
 
+            await _dbContext.SaveChangesAsync();
+        }
+        public async Task AddAsync(UserAnime userAnime)
+        {
+            await _dbContext.UserAnimes.AddAsync(userAnime);
+            await _dbContext.SaveChangesAsync();
+        }
+        public async Task UpdateAsync(UserAnime userAnime)
+        {
+            _dbContext.UserAnimes.Update(userAnime);
+            await _dbContext.SaveChangesAsync();
+        }
+        public async Task DeleteAsync(UserAnime userAnime)
+        {
+            _dbContext.UserAnimes.Remove(userAnime);
             await _dbContext.SaveChangesAsync();
         }
     }

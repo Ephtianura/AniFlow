@@ -77,7 +77,6 @@ namespace AnimeApp.DataAccess.Repositories
             await _dbContext.Users.AddAsync(user);
             await _dbContext.SaveChangesAsync();
         }
-
         public async Task UpdateAsync(User user)
         {
             _dbContext.Users.Update(user);
@@ -87,7 +86,6 @@ namespace AnimeApp.DataAccess.Repositories
         {
             _dbContext.Users.Remove(user);
             await _dbContext.SaveChangesAsync();
-
         }
     }
 }

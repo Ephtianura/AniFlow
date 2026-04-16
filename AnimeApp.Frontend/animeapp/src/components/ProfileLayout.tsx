@@ -13,7 +13,7 @@ interface ProfileLayoutProps {
 export const ProfileLayout: React.FC<ProfileLayoutProps> = ({ children }) => {
 
   return (
-    <main className='grid grid-cols-[1fr_auto] gap-8 items-start'>
+    <main className='lg:grid grid-cols-[1fr_auto] gap-8 items-start'>
         <WhiteCard>{children}</WhiteCard>
         <ProfileSidebar />
 

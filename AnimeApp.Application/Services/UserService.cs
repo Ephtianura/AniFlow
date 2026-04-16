@@ -127,6 +127,6 @@ namespace AnimeApp.Application.Services
         /// Повертає користувача по ID
         /// </summary>
         public async Task<User> GetUserByIdAsync(int userId) =>
-            await _usersRepository.GetByIdAsync(userId) ?? throw new EntityNotFoundException("User", userId);
+            await _usersRepository.GetByIdAsync(userId) ?? throw new NotFoundException("User", userId);
     }
 }

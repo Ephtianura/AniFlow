@@ -1,13 +1,13 @@
 "use client";
 
 import { AdminLayout } from "@/components/AdminLayout";
-import { AnimesLayout } from "@/app/admin/animes/components/AnimesLayout";
+import { AnimesLayout } from "@/app/admin/animes/_components/AnimesLayout";
 import { useEffect, useState } from "react";
 import { apiFetch } from "@/lib/api";
 import { ToastContainer, toast } from "react-toastify";
 import { IoClose } from "react-icons/io5";
 import { BiSolidStar } from "react-icons/bi";
-import { AnimeKindEnum, AnimeKindMap } from "@/core/enums/AnimeKind";
+import { AnimeKindEnum, AnimeKindMap } from "@/core/AnimeKind";
 import Link from "next/link";
 
 export default function DeleteAnime() {

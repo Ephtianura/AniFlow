@@ -69,7 +69,7 @@ namespace AnimeApp.Application.Services
         {
             var genre = await _genres.GetByIdAsync(id);
             if (genre is null)
-                throw new EntityNotFoundException("Genre", id);
+                throw new NotFoundException("Genre", id);
             return genre;
 
         }

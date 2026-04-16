@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { apiFetch } from "@/lib/api";
 import { FaSortAlphaDown, FaSortAlphaDownAlt } from "react-icons/fa";
 import { useSearchParams } from "next/navigation";
+import CustomSelect from '@/app/animes/SortSelect';
 
 
 interface Anime {
@@ -25,7 +26,7 @@ interface Anime {
     url: string;
 }
 
-type ViewMode = "grid" | "gridLarge" | "list";
+type ViewMode =  "grid" | "gridLarge" | "list";
 
 export default function AnimeListPage() {
     const searchParams = useSearchParams();  // ← будь які параметри з юрл
@@ -77,7 +78,7 @@ export default function AnimeListPage() {
                 setPage(nextPage);
             }
         } catch (err) {
-            console.error(err);
+            // console.error(err);
         } finally {
             setLoadingMore(false);
         }
@@ -96,6 +97,7 @@ export default function AnimeListPage() {
                 setHasMore(data.items.length === 20);
             } catch (err) {
                 console.error(err);
+                throw err;
             } finally {
                 setLoading(false);
             }
@@ -104,47 +106,38 @@ export default function AnimeListPage() {
         fetchData();
     }, [searchParams, sortBy, sortDesc]);
 
-    if (loading) return <WhiteCard><p>Завантаження аніме...</p></WhiteCard>;
+    if (loading) return <WhiteCard> </WhiteCard>;
 
     {
         loadingMore && (
-            <WhiteCard><p>Завантаження аніме...</p></WhiteCard>
+            <WhiteCard> </WhiteCard>
         )
     }
 
     return (
-        <main className='grid grid-cols-[1fr_auto] gap-8 items-start'>
+        <main className='lg:grid grid-cols-[1fr_auto] gap-8 items-start'>
             <WhiteCard>
                 <div >
                     <h1 className='text-primary-black text-4xl font-medium pb-4'>
                         Список аніме
                     </h1>
 
-                    {/* Панель управления */}
+                    {/* Панель управління */}
                     <div className='py-4 mb-4 border-hr-clr border-y'>
-                        <div className='flex justify-between items-center'>
+                        <div className='flex flex-col gap-2 items-center sm:flex-row sm:justify-between '>
 
-                            {/* --- Сортировка --- */}
+                            {/* --- Сортування --- */}
                             <div className='flex items-center gap-2'>
-                                <p className='text-gray-text-dark text-sm'>
+                                <p className=' text-gray-text-dark text-sm'>
                                     Сортувати по:
                                 </p>
 
-                                <select
-                                    className="px-3 py-[6px] bg-white text-primary-black shadow-sm rounded-xs border border-btn-border-light"
-                                    value={sortBy}
-                                    onChange={(e) => setSortBy(e.target.value)}
-                                >
-                                    <option value="Score">Рейтингу</option>
-                                    <option value="Title">Назві</option>
-                                    <option value="Episodes">Епізодам</option>
-                                    <option value="AiredOn">Початку виходу</option>
-                                    <option value="ReleasedOn">Кінцю виходу</option>
-                                </select>
+                                <CustomSelect sortBy={sortBy} setSortBy={setSortBy} />
 
+                                {/* Сортування */}
                                 <button
                                     onClick={() => setSortDesc(prev => !prev)}
-                                    className="text-primary-black p-2 border border-btn-border-light rounded-xs bg-white 
+                                    className="text-primary-black p-2 mt-px border border-btn-border-light rounded-xs bg-white 
                                     hover:bg-btn-hover transition
                                     active:scale-95
                                     active:bg-gray-200
@@ -179,9 +172,8 @@ export default function AnimeListPage() {
 
                     {/* --- Карточки --- */}
                     <div className={
-                        viewMode === "grid" ? "grid grid-cols-4 gap-6"
-                            : viewMode === "gridLarge" ? "grid grid-cols-2 gap-6"
-                                : "flex flex-col"}>
+                        viewMode === "grid" ? "grid sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 gap-6" : viewMode === "gridLarge" ? "grid md:grid-cols-2"
+                            : "flex flex-col"}>
 
 
                         {animes.map((anime) => (

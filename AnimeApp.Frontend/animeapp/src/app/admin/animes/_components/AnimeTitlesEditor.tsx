@@ -2,8 +2,8 @@
 
 import React from "react";
 import { IoClose } from "react-icons/io5";
-import {TitleType } from "@/core/enums/TitleType";
-import {TitleLanguage } from "@/core/enums/TitleLanguage"; // Подкорректируй путь
+import {TitleType } from "@/core/types";
+import {TitleLanguage } from "@/core/types"; 
 
 interface Title {
     value: string;

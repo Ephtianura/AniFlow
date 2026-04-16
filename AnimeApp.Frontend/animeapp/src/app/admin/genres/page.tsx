@@ -62,7 +62,7 @@ export default function GenresManage() {
         if (!nameEn.trim()) return toast.error("Назва EN обов'язкова");
         try {
             const updatedGenre = await apiFetch(`/Genres/${editingGenre.id}`, {
-                method: "PUT",
+                method: "PATCH",
                 body: JSON.stringify({ nameUa, nameEn, nameRu }),
                 headers: { "Content-Type": "application/json" },
             });

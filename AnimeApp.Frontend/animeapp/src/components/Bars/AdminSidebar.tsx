@@ -26,7 +26,7 @@ export default function AdminSidebar() {
 
 
   return (
-    <div className="bg-white shadow-[0_0_10px_rgba(0,0,0,0.05)] border-1 border-[#DFDFDF] w-85">
+    <div className="hidden lg:block bg-white shadow-[0_0_10px_rgba(0,0,0,0.05)] border-1 border-[#DFDFDF] w-85">
       <div className="flex flex-col text-primary-black">
 
         {/* Меню */}

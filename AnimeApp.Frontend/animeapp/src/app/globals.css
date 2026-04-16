@@ -1,79 +1,145 @@
 @import "tailwindcss";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-
 @theme {
   /* Фон */
-  --color-bg-light: #E9EBEE;
-  --color-bg-dark: #343A40;  
+  --color-bg-light: #e9ebee;
+  --color-bg-dark: #343a40;
 
   /* 🎨 Основні кольори  */
---color-primary: #9457FF;
---color-primary-black: #212529;
+  --color-primary: #9457ff;
+  --color-primary-text: #c68aff;
+  --color-primary-hover: #b58aff;
+  --color-primary-black: #212529;
 
   /* Кнопки */
---color-btn-hover: #F0F0F0;
---color-btn-hover-dark: #DCDCDC ;
---color-btn-sidebar-hover: #F7F7F7 ;
+  --color-btn-hover: #f0f0f0;
+  --color-btn-hover-dark: #dcdcdc;
+  --color-btn-sidebar-hover: #f7f7f7;
 
---color-primary-grey: #CCCCCC;
---color-btn-grey-hover: #EBECEE;
+  --color-primary-grey: #cccccc;
+  --color-btn-grey-hover: #ebecee;
 
---color-hr-clr: #E5E5E5;
---color-btn-border-light: #E6E6E6;
---color-btn-border-dark: #CCCCCC;
-
+  --color-hr-clr: #e5e5e5;
+  --color-btn-border-light: #e6e6e6;
+  --color-btn-border-dark: #cccccc;
 
   /* Текст */
   --color-gray-dark: #666666;
   --color-gray-text: #999999;
-  --color-gray-text-light: #868E96;
+  --color-gray-text-light: #868e96;
   --color-gray-text-dark: #495057;
+  --color-player-text: #a7acb1;
+
+  --breakpoint-xs: 320px;
 }
 
 :root {
   /* Фон */
-  --color-bg-light: #E9EBEE;
-  --color-bg-dark: #343A40;  
+  --color-bg-light: #e9ebee;
+  --color-bg-dark: #343a40;
 
   /* 🎨 Основні кольори  */
---color-primary: #9457FF;
---color-primary-black: #212529;
+  --color-primary: #9457ff;
+  --color-primary-hover: #b58aff;
+  --color-primary-black: #212529;
 
   /* Кнопки */
---color-btn-hover: #F0F0F0;
---color-btn-hover-dark: #DCDCDC ;
---color-btn-sidebar-hover: #F7F7F7 ;
+  --color-btn-hover: #f0f0f0;
+  --color-btn-hover-dark: #dcdcdc;
+  --color-btn-sidebar-hover: #f7f7f7;
 
+  --color-primary-grey: #cccccc;
+  --color-btn-grey-hover: #ebecee;
 
---color-primary-grey: #CCCCCC;
---color-btn-grey-hover: #EBECEE;
-
---color-hr-clr: #E5E5E5;
---color-btn-border-light: #E6E6E6;
---color-btn-border-dark: #CCCCCC;
+  --color-hr-clr: #e5e5e5;
+  --color-btn-border-light: #e6e6e6;
+  --color-btn-border-dark: #cccccc;
 
   /* Текст */
-    --color-gray-dark: #666666;
+  --color-gray-dark: #666666;
   --color-gray-text: #999999;
-  --color-gray-text-light: #868E96;
+  --color-gray-text-light: #868e96;
   --color-gray-text-dark: #495057;
-} 
+  --color-player-text: #a7acb1;
+}
 
 body {
-   font-family:  "Segoe UI",  sans-serif;
+  font-family: "Segoe UI", sans-serif;
+}
+
+html {
+  overflow-x: hidden;
+  overflow-y: auto !important;
+  padding-right: 0 !important;
+
+  max-width: 100%;
+  scroll-behavior: smooth;
+}
+
+/* Для Chrome, Edge и Safari */
+* {
+  scrollbar-color: #9457ff #343a40;
 }
 
 @layer components {
+  .nav-button {
+    @apply hover:text-btn-hover-dark transition-colors duration-200 cursor-pointer;
+  }
+
   .btn-primary {
-    @apply w-full px-3 py-[6px] bg-white text-gray-text-dark 
+    @apply w-full px-3 py-1.5 bg-white text-gray-text-dark 
            shadow-sm rounded-xs border border-btn-border-light 
            transition-colors duration-200 
            hover:border-btn-border-dark 
            focus:outline-none focus:border-btn-border-dark 
-           focus:shadow-[0_0_5px_rgba(0,0,0,0.1)];
+           focus:shadow-[inset_0_2px_5px_rgba(0,0,0,0.06),inset_0_-2px_4px_rgba(255,255,255,0.1)];
+  }
+
+  .btn-purple {
+    /* В активном состоянии: */
+    /* 1. Внешнее свечение */
+    /* 2. Внутренняя тень: смещение по Y (2px), размытие (4px) */
+    @apply px-3 py-1.5 bg-primary rounded-sm hover:bg-purple-600 transition cursor-pointer border-transparent border
+    active:bg-purple-700 active:border-purple-800/60 
+    active:shadow-[0_0_20px_rgba(148,87,255,0.5),inset_0_3px_5px_rgba(0,0,0,0.3)]
+    active:ring-4 active:ring-purple-300/80;
+  }
+
+  .h4 {
+    @apply text-2xl font-medium -mb-2;
+  }
+}
+
+@layer utilities {
+  @keyframes blindsDown {
+    0% {
+      transform: scaleY(0);
+      opacity: 0;
+    }
+    100% {
+      transform: scaleY(1);
+      opacity: 1;
+    }
+  }
+
+  @keyframes blindsUp {
+    0% {
+      transform: scaleY(1);
+      opacity: 1;
+    }
+    100% {
+      transform: scaleY(0);
+      opacity: 0;
+    }
+  }
+
+  .animate-blinds-down {
+    transform-origin: top;
+    animation: blindsDown 0.2s ease-out forwards;
+  }
+
+  .animate-blinds-up {
+    transform-origin: top;
+    animation: blindsUp 0.2s ease-in forwards;
   }
 }

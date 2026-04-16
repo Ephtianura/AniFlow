@@ -43,7 +43,7 @@ export default function CreateStudio() {
                 const formData = new FormData();
                 formData.append("Poster", poster);
                 await apiFetch(`/Studios/${createdStudio.id}/UploadFiles`, {
-                    method: "PUT",
+                    method: "PATCH",
                     body: formData,
                 });
             }

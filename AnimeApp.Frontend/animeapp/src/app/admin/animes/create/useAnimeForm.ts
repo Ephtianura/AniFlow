@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { apiFetch } from "@/lib/api";
 import { toast } from "react-toastify";
-import { TitleLanguage } from "@/core/enums/TitleLanguage";
-import { TitleType } from "@/core/enums/TitleType";
-import { AnimeKindEnum } from "@/core/enums/AnimeKind";
-import { AnimeStatusEnum } from "@/core/enums/AnimeStatus";
-import { AnimeRatingEnum } from "@/core/enums/AnimeRating";
+import { TitleLanguage } from "@/core/types";
+import { TitleType } from "@/core/types";
+import { AnimeKindEnum } from "@/core/AnimeKind";
+import { AnimeStatusEnum } from "@/core/AnimeStatus";
+import { AnimeRatingEnum } from "@/core/AnimeRating";
 
 export function useAnimeForm() {
     const [errors, setErrors] = useState<Record<string, string[]>>({});
@@ -116,7 +116,7 @@ export function useAnimeForm() {
             previews.filter(src => src.startsWith("http")).forEach(url => formData.append("ScreenshotUrls", url));
 
             if (formData.has("Poster") || formData.has("PosterUrl") || formData.has("Screenshots") || formData.has("ScreenshotUrls")) {
-                await apiFetch(`/Animes/${createdAnime.id}/UploadFiles`, { method: "PUT", body: formData });
+                await apiFetch(`/Animes/${createdAnime.id}/files`, { method: "PATCH", body: formData });
             }
 
             // Очистка формы

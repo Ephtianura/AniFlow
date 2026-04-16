@@ -1,8 +1,8 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { apiFetch } from "@/lib/api";
 import { BiSolidStar } from "react-icons/bi";
-import { AnimeKindMap } from "@/core/enums/AnimeKind";
+import { AnimeKindMap } from "@/core/AnimeKind";
 
 interface AdminAnimeSearchProps {
     onSelect: (anime: any) => void; // функция вызывается при выборе аниме

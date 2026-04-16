@@ -24,8 +24,8 @@ export function useUserAnime() {
             const params = new URLSearchParams();
             if (myList !== undefined) params.append("myList", myList ?? "");
             if (rating !== undefined) params.append("rating", rating?.toString() ?? "");
-            await apiFetch(`/user/UpdateUserAnime?${params.toString()}`, {
-                method: "PUT"
+            await apiFetch(`/user/me/${animeId}?${params.toString()}`, { //TODO
+                method: "PATCH"
             });
             setMessage("Оновлено успішно!");
         } catch (err: any) {

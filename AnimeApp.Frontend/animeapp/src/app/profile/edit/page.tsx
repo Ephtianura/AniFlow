@@ -32,8 +32,8 @@ export default function ProfileEdit() {
         setSaving(true);
         setMessage(null);
         try {
-            await apiFetch("/user/UpdateProfile", {
-                method: "PUT",
+            await apiFetch("/user/me", {
+                method: "PATCH",
                 body: JSON.stringify({ nickname, email, password }),
             });
             setMessage("Профіль оновлено успішно!");
@@ -55,8 +55,8 @@ export default function ProfileEdit() {
         setMessage(null);
 
         try {
-            await apiFetch("/user/UpdateFiles", {
-                method: "PUT",
+            await apiFetch("/user/me/files", {
+                method: "PATCH",
                 body: formData,
             });
             setMessage("Аватар оновлено успішно!");
