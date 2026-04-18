@@ -4,9 +4,7 @@ import React, { useEffect } from "react";
 import AdminSidebar from "@/components/Bars/AdminSidebar";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter, usePathname } from "next/navigation";
-import WhiteCard from "./WhiteCard";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import WhiteCard from "@/components/WhiteCard";
 
 
 interface AdminLayoutProps {
@@ -19,13 +17,11 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   const pathname = usePathname();
 
   useEffect(() => {
-    if (!isLoggedIn) return;
+    if (!isLoggedIn) {
+      router.replace("/login");
+    }
 
     if (userRole === "Admin") return; // полный доступ
-
-    // Employee — доступ только к flights
-    const employeeAllowedPaths = ["/admin/flights", "/admin/dashboard"];
-    if (userRole === "Employee" && employeeAllowedPaths.includes(pathname)) return;
 
     // всё остальное — редирект
     router.replace("/");
@@ -42,20 +38,11 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   return (
     <main className='lg:grid grid-cols-[1fr_auto] gap-8 items-start' >
       <WhiteCard>{children}</WhiteCard>
-      <AdminSidebar />
 
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
-
+      <div className="w-60 xl:w-85">
+        <AdminSidebar />
+      </div>
+      
     </main>
   );
 };

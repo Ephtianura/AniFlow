@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { apiFetch } from "@/lib/api"; 
+import { toast } from "react-toastify";
 
 export function useAuth() {
     const [loading, setLoading] = useState(false);
@@ -19,7 +20,8 @@ export function useAuth() {
 
             return res;
         } catch (err: any) {
-            setError(err.message || "Registration failed");
+        if (err.status >= 500) toast.error("Сервер приліг поспати...");
+            setError(err.error || err.message || "Registration failed");
         } finally {
             setLoading(false);
         }

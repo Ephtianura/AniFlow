@@ -1,10 +1,10 @@
 "use client";
 
-import { AdminLayout } from "@/components/AdminLayout";
+import { AdminLayout } from "@/app/admin/AdminLayout";
 import { StudiosLayout } from "@/app/admin/studios/StudiosLayout";
 import { useState } from "react";
 import { apiFetch } from "@/lib/api";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 export default function DeleteStudio() {
     const [studioId, setStudioId] = useState<number | "">("");
@@ -63,7 +63,6 @@ export default function DeleteStudio() {
     return (
         <AdminLayout>
             <StudiosLayout>
-                <ToastContainer />
                 <div className="space-y-6">
                     <h2 className="text-xl font-bold mb-4">Видалення студії</h2>
                     {/* Поиск */}

@@ -1,10 +1,11 @@
 "use client";
 
-import { ProfileLayout } from "@/components/ProfileLayout";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { FaCamera } from "react-icons/fa";
 import { useState, useEffect, useRef } from "react";
 import { apiFetch } from "@/lib/api";
+import { ProfileLayout } from "../ProfileLayout";
+import ProfileImages from "../ProfileImages";
 
 export default function ProfileEdit() {
     const { profile, loading, error, reload, formattedRegistrationDate } = useUserProfile();
@@ -71,22 +72,17 @@ export default function ProfileEdit() {
 
     return (
         <ProfileLayout>
-            <div className="bg-white h-30"></div>
-
             <div className="flex flex-col gap-6">
-                <div className="flex gap-6">
-                    <div className="flex flex-col gap-2">
-                        <div className="h-50 w-50">
-                            <img
-                                src={profile.avatarUrl ?? "/404.gif"}
-                                alt=""
-                                className="rounded-full shadow-[0_0_20px_rgba(0,0,0,0.2)] w-full h-full object-cover"
-                            />
-                        </div>
+                <ProfileImages
+                    avatarUrl={profile.avatarUrl}
+                    nickname={profile.nickname}
+                    formattedRegistrationDate={formattedRegistrationDate}
+                />
+                <div>
                         <button
                             type="button"
                             onClick={() => fileInputRef.current?.click()}
-                            className="btn-primary flex items-center gap-2 cursor-pointer text-sm"
+                            className="btn-primary w-50 flex items-center gap-2 cursor-pointer text-sm"
                         >
                             <FaCamera className="w-4 h-4" /> Оновити Аватарку
                         </button>
@@ -100,13 +96,11 @@ export default function ProfileEdit() {
                             }}
                         />
                     </div>
+                <div className="flex flex-col sm:flex-row gap-6">
+                    
 
                     <div className="flex flex-col w-full gap-4">
-                        <p className="text-4xl font-normal">{profile.nickname}</p>
-                        <p className="text-sm font-normal text-gray-text">
-                            на сайті з {formattedRegistrationDate}
-                        </p>
-                        <hr className="text-hr-clr" />
+
                         <div className="flex flex-col gap-4 max-w-md">
                             <label className="flex flex-col gap-1">
                                 <span>Нікнейм</span>

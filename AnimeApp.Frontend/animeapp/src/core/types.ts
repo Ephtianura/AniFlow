@@ -86,3 +86,22 @@ export interface Anime {
     genres: { id: number; nameUa: string }[];
     relateds?: RelatedAnime[];
 }
+
+export interface Animes {
+    id: number;
+    titles: { value: string; language: string; type: string }[];
+    score: number;
+    episodes: number;
+    kind: string;
+    year: number;
+    genres: { id: number, nameUa: string, nameEn: string }[];
+    description: string;
+    posterUrl?: string | null;
+    url: string;
+}
+
+export interface ApiErrorResponse {
+  title?: string;
+  status?: number;
+  errors?: Record<string, string[]>; 
+}

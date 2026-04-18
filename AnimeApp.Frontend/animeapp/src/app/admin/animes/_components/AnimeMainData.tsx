@@ -51,7 +51,7 @@ export const AnimeMainData: React.FC<AnimeMainDataProps> = ({
     setDescription,
 }) => {
     return (
-        <div className="col-span-2 grid grid-cols-3 gap-4">
+        <div className="col-span-2 grid sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div>
                 <label>Дата виходу</label>
                 <input
@@ -170,7 +170,7 @@ export const AnimeMainData: React.FC<AnimeMainDataProps> = ({
                 />
             </div>
 
-            <div className="col-span-3">
+            <div className="sm:col-span-2 md:col-span-3">
                 <label>Опис</label>
                 <textarea
                     value={description}

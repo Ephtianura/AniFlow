@@ -64,10 +64,11 @@ export default function SearchBar() {
             {/* Иконка поиска */}
             <button
                 onClick={() => setOpen(o => !o)}
-                className="flex items-center px-3 py-2"
+                className="flex items-center lg:px-3 lg:py-2"
             >
-                <div className="border-x px-4 border-gray-text-light">
-                    <MdOutlineSearch className="w-5 h-6 hover:text-btn-hover-dark transition-colors duration-200 cursor-pointer" />
+                <div className="lg:border-x lg:px-4 border-gray-text-light">
+                    <MdOutlineSearch className="w-8 h-8 lg:w-5 lg:h-6 hover:text-btn-hover-dark 
+                    transition-colors duration-200 cursor-pointer active:scale-95" />
                 </div>
             </button>
 
@@ -77,7 +78,7 @@ export default function SearchBar() {
                 absolute top-1/2 -translate-y-1/2 
                 right-full mr-2 
                 transition-all duration-300 ease-out 
-                ${open ? "opacity-100 w-[60vw] sm:w-[350px]" : "opacity-0 w-0 pointer-events-none"}`}>
+                ${open ? "opacity-100 w-[60vw] lg:w-[350px]" : "opacity-0 w-0 pointer-events-none"}`}>
 
 
                 <input

@@ -1,10 +1,10 @@
 "use client";
 
-import { AdminLayout } from "@/components/AdminLayout";
+import { AdminLayout } from "@/app/admin/AdminLayout";
 import { StudiosLayout } from "@/app/admin/studios/StudiosLayout";
 import { useState } from "react";
 import { apiFetch } from "@/lib/api";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { IoClose } from "react-icons/io5";
 import { TbFileUpload } from "react-icons/tb";
 
@@ -111,8 +111,6 @@ export default function UpdateStudio() {
     return (
         <AdminLayout>
             <StudiosLayout>
-                <ToastContainer position="top-right" autoClose={3000} />
-
                 <div className="space-y-6">
                     <h2 className="text-xl font-bold">Оновлення студії</h2>
 

@@ -48,13 +48,22 @@ namespace AnimeApp.API.Controllers
         [HttpPost("logout")]
         public IActionResult Logout()
         {
-            // Видалення токену з кукі 
+            // Опции должны совпадать с теми, что были при логине
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Expires = DateTimeOffset.UtcNow.AddDays(-1), 
+                Path = "/" 
+            };
+
             if (HttpContext.Request.Cookies.ContainsKey("cookies"))
             {
-                HttpContext.Response.Cookies.Delete("cookies");
+                HttpContext.Response.Cookies.Delete("cookies", cookieOptions);
             }
 
-            return Ok(new ApiResponse("Logged out"));
+            return Ok(new { message = "Logged out successfully" });
         }
 
         /// <summary> Тест для адміна. </summary>

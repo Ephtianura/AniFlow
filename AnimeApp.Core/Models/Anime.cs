@@ -166,7 +166,7 @@ namespace AnimeApp.Core.Models
         public void UpdateTitle(int titleId, string newValue)
         {
             var title = Titles.FirstOrDefault(t => t.Id == titleId);
-            if (title == null) throw new InvalidOperationException("Title not found.");
+            if (title == null) throw new ArgumentException("Title not found.");
 
             title.ChangeValue(newValue);
 
@@ -174,7 +174,7 @@ namespace AnimeApp.Core.Models
         public void RemoveTitle(int titleId)
         {
             var title = Titles.FirstOrDefault(t => t.Id == titleId);
-            if (title == null) throw new InvalidOperationException("Title not found.");
+            if (title == null) throw new ArgumentException("Title not found.");
 
             Titles.Remove(title);
         }

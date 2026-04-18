@@ -1,11 +1,11 @@
 "use client";
 
-import { AdminLayout } from "@/components/AdminLayout";
-import { useEffect, useState } from "react";
+import { AdminLayout } from "@/app/admin/AdminLayout";
+import { useState } from "react";
 import { apiFetch } from "@/lib/api";
 import { IoClose } from "react-icons/io5";
 import { TbFileUpload } from "react-icons/tb";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { StudiosLayout } from "@/app/admin/studios/StudiosLayout";
 
 export default function CreateStudio() {
@@ -169,7 +169,6 @@ export default function CreateStudio() {
                         )}
                     </div>
                 </div>
-                <ToastContainer position="top-right" autoClose={3000} />
             </StudiosLayout>
         </AdminLayout>
     );

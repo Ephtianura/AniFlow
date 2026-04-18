@@ -57,7 +57,7 @@ export const AnimePosterUploader: React.FC<AnimePosterUploaderProps> = ({
                         <img
                             src={posterPreview}
                             alt="preview"
-                            className="w-[250px] h-[350px] rounded object-cover"
+                            className="w-[250px] aspect-5/7 rounded object-cover"
                         />
                     </div>
                 )}

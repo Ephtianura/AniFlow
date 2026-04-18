@@ -12,7 +12,7 @@ export default function Navbar() {
     <nav className="bg-bg-dark shadow-md sticky top-0 z-50 border-b-3 border-primary text-white mb-6">
 
       {/* Десктопна версія */}
-      <div className="hidden lg:flex justify-between items-center mx-auto w-full max-w-7xl px-4">
+      <div className="hidden lg:flex justify-between items-center mx-auto w-full max-w-7xl px-4  h-12">
 
         <div className="flex items-center gap-10">
 
@@ -61,11 +61,15 @@ export default function Navbar() {
       </div>
 
       {/* Мобільна версія */}
-      <div className="lg:hidden flex justify-between items-center w-full px-4 py-2">
 
-        <UserAvatar />
+      <div className="lg:hidden flex relative items-center justify-between w-full px-4 py-2 h-15">
 
-        <Link href="/" className="font-bold text-xl transition-colors flex items-center gap-2">
+        <div className="flex-">
+          <UserAvatar />
+        </div>
+
+
+        <Link href="/" className="absolute left-1/2 transform -translate-x-1/2 font-bold text-xl transition-colors flex items-center gap-2">
           <img
             src="/favicon.ico"
             alt="AnimeApp Logo"
@@ -78,6 +82,6 @@ export default function Navbar() {
 
       </div>
 
-    </nav>
+    </nav >
   );
 }

@@ -6,113 +6,77 @@ import { IoGrid } from "react-icons/io5";
 import { BsGrid3X3GapFill } from "react-icons/bs";
 import AnimeCard from '@/components/AnimeCard';
 import WhiteCard from '@/components/WhiteCard';
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { apiFetch } from "@/lib/api";
 import { FaSortAlphaDown, FaSortAlphaDownAlt } from "react-icons/fa";
 import { useSearchParams } from "next/navigation";
 import CustomSelect from '@/app/animes/SortSelect';
+import { toast } from 'react-toastify';
+import { Animes } from '@/core/types';
 
-
-interface Anime {
-    id: number;
-    titles: { value: string; language: string; type: string }[];
-    score: number;
-    episodes: number;
-    kind: string;
-    year: number;
-    genres: { id: number, nameUa: string, nameEn: string }[];
-    description: string;
-    posterUrl?: string | null;
-    url: string;
-}
-
-type ViewMode =  "grid" | "gridLarge" | "list";
+type ViewMode = "grid" | "gridLarge" | "list";
 
 export default function AnimeListPage() {
-    const searchParams = useSearchParams();  // ← будь які параметри з юрл
-
-    const [animes, setAnimes] = useState<Anime[]>([]);
+    const searchParams = useSearchParams();
+    const [animes, setAnimes] = useState<Animes[]>([]);
     const [loading, setLoading] = useState(true);
-
-    const [viewMode, setViewMode] = useState<ViewMode>("list");
-    const [sortBy, setSortBy] = useState<string>("Score");
-    const [sortDesc, setSortDesc] = useState<boolean>(true);
-
+    const [loadingMore, setLoadingMore] = useState(false);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
-    const [loadingMore, setLoadingMore] = useState(false);
+    const [viewMode, setViewMode] = useState<ViewMode>("list");
 
-    useEffect(() => {
-        function handleScroll() {
-            if (loadingMore || !hasMore) return;
+    // Стейты для фильтров (их лучше тоже синхронизировать с URL, но пока так)
+    const [sortBy, setSortBy] = useState("Score");
+    const [sortDesc, setSortDesc] = useState(true);
 
-            const bottomOffset = 250; // px до низу сторінки
+    const fetchAnimes = async (isInitial: boolean) => {
+        if (loadingMore || (!isInitial && !hasMore)) return;
 
-            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - bottomOffset) {
-                loadMore();
-            }
-        }
-
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, [loadingMore, hasMore, page, searchParams, sortBy, sortDesc]);
-
-
-    async function loadMore() {
-        if (loadingMore || !hasMore) return;
-
-        setLoadingMore(true);
+        isInitial ? setLoading(true) : setLoadingMore(true);
 
         try {
-            const nextPage = page + 1;
+            const targetPage = isInitial ? 1 : page + 1;
+            const params = new URLSearchParams(searchParams);
+            params.set("SortBy", sortBy);
+            params.set("SortDesc", String(sortDesc));
+            params.set("Page", String(targetPage));
+            params.set("Limit", "20");
 
-            const queryString = searchParams.toString();
-            const finalQuery = `${queryString}&SortBy=${sortBy}&SortDesc=${sortDesc}&Page=${nextPage}&Limit=20`;
+            const data = await apiFetch(`/Animes?${params.toString()}`);
 
-            const data = await apiFetch(`/Animes?${finalQuery}`);
-
-            if (data.items.length === 0) {
-                setHasMore(false);
-            } else {
-                setAnimes(prev => [...prev, ...data.items]);
-                setPage(nextPage);
-            }
-        } catch (err) {
-            // console.error(err);
+            setAnimes(prev => isInitial ? data.items : [...prev, ...data.items]);
+            setPage(prev => isInitial ? 1 : prev + 1);
+            setHasMore(data.items.length === 20);
+        } catch (err: any) {
+            if (err.status >= 500) toast.error("Сервер приліг поспати...");
         } finally {
-            setLoadingMore(false);
+            isInitial ? setLoading(false) : setLoadingMore(false);
         }
-    }
+    };
 
+    
     useEffect(() => {
-        async function fetchData() {
-            try {
-                const queryString = searchParams.toString();
-                const finalQuery = `${queryString}&SortBy=${sortBy}&SortDesc=${sortDesc}&Page=1&Limit=20`;
-
-                const data = await apiFetch(`/Animes?${finalQuery}`);
-
-                setAnimes(data.items);
-                setPage(1);
-                setHasMore(data.items.length === 20);
-            } catch (err) {
-                console.error(err);
-                throw err;
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        fetchData();
+        fetchAnimes(true);
     }, [searchParams, sortBy, sortDesc]);
 
-    if (loading) return <WhiteCard> </WhiteCard>;
+    const observerTarget = useRef(null);
 
-    {
-        loadingMore && (
-            <WhiteCard> </WhiteCard>
-        )
-    }
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            entries => {
+                if (entries[0].isIntersecting && hasMore && !loading && !loadingMore) {
+                    fetchAnimes(false);
+                }
+            },
+            { threshold: 1.0 }
+        );
+
+        if (observerTarget.current) observer.observe(observerTarget.current);
+        return () => observer.disconnect();
+    }, [hasMore, loading, loadingMore, page]);
+
+    if (loading) return <WhiteCard>Завантаження...</WhiteCard>;
+
 
     return (
         <main className='lg:grid grid-cols-[1fr_auto] gap-8 items-start'>
@@ -175,7 +139,6 @@ export default function AnimeListPage() {
                         viewMode === "grid" ? "grid sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 gap-6" : viewMode === "gridLarge" ? "grid md:grid-cols-2"
                             : "flex flex-col"}>
 
-
                         {animes.map((anime) => (
                             <AnimeCard
                                 key={anime.id}
@@ -193,6 +156,8 @@ export default function AnimeListPage() {
                             />
                         ))}
                     </div>
+                    {/* Триггер для загрузки */}
+                    <div ref={observerTarget} ></div>
                 </div>
             </WhiteCard>
             <AnimeFiler />

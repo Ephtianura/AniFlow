@@ -1,6 +1,6 @@
 "use client";
 
-import { AdminLayout } from "@/components/AdminLayout";
+import { AdminLayout } from "@/app/admin/AdminLayout";
 import { AnimesLayout } from "@/app/admin/animes/_components/AnimesLayout";
 
 import { AnimeTitlesEditor } from "../_components/AnimeTitlesEditor";
@@ -37,7 +37,7 @@ export default function UpdateAnimePage() {
                     ) : form.selectedAnime ? (
                         <div className="flex flex-col gap-6">
                             {/* Назви та постер */}
-                            <div className="flex justify-between gap-6">
+                            <div className="flex flex-col md:flex-row justify-between gap-6">
                                 <AnimeTitlesEditor titles={form.titles} setTitles={form.setTitles} />
                                 <AnimePosterUploader
                                     poster={form.poster}

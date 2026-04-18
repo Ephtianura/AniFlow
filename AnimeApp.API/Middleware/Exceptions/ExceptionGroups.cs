@@ -10,7 +10,6 @@ public static class ExceptionGroups
         // Групи виключень по статусам
         [HttpStatusCode.BadRequest] = // 400
         [
-            typeof(InvalidOperationException),
             typeof(ArgumentException),
             typeof(AuthenticationException),
             typeof(InvalidUserIdFormatException),

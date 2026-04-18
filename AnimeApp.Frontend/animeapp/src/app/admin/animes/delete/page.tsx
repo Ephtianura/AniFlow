@@ -1,14 +1,14 @@
 "use client";
 
-import { AdminLayout } from "@/components/AdminLayout";
+import { AdminLayout } from "@/app/admin/AdminLayout";
 import { AnimesLayout } from "@/app/admin/animes/_components/AnimesLayout";
 import { useEffect, useState } from "react";
 import { apiFetch } from "@/lib/api";
-import { ToastContainer, toast } from "react-toastify";
 import { IoClose } from "react-icons/io5";
 import { BiSolidStar } from "react-icons/bi";
 import { AnimeKindEnum, AnimeKindMap } from "@/core/AnimeKind";
 import Link from "next/link";
+import { toast } from "react-toastify";
 
 export default function DeleteAnime() {
     const [animeId, setAnimeId] = useState<number | "">("");
@@ -72,7 +72,6 @@ export default function DeleteAnime() {
     return (
         <AdminLayout>
             <AnimesLayout>
-                <ToastContainer />
                 <div className="space-y-6">
 
                     {/* Пошук */}
@@ -130,8 +129,8 @@ export default function DeleteAnime() {
                             <h1 className="text-primary-black font-medium text-xl">
                                 Ви обрали аніме:
                             </h1>
-                            <div className="flex  gap-4">
-                                <img src={selectedAnime.posterUrl} alt="poster" className="w-[250px] h-[350px] object-cover rounded" />
+                            <div className="flex flex-col sm:flex-row gap-4">
+                                <img src={selectedAnime.posterUrl} alt="poster" className="w-[250px]  object-cover rounded" />
 
                                 <div className="flex-1 flex flex-col gap-2 ">
 

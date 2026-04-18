@@ -21,7 +21,7 @@ export const StudiosLayout: React.FC<StudiosLayout> = ({ children }) => {
             <h1 className="text-4xl font-extrabold mb-8 text-primary drop-shadow-sm text-center">
                 Управління студіями
             </h1>
-            <div className="flex gap-4 mb-6">
+            <div className="flex flex-wrap sm:flex-nowrap gap-4 mb-6  justify-center">
                 <Link href="/admin/studios/create" className={linkClasses("/admin/studios/create")}>
                     Створити
                 </Link>

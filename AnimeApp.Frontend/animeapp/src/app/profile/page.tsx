@@ -1,10 +1,11 @@
 "use client";
 
-import { ProfileLayout } from "@/components/ProfileLayout";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import Link from "next/link";
 import StatusBarChart from "./_components/UserAnimeStatusBarChart"
 import { notFound } from "next/navigation";
+import { ProfileLayout } from "./ProfileLayout";
+import ProfileImages from "./ProfileImages";
 
 export default function ProfileHome() {
     const { profile, loading, error, timeFormatted, formattedRegistrationDate } = useUserProfile();
@@ -15,41 +16,16 @@ export default function ProfileHome() {
     return (
         <ProfileLayout>
 
-            <div className="bg-white h-100 -m-4">
-                <img src="/NotFound.jpg" alt="" className=" object-cover h-full w-full" />
-            </div>
+
             <div className="flex flex-col gap-2">
+                
+                {/* Вынести */}
+                <ProfileImages
+                    avatarUrl={profile.avatarUrl}
+                    nickname={profile.nickname}
+                    formattedRegistrationDate={formattedRegistrationDate}
+                />
 
-{/* Вынести */}
-                <div className="flex flex-col items-center lg:flex-row lg:gap-6">
-
-                    {/* Аватар */}
-                    <div className="flex flex-col gap-2">
-                        <div className="w-50 -mt-20 aspect-square rounded-full ring-4 ring-white shadow-[0_0_15px_rgba(0,0,0,0.3)] overflow-hidden">
-                            <img
-                                src={profile.avatarUrl ?? "/404.gif"}
-                                alt="Аватар"
-                                className="w-full h-full object-cover"
-                            />
-                        </div>
-                    </div>
-
-                    {/* Інформація */}
-                    <div className="flex flex-col w-full items-center lg:items-start">
-
-                        <div className="flex flex-col gap-2 py-2">
-                            <p className="text-4xl font-normal">
-                                {profile.nickname}
-                            </p>
-                            <p className="text-sm font-normal text-gray-text">
-                                на сайті з {formattedRegistrationDate}
-                            </p>
-                        </div>
-
-                        <hr className="text-hr-clr w-full" />
-
-                    </div>
-                </div>
 
                 {/* Статистика */}
                 <div className="flex flex-col text-primary-black">

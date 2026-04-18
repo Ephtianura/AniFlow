@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { apiFetch } from "@/lib/api";
+import router from "next/router";
 
 export interface UserProfile {
   id: number;
@@ -54,11 +55,17 @@ export function useUserProfile() {
       const data: UserProfile = await apiFetch("/user/me/profile");
       setProfile(data);
       setError(null);
-    } catch (e) {
+    } catch (e: any) {
       console.error("Profile load error:", e);
+      
+      // Ловим нашу 401 ошибку
+      if (e.status === 401 || e.message === "Unauthorized") {
+        window.location.href = "/login";
+        return; 
+      }
+
       setError(e);
       setProfile(null);
-      throw new Error();
     } finally {
       setLoading(false);
     }

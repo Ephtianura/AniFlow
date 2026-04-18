@@ -94,7 +94,7 @@ namespace AnimeApp.Application.Services
             // Валідація на хоча б одну офіційну ромаджі назву
             var officialRomajiTitle = titles
                 .FirstOrDefault(t => t.Type == TitleType.Official && t.Language == TitleLanguage.Romaji)
-                    ?? throw new InvalidOperationException("Anime must have at least one official title in Romaji.");
+                    ?? throw new ArgumentException("Anime must have at least one official title in Romaji.");
 
             // ===================== Studio =====================
             Studio? studio = null;
@@ -102,7 +102,7 @@ namespace AnimeApp.Application.Services
             {
                 studio = await _studios.GetByIdAsync(request.StudiosId.Value);
                 if (studio == null)
-                    throw new InvalidOperationException("Studio not found");
+                    throw new ArgumentException("Studio not found");
             }
 
             // ===================== Genres =====================

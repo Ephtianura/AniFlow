@@ -1,6 +1,6 @@
 "use client";
 
-import { AdminLayout } from "@/components/AdminLayout";
+import { AdminLayout } from "@/app/admin/AdminLayout";
 import { useAnimes } from "@/hooks/useAnimes";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, PieChart, Pie, Cell, CartesianGrid, Legend } from "recharts";
 import WhiteCard from '@/components/WhiteCard';

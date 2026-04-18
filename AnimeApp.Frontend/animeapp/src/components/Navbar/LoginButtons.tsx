@@ -13,7 +13,7 @@ export default function LoginButtons() {
                 // ===== Вийти =====
                 <button
                     onClick={logout}
-                    className="flex items-center gap-1 bg-btn-primary-hover rounded-[10px] 
+                    className="hidden lg:flex items-center gap-1 bg-btn-primary-hover rounded-[10px] 
               px-3 py-2 hover:text-btn-hover-dark transition-colors duration-200 cursor-pointer"
                 >
                     <TbLogout className="w-5 h-5" />
@@ -23,7 +23,7 @@ export default function LoginButtons() {
                 // ===== Увійти =====
                 <Link
                     href="/login"
-                    className="flex items-center gap-1 bg-btn-primary-hover rounded-[10px] px-3 py-2 
+                    className="hidden md:flex items-center gap-1 bg-btn-primary-hover rounded-[10px] px-3 py-2 
               hover:text-btn-hover-dark transition-colors duration-200"
                 >
                     <TbLogin className="w-5 h-5" />

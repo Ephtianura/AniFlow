@@ -1,13 +1,11 @@
 "use client";
 
-import { AdminLayout } from "@/components/AdminLayout";
+import { AdminLayout } from "@/app/admin/AdminLayout";
 import { useEffect, useState } from "react";
 import { apiFetch } from "@/lib/api";
-import { ToastContainer, toast } from "react-toastify";
-import { IoClose, IoPencil } from "react-icons/io5";
+import { toast } from "react-toastify";
+import { IoClose } from "react-icons/io5";
 import { LuPencilLine } from "react-icons/lu";
-import Link from "next/link";
-import WhiteCard from "@/components/WhiteCard";
 
 export default function GenresManage() {
     const [genres, setGenres] = useState<{ id: number; nameUa: string; nameEn: string; nameRu: string }[]>([]);
@@ -106,7 +104,7 @@ export default function GenresManage() {
                 </h1>
 
                 {/* Кнопки выбора режима */}
-                <div className="flex gap-4 mb-6">
+                <div className="flex flex-wrap sm:flex-nowrap gap-4 mb-6  justify-center">
                     <button className={linkClasses("create")} onClick={() => setMode("create")}>Створити</button>
                     <button className={linkClasses("edit")} onClick={() => setMode("edit")}>Змінити</button>
                     <button className={linkClasses("delete")} onClick={() => setMode("delete")}>Видалити</button>
@@ -118,7 +116,7 @@ export default function GenresManage() {
                 {/* Форма створення */}
                 {mode === "create" && (
                     <div className="flex justify-center">
-                        <div className="bg-white p-4 rounded shadow space-y-4 max-w-md border-1 border-hr-clr">
+                        <div className="bg-white p-4 rounded shadow space-y-4 max-w-md border border-hr-clr">
                             <h2 className="text-xl font-bold">Створити новий жанр</h2>
                             <input
                                 type="text"
@@ -150,7 +148,7 @@ export default function GenresManage() {
                 {/* Форма редагування */}
                 {mode === "edit" && editingGenre && (
                     <div className="flex justify-center">
-                        <div className="bg-white p-4 rounded shadow space-y-4 max-w-md border-1 border-hr-clr m">
+                        <div className="bg-white p-4 rounded shadow space-y-4 max-w-md border border-hr-clr m">
                             <h2 className="text-xl font-bold">Редагування жанру</h2>
                             <input
                                 type="text"
@@ -208,10 +206,6 @@ export default function GenresManage() {
                         </div>
                     ))}
                 </div>
-
-
-
-                <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
             </div>
         </AdminLayout>
     );

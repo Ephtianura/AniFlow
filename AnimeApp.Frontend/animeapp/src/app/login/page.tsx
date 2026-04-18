@@ -18,17 +18,16 @@ export default function LoginPage() {
         const res = await login(form);
 
         if (res) {
-            window.location.href = "/animes";
+            window.location.href = "/";
         }
     }
 
     return (
         <div className="flex justify-center items-center">
-            <WhiteCard>
-
+            <WhiteCard className="w-full max-w-[500px]">
                 <form
                     onSubmit={onSubmit}
-                    className="flex flex-col w-[520px]  gap-2"
+                    className="flex flex-col gap-2"
                 >
                     <h1 className="text-4xl font-medium mb-4 text-center text-primary-black">Вхід</h1>
 

@@ -1,8 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useAuth } from "@/context/AuthContext";
-import { IoIosAirplane } from "react-icons/io";
 import { RiMovie2AiLine } from "react-icons/ri";
 import { FaMasksTheater } from "react-icons/fa6";
 import { FaTheaterMasks } from "react-icons/fa";
@@ -13,7 +11,6 @@ import { usePathname } from "next/navigation";
 
 
 export default function AdminSidebar() {
-  const { userRole } = useAuth();
   const pathname = usePathname();
 
   const linkClasses = (paths: string | string[]) => {
@@ -22,15 +19,13 @@ export default function AdminSidebar() {
     return `px-5 py-3 flex items-center gap-2 border-b-1 border-[#DFDFDF] transition-colors
     ${isActive ? "bg-btn-sidebar-hover font-medium" : "hover:bg-btn-sidebar-hover"}`;
   };
-  // неактивна
-
 
   return (
-    <div className="hidden lg:block bg-white shadow-[0_0_10px_rgba(0,0,0,0.05)] border-1 border-[#DFDFDF] w-85">
+    <div className="hidden lg:block bg-white shadow-[0_0_10px_rgba(0,0,0,0.05)] border border-[#DFDFDF] w-full">
       <div className="flex flex-col text-primary-black">
 
         {/* Меню */}
-        <div className="px-4 py-3 font-medium border-b-1 border-[#DFDFDF] bg-btn-sidebar-hover">
+        <div className="px-4 py-3 font-medium border-b border-[#DFDFDF] bg-btn-sidebar-hover">
           <p>Меню</p>
         </div>
 

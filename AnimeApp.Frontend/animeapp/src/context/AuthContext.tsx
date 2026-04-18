@@ -2,7 +2,8 @@
 
 import { createContext, useContext, useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { getUserMe } from "@/lib/api";
+import { apiFetch, getUserMe } from "@/lib/api";
+import { toast } from "react-toastify";
 
 type AuthContextType = {
   isLoggedIn: boolean;
@@ -24,15 +25,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const router = useRouter();
   const pathname = usePathname();
+
   const logout = async () => {
     try {
-      await fetch("/auth/logout", { method: "POST" });
-    } catch { }
-
-    setIsLoggedIn(false);
-    setUserRole(null);
-    setUserName(null);
-    router.push("/animes");
+      await apiFetch("/auth/logout", { method: "POST" });
+      setIsLoggedIn(false);
+      setUserRole(null);
+      setUserName(null);
+      window.location.href = '/';
+    } catch {
+      toast.error("Помилка при виході з системи");
+    }
   };
 
   // Загружаем данные пользователя при инициализации
@@ -54,7 +57,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
 
       setUserRole(roleStr);
-      setUserName(user.nickname  || null);
+      setUserName(user.nickname || null);
     } catch (err: any) {
       if (err.status === 401) {
         setIsLoggedIn(false);
@@ -67,8 +70,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUserName(null);
     }
   };
-
-
 
   useEffect(() => {
     refreshAuth();
@@ -85,9 +86,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   if (isLoggedIn === null) {
     return (
       <div>
-        {/* <div className="flex h-screen items-center justify-center text-gray-600">
-          Перевірка авторизації...
-        </div> */}
+       
       </div>
 
     );
