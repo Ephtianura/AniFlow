@@ -1,6 +1,5 @@
 services:
-
-# База
+  # База
   postgres:
     image: postgres:16
     container_name: postgres_animeapp
@@ -13,22 +12,22 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-# Адмінка
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: pgadmin_animeapp
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-    ports:
-      - "5050:80"
-    depends_on:
-      - postgres
-    volumes:
-      - ./pgadmin:/var/lib/pgadmin
-      - ./backup:/backup
+  # Адмінка
+  # pgadmin:
+  #   image: dpage/pgadmin4
+  #   container_name: pgadmin_animeapp
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: admin@admin.com
+  #     PGADMIN_DEFAULT_PASSWORD: admin
+  #   ports:
+  #     - "5050:80"
+  #   depends_on:
+  #     - postgres
+  #   volumes:
+  #     - ./pgadmin:/var/lib/pgadmin
+  #     - ./backup:/backup
 
-# Апішка
+  # Апішка
   api:
     build:
       context: .
@@ -42,25 +41,30 @@ services:
       # - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=AnimeAppDb;Username=postgres;Password=54321
 
-# Кеш
+  # Кеш
   redis:
     image: redis:7
     container_name: redis_animeapp
     ports:
       - "6379:6379"
-    command: [
-      "redis-server",
-      "--appendonly", "yes",
-      "--maxmemory", "4gb",
-      "--maxmemory-policy", "allkeys-lru"]
+    command:
+      [
+        "redis-server",
+        "--appendonly",
+        "yes",
+        "--maxmemory",
+        "4gb",
+        "--maxmemory-policy",
+        "allkeys-lru",
+      ]
 
-# S3
+  # S3
   minio:
     image: minio/minio
     container_name: minio_animeapp
     ports:
-      - "9000:9000"  # S3 API
-      - "9001:9001"  # MinIO Console
+      - "9000:9000" # S3 API
+      - "9001:9001" # MinIO Console
     environment:
       MINIO_ROOT_USER: admin
       MINIO_ROOT_PASSWORD: secret123
@@ -68,7 +72,7 @@ services:
     volumes:
       - minio_data:/data
 
-#  Фронт
+  #  Фронт
   frontend:
     container_name: frontend_animeapp
     build:
@@ -76,12 +80,17 @@ services:
       target: prod
     ports:
       - "3000:3000"
-    volumes:
-      - ./AnimeApp.Frontend/animeapp:/app:cached
-      - /app/node_modules
+    # volumes:
+    #   - ./AnimeApp.Frontend/animeapp:/app:cached
+    #   - /app/node_modules
     # environment:
     #   - NODE_ENV=production
 
 volumes:
   postgres_data:
   minio_data:
+
+networks:
+  default:
+    external:
+      name: npm_default
