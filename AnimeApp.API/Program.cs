@@ -24,7 +24,8 @@ builder.Services
         .AddRedis(configuration) // Redis 
         .AddCacheDecorators() // Cache Decorator 
         .AddDatabase(configuration) // DbContext
-        .AddCustomCors(); // Cache Decorator 
+        .AddCustomCors(configuration); // Cors 
+
 
 
 var app = builder.Build();
@@ -36,7 +37,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors("AllowFrontend");
+app.UseRouting();
+app.UseCors("Cors");
 
 // Параметри кукі
 app.UseCookiePolicy(new CookiePolicyOptions

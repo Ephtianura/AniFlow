@@ -2,14 +2,18 @@
 {
     public static class CorsExtensions
     {
-        public static IServiceCollection AddCustomCors(this IServiceCollection services)
+        public static IServiceCollection AddCustomCors(this IServiceCollection services, IConfiguration config)
         {
+            var origins = config
+                .GetSection("Cors:AllowedOrigins")
+                .Get<string[]>() ?? [];
+
             services.AddCors(options =>
             {
-                options.AddPolicy("AllowFrontend", policy =>
+                options.AddPolicy("Cors", policy =>
                 {
                     policy
-                        .WithOrigins("http://localhost:3000")
+                        .WithOrigins(origins!)
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials();

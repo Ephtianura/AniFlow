@@ -1,0 +1,42 @@
+services:
+  # API
+  api:
+    container_name: api_animeapp
+    build:
+      context: .
+      dockerfile: AnimeApp.API/Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    env_file:
+      - .env.development
+    depends_on:
+      - postgres
+      - redis
+      - minio
+
+  # Frontend
+  frontend:
+    container_name: frontend_animeapp
+    build:
+      context: ./AnimeApp.Frontend/animeapp
+      target: dev
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_URL: http://localhost:5000/api
+
+  postgres:
+    ports:
+      - "5432:5432"
+
+  redis:
+    ports:
+      - "6379:6379"
+
+  minio:
+    ports:
+      - "9000:9000"
+      - "9001:9001"

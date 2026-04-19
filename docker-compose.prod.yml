@@ -1,0 +1,34 @@
+services:
+  # API
+  api:
+    container_name: api_animeapp
+    build:
+      context: .
+      dockerfile: AnimeApp.API/Dockerfile
+    restart: always
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - redis
+      - minio
+
+  # Frontend
+  frontend:
+    container_name: frontend_animeapp
+    build:
+      context: ./AnimeApp.Frontend/animeapp
+      target: prod
+      args:
+      - NEXT_PUBLIC_API_URL=${API_URL}
+    restart: always
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_URL: ${API_URL}
+
+networks:
+  default:
+    name: npm_default
+    external: true

@@ -43,7 +43,7 @@ export default function ScreenshotsPreview({ images }: ScreenshotsPreviewProps) 
                     ${i === 3 ? "hidden lg:block" : ""}
                 `}
                             >
-                                <img src={src} className="w-full h-full object-cover" alt="" />
+                                <img src={src} className="w-full h-full object-cover" alt={`Кадр ${i}`} />
 
                                 {/* Ховер с лупой — рендерим только если НЕ показываем счетчик */}
                                 {!showCounter && (

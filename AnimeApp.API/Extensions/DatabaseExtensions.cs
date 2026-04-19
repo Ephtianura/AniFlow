@@ -1,7 +1,4 @@
-﻿using AnimeApp.DataAccess;
-using Microsoft.EntityFrameworkCore;
-
-namespace AnimeApp.API.Extensions
+﻿namespace AnimeApp.API.Extensions
 {
     public static class DatabaseExtensions
     {
