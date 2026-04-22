@@ -39,7 +39,7 @@ export default function AnimePage({
         error,
         router,
     });
-    
+
 
     if (error) return <WhiteCard>Помилка: {error}</WhiteCard>;
     if (!anime) return null;
@@ -49,7 +49,7 @@ export default function AnimePage({
             <div className='flex flex-col'>
 
                 {/* Постер та інформація */}
-                <div className='grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-6'>
+                <div className='grid grid-cols-1 sm:grid-cols-[auto_1fr] sm:gap-6'>
 
                     {/* Постер та додаваня у список */}
                     <div className='flex flex-col gap-4 order-3 sm:order-1'>
@@ -69,6 +69,10 @@ export default function AnimePage({
                         </WhiteCard>
                     </div>
 
+                    <div className="sm:hidden order-5 mt-6">
+                        <AnimeInfo anime={anime} />
+                    </div>
+                    
                     {/* Інформація */}
                     <div className='flex flex-col order-1 sm:order-2'>
 
@@ -105,7 +109,7 @@ export default function AnimePage({
                         <hr className='text-hr-clr my-4 order-4 sm:order-3' />
 
                         {/* Anime-info */}
-                        <div className="order-5 sm:order-4">
+                        <div className="hidden sm:block order-5 sm:order-4">
                             <AnimeInfo anime={anime} />
                         </div>
                     </div>
