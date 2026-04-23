@@ -10,6 +10,19 @@ interface RatingProps {
     userRating?: number;
 }
 
+const RATING_LABELS: Record<number, string> = {
+    1: "Гірше нікуди",
+    2: "Жахливо",
+    3: "Дуже погано",
+    4: "Погано",
+    5: "Нормально",
+    6: "Непогано",
+    7: "Добре",
+    8: "Чудово",
+    9: "Дивовижно",
+    10: "Шедевр"
+};
+
 export default function Rating({
     animeId,
     score,
@@ -17,7 +30,7 @@ export default function Rating({
     userRating,
 }: RatingProps) {
     const [hoveredRating, setHoveredRating] = useState<number | null>(null);
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(true);
 
     // Используем внутренний стейт для мгновенного отображения клика
     const [currentUserRating, setCurrentUserRating] = useState(userRating ?? 0);
@@ -38,7 +51,10 @@ export default function Rating({
     };
 
     return (
-        <div className='flex gap-2 items-center h-11'>
+        <div className='flex gap-2 items-center h-11
+        md:flex-col md:mb-11 md:items-start
+        lg:flex-row lg:mb-0 lg:items-center'>
+
             {/* Левая часть: Общий рейтинг */}
             <div className='flex gap-2 items-center'>
                 <BsFillStarFill className='text-[#E4BB24] w-8 h-8 mb-1' />
@@ -60,8 +76,8 @@ export default function Rating({
                     setHoveredRating(null);
                 }}
             >
-                {/* Кнопка "Оцінити аніме" или Цифра */}
-                <div className={`flex items-center w-30 py-1 h-full transition-colors duration-400 cursor-pointer border-l border-[#B2B2B2]
+                {/* Кнопка "Оцінити аніме"*/}
+                <div className={`flex items-center w-35 md:w-30 py-1 h-full transition-colors duration-400 cursor-pointer border-l border-[#B2B2B2]
                     ${isMenuOpen || currentUserRating > 0 ? 'bg-primary text-white border-primary' : 'bg-transparent text-primary-black'}`}
                 >
                     <div className="flex items-center gap-2 pl-2">
@@ -97,24 +113,40 @@ export default function Rating({
                 </div>
 
                 {/* Выезжающая панель со звездами */}
-                <div className={`
-                    absolute left-[120px] top-0 h-full bg-[#B3B3B3] flex items-center px-2 gap-1 transition-all duration-300 z-10
-                    ${isMenuOpen ? 'w-[280px] opacity-100 visible' : 'w-0 opacity-0 invisible pointer-events-none'}
-                `}>
+                <div className={`absolute z-10 bg-[#B3B3B3] flex transition-all duration-300 overflow-hidden
+                        left-0 top-full flex-col items-center py-2 gap-2 w-full
+                        md:flex-row md:items-center md:px-2 md:gap-1 
+                        md:left-[120px] md:top-0  
+                 ${isMenuOpen
+                        ? 'opacity-100 visible h-[370px] md:h-full md:w-[290px]'
+                        : 'opacity-0 invisible h-0 md:h-full md:w-0 pointer-events-none'
+                    }
+                    `}>
                     {Array.from({ length: 10 }).map((_, i) => {
                         const starValue = i + 1;
-                        // Логика подсветки: если ховерим — подсвечиваем до звезды под мышкой, 
-                        // если нет — подсвечиваем до текущей оценки
                         const isActive = (hoveredRating ?? currentUserRating) >= starValue;
 
                         return (
-                            <BsFillStarFill
+                            <div
                                 key={i}
+                                className="flex flex-col items-center md:block"
                                 onMouseEnter={() => setHoveredRating(starValue)}
-                                onClick={() => onRateChange(starValue)}
-                                className={`w-6 h-6 mb-1 cursor-pointer transition-colors
-                                    ${isActive ? 'text-white' : 'text-[#D1D1D1] hover:text-white'}`}
-                            />
+                                onClick={() => {
+                                    onRateChange(starValue);
+                                    setIsMenuOpen(false);
+                                }}
+                            >
+                                <div className='flex gap-2 items-center'>
+                                    <BsFillStarFill
+                                        className={`shrink-0 w-7 h-7 md:w-6 md:h-6 cursor-pointer transition-colors
+                            ${isActive ? 'text-white' : 'text-[#D1D1D1] hover:text-white'}`}
+                                    />
+                                    <span className='text-white text-sm whitespace-nowrap md:hidden'>
+                                        {RATING_LABELS[starValue]}
+                                    </span>
+                                </div>
+
+                            </div>
                         );
                     })}
                 </div>
