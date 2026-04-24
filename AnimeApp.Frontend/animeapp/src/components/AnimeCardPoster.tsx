@@ -12,7 +12,7 @@ export default function AnimeCardPoster(props: AnimeCardPosterProps) {
     const { rating, posterUrl, title, url } = props;
 
     return (
-        <div className="relative h-full w-full ">
+        <div className="relative h-full w-full">
             <div className="absolute top-2 left-[-5px] w-16 h-9 z-10 bg-[#FFD400]  flex items-center rounded-tl-[1px]"
                 style={{ clipPath: "polygon(100% 0, 90% 35%, 100% 75%, 8% 75%, 8% 100%, 0 75%, 0 0)" }}>
                 <div className="flex gap-1 items-center mb-2 px-2">
@@ -21,7 +21,7 @@ export default function AnimeCardPoster(props: AnimeCardPosterProps) {
                 </div>
             </div>
             <Link href={`/anime/${url}`} className="text-primary text-xl hover:underline">
-                <img src={posterUrl || "/404.gif"} alt={title} className="w-full h-full object-cover rounded-xs" />
+                <img src={posterUrl || "/404.gif"} alt={title} className="w-full h-full object-cover aspect-5/7 rounded-xs" />
             </Link>
         </div>
     )

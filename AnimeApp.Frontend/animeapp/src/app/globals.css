@@ -108,6 +108,12 @@ html {
   .h4 {
     @apply text-2xl font-medium -mb-2;
   }
+  .view-btn {
+    @apply p-1 hover:text-primary-black rounded-xs cursor-pointer active:scale-95 transition;
+  }
+  :focus-visible {
+    @apply outline-none ring-2 ring-purple-500 ring-offset-2 rounded-sm;
+  }
 }
 
 @layer utilities {

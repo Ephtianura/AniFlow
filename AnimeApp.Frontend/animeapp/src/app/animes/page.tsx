@@ -108,8 +108,8 @@ export default function AnimeListPage() {
                                     active:border-gray-300"
                                 >
                                     {sortDesc
-                                        ? <FaSortAlphaDownAlt className="w-5 h-5" />
-                                        : <FaSortAlphaDown className="w-5 h-5" />
+                                        ? <FaSortAlphaDownAlt className="w-5 h-5 cursor-pointer" />
+                                        : <FaSortAlphaDown className="w-5 h-5 cursor-pointer" />
                                     }
                                 </button>
                             </div>
@@ -117,18 +117,18 @@ export default function AnimeListPage() {
                             {/* --- Режим --- */}
                             <div className='flex gap-3 items-center text-primary-grey'>
                                 <button onClick={() => setViewMode("grid")}
-                                    className={`p-1 hover:text-primary-black rounded-xs cursor-pointer  active:scale-95 ${viewMode === "grid" && "hover:text-white text-white bg-primary"}`}>
-                                    <BsGrid3X3GapFill className='w-6 h-6' />
+                                    className={`view-btn ${viewMode === "grid" && "hover:text-white text-white bg-primary"}`}>
+                                    <BsGrid3X3GapFill className='w-7 h-7' />
                                 </button>
 
                                 <button onClick={() => setViewMode("gridLarge")}
-                                    className={`p-1 hover:text-primary-black rounded-xs cursor-pointer  active:scale-95 ${viewMode === "gridLarge" && "hover:text-white text-white bg-primary"}`}>
-                                    <IoGrid className='w-6 h-6' />
+                                    className={`view-btn ${viewMode === "gridLarge" && "hover:text-white text-white bg-primary"}`}>
+                                    <IoGrid className='w-7 h-7' />
                                 </button>
 
                                 <button onClick={() => setViewMode("list")}
-                                    className={`p-1 hover:text-primary-black rounded-xs cursor-pointer  active:scale-95 ${viewMode === "list" && "hover:text-white text-white bg-primary"}`}>
-                                    <FaListUl className='w-6 h-6' />
+                                    className={`view-btn ${viewMode === "list" && "hover:text-white text-white bg-primary"}`}>
+                                    <FaListUl className='w-7 h-7' />
                                 </button>
                             </div>
                         </div>
