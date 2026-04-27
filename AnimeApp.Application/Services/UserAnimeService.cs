@@ -6,16 +6,14 @@ using AnimeApp.Application.Dto.Responses.User;
 using AnimeApp.Application.Exceptions;
 using AnimeApp.Core.Contracts;
 using AnimeApp.Core.Models;
-using AnimeApp.DataAccess.Repositories;
-using Newtonsoft.Json.Linq;
 
 namespace AnimeApp.Application.Services
 {
     public class UserAnimeService(IUserRepository users, IAnimeRepository animes, IUserAnimeRepository usersAnimes) : IUserAnimeService
     {
-        private readonly IUserRepository _usersRepository = users;
-        private readonly IAnimeRepository _animesRepository = animes;
-        private readonly IUserAnimeRepository _userAnimesRepository = usersAnimes;
+        private readonly IUserRepository _usersRepo = users;
+        private readonly IAnimeRepository _animesRepo = animes;
+        private readonly IUserAnimeRepository _userAnimesRepo = usersAnimes;
 
         /// <summary>
         /// Повертає головну інформацію про профіль
@@ -28,6 +26,9 @@ namespace AnimeApp.Application.Services
             // Калькулятор статистики. Кількість аніме в кожному зі списків
             var (Watching, Completed, Planned, Dropped, Rewatching, TotalAnime) =
                 CalculateUserStatistic(userAnimes);
+
+            // Кількість всіх улюблених аніме
+            var favorites = userAnimes.Count(ua => ua.IsFavorite);
 
             // Сума всіх переглянутих епізодів
             int totalEpisodes = userAnimes
@@ -60,6 +61,7 @@ namespace AnimeApp.Application.Services
                 DateOfRegistration = user.DateOfRegistration,
 
                 // Красиві циферки ~
+                Favorites = favorites,
                 Watching = Watching,
                 Completed = Completed,
                 Planned = Planned,
@@ -76,6 +78,9 @@ namespace AnimeApp.Application.Services
         /// <summary>
         /// Отримати коротку сводку о кількості аніме в списках, та самих аніме
         /// </summary>
+        /// <remarks>
+        /// Не використовується.
+        /// </remarks>
         public async Task<UserAnimeListResponse> GetUserAnimeListAsync(int userId)
         {
             var user = await GetUserWithAnimeByIdAsync(userId);
@@ -182,9 +187,10 @@ namespace AnimeApp.Application.Services
 
                 if (request.List.HasValue)
                     userAnime.MoveToList(request.List.Value);
-
                 if (request.Rating.HasValue)
                     userAnime.Rate(request.Rating);
+                if (request.IsFavorite is true)
+                    userAnime.MarkAsFavorites();
 
                 user.UserAnimes.Add(userAnime);
             }
@@ -193,12 +199,35 @@ namespace AnimeApp.Application.Services
                 // Або оновлюємо
                 if (request.List.HasValue)
                     userAnime.MoveToList(request.List.Value);
-
                 if (request.Rating.HasValue)
                     userAnime.Rate(request.Rating);
+                if (request.IsFavorite is true)
+                    userAnime.MarkAsFavorites();
             }
 
-            await _usersRepository.UpdateAsync(user);
+            await _usersRepo.UpdateAsync(user);
+        }
+
+        /// <summary>
+        /// Видаляє аніме статус користувача
+        /// </summary>
+        public async Task RemoveUserStatusAsync(int userId, int animeId, DeleteStatusTargets target)
+        {
+            UserAnime? userAnime = await _userAnimesRepo.GetUserAnimeStatusAsync(userId, animeId);
+            if (userAnime == null) return;
+
+            if (target.Rating)
+                userAnime.Rate(null);
+            if (target.List)
+                userAnime.MoveToList(null);
+            if (target.Favorite)
+                userAnime.RemoveFromFavorites();
+
+            // Якщо рядок пустий, видаляємо, інакше оновлюємо
+            if (userAnime.IsEmpty())
+                await _userAnimesRepo.DeleteAsync(userAnime);
+            else
+                await _userAnimesRepo.UpdateAsync(userAnime);
         }
 
         /// <summary>
@@ -206,44 +235,26 @@ namespace AnimeApp.Application.Services
         /// </summary>
         public async Task<UserAnimeStatus> GetUserAnimeStatusAsync(int userId, int animeId)
         {
-            UserAnime userAnime = await _userAnimesRepository.GetUserAnimeStatusAsync(userId, animeId) 
+            UserAnime userAnime = await _userAnimesRepo.GetUserAnimeStatusAsync(userId, animeId) 
                 ?? throw new NotFoundException("UserAnimeStatus");
-            return new(
-                userAnime?.MyList,
-                userAnime?.Rating );
+
+            return new(userAnime?.MyList, userAnime?.Rating, userAnime.IsFavorite);
         }
 
         /// <summary>
         /// Повертає користувача по ID
         /// </summary>
         public async Task<User> GetUserByIdAsync(int userId) =>
-            await _usersRepository.GetByIdAsync(userId) ?? throw new NotFoundException("User", userId);
+            await _usersRepo.GetByIdAsync(userId) ?? throw new NotFoundException("User", userId);
 
         /// <summary>
         /// Повертає користувача по ID із списком його аніме
         /// </summary>
         public async Task<User> GetUserWithAnimeByIdAsync(int userId) =>
-             await _usersRepository.GetWithAnimeListAsync(userId) ?? throw new NotFoundException("User", userId);
+             await _usersRepo.GetWithAnimeListAsync(userId) ?? throw new NotFoundException("User", userId);
 
-        public async Task RemoveUserStatusAsync(int userId, int animeId, DeleteStatusTargets target)
-        {
-            UserAnime? userAnime = await _userAnimesRepository.GetUserAnimeStatusAsync(userId, animeId);
-            if (userAnime == null) return;
 
-            if (target.Rating)
-                userAnime.Rate(null);
-
-            if (target.List)
-                userAnime.MoveToList(null);
-
-            // Если после изменений не осталось ни списка, ни рейтинга — удаляем строку
-            if (userAnime.MyList == null && userAnime.Rating == null)
-                await _userAnimesRepository.DeleteAsync(userAnime);
-
-            // Если что-то из полей всё еще заполнено — просто сохраняем изменения
-            else
-                await _userAnimesRepository.UpdateAsync(userAnime);
-        }
+        // =================== private methods ===================
 
         /// <summary>
         /// Рахує статистику перегляду аніме користувача.
@@ -280,6 +291,6 @@ namespace AnimeApp.Application.Services
         /// Повертає сутніть аніме
         /// </summary>
         private async Task<Anime> GetAnimeByIdAsync(int animeId) =>
-           await _animesRepository.GetByIdAsync(animeId) ?? throw new NotFoundException("Anime", animeId);
+           await _animesRepo.GetByIdAsync(animeId) ?? throw new NotFoundException("Anime", animeId);
     }
 }

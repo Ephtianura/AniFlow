@@ -3,7 +3,7 @@ import { ApiError } from "./ApiError";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export async function apiFetch(endpoint: string, options: RequestInit = {}) {
+export async function apiFetch<T>(endpoint: string, options: RequestInit = {}) : Promise<T> {
   const extra: RequestInit = { ...options };
   const headers = new Headers(options.headers || {});
 
@@ -18,7 +18,7 @@ export async function apiFetch(endpoint: string, options: RequestInit = {}) {
 
   const res = await fetch(`${API_URL}${endpoint}`, extra);
 
-  // 1. Пробуем распарсить JSON, но не падаем, если там пусто или текст
+  // Пробуем распарсить JSON, но не падаем, если там пусто или текст
   let data: any = null;
   const contentType = res.headers.get("content-type");
   if (contentType && contentType.includes("application/json")) {
@@ -26,21 +26,19 @@ export async function apiFetch(endpoint: string, options: RequestInit = {}) {
     data = text ? JSON.parse(text) : null;
   }
 
-  // Лог для дебага (в проде можно скрыть)
-  // Важная отладка
-  console.log("📤 API Response:", endpoint, "status:", res.status, "body:", data);
+  // Важная отладка (не трогать)
+  if (process.env.NODE_ENV === 'development') {
+    console.log("📤 API Response:", endpoint, "status:", res.status, "body:", data);
+  }
 
-  // 2. Обработка 401 (Unauthorized)
-
-
-  // 3. Если статус не 2xx
+  // Если статус не 2xx
   if (!res.ok) {
   let errorData: ApiErrorResponse;
   
   try {
     errorData = await res.json();
   } catch {
-    errorData = { title: `Server error: ${res.statusText}` };
+    errorData = { title: `Interval server error: ${res.statusText}` };
   }
 
   const error = new ApiError(errorData, res.status);
@@ -50,8 +48,3 @@ export async function apiFetch(endpoint: string, options: RequestInit = {}) {
 
   return data;
 }
-
-
-    export const getUserMe = async () => {
-    return apiFetch("/user/me");
-    };

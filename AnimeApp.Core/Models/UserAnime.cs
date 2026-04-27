@@ -12,6 +12,7 @@
             SetAnime(anime);
             MyList = null;
             Rating = null;
+            IsFavorite = false;
             Touch();
         }
 
@@ -23,11 +24,19 @@
         // Info
         public MyListEnum? MyList { get; private set; }       // Дивлюсь / Планую / Подивився
         public int? Rating { get; private set; }             // Оцінка аниме від юзера
+        public bool IsFavorite { get; private set; }        // Чи улюблене аніме 
         public DateTime UpdatedAt { get; private set; }
 
         // Nav
         public User User { get; private set; }
         public Anime Anime { get; private set; }
+
+        public bool IsEmpty()
+        {
+            return Rating == null
+                && MyList == null
+                && !IsFavorite;
+        }
 
         // ===================== Створення =====================
         public static UserAnime Create(User user, Anime anime)
@@ -36,13 +45,14 @@
             ArgumentNullException.ThrowIfNull(anime);
             return new UserAnime(user, anime);
         }
+        
         private void SetUser(User user)
         {
             User = user ?? throw new ArgumentNullException(nameof(user));
             UserId = user.Id;
         }
         private void SetAnime(Anime anime)
-        {   
+        { 
             Anime = anime ?? throw new ArgumentNullException(nameof(anime));
             AnimeId = anime.Id;
         }
@@ -62,6 +72,21 @@
             Touch();
         }
 
+        public void MarkAsFavorites()
+        {
+            if (IsFavorite)
+                return;
+            IsFavorite = true;
+            Touch();
+        }
+
+        public void RemoveFromFavorites()
+        {
+            if (!IsFavorite)
+                return;
+            IsFavorite = false;
+            Touch();
+        }
 
         //WatchedEpisodes = 0; // ctor
 

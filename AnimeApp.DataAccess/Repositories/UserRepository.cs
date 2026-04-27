@@ -42,8 +42,6 @@ namespace AnimeApp.DataAccess.Repositories
             if (filter.Role.HasValue)
                 query = query.Where(u => u.Role == filter.Role);
 
-
-
             // 📅 Діапазон по датам реєстрації
             if (filter.RegisteredFrom.HasValue)
                 query = query.Where(u => u.DateOfRegistration >= filter.RegisteredFrom);
@@ -71,6 +69,8 @@ namespace AnimeApp.DataAccess.Repositories
 
             return new PagedResult<User>(items, totalCount, filter.Page, filter.PageSize);
         }
+
+
 
         public async Task AddAsync(User user)
         {

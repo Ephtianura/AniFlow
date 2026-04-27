@@ -2,12 +2,14 @@
 import { apiFetch } from '@/lib/api';
 import { useState, useEffect } from 'react';
 import { BsFillStarFill } from 'react-icons/bs';
+import HeartButton from './HeartButton';
 
 interface RatingProps {
     animeId: number;
     score: number;
     totalScores: number;
     userRating?: number;
+    isFavorite: boolean | null;
 }
 
 const RATING_LABELS: Record<number, string> = {
@@ -28,9 +30,10 @@ export default function Rating({
     score,
     totalScores,
     userRating,
+    isFavorite,
 }: RatingProps) {
     const [hoveredRating, setHoveredRating] = useState<number | null>(null);
-    const [isMenuOpen, setIsMenuOpen] = useState(true);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     // Используем внутренний стейт для мгновенного отображения клика
     const [currentUserRating, setCurrentUserRating] = useState(userRating ?? 0);
@@ -51,11 +54,12 @@ export default function Rating({
     };
 
     return (
-        <div className='flex items-center justify-between h-11'>
+        <div className='flex justify-between h-11 select-none  
+                    md:mb-11 lg:mb-0'>
 
             <div className='flex gap-2 items-center
-        md:flex-col md:mb-11 md:items-start
-        lg:flex-row lg:mb-0 lg:items-center'>
+                    md:flex-col md:mb-11 md:items-start
+                    lg:flex-row lg:mb-0 lg:items-center h-11'>
 
                 {/* Левая часть: Общий рейтинг */}
                 <div className='flex gap-2 items-center'>
@@ -138,9 +142,9 @@ export default function Rating({
                                     }}
                                 >
                                     <div className='flex gap-2 items-center '>
-                                        <BsFillStarFill
-                                            className={`shrink-0 w-7 h-7 md:w-6 md:h-6 cursor-pointer transition-colors
-                            ${isActive ? 'text-white' : 'text-[#D1D1D1] hover:text-white'}`}
+                                        <BsFillStarFill className={`shrink-0 w-7 h-7 md:w-6 md:h-6 cursor-pointer transition-colors
+                                                 ${isActive ? 'text-white' 
+                                                            : 'text-[#D1D1D1] hover:text-white'}`}
                                         />
                                         <span className='text-white text-sm whitespace-nowrap md:hidden'>
                                             {RATING_LABELS[starValue]}
@@ -153,7 +157,12 @@ export default function Rating({
                     </div>
                 </div>
             </div>
+            <div className='hidden sm:block'>
+                <HeartButton
+                    animeId={animeId}
+                    isFavorite={isFavorite}
+                />
+            </div>
         </div>
-
     );
 }

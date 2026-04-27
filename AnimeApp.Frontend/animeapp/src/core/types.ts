@@ -1,20 +1,5 @@
 import { RelationKindEnum } from "./enums/RelationKind";
 
-// enums
-export enum TitleType {
-    Official = 1,
-    Alternative = 2,
-    Synonym = 3,
-    Short = 4,
-    FanTranslation = 5
-}
-export enum TitleLanguage {
-    Romaji = 0,
-    English = 1,
-    Japanese = 2,
-    Ukrainian = 3,
-}
-
 export enum SeasonEnum {
   Unknown = 0,
   Winter = 1,
@@ -31,33 +16,28 @@ export const SeasonMap: Record<string, string> = {
   Fall: "Осінь",
 };
 
+// enums
+export enum TitleType {
+    Official = 1,
+    Alternative = 2,
+    Synonym = 3,
+    Short = 4,
+    FanTranslation = 5
+}
+export enum TitleLanguage {
+    Romaji = 0,
+    English = 1,
+    Japanese = 2,
+    Ukrainian = 3,
+}
 
 // interfaces 
 export interface AnimeTitle {
     id: number;
     animeId: number;
     value: string;
-    language: string;
-    type: string;
-}
-
-export interface RelatedAnime {
-    id: number;
-    relationKind: keyof typeof RelationKindEnum;
-    titles: AnimeTitle[];
-    url: string;
-    posterUrl: string | null;
-    airedOn?: string;
-    releasedOn?: string;
-    score?: number;
-    episodes?: number;
-    season?: string;
-    year?: number;
-    rating?: string;
-    kind?: string;
-    status?: string;
-    description?: string;
-    genres: { id: number; nameUa: string }[];
+    language: TitleLanguage;
+    type: TitleType;
 }
 
 export interface Anime {
@@ -87,6 +67,32 @@ export interface Anime {
     relateds?: RelatedAnime[];
 }
 
+export interface RelatedAnime {
+    id: number;
+    relationKind: keyof typeof RelationKindEnum;
+    titles: AnimeTitle[];
+    url: string;
+    posterUrl: string | null;
+    airedOn?: string;
+    releasedOn?: string;
+    score?: number;
+    episodes?: number;
+    season?: string;
+    year?: number;
+    rating?: string;
+    kind?: string;
+    status?: string;
+    description?: string;
+    genres: { id: number; nameUa: string }[];
+}
+
+export interface UserAnime {
+  animeId: number
+  myList: string | null;
+  rating: number | null;
+  isFavorite: boolean | null;
+};
+
 export interface Animes {
     id: number;
     titles: { value: string; language: string; type: string }[];
@@ -105,3 +111,4 @@ export interface ApiErrorResponse {
   status?: number;
   errors?: Record<string, string[]>; 
 }
+

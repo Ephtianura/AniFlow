@@ -12,12 +12,12 @@ public static class ExceptionGroups
         [
             typeof(ArgumentException),
             typeof(AuthenticationException),
-            typeof(InvalidUserIdFormatException),
             typeof(ArgumentNullException),
             typeof(ArgumentOutOfRangeException)
         ],
         [HttpStatusCode.Unauthorized] = // 401
         [
+            typeof(InvalidUserIdFormatException),
             typeof(UnauthorizedAccessException),
             typeof(MissingUserIdClaimException)
         ],

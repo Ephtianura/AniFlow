@@ -9,6 +9,7 @@
         public DateTime DateOfRegistration { get; set; }
 
         // Статистика
+        public int Favorites { get; set; } // Загальна кількість улюблених аніме
         public int Watching { get; set; } // Кількість епізодів які дивиться
         public int Completed { get; set; } // Кількість епізодів які завершив
         public int Planned { get; set; } // Кількість епізодів які запланував

@@ -19,12 +19,11 @@ interface AnimeCardProps {
     description: string;
     posterUrl?: string;
     url: string;
-
     viewMode: "small" | "grid" | "gridLarge" | "list";
 }
 
 export default function AnimeCard(props: AnimeCardProps) {
-    const { viewMode } = props;
+    const { title, subTitle, rating, kind, year, genres, description, posterUrl, url, viewMode } = props;
 
     // Small
     if (viewMode === "small") {
@@ -37,22 +36,22 @@ export default function AnimeCard(props: AnimeCardProps) {
                         style={{ clipPath: "polygon(100% 0, 90% 35%, 100% 75%, 8% 75%, 8% 100%, 0 75%, 0 0)" }}>
                         <div className="flex gap-1 items-center mb-2 px-2">
                             <BiSolidStar className="w-4 h-4" />
-                            <p className="font-bold text-sm">{props.rating.toFixed(1)}</p>
+                            <p className="font-bold text-sm">{rating.toFixed(1)}</p>
                         </div>
                     </div>
-                    <Link href={`/anime/${props.url}`} className="text-primary text-xl hover:underline">
-                        <img src={props.posterUrl || "/404.gif"} alt={props.title} className="w-full h-full object-cover rounded" />
+                    <Link href={`/anime/${url}`} className="text-primary text-xl hover:underline">
+                        <img src={posterUrl || "/404.gif"} alt={title} className="w-full h-full object-cover rounded" />
                     </Link>
                 </div>
 
                 <div className="flex flex-col">
                     {/* Підназва */}
-                    {props.subTitle && (
-                        <p className="text-gray-dark text-xs line-clamp-1">{props.subTitle}</p>
+                    {subTitle && (
+                        <p className="text-gray-dark text-xs line-clamp-1">{subTitle}</p>
                     )}
                     {/* Назва */}
-                    <Link href={`/anime/${props.url}`} className="text-primary text-xl hover:underline line-clamp-1">
-                        {props.title}
+                    <Link href={`/anime/${url}`} className="text-primary text-xl hover:underline line-clamp-1">
+                        {title}
                     </Link>
                 </div>
 
@@ -68,40 +67,39 @@ export default function AnimeCard(props: AnimeCardProps) {
                 {/* Постер */}
                 <div className="relative w-full aspect-5/7">
                     <AnimeCardPoster
-                        title={props.title}
-                        rating={props.rating}
-                        posterUrl={props.posterUrl}
-                        url={props.url}
+                        title={title}
+                        rating={rating}
+                        posterUrl={posterUrl}
+                        url={url}
                     />
                 </div>
 
                 <div className="flex flex-col">
-
                     {/* Підназва */}
-                    {props.subTitle && (
-                        <p className="text-gray-dark text-xs line-clamp-1">{props.subTitle}</p>
+                    {subTitle && (
+                        <p className="text-gray-dark text-xs line-clamp-1">{subTitle}</p>
                     )}
                     {/* Назва */}
-                    <Link href={`/anime/${props.url}`} className="text-primary text-xl hover:underline line-clamp-2">
-                        {props.title}
+                    <Link href={`/anime/${url}`} className="text-primary text-xl hover:underline line-clamp-2">
+                        {title}
                     </Link>
                     <div className="text-primary-black text-md flex gap-1">
                         {/* KIND */}
                         <Link
-                            href={{ pathname: "/animes", query: { kind: props.kind } }}
+                            href={{ pathname: "/animes", query: { kind: kind } }}
                             className="underline hover:text-primary"
                         >
-                            {AnimeKindMap[props.kind]}
+                            {AnimeKindMap[kind]}
                         </Link>
 
                         <span className="text-gray-dark">/</span>
 
                         {/* YEAR */}
                         <Link
-                            href={{ pathname: "/animes", query: { year: props.year } }}
+                            href={{ pathname: "/animes", query: { year: year } }}
                             className="underline hover:text-primary"
                         >
-                            {props.year}
+                            {year}
                         </Link>
                     </div>
                 </div>
@@ -118,45 +116,45 @@ export default function AnimeCard(props: AnimeCardProps) {
                     {/* Постер */}
                     <div className="relative w-[90px] aspect-5/7 shrink-0">
                         <AnimeCardPoster
-                            title={props.title}
-                            rating={props.rating}
-                            posterUrl={props.posterUrl}
-                            url={props.url}
+                            title={title}
+                            rating={rating}
+                            posterUrl={posterUrl}
+                            url={url}
                         />
                     </div>
 
                     <div className="flex flex-col">
-                        <Link href={`/anime/${props.url}`} className="text-primary text-xl hover:underline line-clamp-3">
-                            {props.title}
+                        <Link href={`/anime/${url}`} className="text-primary text-xl hover:underline line-clamp-3">
+                            {title}
                         </Link>
-                        {props.subTitle && (
-                            <p className="text-gray-dark text-xs line-clamp-1">{props.subTitle}</p>
+                        {subTitle && (
+                            <p className="text-gray-dark text-xs line-clamp-1">{subTitle}</p>
                         )}
                         <div className="line-clamp-2">
                             <div className="text-primary-black text-md py-2 flex flex-wrap items-center gap-1  ">
 
                                 {/* KIND */}
                                 <Link
-                                    href={{ pathname: "/animes", query: { kind: props.kind } }}
+                                    href={{ pathname: "/animes", query: { kind: kind } }}
                                     className="underline hover:text-primary"
                                 >
-                                    {AnimeKindMap[props.kind]}
+                                    {AnimeKindMap[kind]}
                                 </Link>
 
                                 <span className="text-gray-dark">/</span>
 
                                 {/* YEAR */}
                                 <Link
-                                    href={{ pathname: "/animes", query: { year: props.year } }}
+                                    href={{ pathname: "/animes", query: { year: year } }}
                                     className="underline hover:text-primary"
                                 >
-                                    {props.year}
+                                    {year}
                                 </Link>
 
                                 <span className="hidden sm:inline-flex text-gray-dark">/</span>
 
                                 {/* GENRES */}
-                                {props.genres.map((genre, index) => (
+                                {genres.map((genre, index) => (
                                     <span key={genre.id} className="hidden sm:inline-flex items-center gap-0">
                                         <Link
                                             href={{ pathname: "/animes", query: { GenresId: genre.id } }}
@@ -164,7 +162,7 @@ export default function AnimeCard(props: AnimeCardProps) {
                                         >
                                             {genre.nameUa}
                                         </Link>
-                                        {index < props.genres.length - 1 && <span className="text-gray-dark">,</span>}
+                                        {index < genres.length - 1 && <span className="text-gray-dark">,</span>}
                                     </span>
                                 ))}
 
@@ -185,51 +183,51 @@ export default function AnimeCard(props: AnimeCardProps) {
                 {/* Постер */}
                 <div className="relative w-[clamp(120px,20vw,150px)] aspect-5/7 shrink-0">
                     <AnimeCardPoster
-                        title={props.title}
-                        rating={props.rating}
-                        posterUrl={props.posterUrl}
-                        url={props.url}
+                        title={title}
+                        rating={rating}
+                        posterUrl={posterUrl}
+                        url={url}
                     />
                 </div>
 
                 {/* Назва */}
                 <div className="flex flex-col">
                     <Link
-                        href={`/anime/${props.url}`}
+                        href={`/anime/${url}`}
                         className="text-primary text-xl hover:underline"
                     >
-                        {props.title}
+                        {title}
                     </Link>
 
                     {/* Підназва */}
-                    {props.subTitle && (
-                        <p className="text-gray-dark text-xs">{props.subTitle}</p>
+                    {subTitle && (
+                        <p className="text-gray-dark text-xs">{subTitle}</p>
                     )}
 
                     <div className="text-primary-black text-md py-2 flex flex-wrap items-center gap-1">
 
                         {/* KIND */}
                         <Link
-                            href={{ pathname: "/animes", query: { kind: props.kind } }}
+                            href={{ pathname: "/animes", query: { kind: kind } }}
                             className="underline hover:text-primary"
                         >
-                            {AnimeKindMap[props.kind]}
+                            {AnimeKindMap[kind]}
                         </Link>
 
                         <span className="text-gray-dark">/</span>
 
                         {/* YEAR */}
                         <Link
-                            href={{ pathname: "/animes", query: { year: props.year } }}
+                            href={{ pathname: "/animes", query: { year: year } }}
                             className="underline hover:text-primary"
                         >
-                            {props.year}
+                            {year}
                         </Link>
 
                         <span className="text-gray-dark">/</span>
 
                         {/* GENRES */}
-                        {props.genres.map((genre, index) => (
+                        {genres.map((genre, index) => (
                             <span key={genre.id} className="flex items-center gap-0">
                                 <Link
                                     href={{ pathname: "/animes", query: { GenresId: genre.id } }}
@@ -237,7 +235,7 @@ export default function AnimeCard(props: AnimeCardProps) {
                                 >
                                     {genre.nameUa}
                                 </Link>
-                                {index < props.genres.length - 1 && <span className="text-gray-dark">,</span>}
+                                {index < genres.length - 1 && <span className="text-gray-dark">,</span>}
                             </span>
                         ))}
 
@@ -246,7 +244,7 @@ export default function AnimeCard(props: AnimeCardProps) {
                     {/* Опис */}
                     <div className="hidden md:block">
                         <p className="text-primary-black text-md line-clamp-3">
-                            {props.description || ""}
+                            {description || ""}
                         </p>
                     </div>
                 </div>

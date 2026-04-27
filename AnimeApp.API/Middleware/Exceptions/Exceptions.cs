@@ -8,7 +8,6 @@
             : base("Unable to determine user (no userId in token).") { }
     }
 
-    
     // Коли userId у токені має невірний формат (не Guid)    
     public class InvalidUserIdFormatException : ArgumentException
     {

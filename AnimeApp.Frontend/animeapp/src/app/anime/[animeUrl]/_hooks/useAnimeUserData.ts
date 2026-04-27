@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { apiFetch } from "@/lib/api";
 
-type UserAnimeData = {
+type UserAnime = {
   myList: string | null;
   rating: number | null;
+  isFavorite: boolean | null;
 };
 
 export function useAnimeUserData(animeId?: number) {
-  const [data, setData] = useState<UserAnimeData | null>(null);
+  const [data, setData] = useState<UserAnime | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -16,7 +17,7 @@ export function useAnimeUserData(animeId?: number) {
     setLoading(true);
 
     apiFetch(`/user/me/animes/${animeId}`)
-      .then((res: UserAnimeData) => {
+      .then((res: UserAnime) => {
         setData(res);
       })
       .catch((err) => {
@@ -26,5 +27,5 @@ export function useAnimeUserData(animeId?: number) {
       .finally(() => setLoading(false));
   }, [animeId]);
 
-  return { data, loading };
+  return { data, setData, loading };
 }

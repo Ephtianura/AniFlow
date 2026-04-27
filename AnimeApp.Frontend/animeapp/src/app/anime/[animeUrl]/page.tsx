@@ -1,51 +1,30 @@
-"use client";
-import { use, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
 import WhiteCard from '@/components/WhiteCard';
 import ScreenshotsPreview from '@/components/ScreenshotsPreview';
 import PosterViewer from '@/components/PosterViewer';
-import { BsFillStarFill } from "react-icons/bs";
 import { AnimeInfo } from "./_components/AnimeInfo";
 import { RelatedAnimeList } from "./_components/RelatedAnimeList";
 import ListSelect from "./_components/ListSelect";
-import { useAnime } from "./_hooks/useAnime";
-import { useAnimeUserData } from "./_hooks/useAnimeUserData";
-import { useAnimePageEffects } from "./_hooks/useAnimePageEffects";
 import AnimePlayer from "./_components/AnimePlayer";
 import WatchButton from "./_components/WatchButton";
 import Rating from "./_components/Rating";
-import { DropdownButton } from "./_components/ListSelect copy";
+import { getAnimePageData } from "./_hooks/getAnimePageData";
+import AnimeTitles from "./_components/AnimeTitles";
+import { Anime, TitleLanguage, TitleType } from "@/core/types";
+import { UserAnimeHydrator } from '@/app/store/userAnimeHydrator';
 
-export default function AnimePage({
-    params,
-}: {
-    params: Promise<{ animeUrl: string }>;
-}) {
-    const router = useRouter();
-    const { animeUrl } = use(params);
+export default async function AnimePage({ params, }: { params: { animeUrl: string }; }) {
+    const { animeUrl } = params;
+    const { anime, userAnimeData } = await getAnimePageData(animeUrl)
 
-    const id = useMemo(() => {
-        return animeUrl.split("-").at(-1) || "";
-    }, [animeUrl]);
-
-    const { anime, loading, error } = useAnime(id);
-
-    const { data: userAnimeData } = useAnimeUserData(anime?.id);
-
-    const { title } = useAnimePageEffects({
-        animeUrl,
-        anime,
-        loading,
-        error,
-        router,
-    });
-
-
-    if (error) return <WhiteCard>Помилка: {error}</WhiteCard>;
-    if (!anime) return null;
+    // Потом куда то вынесу
+    const title = "Аніме"
+    // anime.titles.find(t => t.language === TitleLanguage.Ukrainian && t.type === TitleType.Official)?.value 
+    // || anime?.titles.find(t => t.language === TitleLanguage.Romaji && t.type === TitleType.Official)?.value 
+    // || anime?.titles.find(t => t.language === TitleLanguage.Romaji)?.value; 
 
     return (
         <WhiteCard>
+            <UserAnimeHydrator data={userAnimeData} />
             <div className='flex flex-col'>
 
                 {/* Постер та інформація */}
@@ -55,7 +34,9 @@ export default function AnimePage({
                     <div className='flex flex-col gap-4 order-3 sm:order-1'>
 
                         {/* Постер */}
-                        <PosterViewer posterUrl={anime.posterUrl || "/404.gif"} />
+                        <PosterViewer
+                            posterUrl={anime.posterUrl || "/404.gif"}
+                            isFavorite={userAnimeData?.isFavorite ?? null} />
 
                         {/* Кнопка та список */}
                         <WhiteCard>
@@ -72,7 +53,7 @@ export default function AnimePage({
                     <div className="sm:hidden order-5 mt-6">
                         <AnimeInfo anime={anime} />
                     </div>
-                    
+
                     {/* Інформація */}
                     <div className='flex flex-col order-1 sm:order-2'>
 
@@ -83,27 +64,13 @@ export default function AnimePage({
                                 score={anime.score}
                                 totalScores={anime.totalScores}
                                 userRating={userAnimeData?.rating ?? undefined}
+                                isFavorite={userAnimeData?.isFavorite ?? null}
                             />
                         </div>
 
                         {/* Назви */}
-                        <div className='flex flex-col order-2'>
-                            <p className='text-primary-black text-[40px] font-medium py-1'>
-                                {anime.titles.find(t => t.language === "Ukrainian" && t.type === "Official")?.value
-                                    || anime.titles.find(t => t.language === "Ukrainian")?.value}
-                            </p>
-                            <p className='text-primary-black text-sm'>
-                                {anime.titles.find(t => t.language === "Romaji" && t.type === "Official")?.value
-                                    || anime.titles.find(t => t.language === "Romaji")?.value}
-                            </p>
-                            <p className='text-primary-black text-sm'>
-                                {anime.titles.find(t => t.language === "English" && t.type === "Official")?.value
-                                    || anime.titles.find(t => t.language === "English")?.value}
-                            </p>
-                            <p className='text-primary-black text-sm'>
-                                {anime.titles.find(t => t.language === "Japanese" && t.type === "Official")?.value
-                                    || anime.titles.find(t => t.language === "Japanese")?.value}
-                            </p>
+                        <div className='order-2'>
+                            <AnimeTitles titles={anime.titles} />
                         </div>
 
                         <hr className='text-hr-clr my-4 order-4 sm:order-3' />
@@ -134,7 +101,7 @@ export default function AnimePage({
 
                 {/* Плеєр */}
                 <div id="anime-player">
-                    <AnimePlayer title={title} rating={anime.rating} />
+                    <AnimePlayer title={"title"} rating={anime.rating} />
                 </div>
 
             </div>

@@ -1,27 +1,24 @@
 import { useEffect } from "react";
-import { Anime } from "@/core/types";
+import { Anime, TitleLanguage, TitleType } from "@/core/types";
+import { apiFetch } from "@/lib/api";
 
 export function useAnimePageEffects(params: {
   animeUrl: string;
   anime: Anime | null;
-  loading: boolean;
-  error: string | null;
   router: any;
 }) {
-  const { animeUrl, anime, loading, error, router } = params;
+  const { animeUrl, anime, router } = params;
 
   // URL redirect logic
   useEffect(() => {
     async function fetchAnime() {
+
       const lastPart = animeUrl.split("-").at(-1);
 
       if (!/^\d+$/.test(lastPart || "")) return;
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/Animes/${lastPart}`
-      );
-
-      const data = await res.json();
+      // Костыль, наверное лучше потом добавить ендпоинт для поиска аниме по slug напрямую вместо айди...
+      const data = await apiFetch(`/Animes/${lastPart}`);
 
       if (data?.url && data.url !== animeUrl) {
         router.replace(`/anime/${data.url}`);
@@ -31,22 +28,15 @@ export function useAnimePageEffects(params: {
     fetchAnime();
   }, [animeUrl, router]);
 
-  // not found redirect
-  useEffect(() => {
-    if (!loading && !error && anime === null) {
-      router.replace("/not-found");
-    }
-  }, [anime, loading, error, router]);
-
   // title
   const title =
     anime?.titles.find(
-      (t) => t.language === "Ukrainian" && t.type === "Official"
+      (t) => t.language === TitleLanguage.Ukrainian && t.type === TitleType.Official
     )?.value ||
     anime?.titles.find(
-      (t) => t.language === "Romaji" && t.type === "Official"
+      (t) => t.language === TitleLanguage.Romaji && t.type === TitleType.Official
     )?.value ||
-    anime?.titles.find((t) => t.language === "Romaji")?.value;
+    anime?.titles.find((t) => t.language === TitleLanguage.Romaji)?.value;
 
   useEffect(() => {
     if (title) {

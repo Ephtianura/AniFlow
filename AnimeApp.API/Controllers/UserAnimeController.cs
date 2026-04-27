@@ -74,7 +74,8 @@ namespace AnimeApp.API.Controllers
                 UserId = userId,
                 AnimeId = animeId,
                 List = request.MyList,
-                Rating = request.Rating
+                Rating = request.Rating,
+                IsFavorite = request.IsFavorite
             };
             await _userAnimeService.UpdateAnimeStatusAsync(command);
             return NoContent();

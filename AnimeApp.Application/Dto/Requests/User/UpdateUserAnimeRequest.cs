@@ -2,8 +2,10 @@
 
 namespace AnimeApp.Application.Dto.Requests.User
 {
-    public record UpdateUserAnimeRequest(
-                                    MyListEnum? MyList,
-                                           int? Rating
-                                );
+    public class UpdateUserAnimeRequest
+    {
+        public MyListEnum? MyList { get; set; }
+        public int? Rating { get; set; }
+        public bool? IsFavorite { get; set; }
+    }
 }

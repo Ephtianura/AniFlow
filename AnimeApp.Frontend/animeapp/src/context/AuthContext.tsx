@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { apiFetch, getUserMe } from "@/lib/api";
+import { apiFetch } from "@/lib/api";
 import { toast } from "react-toastify";
 
 type AuthContextType = {
@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // Загружаем данные пользователя при инициализации
   const refreshAuth = async () => {
     try {
-      const user = await getUserMe();
+      const user = await apiFetch("/user/me");
       setIsLoggedIn(true);
 
       let roleStr: string | null = null;

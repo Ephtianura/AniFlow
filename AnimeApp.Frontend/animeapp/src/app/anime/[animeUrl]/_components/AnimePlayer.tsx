@@ -48,7 +48,7 @@ export default function AnimePlayer({ title, rating }: Props) {
 
                 {/* Назва */}
                 <div className="flex justify-between ">
-                    <h3 className="text-[1.75rem] font-semibold wrap-break-word ">
+                    <h3 className="text-[clamp(1.3rem,1.3rem+0.6vw,1.75rem)] font-semibold wrap-break-word ">
                         {title
                             ? <>Дивись аніме «{title}» онлайн українською</>
                             : <>Дивись аніме онлайн українською</>

@@ -24,7 +24,7 @@ namespace AnimeApp.DataAccess.Repositories
                 .CountAsync(userAnime => userAnime.AnimeId == animeId && userAnime.Rating.HasValue);
 
         /// <summary>
-        /// Виконує пошук оцінки користувача по составному ключу
+        /// Виконує пошук оцінки/списка користувача по составному ключу
         /// </summary>
         public async Task<UserAnime?> GetUserAnimeStatusAsync(int userId, int animeId) =>
             await _dbContext.UserAnimes.FindAsync(userId, animeId);

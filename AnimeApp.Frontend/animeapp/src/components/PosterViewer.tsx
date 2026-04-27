@@ -1,13 +1,15 @@
 "use client";
 
+import HeartButton from "@/app/anime/[animeUrl]/_components/HeartButton";
 import { useState, useEffect } from "react";
 import { IoClose, IoSearch } from "react-icons/io5";
 
 interface PosterViewerProps {
     posterUrl: string | null;
+    isFavorite: boolean | null;
 }
 
-export default function PosterViewer({ posterUrl }: PosterViewerProps) {
+export default function PosterViewer({ posterUrl, isFavorite}: PosterViewerProps) {
     const [open, setOpen] = useState(false);
     const [closing, setClosing] = useState(false);
 
@@ -26,7 +28,7 @@ export default function PosterViewer({ posterUrl }: PosterViewerProps) {
         setClosing(true);
         setTimeout(() => {
             setOpen(false);
-            setClosing(false); 
+            setClosing(false);
         }, 300);
     };
 
@@ -37,14 +39,22 @@ export default function PosterViewer({ posterUrl }: PosterViewerProps) {
     return (
         <>
             {/* Превью с hover-лупой */}
-            <div className="relative cursor-pointer w-full sm:w-[250px] aspect-5/7 shrink-0" onClick={() => setOpen(true)}>
-                <img
-                    src={posterUrl || "/404.gif"}
-                    alt="poster"
-                    className="w-full h-full object-cover rounded"
-                />
-                <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 flex items-center justify-center transition">
-                    <IoSearch className="text-white w-10 h-10" />
+            <div className="relative cursor-pointer w-full sm:w-[250px] aspect-5/7 shrink-0 select-none" >
+                <div onClick={() => setOpen(true)}>
+                    <img
+                        src={posterUrl || "/404.gif"}
+                        alt="poster"
+                        className="w-full h-full object-cover rounded"
+                        
+                    />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 flex items-center justify-center transition">
+                        <IoSearch className="text-white w-10 h-10" />
+                    </div>
+                </div>
+
+                <div className='sm:hidden absolute right-2 top-2 z-10 w-10 h-10 flex items-center justify-center 
+                bg-white/10 rounded-full pt-2 backdrop-blur-sm'>
+                    <HeartButton />
                 </div>
             </div>
 
