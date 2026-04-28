@@ -1,31 +1,17 @@
-import { create } from 'zustand'
-import { UserAnime } from '@/core/types'
+import { UserAnime } from "@/core/types";
+import { create } from "zustand";
 
-type State = {
-  data: Record<number, UserAnime | null>
-  setOne: (animeId: number, value: UserAnime | null) => void
-  updateOne: (animeId: number, patch: Partial<UserAnime>) => void
+type UserAnimeState = {
+  data: UserAnime | null; 
+  setData: (data: UserAnime | null) => void;
+  updateField: (patch: Partial<UserAnime>) => void;
+  clearData: () => void;
 }
-
-export const useUserAnimeStore = create<State>((set) => ({
-  data: {},
-
-  setOne: (animeId, value) =>
-    set((state) => ({
-      data: {
-        ...state.data,
-        [animeId]: value
-      }
-    })),
-
-  updateOne: (animeId, patch) =>
-    set((state) => ({
-      data: {
-        ...state.data,
-        [animeId]: {
-          ...state.data[animeId],
-          ...patch
-        } as UserAnime
-      }
-    }))
-}))
+export const useUserAnimeStore = create<UserAnimeState>((set) => ({
+  data: null,
+  setData: (data) => set({ data }),
+  updateField: (patch) => set((state) => ({
+    data: state.data ? { ...state.data, ...patch } : null
+  })),
+  clearData: () => set({ data: null })
+}));

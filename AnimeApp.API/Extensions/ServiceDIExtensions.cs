@@ -13,7 +13,8 @@ namespace AnimeApp.API.Extensions
         public static IServiceCollection AddServicesDI(this IServiceCollection services)
         {
             // DI Services
-            services.AddScoped<IAnimeService, AnimeService>();
+            services.AddScoped<IAnimeQueryService, AnimeQueryService>();
+            services.AddScoped<IAnimeCommandService, AnimeCommandService>();
             services.AddScoped<IAnimeStatsService, AnimeStatsService>();
             services.AddScoped<IGenreService, GenreService>();
             services.AddScoped<IStudioService, StudioService>();

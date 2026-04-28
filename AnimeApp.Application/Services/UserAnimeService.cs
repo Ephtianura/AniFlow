@@ -238,7 +238,7 @@ namespace AnimeApp.Application.Services
             UserAnime userAnime = await _userAnimesRepo.GetUserAnimeStatusAsync(userId, animeId) 
                 ?? throw new NotFoundException("UserAnimeStatus");
 
-            return new(userAnime?.MyList, userAnime?.Rating, userAnime.IsFavorite);
+            return new(userAnime?.MyList, userAnime?.Rating, userAnime?.IsFavorite ?? false);
         }
 
         /// <summary>

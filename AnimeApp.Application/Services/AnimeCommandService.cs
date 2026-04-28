@@ -5,84 +5,25 @@ using AnimeApp.Application.Exceptions;
 using AnimeApp.Application.Mapping;
 using AnimeApp.Core.Contracts;
 using AnimeApp.Core.Enums;
-using AnimeApp.Core.Filters;
 using AnimeApp.Core.Models;
 using AutoMapper;
+using System.Text.RegularExpressions;
+
 
 namespace AnimeApp.Application.Services
 {
-    public class AnimeService(
+    public class AnimeCommandService(
         IAnimeRepository animes,
         IStudioRepository studios,
         IGenreRepository genres,
         IS3FileStorageService fileStorage,
-        IMapper mapper) : IAnimeService
-
+        IMapper mapper) : IAnimeCommandService
     {
         private readonly IAnimeRepository _animeRep = animes;
         private readonly IStudioRepository _studios = studios;
         private readonly IGenreRepository _genres = genres;
         private readonly IS3FileStorageService _fileStorage = fileStorage;
         private readonly IMapper _mapper = mapper;
-
-        /// <summary> Повертає аніме по ID </summary>
-        public async Task<AnimeResponse> GetByIdAsync(int animeId)
-        {
-            var anime = await GetAnimeByIdAsync(animeId);
-
-            var response = _mapper.Map<AnimeResponse>(anime);
-
-            response.PosterUrl = GetPosterUrl(anime.PosterFileName);
-            response.ScreenshotsUrls = GetScreenshotsUrls(anime.ScreenshotsFileName);
-
-            if (response.Relateds != null)
-            {
-                foreach (var related in response.Relateds)
-                {
-                    var relatedAnime = anime.Relateds.FirstOrDefault(r => r.RelatedAnime.Id == related.Id)?.RelatedAnime;
-                    if (relatedAnime != null && !string.IsNullOrWhiteSpace(relatedAnime.PosterFileName))
-                        related.PosterUrl = _fileStorage.GetUrl(relatedAnime.PosterFileName);
-                }
-            }
-
-            return response;
-        }
-
-        /// <summary> Повертає рандомне аніме </summary>
-        public async Task<AnimeResponse> GetRandomAsync()
-        {
-            var anime = await _animeRep.GetRandomAsync() ?? throw new NotFoundException("Anime");
-            var response = _mapper.Map<AnimeResponse>(anime);
-
-            response.PosterUrl = GetPosterUrl(anime.PosterFileName);
-            response.ScreenshotsUrls = GetScreenshotsUrls(anime.ScreenshotsFileName);
-
-            return response;
-        }
-
-        /// <summary> Повертає аніме за фільтром </summary>
-        public async Task<PagedResult<AnimesResponse>> GetFilteredAsync(AnimeFilter filter)
-        {
-            var pagedResult = await _animeRep.GetFilteredAsync(filter);
-
-            var mappedItems = pagedResult.Items.Select(anime =>
-            {
-                var animeDto = _mapper.Map<AnimesResponse>(anime);
-
-                if (!string.IsNullOrWhiteSpace(anime.PosterFileName))
-                    animeDto = animeDto with { PosterUrl = _fileStorage.GetUrl(anime.PosterFileName) };
-
-                return animeDto;
-            }).ToList();
-
-            var response = new PagedResult<AnimesResponse>(
-                items: mappedItems,
-                totalCount: pagedResult.TotalCount,
-                page: pagedResult.Page,
-                pageSize: pagedResult.PageSize
-            );
-            return response;
-        }
 
         /// <summary> Створює аніме </summary>
         public async Task<AnimeResponse> CreateAsync(AnimeCreateRequest request)
@@ -102,7 +43,7 @@ namespace AnimeApp.Application.Services
             {
                 studio = await _studios.GetByIdAsync(request.StudiosId.Value);
                 if (studio == null)
-                    throw new ArgumentException("Studio not found");
+                    throw new NotFoundException("Studio not found");
             }
 
             // ===================== Genres =====================
@@ -420,10 +361,6 @@ namespace AnimeApp.Application.Services
             await _animeRep.DeleteAsync(anime);
         }
 
-        /// <summary> Повертає масив айдішок всіх аніме </summary>
-        public Task<List<int>> GetIdsAsync() => _animeRep.GetAllIdsAsync();
-
-
         // ============================== private methods ====================================
 
         /// <summary> Повертає сутність аніме по айді </summary>
@@ -431,19 +368,32 @@ namespace AnimeApp.Application.Services
         private async Task<Anime> GetAnimeByIdAsync(int animeId) =>
             await _animeRep.GetByIdAsync(animeId) ?? throw new NotFoundException("Anime", animeId);
 
+        private string? GetPosterUrl(string? posterFileName) =>
+            string.IsNullOrWhiteSpace(posterFileName)
+                ? null
+                : _fileStorage.GetUrl(posterFileName);
+
+        private List<string>? GetScreenshotsUrls(List<string>? screenshotsFileNames) =>
+            screenshotsFileNames?.Any() == true
+                ? screenshotsFileNames.ConvertAll(_fileStorage.GetUrl)
+                : null;
+
         private static string GenerateUrl(AnimeTitle romajiName, int animeId)
         {
-            var safeName = romajiName.Value
+            var value = romajiName.Value
                 .Trim()
-                .ToLower()
-                .Replace(" ", "-")
-                .Replace(":", "")
-                .Replace("?", "")
-                .Replace(",", "")
-                .Replace(".", "")
-                .Replace("!", "");
+                .ToLowerInvariant();
 
-            return $"{safeName}-{animeId}";
+            // Видалити все окрім a-z 0-9
+            value = Regex.Replace(value, @"[^a-z0-9\s-]", "");
+
+            // Заміна всех пробілів на  "-"
+            value = Regex.Replace(value, @"\s+", "-");
+
+            // Заміна повторів "--..-" на "-"
+            value = Regex.Replace(value, @"-+", "-");
+
+            return $"{value}-{animeId}";
         }
 
         /// <summary> Розраховує та повертає сезон по місяцю випуску </summary>
@@ -458,16 +408,5 @@ namespace AnimeApp.Application.Services
                 _ => SeasonEnum.Unknown
             };
         }
-
-        private string? GetPosterUrl(string? posterFileName) =>
-            string.IsNullOrWhiteSpace(posterFileName)
-                ? null
-                : _fileStorage.GetUrl(posterFileName);
-
-        private List<string>? GetScreenshotsUrls(List<string>? screenshotsFileNames) =>
-            screenshotsFileNames?.Any() == true
-                ? screenshotsFileNames.ConvertAll(_fileStorage.GetUrl)
-                : null;
-
     }
 }

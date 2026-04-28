@@ -1,16 +1,21 @@
 ﻿using AnimeApp.Application.Contracts;
 using AnimeApp.Application.Dto.Requests.Anime;
 using AnimeApp.Application.Dto.Responses.Anime;
+using AnimeApp.Application.Services;
 using AnimeApp.Core.Filters;
 using AnimeApp.Infrastructure.RedisCache.AnimeApp.Core.Filters;
 
-
 namespace AnimeApp.Infrastructure.RedisCache
 {
-    public class AnimeCacheDecorator(IRedisCache cache, IAnimeService service) : IAnimeService
+    public class AnimeCacheDecorator(
+        IRedisCache cache,
+        AnimeQueryService queryService,
+        AnimeCommandService commandService
+            ) : IAnimeQueryService, IAnimeCommandService
     {
         private readonly IRedisCache _cache = cache;
-        private readonly IAnimeService _service = service;
+        private readonly IAnimeQueryService _queryService = queryService;
+        private readonly IAnimeCommandService _commandService = commandService;
 
         public async Task<AnimeResponse> GetByIdAsync(int id)
         {
@@ -21,7 +26,7 @@ namespace AnimeApp.Infrastructure.RedisCache
             if (cached != null)
                 return cached;
 
-            var anime = await _service.GetByIdAsync(id);
+            var anime = await _queryService.GetByIdAsync(id);
 
             await _cache.SetAsync(key, anime, TimeSpan.FromMinutes(15));
 
@@ -36,7 +41,7 @@ namespace AnimeApp.Infrastructure.RedisCache
             if (cached != null)
                 return cached;
 
-            var animes = await _service.GetFilteredAsync(filter);
+            var animes = await _queryService.GetFilteredAsync(filter);
 
             await _cache.SetAsync(key, animes, TimeSpan.FromMinutes(5));
 
@@ -68,7 +73,7 @@ namespace AnimeApp.Infrastructure.RedisCache
 
 
             // Якщо список в кешу пустий - Ідемо до бази отримувати нові рандомні айдішки
-            List<int> animeIds = await _service.GetIdsAsync();
+            List<int> animeIds = await _queryService.GetIdsAsync();
 
             if (animeIds.Count == 0)
                 throw new ArgumentException("Anime is missing");
@@ -88,7 +93,7 @@ namespace AnimeApp.Infrastructure.RedisCache
         {
             var key = "anime:id:" + id;
 
-            var anime = await _service.UpdateAsync(id, request);
+            var anime = await _commandService.UpdateAsync(id, request);
 
             await _cache.RemoveAsync(key);
             await _cache.RemoveByPrefixAsync("anime:filter:");
@@ -101,7 +106,7 @@ namespace AnimeApp.Infrastructure.RedisCache
         {
             var key = "anime:id:" + id;
 
-            var anime = await _service.UpdateFilesAsync(id, request);
+            var anime = await _commandService.UpdateFilesAsync(id, request);
 
             await _cache.RemoveAsync(key);
             await _cache.RemoveByPrefixAsync("anime:filter:");
@@ -112,7 +117,7 @@ namespace AnimeApp.Infrastructure.RedisCache
 
         public async Task<AnimeResponse> CreateAsync(AnimeCreateRequest request)
         {
-            var anime = await _service.CreateAsync(request);
+            var anime = await _commandService.CreateAsync(request);
 
             var key = "anime:id:" + anime.Id;
 
@@ -125,13 +130,14 @@ namespace AnimeApp.Infrastructure.RedisCache
 
         public async Task DeleteAsync(int id)
         {
-            await _service.DeleteAsync(id);
+            await _commandService.DeleteAsync(id);
 
             await _cache.RemoveAsync("anime:id:" + id);
             await _cache.RemoveByPrefixAsync("anime:filter:");
             await _cache.RemoveAsync("anime:random:ids");
         }
 
-        public Task<List<int>> GetIdsAsync() => _service.GetIdsAsync();
+        public Task<List<int>> GetIdsAsync() => _queryService.GetIdsAsync();
+        public Task<AnimeUserResponse> GetAnimePageAsync(int id, int? userId) => _queryService.GetAnimePageAsync(id, userId);
     }
 }

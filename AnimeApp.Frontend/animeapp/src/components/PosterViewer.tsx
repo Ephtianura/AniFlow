@@ -6,10 +6,9 @@ import { IoClose, IoSearch } from "react-icons/io5";
 
 interface PosterViewerProps {
     posterUrl: string | null;
-    isFavorite: boolean | null;
 }
 
-export default function PosterViewer({ posterUrl, isFavorite}: PosterViewerProps) {
+export default function PosterViewer({ posterUrl}: PosterViewerProps) {
     const [open, setOpen] = useState(false);
     const [closing, setClosing] = useState(false);
 

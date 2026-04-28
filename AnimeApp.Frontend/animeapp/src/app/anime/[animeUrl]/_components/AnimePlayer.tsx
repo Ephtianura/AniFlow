@@ -5,9 +5,11 @@ import { TelegramShareButton } from "react-share";
 import { FaTelegramPlane } from "react-icons/fa";
 import PlayerSettings from "./PlayerSettings";
 import EpisodeSelector from "./EpisodeSelector";
+import { AnimeTitle } from "@/core/types";
+import pullUkrTitle from "../_functions/pullUkrTitle";
 
 type Props = {
-    title?: string;
+    titles: AnimeTitle[];
     rating?: string;
 };
 const VOICE_DUMMY = [
@@ -21,9 +23,9 @@ const PLAYER_DUMMY = [
     { id: 'kodik', name: 'Kodik' },
 ];
 
-export default function AnimePlayer({ title, rating }: Props) {
+export default function AnimePlayer({ titles, rating }: Props) {
     const [url, setUrl] = useState("");
-
+    const title = pullUkrTitle(titles)
 
     const handleVoice = (id: string) => console.log("Выбрана озвучка:", id);
     const handlePlayer = (id: string) => console.log("Выбран плеер:", id);

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { AnimeKindEnum, AnimeKindMap } from "@/core/AnimeKind";
 import { RelationKindEnum, RelationKindMap } from "@/core/RelationKind";
 import { RelatedAnime } from "@/core/types";
+import pullUkrTitle from "../_functions/pullUkrTitle";
 
 interface Props {
     relateds: RelatedAnime[];
@@ -33,12 +34,7 @@ export const RelatedAnimeList: React.FC<Props> = ({ relateds }) => {
 
             <div className="flex gap-4 overflow-x-auto">
                 {relateds.map(rel => {
-                    const title =
-                        rel.titles.find(t => t.language === "Ukrainian" && t.type === "Official")?.value ||
-                        rel.titles.find(t => t.language === "Romaji" && t.type === "Official")?.value ||
-                        rel.titles.find(t => t.language === "Romaji")?.value ||
-                        "Без назви";
-
+                    const title = pullUkrTitle(rel.titles)
                     const airedYear = rel.airedOn ? new Date(rel.airedOn).getFullYear() : rel.year;
 
                     return (

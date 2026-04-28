@@ -1,22 +1,35 @@
 import { ApiErrorResponse } from "@/core/types";
 import { ApiError } from "./ApiError";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_URL!;
 
-export async function apiFetch<T>(endpoint: string, options: RequestInit = {}) : Promise<T> {
-  const extra: RequestInit = { ...options };
+type ApiFetchOptions = RequestInit & {
+  cookieHeader?: string;
+};
+
+export async function apiFetch<T>(
+  endpoint: string,
+  options: ApiFetchOptions = {}
+): Promise<T> {
   const headers = new Headers(options.headers || {});
 
-  if (!(extra.body instanceof FormData)) {
+  // 🔐 SSR cookies (если передали)
+  if (options.cookieHeader) {
+    headers.set("Cookie", options.cookieHeader);
+  }
+
+  // 📦 JSON по умолчанию (кроме FormData)
+  if (!(options.body instanceof FormData)) {
     if (!headers.has("Content-Type")) {
       headers.set("Content-Type", "application/json");
     }
   }
-  
-  extra.headers = headers;
-  extra.credentials = "include";
 
-  const res = await fetch(`${API_URL}${endpoint}`, extra);
+  const res = await fetch(`${API_URL}${endpoint}`, {
+    ...options,
+    headers,
+    credentials: "include",
+  });
 
   // Пробуем распарсить JSON, но не падаем, если там пусто или текст
   let data: any = null;

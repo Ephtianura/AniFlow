@@ -1,25 +1,19 @@
-// src/app/store/UserAnimeHydrator.tsx
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { useUserAnimeStore } from './useUserAnimeStore';
 import { UserAnime } from '@/core/types';
+// useLayoutEffect?!!?
 
-type Props = {
-  data: UserAnime | null;
-};
+// Функция, которая кладёт данные ответа с серврера в браузер клиента
+export function UserAnimeHydrator({ data }: { data: UserAnime | null }) {
+  const setData = useUserAnimeStore(s => s.setData);
 
-export function UserAnimeHydrator({ data }: Props) {
-  const setOne = useUserAnimeStore((s) => s.setOne);
-  
-  const initialized = useRef(false);
-
+  // Как только компонент монтируется на новой странице
+  // он записывает новые данные (или null), стирая старые.
   useEffect(() => {
-    if (!initialized.current && data) {
-      useUserAnimeStore.getState().setOne(data.animeId, data);
-      initialized.current = true;
-    }
-  }, [data]);
+    setData(data);
+  }, [data, setData]);
 
   return null;
 }

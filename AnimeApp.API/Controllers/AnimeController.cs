@@ -1,33 +1,47 @@
-﻿using AnimeApp.Application.Dto.Responses.Anime;
+﻿using AnimeApp.API.Controllers;
+using AnimeApp.API.Dto;
 using AnimeApp.Application.Contracts;
 using AnimeApp.Application.Dto.Requests.Anime;
+using AnimeApp.Application.Dto.Responses.Anime;
 using AnimeApp.Core.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using AnimeApp.API.Dto;
 
 namespace AnimeApp.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AnimesController(IAnimeService animeService, IAnimeStatsService animeStatsService) : ControllerBase
+    public class AnimesController(IAnimeQueryService animeQueryService, IAnimeCommandService animeCommandService, IAnimeStatsService animeStatsService) : ControllerBase
     {
-        private readonly IAnimeService _animeService = animeService;
+        private readonly IAnimeQueryService _animeQueryService = animeQueryService;
+        private readonly IAnimeCommandService _animeCommandService = animeCommandService;
         private readonly IAnimeStatsService _animeStatsService = animeStatsService;
 
         /// <summary> Повертає повну інформацію про аніме по ID. </summary>
         [HttpGet("{id}")]
         public async Task<ActionResult<AnimeResponse>> GetById(int id)
         {
-            var anime = await _animeService.GetByIdAsync(id);
+            var anime = await _animeQueryService.GetByIdAsync(id);
             return Ok(anime);
         }
 
+        /// <summary> Повертає повну інформацію про аніме та userStatus по slug </summary>
+        /// <remarks> Приклад запиту: "slug/kusuriya-no-hitorigoto-2nd-season-1" </remarks>
+        /// <exception cref="ArgumentException"></exception>
+        [HttpGet("slug/{slug}")]
+        public async Task<ActionResult<AnimeUserResponse>> GetBySlug(string slug)
+        {
+            var id = Helper.ExtractId(slug) ?? throw new ArgumentException("Invalid slug");
+            var userId = Helper.GetUserIdOrNull(User);
+            var anime = await _animeQueryService.GetAnimePageAsync(id, userId);
+            return Ok(anime);
+        }
+        
         /// <summary> Повертає рандомне аніме. </summary>
         [HttpGet("random")]
         public async Task<ActionResult<AnimeResponse>> GetRandom()
         {
-            var anime = await _animeService.GetRandomAsync();
+            var anime = await _animeQueryService.GetRandomAsync();
             return Ok(anime);
         }
 
@@ -35,7 +49,7 @@ namespace AnimeApp.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<PagedResult<AnimesResponse>>> GetFiltered([FromQuery] AnimeFilter filter)
         {
-            var animes = await _animeService.GetFilteredAsync(filter);
+            var animes = await _animeQueryService.GetFilteredAsync(filter);
             return Ok(animes);
         }
 
@@ -46,7 +60,7 @@ namespace AnimeApp.Api.Controllers
         [Authorize(Policy = "AdminPolicy")]
         public async Task<ActionResult<AnimeResponse>> Create([FromBody] AnimeCreateRequest request)
         {
-            var anime = await _animeService.CreateAsync(request);
+            var anime = await _animeCommandService.CreateAsync(request);
 
             return CreatedAtAction(nameof(GetById), new { id = anime.Id }, anime);
         }
@@ -56,7 +70,7 @@ namespace AnimeApp.Api.Controllers
         [Authorize(Policy = "AdminPolicy")]
         public async Task<ActionResult<AnimeResponse>> Update(int id, [FromBody] AnimeUpdateRequest request)
         {
-            var anime = await _animeService.UpdateAsync(id, request);
+            var anime = await _animeCommandService.UpdateAsync(id, request);
             return Ok(anime);
         }
 
@@ -65,7 +79,7 @@ namespace AnimeApp.Api.Controllers
         [Authorize(Policy = "AdminPolicy")]
         public async Task<ActionResult<AnimeResponse>> UpdateFiles(int id, [FromForm] AnimeUpdateFilesRequest request)
         {
-            var anime = await _animeService.UpdateFilesAsync(id, request);
+            var anime = await _animeCommandService.UpdateFilesAsync(id, request);
             return Ok(anime);
         }
 
@@ -74,7 +88,7 @@ namespace AnimeApp.Api.Controllers
         [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> Delete(int id)
         {
-            await _animeService.DeleteAsync(id);
+            await _animeCommandService.DeleteAsync(id);
             return NoContent();
         }
 

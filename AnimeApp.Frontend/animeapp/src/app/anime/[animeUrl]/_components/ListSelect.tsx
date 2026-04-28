@@ -10,18 +10,18 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MyListEnum, MyListMap } from "@/core/MyList";
 import { apiFetch } from "@/lib/api";
+import { useUserAnimeStore } from "@/app/store/useUserAnimeStore";
 
 type Option = {
     value: string;
     label: string;
 };
 
-type Props = {
-    animeId: number;
-    initialStatus?: string | null;
-};
+export default function ListSelect() {
+    const initialStatus = useUserAnimeStore((s) => s.data?.myList);
+    const animeId = useUserAnimeStore((s) => s.data?.animeId);
+    const updateList = useUserAnimeStore(s => s.updateField);
 
-export default function ListSelect({ animeId, initialStatus }: Props) {
     const options: Option[] = [
         ...Object.keys(MyListEnum)
             .filter((key) => isNaN(Number(key)))
@@ -46,8 +46,8 @@ export default function ListSelect({ animeId, initialStatus }: Props) {
         setSelected(found ?? null);
     }, [initialStatus]);
 
+    // Обновляет список
     const handleChange = async (option: Option | null) => {
-
         if (option?.value !== "__remove__") {
             setSelected(option);
         }
@@ -59,8 +59,8 @@ export default function ListSelect({ animeId, initialStatus }: Props) {
             await apiFetch(`/user/me/${animeId}?${query}`, {
                 method: "DELETE",
             });
-
             setSelected(null);
+            updateList({ myList: null });
             return;
         }
         if (option) {
@@ -70,6 +70,7 @@ export default function ListSelect({ animeId, initialStatus }: Props) {
                 method: "PATCH",
                 body: JSON.stringify(payload),
             });
+            updateList({ myList: option.value });
         }
     };
 

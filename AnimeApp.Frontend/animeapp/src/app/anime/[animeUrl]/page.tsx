@@ -7,24 +7,32 @@ import ListSelect from "./_components/ListSelect";
 import AnimePlayer from "./_components/AnimePlayer";
 import WatchButton from "./_components/WatchButton";
 import Rating from "./_components/Rating";
-import { getAnimePageData } from "./_hooks/getAnimePageData";
+import { getAnimePageData } from "./_functions/getAnimePageData";
 import AnimeTitles from "./_components/AnimeTitles";
-import { Anime, TitleLanguage, TitleType } from "@/core/types";
+import { TitleLanguage, TitleType } from "@/core/types";
 import { UserAnimeHydrator } from '@/app/store/userAnimeHydrator';
+import pullUkrTitle from './_functions/pullUkrTitle';
+
+// Сделать название вкладки
+export async function generateMetadata({ params, }: { params: { animeUrl: string }; }) {
+    const { animeUrl } = await params;
+    const { anime } = await getAnimePageData(animeUrl); // Запрос кешируется
+    const title = pullUkrTitle(anime.titles);
+    return {
+        title: `${title} | AniFlow`,
+        description: anime?.description?.slice(0, 160) || `Дивитися аніме ${title} українською мовою на AniFlow`,
+    };
+}
 
 export default async function AnimePage({ params, }: { params: { animeUrl: string }; }) {
-    const { animeUrl } = params;
-    const { anime, userAnimeData } = await getAnimePageData(animeUrl)
-
-    // Потом куда то вынесу
-    const title = "Аніме"
-    // anime.titles.find(t => t.language === TitleLanguage.Ukrainian && t.type === TitleType.Official)?.value 
-    // || anime?.titles.find(t => t.language === TitleLanguage.Romaji && t.type === TitleType.Official)?.value 
-    // || anime?.titles.find(t => t.language === TitleLanguage.Romaji)?.value; 
+    console.log("params:", params);
+    const { animeUrl } = await params;
+    const { anime, userStatus } = await getAnimePageData(animeUrl)
 
     return (
         <WhiteCard>
-            <UserAnimeHydrator data={userAnimeData} />
+            {/* Засунути дані користувача у сховище */}
+            <UserAnimeHydrator data={userStatus} />
             <div className='flex flex-col'>
 
                 {/* Постер та інформація */}
@@ -34,18 +42,14 @@ export default async function AnimePage({ params, }: { params: { animeUrl: strin
                     <div className='flex flex-col gap-4 order-3 sm:order-1'>
 
                         {/* Постер */}
-                        <PosterViewer
-                            posterUrl={anime.posterUrl || "/404.gif"}
-                            isFavorite={userAnimeData?.isFavorite ?? null} />
+                        {/* Та додати до обраного */}
+                        <PosterViewer posterUrl={anime.posterUrl || "/404.gif"} /> 
 
                         {/* Кнопка та список */}
                         <WhiteCard>
                             <div className="flex flex-col gap-2">
-                                <WatchButton />
-                                <ListSelect
-                                    animeId={anime.id}
-                                    initialStatus={userAnimeData?.myList}
-                                />
+                                <WatchButton /> 
+                                <ListSelect/>
                             </div>
                         </WhiteCard>
                     </div>
@@ -58,13 +62,14 @@ export default async function AnimePage({ params, }: { params: { animeUrl: strin
                     <div className='flex flex-col order-1 sm:order-2'>
 
                         {/* Рейтинг */}
-                        <div className="order-1">
-                            <Rating
+                        {/* Та додати до обраного */}
+                        <div className="order-1"> 
+                            <Rating 
                                 animeId={anime.id}
                                 score={anime.score}
                                 totalScores={anime.totalScores}
-                                userRating={userAnimeData?.rating ?? undefined}
-                                isFavorite={userAnimeData?.isFavorite ?? null}
+                                userRating={userStatus?.rating ?? undefined}
+                                isFavorite={userStatus?.isFavorite ?? null}  //TODO
                             />
                         </div>
 
@@ -101,7 +106,7 @@ export default async function AnimePage({ params, }: { params: { animeUrl: strin
 
                 {/* Плеєр */}
                 <div id="anime-player">
-                    <AnimePlayer title={"title"} rating={anime.rating} />
+                    <AnimePlayer titles={anime.titles} rating={anime.rating} />
                 </div>
 
             </div>

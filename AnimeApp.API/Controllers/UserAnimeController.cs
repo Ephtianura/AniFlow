@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AnimeApp.API.Controllers
 {
-    // ================= USER =================
+    // ================= USER ANIME =================
     [Authorize(Policy = "UserPolicy")]
     [ApiController]
     [Route("api/user/me")]
@@ -23,7 +23,7 @@ namespace AnimeApp.API.Controllers
         [HttpGet("profile")]
         public async Task<IActionResult> GetProfile()
         {
-            var userId = UserInfo.GetUserId(User);
+            var userId = Helper.GetUserIdOrThrow(User);
             var user = await _userAnimeService.GetUserProfileAsync(userId);
 
             var response = _mapper.Map<UserProfileUrlsResponse>(user);
@@ -37,7 +37,7 @@ namespace AnimeApp.API.Controllers
         [HttpGet("animes")]
         public async Task<IActionResult> GetAnimeList(MyListEnum? myList)
         {
-            var userId = UserInfo.GetUserId(User);
+            var userId = Helper.GetUserIdOrThrow(User);
             if (myList is null)
             {
                 var userAnimeList = await _userAnimeService.GetUserAnimeListAsync(userId);
@@ -59,16 +59,16 @@ namespace AnimeApp.API.Controllers
         [HttpGet("animes/{animeId}")]
         public async Task<IActionResult> GetUserAnimeStatus(int animeId)
         {
-            var userId = UserInfo.GetUserId(User);
+            var userId = Helper.GetUserIdOrThrow(User);
             var userAnimeStatus = await _userAnimeService.GetUserAnimeStatusAsync(userId, animeId);
             return Ok(userAnimeStatus);
         }
 
-        /// <summary>Оцінює аніме або додає до власного списку</summary>
+        /// <summary> Оцінює аніме або додає до власного списку </summary>
         [HttpPatch("{animeId}")]
         public async Task<IActionResult> UpdateUserAnime(int animeId, [FromBody] UpdateUserAnimeRequest request)
         {
-            var userId = UserInfo.GetUserId(User);
+            var userId = Helper.GetUserIdOrThrow(User);
             var command = new UpdateUserAnimeCommand()
             {
                 UserId = userId,
@@ -81,10 +81,17 @@ namespace AnimeApp.API.Controllers
             return NoContent();
         }
 
+        /// <summary> Видаляє частини персонального статусу користувача для конкретного аніме. </summary>
+        /// <remarks>
+        /// Дозволяє частково очистити дані користувача:
+        /// рейтинг, список перегляду та/або улюблене.
+        /// Параметр <c>target</c> визначає, які саме поля будуть видалені.
+        /// Якщо всі значення false — запит не має ефекту.
+        /// </remarks>
         [HttpDelete("{animeId}")]
         public async Task<IActionResult> DeleteAnimeData(int animeId, [FromQuery] DeleteStatusTargets target)
         {
-            var userId = UserInfo.GetUserId(User);
+            var userId = Helper.GetUserIdOrThrow(User);
            
             await _userAnimeService.RemoveUserStatusAsync(userId, animeId, target);
 

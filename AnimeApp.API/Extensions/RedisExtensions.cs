@@ -19,17 +19,19 @@ namespace AnimeApp.API.Extensions
 
         public static IServiceCollection AddCacheDecorators(this IServiceCollection services)
         {
-            services.AddScoped<AnimeService>();
+            services.AddScoped<AnimeQueryService>();
+            services.AddScoped<AnimeCommandService>();
 
-            services.AddScoped<IAnimeService>(sp =>
-            {
-                var service = sp.GetRequiredService<AnimeService>();
-                var cache = sp.GetRequiredService<IRedisCache>();
+            services.AddScoped<AnimeCacheDecorator>();
 
-                return new AnimeCacheDecorator(cache, service);
-            });
+            services.AddScoped<IAnimeQueryService>(sp =>
+                sp.GetRequiredService<AnimeCacheDecorator>());
+
+            services.AddScoped<IAnimeCommandService>(sp =>
+                sp.GetRequiredService<AnimeCacheDecorator>());
 
             return services;
         }
+
     }
 }
