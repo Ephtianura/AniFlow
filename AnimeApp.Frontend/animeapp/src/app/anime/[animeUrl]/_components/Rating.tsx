@@ -3,6 +3,11 @@ import { apiFetch } from '@/lib/api';
 import { useState, useEffect } from 'react';
 import { BsFillStarFill } from 'react-icons/bs';
 import HeartButton from './HeartButton';
+import clsx from 'clsx';
+import { useAnimeId } from './animeIdProvider';
+import { useUserAnimeStore } from '@/stores/useUserAnimeStore';
+import { useAuth } from '@/context/AuthContext';
+import { toast } from 'react-toastify';
 
 interface RatingProps {
     animeId: number;
@@ -25,41 +30,47 @@ const RATING_LABELS: Record<number, string> = {
     10: "Шедевр"
 };
 
-export default function Rating({
-    animeId,
-    score,
-    totalScores,
-    userRating,
-    isFavorite,
-}: RatingProps) {
+export default function Rating({ score, totalScores }: RatingProps) {
+    const animeId = useAnimeId();
+    const item = useUserAnimeStore((s) => s.data[animeId]);
+    const updateRating = useUserAnimeStore((s) => s.updateField);
+    const currentUserRating = item?.data?.rating ?? 0;
+    const { isLoggedIn } = useAuth();
+
     const [hoveredRating, setHoveredRating] = useState<number | null>(null);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-    // Используем внутренний стейт для мгновенного отображения клика
-    const [currentUserRating, setCurrentUserRating] = useState(userRating ?? 0);
-
-    // Синхронизируем стейт, если пропс изменится извне (например, пришла дата с сервера)
-    useEffect(() => {
-        if (userRating !== undefined) {
-            setCurrentUserRating(userRating);
-        }
-    }, [userRating]);
-
     const onRateChange = async (val: number) => {
-        setCurrentUserRating(val);
-        await apiFetch(`/user/me/${animeId}`, {
-            method: "PATCH",
-            body: JSON.stringify({ rating: val }),
-        });
+        if (!isLoggedIn) {
+            toast.info("Будь ласка, увійдіть в акаунт, щоб оцінити");
+            return;
+        }
+        const prevRating = currentUserRating;
+
+        // Оптимистичный апдейт
+        updateRating(animeId, { rating: val })
+        try {
+            // Запрос на бэк
+            await apiFetch(`/user/me/${animeId}`, {
+                method: "PATCH",
+                body: JSON.stringify({ rating: val }),
+            });
+        } catch (error) {
+            // Откат в случае ошибки
+            updateRating(animeId, { rating: prevRating })
+            toast.error("Не вдалося оцінити :<");
+        }
     };
 
     return (
-        <div className='flex justify-between h-11 select-none  
-                    md:mb-11 lg:mb-0'>
+        <div className={clsx(
+            "flex justify-between h-11",
+            "md:mb-11 lg:mb-0")}>
 
-            <div className='flex gap-2 items-center
-                    md:flex-col md:mb-11 md:items-start
-                    lg:flex-row lg:mb-0 lg:items-center h-11'>
+            <div className={clsx(
+                "flex gap-2 items-center",
+                "md:flex-col md:mb-11 md:items-start",
+                "lg:flex-row lg:mb-0 lg:items-center h-11")}>
 
                 {/* Левая часть: Общий рейтинг */}
                 <div className='flex gap-2 items-center'>
@@ -143,8 +154,8 @@ export default function Rating({
                                 >
                                     <div className='flex gap-2 items-center '>
                                         <BsFillStarFill className={`shrink-0 w-7 h-7 md:w-6 md:h-6 cursor-pointer transition-colors
-                                                 ${isActive ? 'text-white' 
-                                                            : 'text-[#D1D1D1] hover:text-white'}`}
+                                                 ${isActive ? 'text-white'
+                                                : 'text-[#D1D1D1] hover:text-white'}`}
                                         />
                                         <span className='text-white text-sm whitespace-nowrap md:hidden'>
                                             {RATING_LABELS[starValue]}
@@ -158,10 +169,7 @@ export default function Rating({
                 </div>
             </div>
             <div className='hidden sm:block'>
-                <HeartButton
-                    animeId={animeId}
-                    isFavorite={isFavorite}
-                />
+                <HeartButton />
             </div>
         </div>
     );

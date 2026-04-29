@@ -11,6 +11,10 @@ export async function apiFetch<T>(
   endpoint: string,
   options: ApiFetchOptions = {}
 ): Promise<T> {
+  
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), 8000);
+
   const headers = new Headers(options.headers || {});
 
   // 🔐 SSR cookies (если передали)
@@ -27,10 +31,11 @@ export async function apiFetch<T>(
 
   const res = await fetch(`${API_URL}${endpoint}`, {
     ...options,
+    cache: options?.cache,
     headers,
     credentials: "include",
   });
-
+  clearTimeout(id);
   // Пробуем распарсить JSON, но не падаем, если там пусто или текст
   let data: any = null;
   const contentType = res.headers.get("content-type");

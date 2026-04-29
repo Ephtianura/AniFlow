@@ -2,9 +2,10 @@
 
 namespace AnimeApp.Application.Dto.Responses.User
 {
-        public record UserAnimeStatus(
-             MyListEnum? MyList,
-             int? Rating,
-             bool IsFavorite
-            );
+    public record UserAnimeStatus(
+         int AnimeId,
+         MyListEnum? MyList,
+         int? Rating,
+         bool? IsFavorite
+        );
 }

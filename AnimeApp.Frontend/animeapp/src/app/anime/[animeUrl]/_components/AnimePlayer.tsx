@@ -7,6 +7,7 @@ import PlayerSettings from "./PlayerSettings";
 import EpisodeSelector from "./EpisodeSelector";
 import { AnimeTitle } from "@/core/types";
 import pullUkrTitle from "../_functions/pullUkrTitle";
+import clsx from "clsx";
 
 type Props = {
     titles: AnimeTitle[];
@@ -41,8 +42,9 @@ export default function AnimePlayer({ titles, rating }: Props) {
         <div className="relative my-3 -mx-4 flex items-center justify-center playerRef">
 
             {/* ФОН*/}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-screen h-full bg-[#18191A] z-0 
-                    shadow-[0_-10px_30px_var(--tw-shadow-color),0_10px_30px_var(--tw-shadow-color)] shadow-purple-400">
+            <div className={clsx(
+                "absolute top-0 left-1/2 -translate-x-1/2 w-screen h-full bg-[#18191A] z-0",
+                "shadow-[0_-10px_30px_var(--tw-shadow-color),0_10px_30px_var(--tw-shadow-color)] shadow-purple-400")}>
             </div>
 
             {/* КОНТЕНТ */}
@@ -103,9 +105,11 @@ export default function AnimePlayer({ titles, rating }: Props) {
                 <div className="py-3 border-y border-[#3f3e3f] flex gap-2 items-center">
                     <span className="text-player-text text-lg">Поділитися з друзями:</span>
                     <TelegramShareButton url={url} >
-                        <div className="bg-[#468bcc] flex items-center gap-2 px-2 py-0.5 rounded-xs 
-                                hover:bg-[#509fe8]
-                                active:scale-95 transition-all duration-200">
+                        <div className={clsx(
+                            "bg-[#468bcc] flex items-center gap-2 px-2 py-0.5 rounded-xs",
+                            "hover:bg-[#509fe8]",
+                            "active:scale-95 transition-all duration-200"
+                        )}>
                             <FaTelegramPlane className="w-5 h-5" />
                             <span>Telegram</span>
                         </div>

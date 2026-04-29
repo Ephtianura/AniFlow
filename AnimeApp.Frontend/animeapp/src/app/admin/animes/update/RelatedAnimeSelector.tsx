@@ -34,7 +34,7 @@ export const RelatedAnimeSelector: React.FC<Props> = ({ initialRelatedAnimes = [
         setSearchQuery(value);
         if (value.length >= 3) {
             try {
-                const results = await apiFetch(`/Animes?search=${encodeURIComponent(value)}&sortBy=Score&sortDesc=true`);
+                const results = await apiFetch(`/anime?search=${encodeURIComponent(value)}&sortBy=Score&sortDesc=true`);
                 setSearchResults(results.items || []);
                 setShowDropdown(true);
 

@@ -1,7 +1,9 @@
-"use client";
-
 import WhiteCard from "@/components/WhiteCard";
 
+export const metadata = {
+    title: "Політика конфіденційності – AniFlow",
+    description: "Як AniFlow обробляє та захищає ваші дані"
+};
 
 export default function Terms() {
     return (

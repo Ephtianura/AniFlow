@@ -9,8 +9,6 @@ namespace AnimeApp.Application.Contracts
         Task<AnimeResponse> GetByIdAsync(int id);
         Task<PagedResult<AnimesResponse>> GetFilteredAsync(AnimeFilter filter);
         Task<AnimeResponse> GetRandomAsync();
-
-        Task<AnimeUserResponse> GetAnimePageAsync(int id, int? userId);
         Task<List<int>> GetIdsAsync();
     }
 

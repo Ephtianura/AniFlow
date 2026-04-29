@@ -1,1 +1,9 @@
-﻿public record DeleteStatusTargets(bool Rating = false, bool List = false, bool Favorite = false);
+﻿namespace AnimeApp.Application.Dto.Requests.User
+{
+        public record DeleteStatusTargets(
+            bool MyList = false,
+            bool Rating = false,
+            bool IsFavorite = false
+        );
+}
+

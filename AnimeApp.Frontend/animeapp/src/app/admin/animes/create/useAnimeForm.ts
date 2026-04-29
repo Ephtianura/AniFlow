@@ -100,7 +100,7 @@ export function useAnimeForm() {
                 description: description.trim() || "No description"
             };
 
-            const createdAnime = await apiFetch("/Animes", {
+            const createdAnime = await apiFetch("/anime", {
                 method: "POST",
                 body: JSON.stringify(payload),
                 headers: { "Content-Type": "application/json" }
@@ -116,7 +116,7 @@ export function useAnimeForm() {
             previews.filter(src => src.startsWith("http")).forEach(url => formData.append("ScreenshotUrls", url));
 
             if (formData.has("Poster") || formData.has("PosterUrl") || formData.has("Screenshots") || formData.has("ScreenshotUrls")) {
-                await apiFetch(`/Animes/${createdAnime.id}/files`, { method: "PATCH", body: formData });
+                await apiFetch(`/anime/${createdAnime.id}/files`, { method: "PATCH", body: formData });
             }
 
             // Очистка формы

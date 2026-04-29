@@ -84,16 +84,16 @@ namespace AnimeApp.Application.Services
         }
 
         /// <summary> Повертає аніме та зі статусом користувача якщо він є </summary>
-        public async Task<AnimeUserResponse> GetAnimePageAsync(int animeId, int? userId)
-        {
-            // Тут колись була паралельність...
-            var anime = await GetByIdAsync(animeId);
-            UserAnimeStatus? userStatus = null;
-            if (userId != null)
-                userStatus = await GetUserAnimeStatusAsync(animeId, userId.Value);
+        //public async Task<AnimeUserResponse> GetAnimePageAsync(int animeId, int? userId)
+        //{
+        //    // Тут колись була паралельність...
+        //    var anime = await GetByIdAsync(animeId);
+        //    UserAnimeStatus? userStatus = null;
+        //    if (userId != null)
+        //        userStatus = await GetUserAnimeStatusAsync(animeId, userId.Value);
 
-            return new AnimeUserResponse(anime, userStatus);
-        }
+        //    return new AnimeUserResponse(anime, userStatus);
+        //}
 
         /// <summary> Повертає масив айдішок всіх аніме </summary>
         public Task<List<int>> GetIdsAsync() => _animeRep.GetAllIdsAsync();
@@ -111,7 +111,7 @@ namespace AnimeApp.Application.Services
         private async Task<UserAnimeStatus?> GetUserAnimeStatusAsync(int animeId, int userId)
         {
             var userAnime = await _userAnimeRep.GetUserAnimeStatusAsync(animeId, userId);
-            return new(userAnime?.MyList, userAnime?.Rating, userAnime?.IsFavorite ?? false);
+            return new(animeId, userAnime?.MyList, userAnime?.Rating, userAnime?.IsFavorite);
         }
 
         private string? GetPosterUrl(string? posterFileName) =>

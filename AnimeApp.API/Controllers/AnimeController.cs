@@ -10,8 +10,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace AnimeApp.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
-    public class AnimesController(IAnimeQueryService animeQueryService, IAnimeCommandService animeCommandService, IAnimeStatsService animeStatsService) : ControllerBase
+    [Route("api/animes")]
+    public class AnimesController(
+        IAnimeQueryService animeQueryService,
+        IAnimeCommandService animeCommandService,
+        IAnimeStatsService animeStatsService) : ControllerBase
     {
         private readonly IAnimeQueryService _animeQueryService = animeQueryService;
         private readonly IAnimeCommandService _animeCommandService = animeCommandService;
@@ -25,18 +28,17 @@ namespace AnimeApp.Api.Controllers
             return Ok(anime);
         }
 
-        /// <summary> Повертає повну інформацію про аніме та userStatus по slug </summary>
-        /// <remarks> Приклад запиту: "slug/kusuriya-no-hitorigoto-2nd-season-1" </remarks>
+        /// <summary> Повертає повну інформацію про аніме по slug </summary>
+        /// <remarks> Приклад запиту: <i>kusuriya-no-hitorigoto-2nd-season-1</i> </remarks>
         /// <exception cref="ArgumentException"></exception>
         [HttpGet("slug/{slug}")]
         public async Task<ActionResult<AnimeUserResponse>> GetBySlug(string slug)
         {
             var id = Helper.ExtractId(slug) ?? throw new ArgumentException("Invalid slug");
-            var userId = Helper.GetUserIdOrNull(User);
-            var anime = await _animeQueryService.GetAnimePageAsync(id, userId);
+            var anime = await _animeQueryService.GetByIdAsync(id);
             return Ok(anime);
         }
-        
+
         /// <summary> Повертає рандомне аніме. </summary>
         [HttpGet("random")]
         public async Task<ActionResult<AnimeResponse>> GetRandom()
@@ -55,13 +57,12 @@ namespace AnimeApp.Api.Controllers
 
         // ==================== Адмін права ====================
 
-        /// <summary> Створює аніме. </summary>
+        /// <summary> Створює нове аніме. </summary>
         [HttpPost]
         [Authorize(Policy = "AdminPolicy")]
         public async Task<ActionResult<AnimeResponse>> Create([FromBody] AnimeCreateRequest request)
         {
             var anime = await _animeCommandService.CreateAsync(request);
-
             return CreatedAtAction(nameof(GetById), new { id = anime.Id }, anime);
         }
 

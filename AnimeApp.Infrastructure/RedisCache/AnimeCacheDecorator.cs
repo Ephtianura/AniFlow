@@ -138,6 +138,5 @@ namespace AnimeApp.Infrastructure.RedisCache
         }
 
         public Task<List<int>> GetIdsAsync() => _queryService.GetIdsAsync();
-        public Task<AnimeUserResponse> GetAnimePageAsync(int id, int? userId) => _queryService.GetAnimePageAsync(id, userId);
     }
 }

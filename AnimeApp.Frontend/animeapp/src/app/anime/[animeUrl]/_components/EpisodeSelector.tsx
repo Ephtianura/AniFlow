@@ -1,4 +1,5 @@
 'use client';
+import clsx from 'clsx';
 import { useState, useRef, useEffect } from 'react';
 import { MdNavigateBefore, MdNavigateNext } from 'react-icons/md';
 
@@ -70,15 +71,16 @@ export default function EpisodeSelector({
                     <span className="hidden xl:block">Серія</span>
                     <span>№</span>
                 </div>
-                <input
-                    type="text"
+                <input type="text"
                     value={inputValue}
                     placeholder={currentEpisode.toString()}
                     onChange={(e) => setInputValue(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    className="w-16 px-2 py-1 text-player-text bg-[#3A3B3C] rounded-full text-center font-medium
-                                outline-none border-[1.5px] border-transparent focus:border-primary focus:ring-4 focus:ring-purple-800/70
-                                transition-all duration-400 shadow-inner"
+                    className={clsx(
+                        "w-16 px-2 py-1 text-player-text bg-[#3A3B3C] rounded-full text-center font-medium",
+                        "outline-none border-[1.5px] border-transparent focus:border-primary focus:ring-4 focus:ring-purple-800/70",
+                        "transition-all duration-400 shadow-inner")}
+
                 />
             </div>
 
@@ -112,17 +114,18 @@ export default function EpisodeSelector({
                     <button
                         onClick={handlePrev}
                         disabled={offset <= 0}
-                        className="cursor-pointer hover:text-white transition-all active:scale-90 
-                        disabled:opacity-20 disabled:cursor-default disabled:hover:text-player-text disabled:active:scale-100"
-                    >
+                        className={clsx(
+                            "cursor-pointer hover:text-white transition-all active:scale-90",
+                            "disabled:opacity-20 disabled:cursor-default disabled:hover:text-player-text disabled:active:scale-100"
+                        )}>
                         <MdNavigateBefore className="w-8 h-8" />
                     </button>
                     <button
                         onClick={handleNext}
                         disabled={offset >= maxOffset}
-                        className="cursor-pointer hover:text-white transition-all active:scale-90 
-                        disabled:opacity-20 disabled:cursor-default disabled:hover:text-player-text disabled:active:scale-100"
-                    >
+                        className={clsx("cursor-pointer hover:text-white transition-all active:scale-90",
+                            "disabled:opacity-20 disabled:cursor-default disabled:hover:text-player-text disabled:active:scale-100"
+                        )}>
                         <MdNavigateNext className="w-8 h-8" />
                     </button>
                 </div>

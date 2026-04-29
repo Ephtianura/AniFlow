@@ -12,8 +12,14 @@ import { FaSortAlphaDown, FaSortAlphaDownAlt } from "react-icons/fa";
 import { useSearchParams } from "next/navigation";
 import CustomSelect from '@/app/animes/SortSelect';
 import { toast } from 'react-toastify';
-import { Animes } from '@/core/types';
+import { Animes, Pagination } from '@/core/types';
 
+
+// export const metadata = {
+//     title: "Каталог аніме | AniFlow",
+//     description:
+//         "Великий каталог аніме: нові серії та популярні тайтли українською мовою. Зручні фільтри та перегляд онлайн безкоштовно на AniFlow.",
+// };
 type ViewMode = "grid" | "gridLarge" | "list";
 
 export default function AnimeListPage() {
@@ -42,11 +48,12 @@ export default function AnimeListPage() {
             params.set("Page", String(targetPage));
             params.set("Limit", "20");
 
-            const data = await apiFetch(`/Animes?${params.toString()}`);
+            const data = await apiFetch<Pagination<Animes>>(`/anime?${params.toString()}`);
+            const animes = data.items;
 
-            setAnimes(prev => isInitial ? data.items : [...prev, ...data.items]);
+            setAnimes(prev => isInitial ? animes : [...prev, ...animes]);
             setPage(prev => isInitial ? 1 : prev + 1);
-            setHasMore(data.items.length === 20);
+            setHasMore(animes.length === 20);
         } catch (err: any) {
             if (err.status >= 500) toast.error("Сервер приліг поспати...");
         } finally {
@@ -54,7 +61,7 @@ export default function AnimeListPage() {
         }
     };
 
-    
+
     useEffect(() => {
         fetchAnimes(true);
     }, [searchParams, sortBy, sortDesc]);

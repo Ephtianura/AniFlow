@@ -1,7 +1,9 @@
-"use client";
-
 import WhiteCard from "@/components/WhiteCard";
 
+export const metadata = {
+    title: "Для правовласників – AniFlow",
+    description: "Інформація для правовласників щодо контенту на AniFlow"
+};
 
 export default function Terms() {
     return (
@@ -17,7 +19,7 @@ export default function Terms() {
                 <p>Для цього необхідно надіслати e-mail з вашої корпоративної поштової скриньки, що містить:</p>
                 <ul className="list-disc pl-8">
                     <li>контактні дані, реквізити вашої компанії;</li>
-                    <li>пряме посилання(посилання) на матеріал, який ви вважаєте спірним;</li>
+                    <li>пряме посилання на матеріал, який ви вважаєте спірним;</li>
                     <li>завірені скановані копії документів, що підтверджують ваше ексклюзивне право на матеріал;</li>
                     <li>у випадку, якщо ви представляєте інтереси іншої компанії – копії документів на посередницькі послуги;</li>
                 </ul>
@@ -26,7 +28,13 @@ export default function Terms() {
                 <p>Дозволи для вбудовування відео</p>
                 <ul className="list-disc pl-8">
                     <li>
-                        <a target="_blank" rel="noopener noreferrer" href="https://developers.google.com/youtube/terms/api-services-terms-of-service-emea">YouTube.com</a>
+                        <a
+                            className="text-red-500 underline font-medium"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            href="https://developers.google.com/youtube/terms/api-services-terms-of-service-emea">
+                            YouTube.com
+                        </a>
                     </li>
                 </ul>
             </div>

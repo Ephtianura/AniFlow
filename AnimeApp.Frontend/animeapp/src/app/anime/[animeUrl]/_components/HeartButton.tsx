@@ -1,16 +1,20 @@
 "use client";
 
-import { useUserAnimeStore } from "@/app/store/useUserAnimeStore";
+import { useUserAnimeStore } from "@/stores/useUserAnimeStore";
 import { apiFetch } from "@/lib/api";
 import { FaHeart, FaRegHeart } from "react-icons/fa6";
 import { toast } from "react-toastify";
 import { useAuth } from "@/context/AuthContext";
+import { useAnimeId } from "./animeIdProvider";
 
 export default function HeartButton() {
-    const isFavorite = useUserAnimeStore((s) => s.data?.isFavorite);
-    const animeId = useUserAnimeStore((s) => s.data?.animeId);
-    const setFavorite = useUserAnimeStore(s => s.updateField);
-    const { isLoggedIn, logout } = useAuth();
+    const animeId = useAnimeId();
+
+    const item = useUserAnimeStore((s) => s.data[animeId]);
+    const updateField = useUserAnimeStore((s) => s.updateField);
+    // const markClean = useUserAnimeStore((s) => s.markClean);
+    const isFavorite = item?.data?.isFavorite ?? false;
+    const { isLoggedIn } = useAuth();
 
     const toggleFavorite = async () => {
         if (!isLoggedIn) {
@@ -21,19 +25,17 @@ export default function HeartButton() {
         const nextValue = !isFavorite;
 
         // Оптимистично обновляем в сторе
-        setFavorite({ isFavorite: nextValue });
+        updateField(animeId, { isFavorite: nextValue })
 
         try {
-
             // Запрос на бэк
-            // const query = new URLSearchParams({ Favorite: "true" }).toString();
-            // await apiFetch(`/user/me/${animeId}?${query}`, {
-            //     method: nextValue ? "PATCH" : "DELETE",
-            //     // Если PATCH ожидает тело, добавь body: JSON.stringify({ isFavorite: true })
-            // });
+            await apiFetch(`/user/me/${animeId}`, {
+                method: nextValue ? "PATCH" : "DELETE",
+                body: JSON.stringify({ isFavorite: true }),
+            });
         } catch (error) {
             // Откат в случае ошибки
-            setFavorite({ isFavorite: isFavorite });
+            updateField(animeId, { isFavorite: !nextValue })
             toast.error("Не вдалося додати до улюбленного :<");
         }
     };

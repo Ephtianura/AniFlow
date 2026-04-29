@@ -16,19 +16,16 @@ export const SeasonMap: Record<string, string> = {
   Fall: "Осінь",
 };
 
-// enums
-export enum TitleType {
-    Official = 1,
-    Alternative = 2,
-    Synonym = 3,
-    Short = 4,
-    FanTranslation = 5
-}
 export enum TitleLanguage {
-    Romaji = 0,
-    English = 1,
-    Japanese = 2,
-    Ukrainian = 3,
+  Ukrainian = "Ukrainian",
+  English = "English",
+  Japanese = "Japanese",
+  Romaji = "Romaji"
+}
+
+export enum TitleType {
+  Official = "Official",
+  Synonym = "Synonym"
 }
 
 // interfaces 
@@ -104,6 +101,14 @@ export interface Animes {
     description: string;
     posterUrl?: string | null;
     url: string;
+}
+
+export interface Pagination<T> {
+  items: T[];
+  totalCount: number;
+  page: number;
+  pageSize: number;
+  totalPages: number
 }
 
 export interface ApiErrorResponse {

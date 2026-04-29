@@ -19,7 +19,7 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null);
 
@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // Загружаем данные пользователя при инициализации
   const refreshAuth = async () => {
     try {
-      const user = await apiFetch("/user/me");
+      const user = await apiFetch<any>("/user/me");
       setIsLoggedIn(true);
 
       let roleStr: string | null = null;
@@ -83,14 +83,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, [isLoggedIn, pathname, router]);
 
   // Пока проверяем авторизацию
-  if (isLoggedIn === null) {
-    return (
-      <div>
-       
-      </div>
-
-    );
-  }
+ 
 
   return (
     <AuthContext.Provider

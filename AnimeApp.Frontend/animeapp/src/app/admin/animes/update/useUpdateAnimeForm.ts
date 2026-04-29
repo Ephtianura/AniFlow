@@ -71,7 +71,7 @@
         const loadAnime = async (id: number) => {
             setLoading(true);
             try {
-                const anime = await apiFetch(`/Animes/${id}`);
+                const anime = await apiFetch(`/anime/${id}`);
                 selectAnimeFromSearch(anime);
             } catch (err) {
                 console.error(err);
@@ -183,7 +183,7 @@
             };
 
             try {
-                await apiFetch(`/Animes/${animeId}`, {
+                await apiFetch(`/anime/${animeId}`, {
                     method: "PATCH",
                     body: JSON.stringify(body),
                     headers: { "Content-Type": "application/json" }
@@ -196,7 +196,7 @@
                     screenshots.forEach(f => f && f.size > 0 && formData.append("Screenshots", f));
                     previews.filter(src => src.startsWith("http")).forEach(url => formData.append("ScreenshotUrls", url));
 
-                    await apiFetch(`/Animes/${animeId}/files`, { method: "PATCH", body: formData });
+                    await apiFetch(`/anime/${animeId}/files`, { method: "PATCH", body: formData });
                 }
 
                 toast.success("Аніме оновлено!");

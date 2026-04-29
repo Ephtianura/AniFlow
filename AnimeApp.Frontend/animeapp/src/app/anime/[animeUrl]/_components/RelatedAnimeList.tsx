@@ -42,12 +42,12 @@ export const RelatedAnimeList: React.FC<Props> = ({ relateds }) => {
                             <Link href={`/anime/${rel.url}`} className="text-primary-black truncate underline hover:text-primary">
                                 {title}
                             </Link>
-                            <div className="flex gap-2 cursor-pointer min-w-[200px] items-center">
-                                <Link href={`/anime/${rel.url}`} className="text-primary-black underline hover:text-primary">
+                            <div className="flex gap-2 min-w-[200px] items-center">
+                                <Link href={`/anime/${rel.url}`} className="text-primary-black underline hover:text-primary cursor-pointer">
                                     <img
                                         src={rel.posterUrl || "/404.gif"}
                                         alt={title}
-                                        className="w-[52px] h-[73px] object-cover rounded-xs"
+                                        className="w-[55px] aspect-5/7  object-cover rounded-xs"
                                     />
                                 </Link>
 

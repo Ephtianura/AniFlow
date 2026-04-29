@@ -11,7 +11,7 @@ import { ThemeProvider } from 'next-themes'
 
 export const metadata: Metadata = {
   title: "AniFlow",
-  description: "Дивитися аніме онлайн",
+  description: "Дивитися аніме онлайн українською мовою в високій якості",
 };
 export const viewport = {
   width: "device-width",
@@ -23,15 +23,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <html lang="uk" suppressHydrationWarning>
-      <body className="antialiased transition-colors bg-bg-light h-screen flex flex-col">
+      <body
+        className="antialiased transition-colors bg-bg-light h-screen flex flex-col"
+        suppressHydrationWarning={true} 
+      >
         <AuthProvider>
           {/* Navbar / Header */}
           <Navbar />
           {/* Page Content */}
-          <main className="flex-1 px-3 w-full max-w-7xl mx-auto">
+          <main className="flex-1 px-3 w-full max-w-7xl xl:max-w-[1600px]  mx-auto">
             {children}
             {/* <ThemeProvider attribute="class"></ThemeProvider> */}
             <ToastContainer
+              className="select-none"
               limit={1}
               position="top-right"
               autoClose={3000}

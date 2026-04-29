@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace AnimeApp.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/genres")]
     public class GenresController(IGenreService genreService) : ControllerBase
     {
         private readonly IGenreService _genreService = genreService;

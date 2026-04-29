@@ -17,7 +17,7 @@ export const AdminAnimeSearch : React.FC<AdminAnimeSearchProps> = ({ onSelect })
         setSearchQuery(value);
         if (value.length >= 3) {
             try {
-                const results = await apiFetch(`/Animes?search=${encodeURIComponent(value)}&sortBy=Score&sortDesc=true`);
+                const results = await apiFetch(`/anime?search=${encodeURIComponent(value)}&sortBy=Score&sortDesc=true`);
                 setSearchResults(results.items || []);
                 setShowDropdown(true);
             } catch (err) {

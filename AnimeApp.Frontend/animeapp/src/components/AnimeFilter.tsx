@@ -115,7 +115,7 @@ export default function AnimeFilter() {
       );
     }
 
-    router.push(`/animes?${params.toString()}`);
+    router.push(`/anime?${params.toString()}`);
   };
 
   return (

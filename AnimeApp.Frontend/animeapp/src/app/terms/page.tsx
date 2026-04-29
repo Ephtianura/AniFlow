@@ -1,7 +1,9 @@
-"use client";
-
 import WhiteCard from "@/components/WhiteCard";
 
+export const metadata = {
+    title: "Угода користувача – AniFlow",
+    description: "Умови використання сервісу AniFlow"
+};
 
 export default function Terms() {
     return (

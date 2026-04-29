@@ -5,6 +5,10 @@ import { useAuth } from "@/hooks/useAuth";
 import Link from "next/link";
 import WhiteCard from "@/components/WhiteCard";
 
+// export const metadata = {
+//   title: "Реєстрація | AniFlow",
+// };
+
 export default function RegisterPage() {
     const { register, loading, error } = useAuth();
 

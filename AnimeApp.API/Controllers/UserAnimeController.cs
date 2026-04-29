@@ -89,7 +89,7 @@ namespace AnimeApp.API.Controllers
         /// Якщо всі значення false — запит не має ефекту.
         /// </remarks>
         [HttpDelete("{animeId}")]
-        public async Task<IActionResult> DeleteAnimeData(int animeId, [FromQuery] DeleteStatusTargets target)
+        public async Task<IActionResult> DeleteAnimeData(int animeId, [FromBody] DeleteStatusTargets target)
         {
             var userId = Helper.GetUserIdOrThrow(User);
            

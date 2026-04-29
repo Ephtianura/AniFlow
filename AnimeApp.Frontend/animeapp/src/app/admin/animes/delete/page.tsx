@@ -24,7 +24,7 @@ export default function DeleteAnime() {
 
         if (value.length >= 3) {
             try {
-                const results = await apiFetch(`/Animes?search=${encodeURIComponent(value)}&sortBy=Score&sortDesc=true`);
+                const results = await apiFetch(`/anime?search=${encodeURIComponent(value)}&sortBy=Score&sortDesc=true`);
                 setSearchResults(results.items || []);
                 setShowDropdown(true);
             } catch (err) {
@@ -46,7 +46,7 @@ export default function DeleteAnime() {
 
         // Загружаем данные выбранного аниме
         try {
-            const data = await apiFetch(`/Animes/${anime.id}`);
+            const data = await apiFetch(`/anime/${anime.id}`);
             setSelectedAnime(data);
         } catch (err: any) {
             toast.error(err.message || "Не вдалося завантажити аніме");
@@ -58,7 +58,7 @@ export default function DeleteAnime() {
         if (!animeId) return toast.error("Виберіть аніме для видалення");
 
         try {
-            await apiFetch(`/Animes/${animeId}`, { method: "DELETE" });
+            await apiFetch(`/anime/${animeId}`, { method: "DELETE" });
             toast.success("Аніме успішно видалено!");
             setSelectedAnime(null);
             setAnimeId("");

@@ -11,7 +11,7 @@ using AnimeApp.Application.Dto.Responses.Studio;
 namespace AnimeApp.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/studios")]
     public class StudiosController(IStudioService studioService, IMapper mapper, IS3FileStorageService fileUrl) : ControllerBase
     {
         private readonly IStudioService _studioService = studioService;

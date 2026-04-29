@@ -218,9 +218,9 @@ namespace AnimeApp.Application.Services
 
             if (target.Rating)
                 userAnime.Rate(null);
-            if (target.List)
+            if (target.MyList)
                 userAnime.MoveToList(null);
-            if (target.Favorite)
+            if (target.IsFavorite)
                 userAnime.RemoveFromFavorites();
 
             // Якщо рядок пустий, видаляємо, інакше оновлюємо
@@ -235,10 +235,17 @@ namespace AnimeApp.Application.Services
         /// </summary>
         public async Task<UserAnimeStatus> GetUserAnimeStatusAsync(int userId, int animeId)
         {
-            UserAnime userAnime = await _userAnimesRepo.GetUserAnimeStatusAsync(userId, animeId) 
-                ?? throw new NotFoundException("UserAnimeStatus");
+            UserAnime? userAnime = await _userAnimesRepo.GetUserAnimeStatusAsync(userId, animeId);
 
-            return new(userAnime?.MyList, userAnime?.Rating, userAnime?.IsFavorite ?? false);
+            if (userAnime == null)
+                return new(animeId, null, null, null);
+
+            return new(
+                userAnime.AnimeId,
+                userAnime.MyList,
+                userAnime.Rating,
+                userAnime.IsFavorite
+            );
         }
 
         /// <summary>

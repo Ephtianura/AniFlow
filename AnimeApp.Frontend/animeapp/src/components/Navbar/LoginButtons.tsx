@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { TbLogout, TbLogin } from "react-icons/tb";
+import clsx from "clsx";
 
 export default function LoginButtons() {
     const { isLoggedIn, logout } = useAuth();
@@ -13,9 +14,10 @@ export default function LoginButtons() {
                 // ===== Вийти =====
                 <button
                     onClick={logout}
-                    className="hidden lg:flex items-center gap-1 bg-btn-primary-hover rounded-[10px] 
-              px-3 py-2 hover:text-btn-hover-dark transition-colors duration-200 cursor-pointer"
-                >
+                    className={clsx(
+                        "hidden lg:flex items-center gap-1 bg-btn-primary-hover rounded-[10px]",
+                        "px-3 py-2 hover:text-btn-hover-dark transition-colors duration-200 cursor-pointer"
+                    )}>
                     <TbLogout className="w-5 h-5" />
                     <p>Вийти</p>
                 </button>
@@ -23,9 +25,10 @@ export default function LoginButtons() {
                 // ===== Увійти =====
                 <Link
                     href="/login"
-                    className="hidden md:flex items-center gap-1 bg-btn-primary-hover rounded-[10px] px-3 py-2 
-              hover:text-btn-hover-dark transition-colors duration-200"
-                >
+                    className={clsx(
+                        "hidden md:flex items-center gap-1 bg-btn-primary-hover rounded-[10px] px-3 py-2",
+                        "hover:text-btn-hover-dark transition-colors duration-200"
+                    )}>
                     <TbLogin className="w-5 h-5" />
                     <p>Увійти</p>
                 </Link>

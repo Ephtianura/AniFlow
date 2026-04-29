@@ -10,7 +10,10 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MyListEnum, MyListMap } from "@/core/MyList";
 import { apiFetch } from "@/lib/api";
-import { useUserAnimeStore } from "@/app/store/useUserAnimeStore";
+import { useUserAnimeStore } from "@/stores/useUserAnimeStore";
+import { useAnimeId } from "./animeIdProvider";
+import { useAuth } from "@/context/AuthContext";
+import { toast } from "react-toastify";
 
 type Option = {
     value: string;
@@ -18,9 +21,11 @@ type Option = {
 };
 
 export default function ListSelect() {
-    const initialStatus = useUserAnimeStore((s) => s.data?.myList);
-    const animeId = useUserAnimeStore((s) => s.data?.animeId);
-    const updateList = useUserAnimeStore(s => s.updateField);
+    const animeId = useAnimeId();
+    const item = useUserAnimeStore((s) => s.data[animeId]);
+    const updateList = useUserAnimeStore((s) => s.updateField);
+    const myList = item?.data?.myList ?? null;
+    const { isLoggedIn } = useAuth();
 
     const options: Option[] = [
         ...Object.keys(MyListEnum)
@@ -29,25 +34,33 @@ export default function ListSelect() {
                 value: key,
                 label: MyListMap[key],
             })),
-        {
-            value: "__remove__",
-            label: "Видалити зі списку",
-        },
+        ...(myList != null
+            ? [
+                {
+                    value: "__remove__",
+                    label: "Видалити зі списку",
+                },
+            ]
+            : []),
     ];
 
     const [selected, setSelected] = useState<Option | null>(null);
 
     useEffect(() => {
-        if (!initialStatus) {
+        if (!myList) {
             setSelected(null);
             return;
         }
-        const found = options.find((o) => o.value === initialStatus);
+        const found = options.find((o) => o.value === myList);
         setSelected(found ?? null);
-    }, [initialStatus]);
+    }, [myList]);
 
     // Обновляет список
     const handleChange = async (option: Option | null) => {
+        if (!isLoggedIn) {
+            toast.info("Будь ласка, увійдіть в акаунт, щоб додавати до списку");
+            return;
+        }
         if (option?.value !== "__remove__") {
             setSelected(option);
         }
@@ -60,17 +73,28 @@ export default function ListSelect() {
                 method: "DELETE",
             });
             setSelected(null);
-            updateList({ myList: null });
+            updateList(animeId, { myList: null });
             return;
         }
         if (option) {
             const payload = { myList: option.value };
 
-            await apiFetch(`/user/me/${animeId}`, {
-                method: "PATCH",
-                body: JSON.stringify(payload),
-            });
-            updateList({ myList: option.value });
+            const prevRating = option.value;
+
+            // Оптимистичный апдейт
+            updateList(animeId, { myList: option.value });
+
+            try {
+                // Запрос на бэк
+                await apiFetch(`/user/me/${animeId}`, {
+                    method: "PATCH",
+                    body: JSON.stringify(payload),
+                });
+            } catch (error) {
+                // Откат в случае ошибки
+                updateList(animeId, { myList: option.value });
+                toast.error("Не вдалося додати до списку :<");
+            }
         }
     };
 

@@ -137,7 +137,7 @@ export const AnimeInfo: React.FC<Props> = ({ anime }) => {
 
                 {anime.rating && (
                     <>
-                        <p className="text-gray-dark">
+                        <p className="text-gray-dark flex gap-1">
                             <span className="hidden md:block">Рейтинг</span> <span>MPAA</span>
                         </p>
                         <p className="text-primary-black underline">{anime.rating}</p>

@@ -1,6 +1,12 @@
 import AnimeCard from '@/components/AnimeCard';
 import WhiteCard from "@/components/WhiteCard";
 
+export const metadata = {
+  title: "AniFlow – дивитись Аніме онлайн безкоштовно українською",
+  description:
+    "Дивись аніме онлайн безкоштовно: нові серії, популярні тайтли та зручний каталог. Українська локалізація, швидкий доступ і перегляд у HD"
+};
+
 export default function Home() {
   return (
     <main className="">
@@ -24,7 +30,7 @@ export default function Home() {
               description={"Опис аніме"}
               posterUrl={undefined}
               url={"Anime"}
-              viewMode={"grid"}
+              viewMode={"small"}
             />
           </div>
         </div>
