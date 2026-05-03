@@ -1,4 +1,4 @@
-﻿using AnimeApp.Application.Contracts;
+﻿using AnimeApp.Application.Contracts.App;
 using AnimeApp.Application.Dto.Requests.Anime;
 using AnimeApp.Application.Dto.Requests.User;
 using AnimeApp.Application.Dto.Responses.Anime;
@@ -16,7 +16,7 @@ namespace AnimeApp.Application.Services
         private readonly IUserAnimeRepository _userAnimesRepo = usersAnimes;
 
         /// <summary>
-        /// Повертає головну інформацію про профіль
+        /// Повертає всю інформацію про профіль
         /// </summary>
         public async Task<UserProfileResponse> GetUserProfileAsync(int userId)
         {
@@ -35,7 +35,7 @@ namespace AnimeApp.Application.Services
                 .Where(ua => ua.MyList == MyListEnum.Completed || ua.MyList == MyListEnum.Rewatching) // Беремо тільки ті, які ВЖЕ переглянулі, або знову дивимося
                 .Sum(ua => ua.Anime.Episodes);
 
-            // Мій середній бал
+            // "Мій середній бал"
             double averageScore = userAnimes
                 .Where(ua => ua.Rating.HasValue)
                 .Select(ua => ua.Rating.Value)
@@ -79,7 +79,7 @@ namespace AnimeApp.Application.Services
         /// Отримати коротку сводку о кількості аніме в списках, та самих аніме
         /// </summary>
         /// <remarks>
-        /// Не використовується.
+        /// Не використовується. В майбутньому треба замінити цей метод на нову бізнес-логіку.
         /// </remarks>
         public async Task<UserAnimeListResponse> GetUserAnimeListAsync(int userId)
         {
@@ -159,6 +159,7 @@ namespace AnimeApp.Application.Services
 
             return new UserAnimeListResponse
             {
+                //Favorites = favorites,
                 Watching = Watching,
                 Completed = Completed,
                 Planned = Planned,

@@ -1,4 +1,4 @@
-﻿using AnimeApp.Application.Contracts;
+﻿using AnimeApp.Application.Contracts.App;
 using Quartz;
 
 namespace AnimeApp.Infrastructure.QuartzTimers

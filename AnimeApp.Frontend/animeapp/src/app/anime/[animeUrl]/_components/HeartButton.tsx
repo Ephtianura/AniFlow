@@ -8,7 +8,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useAnimeId } from "./animeIdProvider";
 
 export default function HeartButton() {
-    const animeId = useAnimeId();
+    const {animeId} = useAnimeId();
 
     const item = useUserAnimeStore((s) => s.data[animeId]);
     const updateField = useUserAnimeStore((s) => s.updateField);

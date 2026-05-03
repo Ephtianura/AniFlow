@@ -8,7 +8,6 @@ import AnimePlayer from "./_components/AnimePlayer";
 import WatchButton from "./_components/WatchButton";
 import Rating from "./_components/Rating";
 import AnimeTitles from "./_components/AnimeTitles";
-import { TitleLanguage, TitleType } from "@/core/types";
 import { UserAnimeHydrator } from '@/stores/userAnimeHydrator';
 import pullUkrTitle from './_functions/pullUkrTitle';
 import { getUserStatus } from './_functions/getUserStatus';
@@ -34,7 +33,7 @@ export default async function AnimePage({ params, }: { params: { animeUrl: strin
 
     return (
         <WhiteCard>
-            <AnimeIdProvider animeId={anime.id}>
+            <AnimeIdProvider animeId={anime.id} userAnime={userStatus}>
                 {/* Засунути дані користувача у сховище */}
                 <UserAnimeHydrator data={userStatus} />
                 <div className='flex flex-col'>

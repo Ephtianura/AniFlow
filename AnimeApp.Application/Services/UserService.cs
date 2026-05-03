@@ -1,4 +1,5 @@
-﻿using AnimeApp.Application.Contracts;
+﻿using AnimeApp.Application.Contracts.App;
+using AnimeApp.Application.Contracts.Infra;
 using AnimeApp.Application.Dto.Requests.User;
 using AnimeApp.Application.Exceptions;
 using AnimeApp.Core.Contracts;

@@ -1,4 +1,5 @@
-﻿using AnimeApp.Application.Contracts;
+﻿using AnimeApp.Application.Contracts.App;
+using AnimeApp.Application.Contracts.Infra;
 using AnimeApp.Application.Dto.Requests.Studio;
 using AnimeApp.Application.Dto.Responses.Studio;
 using AnimeApp.Application.Exceptions;
@@ -103,12 +104,7 @@ namespace AnimeApp.Application.Services
             await _studios.DeleteAsync(studio);
         }
 
-        private async Task<Studio> GetStudioByIdAsync(int id)
-        {
-            var studio = await _studios.GetByIdAsync(id);
-            if (studio is null)
-                throw new NotFoundException("Studio", id);
-            return studio;
-        }
+        private async Task<Studio> GetStudioByIdAsync(int id) =>
+            await _studios.GetByIdAsync(id) ?? throw new NotFoundException("Studio", id);
     }
 }

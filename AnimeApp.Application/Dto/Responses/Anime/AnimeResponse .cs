@@ -1,6 +1,5 @@
 ﻿using AnimeApp.Application.Dto.Responses.Studio;
 using AnimeApp.Core.Enums;
-using AnimeApp.Core.Models;
 
 namespace AnimeApp.Application.Dto.Responses.Anime
 {

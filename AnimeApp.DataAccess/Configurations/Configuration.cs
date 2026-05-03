@@ -49,6 +49,7 @@ namespace AnimeApp.DataAccess.Configurations
         }
     }
 
+    // ===================== USER ANIME =====================
     public class UserAnimeConfiguration : IEntityTypeConfiguration<UserAnime>
     {
         public void Configure(EntityTypeBuilder<UserAnime> builder)
@@ -81,6 +82,7 @@ namespace AnimeApp.DataAccess.Configurations
             // Індексація
             builder.HasIndex(ua => ua.Rating);
             builder.HasIndex(ua => ua.MyList);
+            builder.HasIndex(ua => ua.IsFavorite);
         }
     }
 
@@ -97,6 +99,8 @@ namespace AnimeApp.DataAccess.Configurations
             builder.Property(a => a.Url)
                 .IsRequired()
                 .HasMaxLength(200);
+
+            builder.HasIndex(x => x.Url).IsUnique();
 
             builder.Property(a => a.Description)
                 .HasMaxLength(2000);
@@ -150,6 +154,7 @@ namespace AnimeApp.DataAccess.Configurations
         }
     }
 
+    // ===================== ANIME RELATED =====================
     public class AnimeRelatedConfiguration : IEntityTypeConfiguration<AnimeRelated>
     {
         public void Configure(EntityTypeBuilder<AnimeRelated> builder)
@@ -173,6 +178,19 @@ namespace AnimeApp.DataAccess.Configurations
         }
     }
 
+    // ===================== Anime Id Catalog =====================
+    public class AnimeIdCatalogConfiguration : IEntityTypeConfiguration<AnimeIdCatalog>
+    {
+        public void Configure(EntityTypeBuilder<AnimeIdCatalog> builder)
+        {
+            builder.ToTable("AnimeIdCatalog");
+
+            builder.HasKey(x => x.MoonId);
+
+            builder.HasIndex(x => x.MalId).IsUnique();
+            builder.HasIndex(x => x.KodikId).IsUnique();
+        }
+    }
 
     // ===================== GENRES =====================
     public class GenreConfiguration : IEntityTypeConfiguration<Genre>

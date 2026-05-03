@@ -1,6 +1,6 @@
 ﻿using AnimeApp.Application.Dto.Requests.User;
 
-namespace AnimeApp.Application.Contracts
+namespace AnimeApp.Application.Contracts.App
 {
     public interface IAuthService
     {

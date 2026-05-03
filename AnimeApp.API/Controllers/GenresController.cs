@@ -1,4 +1,4 @@
-﻿using AnimeApp.Application.Contracts;
+﻿using AnimeApp.Application.Contracts.App;
 using AnimeApp.Application.Dto.Requests.Genre;
 using AnimeApp.Core.Models;
 using Microsoft.AspNetCore.Authorization;

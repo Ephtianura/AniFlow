@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AnimeApp.Core.Enums
+﻿namespace AnimeApp.Core.Enums
 {
     public enum AnimeKindEnum
     {
@@ -19,5 +13,4 @@ namespace AnimeApp.Core.Enums
         PV = 8,
         CM = 9
     }
-
 }

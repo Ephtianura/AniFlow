@@ -1,5 +1,6 @@
-﻿using System.Net;
-using AnimeApp.Application.Exceptions;
+﻿using AnimeApp.Application.Exceptions;
+using AnimeApp.Infrastructure.Exceptions;
+using System.Net;
 
 namespace AnimeApp.API.Middleware.Exceptions;
 
@@ -29,12 +30,22 @@ public static class ExceptionGroups
         ],
         [HttpStatusCode.Conflict] = // 409
         [
-            typeof(EntityAlreadyExistsException),
+            typeof(AlreadyExistsException),
             typeof(EmailAlreadyExistsException),
         ],
         [HttpStatusCode.FailedDependency] = // 424
         [
             typeof(FailedDependency)
+        ],
+        [HttpStatusCode.BadGateway] = // 502
+        [
+            typeof(ExternalApiHttpException),
+            typeof(ExternalApiInvalidResponseException),
+            typeof(ExternalApiEmptyResponseException)
+        ],
+        [HttpStatusCode.GatewayTimeout] = // 504
+        [
+            typeof(ExternalApiTimeoutException)
         ]
     };
 }

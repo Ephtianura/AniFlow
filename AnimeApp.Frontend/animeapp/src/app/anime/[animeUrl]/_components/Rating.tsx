@@ -10,11 +10,8 @@ import { useAuth } from '@/context/AuthContext';
 import { toast } from 'react-toastify';
 
 interface RatingProps {
-    animeId: number;
     score: number;
     totalScores: number;
-    userRating?: number;
-    isFavorite: boolean | null;
 }
 
 const RATING_LABELS: Record<number, string> = {
@@ -31,7 +28,8 @@ const RATING_LABELS: Record<number, string> = {
 };
 
 export default function Rating({ score, totalScores }: RatingProps) {
-    const animeId = useAnimeId();
+    const { animeId, userAnime } = useAnimeId();
+
     const item = useUserAnimeStore((s) => s.data[animeId]);
     const updateRating = useUserAnimeStore((s) => s.updateField);
     const currentUserRating = item?.data?.rating ?? 0;
@@ -45,6 +43,7 @@ export default function Rating({ score, totalScores }: RatingProps) {
             toast.info("Будь ласка, увійдіть в акаунт, щоб оцінити");
             return;
         }
+
         const prevRating = currentUserRating;
 
         // Оптимистичный апдейт
@@ -58,6 +57,7 @@ export default function Rating({ score, totalScores }: RatingProps) {
         } catch (error) {
             // Откат в случае ошибки
             updateRating(animeId, { rating: prevRating })
+
             toast.error("Не вдалося оцінити :<");
         }
     };
@@ -84,11 +84,11 @@ export default function Rating({ score, totalScores }: RatingProps) {
                     </div>
                 </div>
 
-
                 {/* Правая часть: Оценить */}
                 <div
-                    className="flex items-center h-full group relative"
+                    className="flex items-center h-full group relative select-none"
                     onMouseEnter={() => setIsMenuOpen(true)}
+                    onClick={() => setIsMenuOpen(true)}
                     onMouseLeave={() => {
                         setIsMenuOpen(false);
                         setHoveredRating(null);

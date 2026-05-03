@@ -1,4 +1,4 @@
-﻿using AnimeApp.Application.Contracts;
+﻿using AnimeApp.Application.Contracts.App;
 using AnimeApp.Application.Services;
 using AnimeApp.Infrastructure.RedisCache;
 using StackExchange.Redis;

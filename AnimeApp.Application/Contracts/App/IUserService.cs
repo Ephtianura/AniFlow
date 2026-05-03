@@ -2,7 +2,7 @@
 using AnimeApp.Core.Filters;
 using AnimeApp.Core.Models;
 
-namespace AnimeApp.Application.Contracts
+namespace AnimeApp.Application.Contracts.App
 {
     public interface IUserService
     {

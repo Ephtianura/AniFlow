@@ -1,4 +1,4 @@
-﻿namespace AnimeApp.Application.Contracts
+﻿namespace AnimeApp.Application.Contracts.App
 {
     public interface IAnimeStatsService
     {

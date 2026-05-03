@@ -1,4 +1,4 @@
-﻿using AnimeApp.Application.Contracts;
+﻿using AnimeApp.Application.Contracts.App;
 using AnimeApp.Application.Dto.Requests.User;
 using AnimeApp.Application.Dto.Responses.User;
 using AutoMapper;

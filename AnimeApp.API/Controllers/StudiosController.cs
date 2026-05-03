@@ -1,5 +1,4 @@
 ﻿using AnimeApp.Application.Dto.Responses.Anime;
-using AnimeApp.Application.Contracts;
 using AnimeApp.Application.Dto.Requests.Studio;
 using AnimeApp.Core.Filters;
 using AnimeApp.Core.Models;
@@ -7,6 +6,8 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using AnimeApp.Application.Dto.Responses.Studio;
+using AnimeApp.Application.Contracts.Infra;
+using AnimeApp.Application.Contracts.App;
 
 namespace AnimeApp.Api.Controllers
 {

@@ -1,3 +1,4 @@
+using AnimeApp.Api.Extensions;
 using AnimeApp.API.Extensions;
 using AnimeApp.API.Middleware.Exceptions;
 using Microsoft.AspNetCore.CookiePolicy;
@@ -12,19 +13,20 @@ builder.Services
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(); // Swagger
-builder.Services.AddSwaggerWithXml(); // Коментарі свагера
+builder.Services.AddSwaggerWithXml(); // Документація свагера
 
 builder.Services
-        .AddValidation() // FluentValidation
-        .AddMapping() // Auto Mapper
-        .AddServicesDI() // Впровадження залежностей сервісів, репозиторіїв та інфраструктури
-        .AddAuth(configuration) // Auth
-        .AddAws(configuration) // AWS S3 
-        .AddQuartzJobs() // Quartz
-        .AddRedis(configuration) // Redis 
-        .AddCacheDecorators() // Cache Decorator 
-        .AddDatabase(configuration) // DbContext
-        .AddCustomCors(configuration); // Cors 
+        .AddValidation()                // FluentValidation
+        .AddMapping()                   // Auto Mapper
+        .AddServicesDI()                // DI сервісів, репозиторіїв та інфраструктури
+        .AddAuth(configuration)         // Auth
+        .AddAws(configuration)          // AWS S3 
+        .AddQuartzJobs()                // Quartz
+        .AddRedis(configuration)        // Redis 
+        .AddCacheDecorators()           // Cache Decorator 
+        .AddDatabase(configuration)     // DbContext
+        .AddCustomCors(configuration)   // Cors 
+        .AddMoonApi(configuration);     // Moon Api
 
 
 

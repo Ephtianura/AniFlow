@@ -27,19 +27,14 @@ namespace AnimeApp.Core.Models
             DateTime? releasedOn,
             SeasonEnum season,
             int year,
-
             double score,
             int episodes,
             int episodesAired,
             int duration
-
-
-
         )
         {
-
             Titles = titles;
-            Url = url.ToLower();
+            Url = url.ToLower().Trim();
             Kind = kind;
             Status = status;
             Season = season;
@@ -56,6 +51,9 @@ namespace AnimeApp.Core.Models
             if (screenshots != null)
                 ScreenshotsFileName = screenshots;
 
+            CreatedAt = DateTime.UtcNow;
+            UpdatedAt = DateTime.UtcNow;
+
             AiredOn = airedOn;
             ReleasedOn = releasedOn;
             Score = score;
@@ -65,14 +63,15 @@ namespace AnimeApp.Core.Models
         }
 
         public int Id { get; private set; }
+        public int MalId { get; private set; }
+        public int AniListId { get; private set; }
 
         // Назви
-        public List<AnimeTitle> Titles { get; private set; } = new();
+        public List<AnimeTitle> Titles { get; private set; } = [];
 
         // Дати
         public DateTime? AiredOn { get; private set; } // Дата найпершої серії
         public DateTime? ReleasedOn { get; private set; } // Дата останньої серії
-
 
         // Статистика
         public double Score { get; private set; } // 0 - 10
@@ -91,20 +90,20 @@ namespace AnimeApp.Core.Models
         // Опис
         public string Description { get; private set; } = string.Empty;
         public string? PosterFileName { get; private set; } // Назва постеру в S3
-        public List<string>? ScreenshotsFileName { get; private set; } = new(); // Назви скріншотів в S3
-        public string Url { get; private set; } = string.Empty; // Для фронта наприклад  anime/ jujutsu_kaisen
+        public List<string>? ScreenshotsFileName { get; private set; } = []; // Назви скріншотів в S3
+        public string Url { get; private set; } = string.Empty; // Для фронтенду, наприклад: anime/jujutsu_kaisen
 
-        //public DateTime
+        // Дати
+        public DateTime CreatedAt { get; }
+        public DateTime UpdatedAt { get; private set; }
 
         // Навігація
         public int? StudiosId { get; private set; } // Айді студії One-to-Many
         public Studio? Studio { get; private set; } // Інформація про студію
+        public List<Genre> Genres { get; private set; } = []; // Жанри  Many-to-Many
 
-        public List<Genre> Genres { get; private set; } = new(); // Жанри  Many-to-Many
-
-        public List<AnimeRelated> Relateds { get; private set; } = new(); // Пов'язані аніме Many-to-Many
-        public ICollection<UserAnime> UserAnimes { get; private set; } = new List<UserAnime>();
-
+        public List<AnimeRelated> Relateds { get; private set; } = []; // Пов'язані аніме Many-to-Many
+        public ICollection<UserAnime> UserAnimes { get; private set; } = [];
 
 
         // ================= Фабрика =================
@@ -153,94 +152,102 @@ namespace AnimeApp.Core.Models
         // Назви
         public void AddTitle(AnimeTitle title)
         {
-            if (title == null) throw new ArgumentNullException(nameof(title));
-
+            ArgumentNullException.ThrowIfNull(title);
             Titles.Add(title);
+            Touch();
         }
         public void AddTitles(IEnumerable<AnimeTitle> titles)
         {
             if (titles == null) return;
             foreach (var t in titles)
                 AddTitle(t);
+            Touch();
         }
         public void UpdateTitle(int titleId, string newValue)
         {
-            var title = Titles.FirstOrDefault(t => t.Id == titleId);
-            if (title == null) throw new ArgumentException("Title not found.");
-
+            var title = Titles.FirstOrDefault(t => t.Id == titleId) ?? throw new ArgumentException("Title not found.");
             title.ChangeValue(newValue);
-
+            Touch();
         }
         public void RemoveTitle(int titleId)
         {
-            var title = Titles.FirstOrDefault(t => t.Id == titleId);
-            if (title == null) throw new ArgumentException("Title not found.");
-
+            var title = Titles.FirstOrDefault(t => t.Id == titleId) ?? throw new ArgumentException("Title not found.");
             Titles.Remove(title);
+            Touch();
         }
 
+        // Пов'язані таблиці
         public void SetStudio(Studio studio)
         {
             Studio = studio ?? throw new ArgumentNullException(nameof(studio));
             StudiosId = studio.Id;
+            Touch();
         }
-
         public void AddGenre(Genre genre)
         {
-            if (genre == null) throw new ArgumentNullException(nameof(genre));
+            ArgumentNullException.ThrowIfNull(genre);
             if (!Genres.Contains(genre))
                 Genres.Add(genre);
+            Touch();
         }
         public void RemoveGenre(Genre genre)
         {
-            if (genre == null) throw new ArgumentNullException(nameof(genre));
+            ArgumentNullException.ThrowIfNull(genre);
             Genres.Remove(genre);
+            Touch();
         }
-
         public void AddRelated(Anime relatedAnime, RelationKindEnum type)
         {
-            if (relatedAnime == null) throw new ArgumentNullException(nameof(relatedAnime));
+            ArgumentNullException.ThrowIfNull(relatedAnime);
             if (Relateds.Any(r => r.RelatedAnimeId == relatedAnime.Id))
-                return; 
-
+                return;
             Relateds.Add(AnimeRelated.Create(Id, relatedAnime.Id, type));
+            Touch();
         }
         public void RemoveRelated(int relatedAnimeId)
         {
             var relation = Relateds.FirstOrDefault(r => r.RelatedAnimeId == relatedAnimeId);
             if (relation != null)
                 Relateds.Remove(relation);
+            Touch();
+        }
+        public void ClearRelateds()
+        {
+            Relateds.Clear();
+            Touch();
         }
 
-        public void ClearRelateds() => Relateds.Clear();
-
+        // Деталі
         public void UpdateAiredOn(DateTime? airedOn)
         {
             AiredOn = airedOn;
+            Touch();
         }
         public void UpdateReleasedOn(DateTime? releasedOn)
         {
             ReleasedOn = releasedOn;
+            Touch();
         }
         public void Rate(double score)
         {
             if (score < 0 || score > 10)
                 throw new ArgumentOutOfRangeException(nameof(score), "Score must be between 0 and 10.");
             Score = score;
+            Touch();
         }
-
         public void UpdateTotalScores(int scores)
         {
             if (scores < 0)
                 throw new ArgumentOutOfRangeException(nameof(scores), "The count of scores cannot be negative");
             TotalScores = scores;
+            Touch();
         }
-
         public void UpdateEpisodes(int episodes)
         {
             if (episodes < 0)
                 throw new ArgumentOutOfRangeException(nameof(episodes), "Episodes cannot be negative.");
             Episodes = episodes;
+            Touch();
         }
         public void UpdateEpisodesAired(int episodesAired)
         {
@@ -249,67 +256,76 @@ namespace AnimeApp.Core.Models
             if (episodesAired > Episodes)
                 throw new ArgumentOutOfRangeException(nameof(episodesAired), "Episodes Aired can't be more than episodes.");
             EpisodesAired = episodesAired;
+            Touch();
         }
         public void UpdateDuration(int duration)
         {
             if (duration < 0)
                 throw new ArgumentOutOfRangeException(nameof(duration), "Duration cannot be negative.");
             Duration = duration;
+            Touch();
         }
         public void UpdateSeason(SeasonEnum newSeason)
         {
             if (!Enum.IsDefined(typeof(SeasonEnum), newSeason))
                 throw new ArgumentException("Invalid Season", nameof(newSeason));
             Season = newSeason;
+            Touch();
         }
         public void UpdateYear(int year)
         {
             if (year < 1900 || year > DateTime.Now.Year + 10)
                 throw new ArgumentOutOfRangeException(nameof(year), "Year seems invalid.");
             Year = year;
+            Touch();
         }
         public void UpdateRating(AnimeRatingEnum newRating)
         {
             if (!Enum.IsDefined(typeof(AnimeRatingEnum), newRating))
                 throw new ArgumentException("Invalid Rating");
             Rating = newRating;
+            Touch();
         }
         public void UpdateKind(AnimeKindEnum newKind)
         {
             if (!Enum.IsDefined(typeof(AnimeKindEnum), newKind))
                 throw new ArgumentException("Invalid Kind", nameof(newKind));
             Kind = newKind;
+            Touch();
         }
         public void UpdateStatus(AnimeStatusEnum newStatus)
         {
             if (!Enum.IsDefined(typeof(AnimeStatusEnum), newStatus))
                 throw new ArgumentException("Invalid Status", nameof(newStatus));
             Status = newStatus;
+            Touch();
         }
         public void UpdateDescription(string description)
         {
             Description = description ?? string.Empty;
+            Touch();
         }
         public void UpdatePosterFileName(string? posterFileName)
         {
             PosterFileName = posterFileName;
+            Touch();
         }
         public void UpdateScreenshotsFileName(List<string>? screenshots)
         {
             ScreenshotsFileName = screenshots ?? new List<string>();
+            Touch();
         }
         public void UpdateUrl(string url)
         {
             if (string.IsNullOrWhiteSpace(url))
                 throw new ArgumentException("Url cannot be empty.", nameof(url));
-            Url = url;
+            Url = url.ToLower().Trim();
+            Touch();
         }
+        public void Touch() => UpdatedAt = DateTime.UtcNow;
 
         //public DateTimeOffset? NextEpisodeAt { get; private set; } // Коли вийде наступний епізод
-        //public List<Screenshot> Screenshots { get; private set; } = new(); // Many-to-Many
         //public List<int>? CharacterRolesId { get; private set; } //Персонаж та його роль в цьому аніме
-        //public List<int>? RelatedsAnimeId { get; private set; } // Айді аніме з яким воно пов'язане 
         //public List<CharacterRole> CharacterRoles { get; private set; } = new();
-        //public List<RelatedAnime> Related { get; private set; } = new();
     }
 }

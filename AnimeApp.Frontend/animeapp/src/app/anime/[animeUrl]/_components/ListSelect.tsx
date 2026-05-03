@@ -21,7 +21,7 @@ type Option = {
 };
 
 export default function ListSelect() {
-    const animeId = useAnimeId();
+    const { animeId } = useAnimeId();
     const item = useUserAnimeStore((s) => s.data[animeId]);
     const updateList = useUserAnimeStore((s) => s.updateField);
     const myList = item?.data?.myList ?? null;
@@ -69,17 +69,27 @@ export default function ListSelect() {
                 List: "true",
             }).toString();
 
-            await apiFetch(`/user/me/${animeId}?${query}`, {
-                method: "DELETE",
-            });
+
+            const prevList = option.value;
+
             setSelected(null);
             updateList(animeId, { myList: null });
+            try {
+                // Запрос на бэк
+                await apiFetch(`/user/me/${animeId}?${query}`, {
+                    method: "DELETE",
+                });
+            } catch (error) {
+                // Откат 
+                updateList(animeId, { myList: prevList });
+                toast.error("Не вдалося прибрати зі списку :<");
+            }
             return;
         }
         if (option) {
             const payload = { myList: option.value };
 
-            const prevRating = option.value;
+            const prevList = option.value;
 
             // Оптимистичный апдейт
             updateList(animeId, { myList: option.value });
@@ -92,7 +102,7 @@ export default function ListSelect() {
                 });
             } catch (error) {
                 // Откат в случае ошибки
-                updateList(animeId, { myList: option.value });
+                updateList(animeId, { myList: prevList });
                 toast.error("Не вдалося додати до списку :<");
             }
         }

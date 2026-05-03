@@ -1,4 +1,5 @@
-﻿using AnimeApp.Application.Contracts;
+﻿using AnimeApp.Application.Contracts.App;
+using AnimeApp.Application.Contracts.Infra;
 using AnimeApp.Application.Dto.Requests.Anime;
 using AnimeApp.Application.Dto.Responses.Anime;
 using AnimeApp.Application.Exceptions;
@@ -8,7 +9,6 @@ using AnimeApp.Core.Enums;
 using AnimeApp.Core.Models;
 using AutoMapper;
 using System.Text.RegularExpressions;
-
 
 namespace AnimeApp.Application.Services
 {
@@ -25,7 +25,6 @@ namespace AnimeApp.Application.Services
         private readonly IS3FileStorageService _fileStorage = fileStorage;
         private readonly IMapper _mapper = mapper;
 
-        /// <summary> Створює аніме </summary>
         public async Task<AnimeResponse> CreateAsync(AnimeCreateRequest request)
         {
             // Створити назви
@@ -108,8 +107,6 @@ namespace AnimeApp.Application.Services
             return response;
         }
 
-        /// <summary> Оновлює інформацію про аніме </summary>
-        /// <exception cref="NotFoundException"></exception>
         public async Task<AnimeResponse> UpdateAsync(int id, AnimeUpdateRequest request)
         {
             var anime = await GetAnimeByIdAsync(id);
@@ -247,9 +244,6 @@ namespace AnimeApp.Application.Services
             return response;
         }
 
-
-        /// <summary> Оновлює файли аніме (скріншоти, постер) </summary>
-        /// <exception cref="ArgumentException"></exception>
         public async Task<AnimeResponse> UpdateFilesAsync(int id, AnimeUpdateFilesRequest request)
         {
             var anime = await GetAnimeByIdAsync(id);
@@ -354,7 +348,6 @@ namespace AnimeApp.Application.Services
             return animeResponse;
         }
 
-        /// <summary> Видаляє аніме </summary>
         public async Task DeleteAsync(int animeId)
         {
             var anime = await GetAnimeByIdAsync(animeId);

@@ -1,5 +1,4 @@
-﻿using AnimeApp.Core.Models;
-using AnimeApp.Core.Enums;
+﻿using AnimeApp.Core.Enums;
 
 namespace AnimeApp.Application.Dto.Responses.Anime
 {
@@ -20,7 +19,5 @@ namespace AnimeApp.Application.Dto.Responses.Anime
         public AnimeRatingEnum Rating { get; set; }
         public AnimeKindEnum Kind { get; set; }
         public AnimeStatusEnum Status { get; set; }
-
     }
-
 }

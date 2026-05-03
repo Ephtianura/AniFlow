@@ -1,14 +1,14 @@
 ﻿
 namespace AnimeApp.Application.Exceptions
 {
-    // Вже існує ел. адреса
+    /// <summary> Вже існує ел. адреса </summary>
     public class EmailAlreadyExistsException : Exception
     {
         public EmailAlreadyExistsException(string email)
             : base($"User with email '{email}' already exists.") { }
     }
 
-    // Невдала авторизація
+    /// <summary> Невдала авторизація </summary>
     public class AuthenticationException : Exception
     {
         public AuthenticationException()
@@ -22,14 +22,13 @@ namespace AnimeApp.Application.Exceptions
         public NotFoundException(string entityName)
             : base($"{entityName} not found.") { }
     }
-    public class EntityAlreadyExistsException : Exception
+    public class AlreadyExistsException : Exception
     {
-        public EntityAlreadyExistsException()
+        public AlreadyExistsException()
             : base() { }
-        public EntityAlreadyExistsException(string message)
+        public AlreadyExistsException(string message)
             : base(message) { }
-        public EntityAlreadyExistsException(string entityName, object key)
+        public AlreadyExistsException(string entityName, object key)
             : base($"{entityName} with key '{key}' already exists.") { }
     }
-
 }

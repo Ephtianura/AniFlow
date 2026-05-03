@@ -1,4 +1,4 @@
-﻿using AnimeApp.Application.Contracts;
+﻿using AnimeApp.Application.Contracts.App;
 using AnimeApp.Core.Contracts;
 
 namespace AnimeApp.Application.Services

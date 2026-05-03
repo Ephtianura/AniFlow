@@ -4,7 +4,7 @@ using AnimeApp.Core.Enums;
 namespace AnimeApp.Application.Dto.Responses.Anime
 {
     /// <summary>
-    /// Дто, якек відображає масив (зазвичай) із аніме, які користувач додав до свого власного списку.
+    /// Dto, яке відображає масив із аніме, які користувач додав до свого власного списку.
     /// </summary>
     public class AnimeInListResponse
     {

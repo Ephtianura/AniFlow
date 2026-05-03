@@ -1,6 +1,6 @@
 ﻿using AnimeApp.API.Controllers;
 using AnimeApp.API.Dto;
-using AnimeApp.Application.Contracts;
+using AnimeApp.Application.Contracts.App;
 using AnimeApp.Application.Dto.Requests.Anime;
 using AnimeApp.Application.Dto.Responses.Anime;
 using AnimeApp.Core.Filters;
@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace AnimeApp.Api.Controllers
 {
     [ApiController]
-    [Route("api/animes")]
+    [Route("api/anime")]
     public class AnimesController(
         IAnimeQueryService animeQueryService,
         IAnimeCommandService animeCommandService,

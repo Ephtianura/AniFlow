@@ -4,7 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Options;
 using System.Text;
 using System.Security.Claims;
-using AnimeApp.Application.Contracts;
+using AnimeApp.Application.Contracts.Infra;
 
 
 namespace AnimeApp.Infrastructure.Auth

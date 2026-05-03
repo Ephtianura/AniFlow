@@ -1,4 +1,4 @@
-﻿namespace AnimeApp.Application.Contracts
+﻿namespace AnimeApp.Application.Contracts.Infra
 {
     public interface IS3FileStorageService
     {

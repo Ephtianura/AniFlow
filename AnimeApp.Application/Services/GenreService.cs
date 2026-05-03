@@ -1,4 +1,4 @@
-﻿using AnimeApp.Application.Contracts;
+﻿using AnimeApp.Application.Contracts.App;
 using AnimeApp.Application.Dto.Requests.Genre;
 using AnimeApp.Application.Exceptions;
 using AnimeApp.Core.Contracts;
@@ -65,13 +65,7 @@ namespace AnimeApp.Application.Services
             await _genres.DeleteAsync(genre);
         }
 
-        private async Task<Genre> GetGenreByIdAsync(int id)
-        {
-            var genre = await _genres.GetByIdAsync(id);
-            if (genre is null)
-                throw new NotFoundException("Genre", id);
-            return genre;
-
-        }
+        private async Task<Genre> GetGenreByIdAsync(int id) =>
+            await _genres.GetByIdAsync(id) ?? throw new NotFoundException("Genre", id);
     }
 }

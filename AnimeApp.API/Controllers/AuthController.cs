@@ -1,5 +1,5 @@
 ﻿using AnimeApp.API.Dto;
-using AnimeApp.Application.Contracts;
+using AnimeApp.Application.Contracts.App;
 using AnimeApp.Application.Dto.Requests.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

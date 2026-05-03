@@ -1,6 +1,6 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Transfer;
-using AnimeApp.Application.Contracts;
+using AnimeApp.Application.Contracts.Infra;
 using Microsoft.Extensions.Configuration;
 
 namespace AnimeApp.Infrastructure.FileStorage

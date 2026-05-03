@@ -1,4 +1,4 @@
-﻿using AnimeApp.Application.Contracts;
+﻿using AnimeApp.Application.Contracts.App;
 using AnimeApp.Application.Dto.Requests.Anime;
 using AnimeApp.Application.Dto.Responses.Anime;
 using AnimeApp.Application.Services;

@@ -1,6 +1,6 @@
 ﻿using Amazon.Runtime;
 using Amazon.S3;
-using AnimeApp.Application.Contracts;
+using AnimeApp.Application.Contracts.Infra;
 using AnimeApp.Infrastructure.FileStorage;
 
 namespace AnimeApp.API.Extensions

@@ -1,4 +1,5 @@
-﻿using AnimeApp.Application.Contracts;
+﻿using AnimeApp.Application.Contracts.App;
+using AnimeApp.Application.Contracts.Infra;
 using AnimeApp.Application.Services;
 using AnimeApp.Core.Contracts;
 using AnimeApp.DataAccess.Repositories;

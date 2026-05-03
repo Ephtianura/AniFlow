@@ -1,18 +1,26 @@
 'use client';
 
+import { UserAnime } from '@/core/types';
 import { createContext, useContext } from 'react';
 
-const AnimeIdContext = createContext<number | null>(null);
+type AnimeContextType = {
+  animeId: number;
+  userAnime: UserAnime | null;
+};
+
+const AnimeIdContext = createContext<AnimeContextType | null>(null);
 
 export const AnimeIdProvider = ({
   animeId,
+  userAnime,
   children,
 }: {
   animeId: number;
+  userAnime: UserAnime | null;
   children: React.ReactNode;
 }) => {
   return (
-    <AnimeIdContext.Provider value={animeId}>
+    <AnimeIdContext.Provider value={{ animeId, userAnime }}>
       {children}
     </AnimeIdContext.Provider>
   );
