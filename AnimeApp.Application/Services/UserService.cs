@@ -89,8 +89,6 @@ namespace AnimeApp.Application.Services
             }
             if (!string.IsNullOrEmpty(request.Password))
                 user.ChangePassword(_passwordHasher.Generate(request.Password));
-            if (request.Theme.HasValue && request.Theme != user.Theme)
-                user.ChangeTheme(request.Theme.Value);
 
             await _usersRepository.UpdateAsync(user);
         }

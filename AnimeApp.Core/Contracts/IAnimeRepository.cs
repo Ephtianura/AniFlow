@@ -5,13 +5,18 @@ namespace AnimeApp.Core.Contracts
 {
     public interface IAnimeRepository
     {
+        Task<Anime?> GetByIdAsync(int id);
+
+        /// <summary> Повертає рандомне аніме </summary>
+        Task<Anime?> GetRandomAsync();
+
+        /// <summary> Повертає N кількість рандомних аніме Id </summary>
+        Task<List<int>> GetRandomIdsAsync(int count = 100);
+
+        Task<PagedResult<Anime>> GetFilteredAsync(AnimeFilter filter);
         Task AddAsync(Anime anime);
         Task AddRangeAsync(IEnumerable<Anime> animes);
-        Task DeleteAsync(Anime anime);
-        Task<List<int>> GetAllIdsAsync(int count = 100);
-        Task<Anime?> GetByIdAsync(int id);
-        Task<PagedResult<Anime>> GetFilteredAsync(AnimeFilter filter);
-        Task<Anime?> GetRandomAsync();
         Task UpdateAsync(Anime anime);
+        Task DeleteAsync(Anime anime);
     }
 }

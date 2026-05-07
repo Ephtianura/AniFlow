@@ -1,6 +1,5 @@
 ﻿namespace AnimeApp.Core.Enums
 {
-
     public enum RelationKindEnum
     {
         Adaptation,          // Адаптація (наприклад, аніме за мангою)
@@ -16,5 +15,4 @@
         SpinOff,             // Спін-оф (окрема історія від основного сюжету)
         Summary              // Резюме, короткий виклад сюжету
     }
-
 }

@@ -73,7 +73,7 @@ namespace AnimeApp.Application.Services
             );
         }
 
-        public Task<List<int>> GetIdsAsync() => _animeRep.GetAllIdsAsync();
+        public Task<List<int>> GetIdsAsync() => _animeRep.GetRandomIdsAsync();
 
 
         // ============================== private methods ====================================

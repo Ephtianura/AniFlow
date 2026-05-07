@@ -1,42 +1,39 @@
-﻿namespace AnimeApp.Core.Models
+﻿using AnimeApp.Core.Contracts;
+using AnimeApp.Core.Enums;
+
+namespace AnimeApp.Core.Models
 {
-    public class UserAnime
+    public class UserAnime : IHasUpdatedAt
     {
-        // ===================== Конструктор =====================
         public UserAnime() { }
-        
-        // Ctor
+
         private UserAnime(User user, Anime anime)
         {
-            SetUser(user);
-            SetAnime(anime);
+            InitUser(user);
+            InitAnime(anime);
             MyList = null;
             Rating = null;
             IsFavorite = false;
-            Touch();
         }
 
-        // ===================== Властивості =====================
         // Id
         public int UserId { get; private set; }
         public int AnimeId { get; private set; }
 
         // Info
-        public MyListEnum? MyList { get; private set; }       // Дивлюсь / Планую / Подивився
+        public MyListEnum? MyList { get; private set; }       // Дивлюсь / Планую / Подивився і т.д.
         public int? Rating { get; private set; }             // Оцінка аниме від юзера
         public bool IsFavorite { get; private set; }        // Чи улюблене аніме 
         public DateTime UpdatedAt { get; private set; }
 
         // Nav
-        public User User { get; private set; }
-        public Anime Anime { get; private set; }
+        public User User { get; private set; } = null!;
+        public Anime Anime { get; private set; } = null!;
 
-        public bool IsEmpty()
-        {
-            return Rating == null
+        public bool IsEmpty() =>
+                Rating == null
                 && MyList == null
                 && !IsFavorite;
-        }
 
         // ===================== Створення =====================
         public static UserAnime Create(User user, Anime anime)
@@ -45,53 +42,45 @@
             ArgumentNullException.ThrowIfNull(anime);
             return new UserAnime(user, anime);
         }
-        
-        private void SetUser(User user)
+
+        private void InitUser(User user)
         {
             User = user ?? throw new ArgumentNullException(nameof(user));
             UserId = user.Id;
         }
-        private void SetAnime(Anime anime)
-        { 
+        private void InitAnime(Anime anime)
+        {
             Anime = anime ?? throw new ArgumentNullException(nameof(anime));
             AnimeId = anime.Id;
         }
 
         // ===================== Оновлення =====================
-        public void MoveToList(MyListEnum? list)
-        {
-            MyList = list;
-            Touch();
-        }
+        public void MoveToList(MyListEnum? list) => MyList = list;
+
         public void Rate(int? rating)
         {
             if (Rating == rating) return;
             if (rating is not null && (rating < 1 || rating > 10))
                 throw new ArgumentException("The rating must be between 1 and 10");
             Rating = rating;
-            Touch();
         }
 
         public void MarkAsFavorites()
         {
-            if (IsFavorite)
-                return;
+            if (IsFavorite) return;
             IsFavorite = true;
-            Touch();
         }
 
         public void RemoveFromFavorites()
         {
-            if (!IsFavorite)
-                return;
+            if (!IsFavorite) return;
             IsFavorite = false;
-            Touch();
         }
 
+        public void Touch() => UpdatedAt = DateTime.UtcNow;
+
         //WatchedEpisodes = 0; // ctor
-
         //public int WatchedEpisodes { get; private set; }     // Колво епізодів перегляних
-
         //public void ChangeWatchedEpisodes(int newWatchedEpisodes)
         //{
         //    if (WatchedEpisodes == newWatchedEpisodes) return;
@@ -99,10 +88,5 @@
         //        throw new ArgumentException("");
         //    WatchedEpisodes = newWatchedEpisodes;
         //}
-
-        private void Touch()
-        {
-            UpdatedAt = DateTime.UtcNow;
-        }
     }
 }

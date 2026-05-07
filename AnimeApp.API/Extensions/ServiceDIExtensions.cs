@@ -5,7 +5,6 @@ using AnimeApp.Core.Contracts;
 using AnimeApp.DataAccess.Repositories;
 using AnimeApp.Infrastructure.Auth;
 using AnimeApp.Infrastructure.RedisCache;
-using GenreApp.DataAccess.Repositories;
 
 namespace AnimeApp.API.Extensions
 {

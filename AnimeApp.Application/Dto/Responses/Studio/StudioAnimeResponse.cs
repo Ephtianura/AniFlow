@@ -1,7 +1,7 @@
 ﻿
 namespace AnimeApp.Application.Dto.Responses.Studio
 {
-    public record StudioInAnimeResponse(
+    public record StudioAnimeResponse(
         int Id,
         string Name
     );

@@ -38,7 +38,7 @@
             CreateMap<Anime, AnimesResponse>()
                 .ForMember(dest => dest.PosterUrl, opt => opt.Ignore());
 
-            CreateMap<Studio, StudioInAnimeResponse>();
+            CreateMap<Studio, StudioAnimeResponse>();
 
             CreateMap<AnimeTitle, TitleResponse>();
             CreateMap<Genre, GenreResponse>();

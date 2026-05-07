@@ -8,5 +8,4 @@
         Ukrainian = 3,
         Russian = 4,
     }
-
 }

@@ -1,13 +1,12 @@
 ﻿using AnimeApp.Core.Enums;
 using System.Net.Mail;
 
-
 namespace AnimeApp.Core.Models
 {
     public class User
     {
         public User() { }
-      
+
         private User(string nickname, string email, string passwordHash)
         {
             ChangeNickname(nickname);
@@ -15,32 +14,23 @@ namespace AnimeApp.Core.Models
             ChangePassword(passwordHash);
             Role = UserRole.User;
             DateOfRegistration = DateTime.UtcNow;
-            Theme = ThemeEnum.Light;
         }
-            
+
         public int Id { get; private set; }
 
-        // 👤 Основні
-        public string Nickname { get; private  set; } = null!;
+        public string Nickname { get; private set; } = null!;
         public string Email { get; private set; } = null!;
         public string PasswordHash { get; private set; } = null!;
         public UserRole Role { get; private set; }
         public string? AvatarFileName { get; private set; }
+        public DateTime DateOfRegistration { get; private set; }
 
-        // 📅 Дати
-        public DateTime DateOfRegistration { get; private set; } 
-
-        // ⚙️ Налаштування
-        public ThemeEnum Theme { get; private set; }
-
-        // 📺 Списки
         public ICollection<UserAnime> UserAnimes { get; private set; } = [];
 
+
         // ===================== Створення =====================
-        public static User Create(string nickname, string email, string passwordHash)
-        {
-            return new User(nickname, email, passwordHash);
-        }
+        public static User Create(string nickname, string email, string passwordHash) =>
+            new(nickname, email, passwordHash);
 
         // ===================== Оновлення =====================
         public void ChangeNickname(string newNickname)
@@ -75,15 +65,7 @@ namespace AnimeApp.Core.Models
                 throw new ArgumentException("Invalid user role");
             Role = newRole;
         }
-        public void ChangeTheme(ThemeEnum newTheme)
-        {
-            if (!Enum.IsDefined(typeof(ThemeEnum), newTheme))
-                throw new ArgumentException("Invalid theme");
-            Theme = newTheme;
-        }
-        public void ChangeAvatarFileName(string? avatarFileName)
-        {
+        public void ChangeAvatarFileName(string? avatarFileName) =>
             AvatarFileName = avatarFileName;
-        }
     }
 }

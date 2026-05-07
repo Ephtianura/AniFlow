@@ -13,9 +13,9 @@ namespace AnimeApp.DataAccess.Configurations
 
             builder.HasKey(u => u.Id);
 
-           builder.Property(u => u.Nickname)
-                .IsRequired()
-                .HasMaxLength(50);
+            builder.Property(u => u.Nickname)
+                 .IsRequired()
+                 .HasMaxLength(50);
 
             builder.Property(u => u.Email)
                 .IsRequired()
@@ -27,11 +27,7 @@ namespace AnimeApp.DataAccess.Configurations
 
             builder.Property(u => u.Role)
                 .IsRequired()
-                .HasConversion<int>(); 
-
-            builder.Property(u => u.Theme)
-                .IsRequired()
-                .HasConversion<int>(); 
+                .HasConversion<int>();
 
             builder.Property(u => u.AvatarFileName)
                 .HasMaxLength(200)
@@ -111,6 +107,21 @@ namespace AnimeApp.DataAccess.Configurations
             builder.Property(a => a.Score)
                 .HasPrecision(3, 1); // 0.0 - 10.0
 
+            builder.Property(x => x.ExternalLinks)
+               .HasColumnType("jsonb");
+
+            // Many - to - One: Music
+            builder.HasMany(x => x.Music)
+            .WithOne()
+            .HasForeignKey(x => x.AnimeId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+            // Many - to - One: Promos
+            builder.HasMany(x => x.Promos)
+                .WithOne()
+                .HasForeignKey(x => x.AnimeId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             // One-to-Many: Studio
             builder.HasOne(a => a.Studio)
                 .WithMany(s => s.Animes)
@@ -141,11 +152,11 @@ namespace AnimeApp.DataAccess.Configurations
                 t.Property(tt => tt.Type).IsRequired();
             });
 
-            //Many - to - Many: Animes
+            // Many - to - One: RelatedsAnime
             builder.HasMany(a => a.Relateds)
-             .WithOne(r => r.Anime) 
+             .WithOne(r => r.Anime)
              .HasForeignKey(r => r.AnimeId)
-             .OnDelete(DeleteBehavior.Cascade); 
+             .OnDelete(DeleteBehavior.Cascade);
 
 
             builder.HasMany(a => a.UserAnimes)
@@ -172,7 +183,7 @@ namespace AnimeApp.DataAccess.Configurations
                    .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(ar => ar.RelatedAnime)
-                   .WithMany() 
+                   .WithMany()
                    .HasForeignKey(ar => ar.RelatedAnimeId)
                    .OnDelete(DeleteBehavior.Restrict); // Не видаляти друге аніме
         }
@@ -189,6 +200,69 @@ namespace AnimeApp.DataAccess.Configurations
 
             builder.HasIndex(x => x.MalId).IsUnique();
             builder.HasIndex(x => x.KodikId).IsUnique();
+        }
+    }
+
+    // ===================== AnimeOsts =====================
+    public class AnimeOstConfiguration : IEntityTypeConfiguration<AnimeOst>
+    {
+        public void Configure(EntityTypeBuilder<AnimeOst> builder)
+        {
+            builder.ToTable("AnimeOsts");
+
+            builder.HasKey(a => a.Id);
+
+            builder.Property(x => x.Title)
+            .IsRequired()
+            .HasMaxLength(255);
+
+            builder.Property(x => x.Description)
+                .HasMaxLength(2000);
+
+            builder.Property(x => x.Author)
+                .HasMaxLength(255);
+
+            builder.Property(x => x.SpotifyUrl)
+                .HasMaxLength(500);
+
+            builder.Property(x => x.Type)
+                .HasConversion<string>();
+
+            // Составной індекс для швидкого пошуку по айді та сортування за порядком
+            builder.HasIndex(x => new
+            {
+                x.AnimeId,
+                x.Index
+            }).IsUnique();
+
+            builder.HasMany(x => x.Videos)
+                .WithOne()
+                .HasForeignKey(x => x.AnimeOstId)
+                .OnDelete(DeleteBehavior.Cascade);
+        }
+    }
+
+    // ===================== AnimeVideos =====================
+    public class AnimeVideoConfiguration : IEntityTypeConfiguration<AnimeVideo>
+    {
+        public void Configure(EntityTypeBuilder<AnimeVideo> builder)
+        {
+            builder.ToTable("AnimeVideos");
+
+            builder.HasKey(a => a.Id);
+
+            builder.Property(x => x.Url)
+            .IsRequired()
+            .HasMaxLength(1000);
+
+            builder.Property(x => x.Kind)
+                .HasConversion<string>();
+
+            builder.HasIndex(x => new
+            {
+                x.AnimeId,
+                x.Index
+            }).IsUnique();
         }
     }
 
@@ -212,7 +286,6 @@ namespace AnimeApp.DataAccess.Configurations
                 .HasMaxLength(100);
         }
     }
-
 
     // ===================== STUDIOS =====================
     public class StudioConfiguration : IEntityTypeConfiguration<Studio>

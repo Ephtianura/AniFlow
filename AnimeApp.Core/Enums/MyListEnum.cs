@@ -1,4 +1,4 @@
-﻿namespace AnimeApp.Core.Models
+﻿namespace AnimeApp.Core.Enums
 {
     public enum MyListEnum
     {

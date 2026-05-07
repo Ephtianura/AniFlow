@@ -5,6 +5,7 @@ using AnimeApp.Application.Dto.Responses.Anime;
 using AnimeApp.Application.Dto.Responses.User;
 using AnimeApp.Application.Exceptions;
 using AnimeApp.Core.Contracts;
+using AnimeApp.Core.Enums;
 using AnimeApp.Core.Models;
 
 namespace AnimeApp.Application.Services
@@ -15,9 +16,7 @@ namespace AnimeApp.Application.Services
         private readonly IAnimeRepository _animesRepo = animes;
         private readonly IUserAnimeRepository _userAnimesRepo = usersAnimes;
 
-        /// <summary>
-        /// Повертає всю інформацію про профіль
-        /// </summary>
+        /// <summary>Повертає всю інформацію про профіль </summary>
         public async Task<UserProfileResponse> GetUserProfileAsync(int userId)
         {
             var user = await GetUserWithAnimeByIdAsync(userId);
@@ -32,23 +31,22 @@ namespace AnimeApp.Application.Services
 
             // Сума всіх переглянутих епізодів
             int totalEpisodes = userAnimes
-                .Where(ua => ua.MyList == MyListEnum.Completed || ua.MyList == MyListEnum.Rewatching) // Беремо тільки ті, які ВЖЕ переглянулі, або знову дивимося
-                .Sum(ua => ua.Anime.Episodes);
+                .Where(ua => ua.Anime.Episodes.HasValue && (ua.MyList == MyListEnum.Completed || ua.MyList == MyListEnum.Rewatching)) // Беремо тільки ті, які ВЖЕ переглянулі, або знову дивимося
+                .Sum(ua => ua.Anime.Episodes!.Value);
 
             // "Мій середній бал"
             double averageScore = userAnimes
                 .Where(ua => ua.Rating.HasValue)
-                .Select(ua => ua.Rating.Value)
+                .Select(ua => ua.Rating!.Value)
                 .DefaultIfEmpty(0)
                 .Average();
 
             averageScore = Math.Round(averageScore, 1);
 
             // Весь час затрачений на перегляд аніме
-            TimeSpan totalTime = TimeSpan.FromMinutes(
-                userAnimes
-                .Where(ua => ua.MyList == MyListEnum.Completed || ua.MyList == MyListEnum.Rewatching)
-                .Sum(ua => ua.Anime.Episodes * ua.Anime.Duration)
+            TimeSpan totalTime = TimeSpan.FromMinutes(userAnimes
+                .Where(ua => ua.Anime.Episodes.HasValue && ua.Anime.Duration.HasValue && (ua.MyList == MyListEnum.Completed || ua.MyList == MyListEnum.Rewatching))
+                .Sum(ua => ua.Anime.Episodes!.Value * ua.Anime.Duration!.Value)
             );
 
             return new UserProfileResponse
@@ -92,19 +90,19 @@ namespace AnimeApp.Application.Services
                 .Select(userAnimes => new AnimeInListResponse
                 {
                     Id = userAnimes.Anime.Id,
-                    Titles = userAnimes.Anime.Titles.Select(t => new AnimeTitleRequest
+                    Url = userAnimes.Anime.Url,
+                    Titles = userAnimes.Anime.Titles.ConvertAll(t => new AnimeTitleRequest
                     {
                         Value = t.Value,
                         Language = t.Language,
                         Type = t.Type
-                    }).ToList(),
+                    }),
                     PosterFileName = userAnimes.Anime.PosterFileName,
                     Kind = userAnimes.Anime.Kind,
                     Episodes = userAnimes.Anime.Episodes,
                     Score = userAnimes.Anime.Score,
                     TotalScores = userAnimes.Anime.TotalScores,
                     MyRating = userAnimes.Rating,
-                    Url = userAnimes.Anime.Url,
                 })
                 .ToList();
 

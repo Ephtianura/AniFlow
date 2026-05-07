@@ -12,6 +12,8 @@ interface AdminLayoutProps {
 }
 
 export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
+
+  // Делать запрос вместо состояния, сделать леяут серверным, если 403 то нот фаунд!!!
   const { isLoggedIn, userRole } = useAuth();
   const router = useRouter();
   const pathname = usePathname();

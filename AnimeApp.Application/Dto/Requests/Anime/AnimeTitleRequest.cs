@@ -8,11 +8,7 @@ namespace AnimeApp.Application.Dto.Requests.Anime
         public TitleLanguage Language { get; set; }
         public TitleType Type { get; set; }
 
-        public override string ToString()
-        {
-            return $"Value={Value}, Language={Language}, Type={Type}";
-        }
+        public override string ToString() =>
+          $"Value={Value}, Language={Language}, Type={Type}";
     }
-
-
 }

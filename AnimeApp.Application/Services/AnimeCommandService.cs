@@ -7,7 +7,6 @@ using AnimeApp.Application.Mapping;
 using AnimeApp.Core.Contracts;
 using AnimeApp.Core.Enums;
 using AnimeApp.Core.Models;
-using AutoMapper;
 using System.Text.RegularExpressions;
 
 namespace AnimeApp.Application.Services
@@ -16,16 +15,15 @@ namespace AnimeApp.Application.Services
         IAnimeRepository animes,
         IStudioRepository studios,
         IGenreRepository genres,
-        IS3FileStorageService fileStorage,
-        IMapper mapper) : IAnimeCommandService
+        IS3FileStorageService fileStorage
+        ) : IAnimeCommandService
     {
         private readonly IAnimeRepository _animeRep = animes;
         private readonly IStudioRepository _studios = studios;
         private readonly IGenreRepository _genres = genres;
         private readonly IS3FileStorageService _fileStorage = fileStorage;
-        private readonly IMapper _mapper = mapper;
 
-        public async Task<AnimeResponse> CreateAsync(AnimeCreateRequest request)
+        public async Task<AnimeCreateResponse> CreateAsync(AnimeCreateRequest request)
         {
             // Створити назви
             var titles = request.Titles
@@ -42,7 +40,7 @@ namespace AnimeApp.Application.Services
             {
                 studio = await _studios.GetByIdAsync(request.StudiosId.Value);
                 if (studio == null)
-                    throw new NotFoundException("Studio not found");
+                    throw new NotFoundException("Studio", request.StudiosId.Value);
             }
 
             // ===================== Genres =====================
@@ -62,7 +60,7 @@ namespace AnimeApp.Application.Services
             DateTime? airedOnUtc = airedOn?.ToUniversalTime();
             DateTime? releasedOnUtc = request.ReleasedOn?.ToUniversalTime();
 
-            SeasonEnum season = SeasonEnum.Unknown;
+            SeasonEnum? season = null;
             int year = 0;
 
             if (airedOn.HasValue)
@@ -72,42 +70,41 @@ namespace AnimeApp.Application.Services
             }
 
             // ===================== Create Anime =====================
-            var anime = Anime.Create(
-                titles: titles,
-                url: "",
-                kind: request.Kind,
-                status: request.Status,
-                rating: request.Rating,
-                description: request.Description,
-                studio: studio,
-                genres: genres,
-                airedOn: airedOnUtc,
-                releasedOn: releasedOnUtc,
-                season: season,
-                year: year,
-                score: request.Score,
-                episodes: request.Episodes,
-                episodesAired: request.EpisodesAired,
-                duration: request.Duration
-            );
+            var anime = Anime.Create(new CreateAnimeParams
+            {
+                Titles = titles,
+                Url = "",
+                Kind = request.Kind,
+                Status = request.Status,
+                Rating = request.Rating,
+                Description = request.Description,
+                Studio = studio,
+                Genres = genres,
+                AiredOn = airedOnUtc,
+                ReleasedOn = releasedOnUtc,
+                Season = season,
+                Year = year,
+                Score = request.Score,
+                Episodes = request.Episodes,
+                EpisodesAired = request.EpisodesAired,
+                Duration = request.Duration
+            });
 
             await _animeRep.AddAsync(anime);
-
 
             // Генерація URL з офіційного Romaji title
             anime.UpdateUrl(GenerateUrl(officialRomajiTitle, anime.Id));
 
             await _animeRep.UpdateAsync(anime);
 
-            var response = _mapper.Map<AnimeResponse>(anime);
-
-            response.PosterUrl = GetPosterUrl(anime.PosterFileName);
-            response.ScreenshotsUrls = GetScreenshotsUrls(anime.ScreenshotsFileName);
-
-            return response;
+            return new AnimeCreateResponse(
+                anime.Id,
+                anime.Url,
+                anime.Titles
+            );
         }
 
-        public async Task<AnimeResponse> UpdateAsync(int id, AnimeUpdateRequest request)
+        public async Task UpdateAsync(int id, AnimeUpdateRequest request)
         {
             var anime = await GetAnimeByIdAsync(id);
 
@@ -115,7 +112,7 @@ namespace AnimeApp.Application.Services
             if (request.StudiosId.HasValue && request.StudiosId.Value != anime.StudiosId)
             {
                 var studio = await _studios.GetByIdAsync(request.StudiosId.Value)
-                    ?? throw new NotFoundException("Studio", id);
+                    ?? throw new NotFoundException("Studio", request.StudiosId.Value);
                 anime.SetStudio(studio);
             }
 
@@ -153,6 +150,8 @@ namespace AnimeApp.Application.Services
                     anime.UpdateUrl(url);
                 }
             }
+
+            // Потребує рефакторінгу... --------------------------------------------
 
             // ===================== Relateds =====================
             if (request.RelatedsAnimes != null)
@@ -235,16 +234,11 @@ namespace AnimeApp.Application.Services
                 anime.UpdateDuration(request.Duration.Value);
 
             await _animeRep.UpdateAsync(anime);
-
-            var response = _mapper.Map<AnimeResponse>(anime);
-
-            response.PosterUrl = GetPosterUrl(anime.PosterFileName);
-            response.ScreenshotsUrls = GetScreenshotsUrls(anime.ScreenshotsFileName);
-
-            return response;
         }
 
-        public async Task<AnimeResponse> UpdateFilesAsync(int id, AnimeUpdateFilesRequest request)
+
+        // Потербує рефакторінгу...
+        public async Task UpdateFilesAsync(int id, AnimeUpdateFilesRequest request)
         {
             var anime = await GetAnimeByIdAsync(id);
 
@@ -339,13 +333,6 @@ namespace AnimeApp.Application.Services
             }
 
             await _animeRep.UpdateAsync(anime);
-
-            var animeResponse = _mapper.Map<AnimeResponse>(anime);
-
-            animeResponse.PosterUrl = GetPosterUrl(anime.PosterFileName);
-            animeResponse.ScreenshotsUrls = GetScreenshotsUrls(anime.ScreenshotsFileName);
-
-            return animeResponse;
         }
 
         public async Task DeleteAsync(int animeId)
@@ -361,16 +348,6 @@ namespace AnimeApp.Application.Services
         private async Task<Anime> GetAnimeByIdAsync(int animeId) =>
             await _animeRep.GetByIdAsync(animeId) ?? throw new NotFoundException("Anime", animeId);
 
-        private string? GetPosterUrl(string? posterFileName) =>
-            string.IsNullOrWhiteSpace(posterFileName)
-                ? null
-                : _fileStorage.GetUrl(posterFileName);
-
-        private List<string>? GetScreenshotsUrls(List<string>? screenshotsFileNames) =>
-            screenshotsFileNames?.Any() == true
-                ? screenshotsFileNames.ConvertAll(_fileStorage.GetUrl)
-                : null;
-
         private static string GenerateUrl(AnimeTitle romajiName, int animeId)
         {
             var value = romajiName.Value
@@ -380,17 +357,17 @@ namespace AnimeApp.Application.Services
             // Видалити все окрім a-z 0-9
             value = Regex.Replace(value, @"[^a-z0-9\s-]", "");
 
-            // Заміна всех пробілів на  "-"
+            // Заміна всіх " " на "-"
             value = Regex.Replace(value, @"\s+", "-");
 
-            // Заміна повторів "--..-" на "-"
+            // Заміна повторів "---" на "-"
             value = Regex.Replace(value, @"-+", "-");
 
             return $"{value}-{animeId}";
         }
 
         /// <summary> Розраховує та повертає сезон по місяцю випуску </summary>
-        private static SeasonEnum GetSeasonFromDate(DateTime date)
+        private static SeasonEnum? GetSeasonFromDate(DateTime date)
         {
             return date.Month switch
             {
@@ -398,7 +375,7 @@ namespace AnimeApp.Application.Services
                 3 or 4 or 5 => SeasonEnum.Spring,
                 6 or 7 or 8 => SeasonEnum.Summer,
                 9 or 10 or 11 => SeasonEnum.Fall,
-                _ => SeasonEnum.Unknown
+                _ => null
             };
         }
     }

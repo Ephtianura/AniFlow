@@ -1,35 +1,22 @@
-﻿namespace AnimeApp.Core.Models
+﻿using AnimeApp.Core.Contracts;
+
+namespace AnimeApp.Core.Models
 {
-    public class AnimeIdCatalog
+    public class AnimeIdCatalog : IHasUpdatedAt
     {
         public int MoonId { get; set; }
         public int? KodikId { get; set; }
-        public int? MalId { get; set; }
-        public bool IsParsed { get; set; } = false;
+        public int MalId { get; set; }
+        public bool IsParsed { get; private set; } = false;
         public DateTime LastUpdated { get; private set; } = DateTime.UtcNow;
-
-        public void SetKodikId(int kodikId)
-        {
-            if (KodikId == kodikId) return;
-            KodikId = kodikId;
-            Update();
-        }
-
-        public void SetMalId(int malId)
-        {
-            if (MalId == malId) return;
-            MalId = malId;
-            Update();
-        }
 
         public void MarkAsParsed()
         {
             if (IsParsed) return;
             IsParsed = true;
-            Update();
         }
-        public void Update() => LastUpdated = DateTime.UtcNow;
 
+        public void Touch() => LastUpdated = DateTime.UtcNow;
     }
 }
 

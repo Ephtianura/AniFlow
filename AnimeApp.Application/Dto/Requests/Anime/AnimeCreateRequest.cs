@@ -1,11 +1,9 @@
 ﻿using AnimeApp.Core.Enums;
-using Microsoft.AspNetCore.Http;
 
 namespace AnimeApp.Application.Dto.Requests.Anime
 {
     public class AnimeCreateRequest
     {
-
         public List<AnimeTitleRequest> Titles { get; set; } = new();
 
         // =================== Poster / Screens ===================
@@ -25,9 +23,9 @@ namespace AnimeApp.Application.Dto.Requests.Anime
 
         // =================== Rating / Kind / Status ===================
 
-        public AnimeKindEnum Kind { get; set; } = AnimeKindEnum.Unknown;
-        public AnimeStatusEnum Status { get; set; } = AnimeStatusEnum.Unknown;
-        public AnimeRatingEnum Rating { get; set; } = AnimeRatingEnum.Unknown;
+        public AnimeKindEnum? Kind { get; set; }
+        public AnimeStatusEnum? Status { get; set; }
+        public AnimeRatingEnum? Rating { get; set; }
 
         // =================== Statistics ===================
 

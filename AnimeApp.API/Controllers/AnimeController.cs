@@ -55,33 +55,39 @@ namespace AnimeApp.Api.Controllers
             return Ok(animes);
         }
 
+
+
         // ==================== Адмін права ====================
 
         /// <summary> Створює нове аніме. </summary>
         [HttpPost]
         [Authorize(Policy = "AdminPolicy")]
-        public async Task<ActionResult<AnimeResponse>> Create([FromBody] AnimeCreateRequest request)
+        public async Task<ActionResult<AnimeCreateResponse>> Create([FromBody] AnimeCreateRequest request)
         {
-            var anime = await _animeCommandService.CreateAsync(request);
-            return CreatedAtAction(nameof(GetById), new { id = anime.Id }, anime);
+            var response = await _animeCommandService.CreateAsync(request);
+            return CreatedAtAction(
+                nameof(GetById),
+                new { id = response.Id },
+                response
+            );
         }
 
         /// <summary> Оновлює текстову інформацію про аніме. </summary>
         [HttpPatch("{id}")]
         [Authorize(Policy = "AdminPolicy")]
-        public async Task<ActionResult<AnimeResponse>> Update(int id, [FromBody] AnimeUpdateRequest request)
+        public async Task<ActionResult> Update(int id, [FromBody] AnimeUpdateRequest request)
         {
-            var anime = await _animeCommandService.UpdateAsync(id, request);
-            return Ok(anime);
+            await _animeCommandService.UpdateAsync(id, request);
+            return Ok(new ApiResponse("Anime succesfully updated"));
         }
 
         /// <summary> Завантажує/оновлює файли (постер, скріншоти) через multipart/form-data. </summary>
         [HttpPatch("{id}/files")]
         [Authorize(Policy = "AdminPolicy")]
-        public async Task<ActionResult<AnimeResponse>> UpdateFiles(int id, [FromForm] AnimeUpdateFilesRequest request)
+        public async Task<ActionResult> UpdateFiles(int id, [FromForm] AnimeUpdateFilesRequest request)
         {
-            var anime = await _animeCommandService.UpdateFilesAsync(id, request);
-            return Ok(anime);
+            await _animeCommandService.UpdateFilesAsync(id, request);
+            return Ok(new ApiResponse("Anime files succesfully updated"));
         }
 
         /// <summary> Повністю видаляє аніме. </summary>

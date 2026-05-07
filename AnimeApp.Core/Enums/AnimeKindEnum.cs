@@ -2,7 +2,6 @@
 {
     public enum AnimeKindEnum
     {
-        Unknown = 0,
         TV = 1,
         Movie = 2,
         OVA = 3,

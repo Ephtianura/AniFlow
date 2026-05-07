@@ -1,4 +1,4 @@
-﻿using AnimeApp.Core.Models;
+﻿using AnimeApp.Core.Enums;
 
 namespace AnimeApp.Application.Dto.Requests.User
 {

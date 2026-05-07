@@ -1,6 +1,4 @@
 ﻿using AnimeApp.Core.Enums;
-using AnimeApp.Core.Enums;
-using Microsoft.AspNetCore.Http;
 
 namespace AnimeApp.Application.Dto.Requests.Anime
 {

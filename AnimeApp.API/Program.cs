@@ -1,4 +1,3 @@
-using AnimeApp.Api.Extensions;
 using AnimeApp.API.Extensions;
 using AnimeApp.API.Middleware.Exceptions;
 using Microsoft.AspNetCore.CookiePolicy;

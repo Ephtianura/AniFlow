@@ -4,7 +4,7 @@ namespace AnimeApp.Core.Models
 {
     public class AnimeRelated
     {
-        public AnimeRelated() { } 
+        public AnimeRelated() { }
 
         private AnimeRelated(int animeId, int relatedAnimeId, RelationKindEnum type)
         {
@@ -24,16 +24,11 @@ namespace AnimeApp.Core.Models
         public RelationKindEnum Type { get; private set; }
 
         // =================== Фабрика ===================
-        public static AnimeRelated Create(int animeId, int relatedAnimeId, RelationKindEnum type)
-        {
-            return new AnimeRelated(animeId, relatedAnimeId, type);
-        }
+        public static AnimeRelated Create(int animeId, int relatedAnimeId, RelationKindEnum type) =>
+            new(animeId, relatedAnimeId, type);
 
         // =================== Методи ===================
-        public void UpdateType(RelationKindEnum newType)
-        {
+        public void UpdateType(RelationKindEnum newType) =>
             Type = newType;
-        }
     }
-
 }

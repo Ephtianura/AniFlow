@@ -1,16 +1,16 @@
 ﻿namespace AnimeApp.Application.Dto.External
 {
 
-    public class AnimeIdList
-    {
-        public List<AnimeIdDto> AnimeList { get; set; } = [];
-        public int LastPage { get; set; }
-    }
+    public record AnimeIdList
+    (
+        List<AnimeIdDto> AnimeList,
+        int LastPage
+    );
 
-    public class AnimeIdDto
-    {
-        public int MoonId { get; set; }
-        public int? MalId { get; set; }
-        public int? AnilistId { get; set; }
-    }
+    public record AnimeIdDto
+    (
+        int MoonId,
+        int? MalIdx,
+        int? AnilistIdx
+    );
 }

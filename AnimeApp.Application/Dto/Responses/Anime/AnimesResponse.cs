@@ -27,6 +27,6 @@ namespace AnimeApp.Application.Dto.Responses.Anime
         public string Description { get; set; } = string.Empty;
 
         public List<GenreResponse> Genres { get; set; } = [];
-        public StudioInAnimeResponse? Studio { get; set; }
+        public StudioAnimeResponse? Studio { get; set; }
     }
 }

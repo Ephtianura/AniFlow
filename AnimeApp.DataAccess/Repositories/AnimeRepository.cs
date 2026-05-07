@@ -17,8 +17,12 @@ namespace AnimeApp.DataAccess.Repositories
                .Include(a => a.Titles)
                .Include(a => a.Genres)
                .Include(a => a.Studio)
+               .Include(a => a.Music)
+                    .ThenInclude(r => r.Videos)
+               .Include(a => a.Promos)
                .Include(a => a.Relateds)
                     .ThenInclude(r => r.RelatedAnime)
+
                .FirstOrDefaultAsync(a => a.Id == id);
         }
 
@@ -39,19 +43,16 @@ namespace AnimeApp.DataAccess.Repositories
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<List<int>> GetAllIdsAsync(int count = 100)
+        public async Task<List<int>> GetRandomIdsAsync(int count = 100)
         {
             var totalCount = await _dbContext.Animes.CountAsync();
 
-            var randomAnimeIds = await _dbContext.Animes
+            return await _dbContext.Animes
                .OrderBy(x => Guid.NewGuid())
                .Select(x => x.Id)
                .Take(count)
                .ToListAsync();
-
-            return randomAnimeIds;
         }
-
 
         public async Task<PagedResult<Anime>> GetFilteredAsync(AnimeFilter filter)
         {

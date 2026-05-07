@@ -14,7 +14,7 @@ namespace AnimeApp.Core.Models
         }
         public int Id { get; private set; }
         public int AnimeId { get; private set; }
-        public string Value { get; private set; }
+        public string Value { get; private set; } = null!;
         public TitleLanguage Language { get; private set; }      // Enum: Romaji, Ukrainian, Russian, English…
         public TitleType Type { get; private set; }              // Enum: Official, Fan, Abbreviation…
 
@@ -22,8 +22,7 @@ namespace AnimeApp.Core.Models
         {
             if (string.IsNullOrWhiteSpace(value))
                 throw new ArgumentException("Value cannot be empty", nameof(value));
-
-            return new AnimeTitle(0, value, language, type); // EF подхватит AnimeId
+            return new(0, value, language, type); // EF подхватит AnimeId
         }
 
 
@@ -31,19 +30,13 @@ namespace AnimeApp.Core.Models
         {
             if (string.IsNullOrWhiteSpace(value))
                 throw new ArgumentException("Value cannot be empty", nameof(value));
-
             Value = value;
         }
 
-        public void ChangeLanguage(TitleLanguage language)
-        {
+        public void ChangeLanguage(TitleLanguage language) =>
             Language = language;
-        }
 
-        public void ChangeType(TitleType type)
-        {
+        public void ChangeType(TitleType type) =>
             Type = type;
-        }
-
     }
 }

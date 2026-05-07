@@ -1,5 +1,6 @@
 ﻿using AnimeApp.Application.Dto.Requests.User;
 using AnimeApp.Application.Dto.Responses.User;
+using AnimeApp.Core.Enums;
 using AnimeApp.Core.Models;
 
 namespace AnimeApp.Application.Contracts.App

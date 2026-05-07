@@ -1,6 +1,4 @@
-﻿using static System.Net.WebRequestMethods;
-
-namespace AnimeApp.Application.Services
+﻿namespace AnimeApp.Application.Services
 {
     //public class ImportAnimeService(IMoonApiClient moonApi, IAnimeIdCatalog catalogRep)
     //{

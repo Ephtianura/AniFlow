@@ -1,5 +1,6 @@
 ﻿using AnimeApp.Application.Contracts.Infra;
 using AnimeApp.Application.Dto.External;
+using AnimeApp.Core.Enums;
 using AnimeApp.Infrastructure.Exceptions;
 using AnimeApp.Infrastructure.ExternalApi.MoonAPI.Dto;
 using Microsoft.Extensions.Configuration;
@@ -23,33 +24,78 @@ namespace AnimeApp.Infrastructure.ExternalApi.MoonAPI
                 var response = await _httpClient.GetFromJsonAsync<MoonApiAnimeIdResponse>(url)
                     ?? throw new ExternalApiEmptyResponseException("Moon API returned empty response");
 
-                return new AnimeIdList()
-                {
-                    AnimeList = response.AnimeList
-                        .ConvertAll(x => new AnimeIdDto
-                        {
-                            MoonId = x.MoonId,
-                            MalId = x.MalId,
-                            AnilistId = x.AnilistId
-                        }),
-                    LastPage = response.LastPage,
-                };
+                return new AnimeIdList(
+                    response.AnimeList
+                        .ConvertAll(x => new AnimeIdDto(
+                            x.MoonId,
+                            x.MalId,
+                            x.AnilistId
+                        )),
+                    response.LastPage
+                );
             });
         }
+
         public Task<AnimeFullRaw> GetFullAnimeInfo(int moonId)
         {
             var url = $"2.0/title/{moonId}/full?api_key={_apiKey}";
 
             return ExecuteMoonAsync(async () =>
             {
-                var response = await _httpClient.GetFromJsonAsync<MoonApiAnimeFullResponse>(url)
+                var r = await _httpClient.GetFromJsonAsync<MoonApiAnimeFullResponse>(url)
                     ?? throw new ExternalApiEmptyResponseException("Moon API returned empty response");
 
-                //Модель ще не збудована!!! 
+                var companies = r.Companies
+                .Where(x => x?.Company != null && !string.IsNullOrWhiteSpace(x.Type) && !string.IsNullOrWhiteSpace(x.Company.Name))
+                .Select(c => new CompanyDto(
+                    c.Type!,
+                    c.Company!.Name!,
+                    c.Company.Image,
+                    c.Company.Slug))
+                .ToList();
+
+                var genres = r.Genres
+                .Where(x => x != null)
+                .Select(g => new GenreDto(
+                    g.NameUa, // Не впевнений, чи взагалі потрібні 3/4 полів
+                    g.NameEn,
+                    g.Slug,
+                    g.Type))
+                .ToList();
+
+                var videos = r.Videos
+                .Where(x => x != null && !string.IsNullOrWhiteSpace(x.Url) && !string.IsNullOrWhiteSpace(x.Title))
+                .Select(v => new VideoDto(
+                    v.Url!,
+                    v.Title!,
+                    v.Description,
+                    v.VideoType
+                ))
+                .ToList();
+
+                var osts = r.Ost
+                .Where(x => x != null && !string.IsNullOrWhiteSpace(x.Title))
+                .Select(o => new OstDto(
+                    o.Title!,
+                    o.Author,
+                    o.Spotify,
+                    o.OstType,
+                    o.Index))
+                .ToList();
+
+                var external = r.External
+                .Where(x => x != null && !string.IsNullOrWhiteSpace(x.Url) && !string.IsNullOrWhiteSpace(x.Text))
+                .Select(e => new ExternalLink(
+                    e.Url!,
+                    e.Text!,
+                    e.Type))
+                .ToList();
+
                 return new AnimeFullRaw(
-                    1, null, null, null, null, null, null, null, null, null, null,
-                    null, null, null, null, null, null, null, null, null, null, null,
-                    null, null, false, null, null, null, null
+                    r.MalId, r.AnilistId, companies, genres, r.StartDate, r.EndDate, r.EpisodesReleased, r.EpisodesTotal,
+                    r.SynopsisUa, r.SynopsisEn, r.MediaType, r.TitleUa, r.TitleEn, r.TitleJa, r.Synonyms,
+                    null, r.Duration, r.Image, r.Status, r.Source, r.Rating, r.Score, r.Season, r.Year, r.Nsfw, r.Slug,
+                    external, videos, osts
                 );
             });
         }
@@ -92,6 +138,7 @@ namespace AnimeApp.Infrastructure.ExternalApi.MoonAPI
                     ));
             });
         }
+
 
         /// <summary> Функція для перевірки валідності MoonApi </summary>
         /// <exception cref="ExternalApiTimeoutException"></exception>

@@ -8,5 +8,4 @@
         Short = 4,
         FanTranslation = 5
     }
-
 }

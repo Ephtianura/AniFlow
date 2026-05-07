@@ -1,4 +1,4 @@
-﻿using AnimeApp.Core.Models;
+﻿using AnimeApp.Core.Enums;
 
 namespace AnimeApp.Application.Dto.Responses.User
 {
@@ -7,5 +7,5 @@ namespace AnimeApp.Application.Dto.Responses.User
          MyListEnum? MyList,
          int? Rating,
          bool? IsFavorite
-        );
+    );
 }

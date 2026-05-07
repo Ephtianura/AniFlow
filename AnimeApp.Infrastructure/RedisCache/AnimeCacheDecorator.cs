@@ -48,11 +48,8 @@ namespace AnimeApp.Infrastructure.RedisCache
             return animes;
         }
 
-
-        /// <summary>
-        /// Кешування рандомних аніме.
-        /// </summary>
-        /// <returns>Одне рандомне аніме з кешу або бази</returns>
+        /// <summary> Кешує рандомні аніме. </summary>
+        /// <returns> Одне рандомне аніме з кешу або бази </returns>
         public async Task<AnimeResponse> GetRandomAsync()
         {
             // Ідемо в редіс, отримувати список рандомних айді
@@ -71,7 +68,6 @@ namespace AnimeApp.Infrastructure.RedisCache
                 return await GetByIdAsync(cachedId);
             }
 
-
             // Якщо список в кешу пустий - Ідемо до бази отримувати нові рандомні айдішки
             List<int> animeIds = await _queryService.GetIdsAsync();
 
@@ -89,43 +85,39 @@ namespace AnimeApp.Infrastructure.RedisCache
         }
 
 
-        public async Task<AnimeResponse> UpdateAsync(int id, AnimeUpdateRequest request)
+        public async Task UpdateAsync(int id, AnimeUpdateRequest request)
         {
             var key = "anime:id:" + id;
 
-            var anime = await _commandService.UpdateAsync(id, request);
+            await _commandService.UpdateAsync(id, request);
 
             await _cache.RemoveAsync(key);
             await _cache.RemoveByPrefixAsync("anime:filter:");
             await _cache.RemoveAsync("anime:random:ids");
-
-            return anime;
         }
 
-        public async Task<AnimeResponse> UpdateFilesAsync(int id, AnimeUpdateFilesRequest request)
+        public async Task UpdateFilesAsync(int id, AnimeUpdateFilesRequest request)
         {
             var key = "anime:id:" + id;
 
-            var anime = await _commandService.UpdateFilesAsync(id, request);
+            await _commandService.UpdateFilesAsync(id, request);
 
             await _cache.RemoveAsync(key);
             await _cache.RemoveByPrefixAsync("anime:filter:");
             await _cache.RemoveAsync("anime:random:ids");
-
-            return anime;
         }
 
-        public async Task<AnimeResponse> CreateAsync(AnimeCreateRequest request)
+        public async Task<AnimeCreateResponse> CreateAsync(AnimeCreateRequest request)
         {
-            var anime = await _commandService.CreateAsync(request);
+            var response = await _commandService.CreateAsync(request);
 
-            var key = "anime:id:" + anime.Id;
+            var key = "anime:id:" + response.Id;
 
             await _cache.RemoveAsync(key);
             await _cache.RemoveByPrefixAsync("anime:filter:");
             await _cache.RemoveAsync("anime:random:ids");
 
-            return anime;
+            return response;
         }
 
         public async Task DeleteAsync(int id)

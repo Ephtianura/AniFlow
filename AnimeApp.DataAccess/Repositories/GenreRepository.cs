@@ -1,9 +1,8 @@
 ﻿using AnimeApp.Core.Contracts;
 using AnimeApp.Core.Models;
-using AnimeApp.DataAccess;
 using Microsoft.EntityFrameworkCore;
 
-namespace GenreApp.DataAccess.Repositories
+namespace AnimeApp.DataAccess.Repositories
 {
     // ===================== GENRE =====================
     public class GenreRepository(AnimeAppDbContext db) : IGenreRepository

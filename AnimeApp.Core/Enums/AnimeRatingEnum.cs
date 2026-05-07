@@ -2,7 +2,6 @@
 {
     public enum AnimeRatingEnum
     {
-        Unknown = 0,
         G,
         PG,
         PG13,

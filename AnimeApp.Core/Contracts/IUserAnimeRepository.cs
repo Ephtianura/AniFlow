@@ -4,11 +4,19 @@ namespace AnimeApp.Core.Contracts
 {
     public interface IUserAnimeRepository
     {
-        Task AddAsync(UserAnime userAnime);
+        /// <summary> Повертає середню оцінку одного аніме </summary>
         Task<double> GetAverageRatingAsync(int animeId);
+
+        /// <summary> Повертає спільну кількість оцінок у одного аніме </summary>
         Task<int> GetRatingsCountAsync(int animeId);
+
+        /// <summary> Виконує пошук оцінки/списка користувача по составному ключу </summary>
         Task<UserAnime?> GetUserAnimeStatusAsync(int userId, int animeId);
+
+        /// <summary> Перераховує середній рейтинг для кожного з аніме в базі </summary>
         Task RecalculateAnimeRatings();
+
+        Task AddAsync(UserAnime userAnime);
         Task UpdateAsync(UserAnime userAnime);
         Task DeleteAsync(UserAnime userAnime);
     }

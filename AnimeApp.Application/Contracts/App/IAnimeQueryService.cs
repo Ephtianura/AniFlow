@@ -27,16 +27,16 @@ namespace AnimeApp.Application.Contracts.App
         /// <summary> Створює аніме </summary>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotFoundException"></exception>
-        Task<AnimeResponse> CreateAsync(AnimeCreateRequest request);
+        Task<AnimeCreateResponse> CreateAsync(AnimeCreateRequest request);
 
         /// <summary> Оновлює інформацію про аніме </summary>
         /// <exception cref="NotFoundException"></exception>
-        Task<AnimeResponse> UpdateAsync(int id, AnimeUpdateRequest request);
+        Task UpdateAsync(int id, AnimeUpdateRequest request);
 
         /// <summary> Оновлює файли аніме (скріншоти, постер) </summary>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotFoundException"></exception>
-        Task<AnimeResponse> UpdateFilesAsync(int id, AnimeUpdateFilesRequest request);
+        Task UpdateFilesAsync(int id, AnimeUpdateFilesRequest request);
 
         /// <summary> Видаляє аніме </summary>
         /// <exception cref="NotFoundException"></exception>

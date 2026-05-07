@@ -8,30 +8,18 @@ namespace AnimeApp.DataAccess.Repositories
     {
         private readonly AnimeAppDbContext _dbContext = db;
 
-        /// <summary>
-        /// Повертає середню оцінку одного аніме
-        /// </summary>
         public async Task<double> GetAverageRatingAsync(int animeId)
             => await _dbContext.UserAnimes
                 .Where(userAnime => userAnime.AnimeId == animeId && userAnime.Rating.HasValue)
                 .AverageAsync(userAnime => (double)userAnime.Rating!.Value);
-
-        /// <summary>
-        /// Повертає спільну кількість оцінок у одного аніме
-        /// </summary>
+               
         public async Task<int> GetRatingsCountAsync(int animeId)
             => await _dbContext.UserAnimes
                 .CountAsync(userAnime => userAnime.AnimeId == animeId && userAnime.Rating.HasValue);
-
-        /// <summary>
-        /// Виконує пошук оцінки/списка користувача по составному ключу
-        /// </summary>
+                
         public async Task<UserAnime?> GetUserAnimeStatusAsync(int userId, int animeId) =>
             await _dbContext.UserAnimes.FindAsync(userId, animeId);
 
-        /// <summary>
-        /// Перераховує середній рейтинг для кожного з аніме в базі
-        /// </summary>
         public async Task RecalculateAnimeRatings()
         {
             // Отримуємо статистику
