@@ -47,7 +47,5 @@ services:
       - "15672:15672"
 
   seq:
-    environment:
-      SEQ_FIRSTRUN_NOAUTHENTICATION: "Y"
     ports:
       - "5341:80"
