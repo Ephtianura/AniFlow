@@ -1,38 +1,30 @@
-﻿using AnimeApp.Core.Contracts;
-
-namespace AnimeApp.Core.Models
+﻿namespace AnimeApp.Core.Models
 {
-    public class AnimeIdCatalog : IHasUpdatedAt
+    public class AnimeIdCatalog
     {
-        public int MoonId { get; set; }
-        public int? KodikId { get; set; }
-        public int MalId { get; set; }
-        public bool IsParsed { get; private set; } = false;
-        public DateTime LastUpdated { get; private set; } = DateTime.UtcNow;
+        public AnimeIdCatalog() { }
+        private AnimeIdCatalog(int moonId, int malId, int? kodikId = null, bool? isParsed = null, DateTime? lastUpdated = null)
+        {
+            MoonId = moonId;
+            MalId = malId;
+            KodikId = kodikId;
+            IsParsed = isParsed ?? false;
+            LastUpdated = lastUpdated ?? DateTime.UtcNow;
+        }
+
+        public int MoonId { get; private set; }
+        public int? KodikId { get; private set; }
+        public int MalId { get; private set; }
+        public bool IsParsed { get; private set; }
+        public DateTime LastUpdated { get; private set; }
 
         public void MarkAsParsed()
         {
             if (IsParsed) return;
             IsParsed = true;
         }
-
-        public void Touch() => LastUpdated = DateTime.UtcNow;
+        public static AnimeIdCatalog Create(int moonId, int malId, int? kodikId = null, bool? isParsed = null, DateTime? lastUpdated = null) => 
+            new(moonId, malId, kodikId, isParsed, lastUpdated);
+        public void UpdateDate(DateTime lastUpdated) => LastUpdated = lastUpdated;
     }
 }
-
-
-
-
-//public AnimeIdCatalog() { }
-//public AnimeIdCatalog(
-//    int moonId,
-//    int? kodikId,
-//    int? malId,
-//    bool isParsed)
-//{
-//    MoonId = moonId;
-//    KodikId = kodikId;
-//    MalId = malId;
-//    IsParsed = isParsed;
-//    LastUpdated = DateTime.UtcNow;
-//}

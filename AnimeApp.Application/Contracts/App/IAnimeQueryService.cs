@@ -1,4 +1,5 @@
-﻿using AnimeApp.Application.Dto.Requests.Anime;
+﻿using AnimeApp.Application.Dto.External;
+using AnimeApp.Application.Dto.Requests.Anime;
 using AnimeApp.Application.Dto.Responses.Anime;
 using AnimeApp.Application.Exceptions;
 using AnimeApp.Core.Filters;
@@ -17,6 +18,9 @@ namespace AnimeApp.Application.Contracts.App
 
         /// <summary> Повертає аніме за фільтром </summary>
         Task<PagedResult<AnimesResponse>> GetFilteredAsync(AnimeFilter filter);
+
+        /// <summary> Повертає озвучки всіх плеєрів </summary>
+        Task<List<PlayerEpisodeSet>> GetEpisodes(int malId);
 
         /// <summary> Повертає список ID всіх аніме </summary>
         Task<List<int>> GetIdsAsync();

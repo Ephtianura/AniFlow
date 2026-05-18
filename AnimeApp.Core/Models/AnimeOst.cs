@@ -6,6 +6,7 @@ namespace AnimeApp.Core.Models
     {
         public int Id { get; private set; }
         public int AnimeId { get; set; }
+        public Anime Anime { get; set; } = null!;
         public string Title { get; set; } = null!;
         public string? Description { get; set; }
         public string? Author { get; set; }

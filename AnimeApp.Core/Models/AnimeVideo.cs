@@ -6,6 +6,7 @@ namespace AnimeApp.Core.Models
     {
         public int Id { get; private set; }
         public int AnimeId { get; set; }
+        public Anime Anime { get; set; } = null!;
         public int? AnimeOstId { get; set; } // Опціонально (зазвичай) має приналежність до осту
         public string Url { get; set; } = null!;
         public VideoKind Kind { get; set; }

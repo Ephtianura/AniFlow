@@ -11,5 +11,6 @@ namespace AnimeApp.Core.Contracts
         Task<Studio?> GetByIdAsync(int id);
         Task<PagedResult<Studio>> GetFilteredAsync(StudioFilter filter);
         Task UpdateAsync(Studio studio);
+        Task<Studio?> GetByNameAsync(string name);
     }
 }

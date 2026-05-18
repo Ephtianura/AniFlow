@@ -196,8 +196,7 @@ namespace AnimeApp.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AnimeId", "Index")
-                        .IsUnique();
+                    b.HasIndex("AnimeId");
 
                     b.ToTable("AnimeOsts", (string)null);
                 });
@@ -248,10 +247,9 @@ namespace AnimeApp.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AnimeOstId");
+                    b.HasIndex("AnimeId");
 
-                    b.HasIndex("AnimeId", "Index")
-                        .IsUnique();
+                    b.HasIndex("AnimeOstId");
 
                     b.ToTable("AnimeVideos", (string)null);
                 });
@@ -281,6 +279,9 @@ namespace AnimeApp.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.ToTable("Genres", (string)null);
@@ -298,6 +299,9 @@ namespace AnimeApp.DataAccess.Migrations
                         .IsRequired()
                         .HasMaxLength(2000)
                         .HasColumnType("character varying(2000)");
+
+                    b.Property<int?>("MalId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -449,11 +453,13 @@ namespace AnimeApp.DataAccess.Migrations
 
             modelBuilder.Entity("AnimeApp.Core.Models.AnimeOst", b =>
                 {
-                    b.HasOne("AnimeApp.Core.Models.Anime", null)
+                    b.HasOne("AnimeApp.Core.Models.Anime", "Anime")
                         .WithMany("Music")
                         .HasForeignKey("AnimeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Anime");
                 });
 
             modelBuilder.Entity("AnimeApp.Core.Models.AnimeRelated", b =>
@@ -477,7 +483,7 @@ namespace AnimeApp.DataAccess.Migrations
 
             modelBuilder.Entity("AnimeApp.Core.Models.AnimeVideo", b =>
                 {
-                    b.HasOne("AnimeApp.Core.Models.Anime", null)
+                    b.HasOne("AnimeApp.Core.Models.Anime", "Anime")
                         .WithMany("Promos")
                         .HasForeignKey("AnimeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -487,6 +493,8 @@ namespace AnimeApp.DataAccess.Migrations
                         .WithMany("Videos")
                         .HasForeignKey("AnimeOstId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Anime");
                 });
 
             modelBuilder.Entity("AnimeApp.Core.Models.UserAnime", b =>

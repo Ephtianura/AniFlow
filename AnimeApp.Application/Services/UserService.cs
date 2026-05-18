@@ -2,6 +2,7 @@
 using AnimeApp.Application.Contracts.Infra;
 using AnimeApp.Application.Dto.Requests.User;
 using AnimeApp.Application.Exceptions;
+using AnimeApp.Application.Helpers;
 using AnimeApp.Core.Contracts;
 using AnimeApp.Core.Filters;
 using AnimeApp.Core.Models;
@@ -14,18 +15,14 @@ namespace AnimeApp.Application.Services
         private readonly IPasswordHasher _passwordHasher = passwordHasher;
         private readonly IS3FileStorageService _fileStorage = fileStorage;
 
-        /// <summary>
-        /// Повертає користувача по ID
-        /// </summary>
+        /// <summary> Повертає користувача по ID </summary>
         public async Task<User> GetByIdAsync(int userId) => await GetUserByIdAsync(userId);
 
-        /// <summary>
-        /// Повертає користувачів за фільтрами
-        /// </summary>
+        /// <summary> Повертає користувачів за фільтрами </summary>
         public async Task<PagedResult<User>> GetFilteredAsync(UserFilter filter) => await _usersRepository.GetFilteredAsync(filter);
 
         /// <summary>
-        /// Оновити Аватар
+        /// Оновлює Аватар
         /// </summary>
         public async Task<User> UpdateFilesAsync(int id, UserUpdateFilesRequest request)
         {
@@ -35,34 +32,13 @@ namespace AnimeApp.Application.Services
             if (request.Avatar != null)
             {
                 using var stream = request.Avatar.OpenReadStream();
-                var posterFileName = await _fileStorage.UploadFileAsync(stream, request.Avatar.FileName, "user-avatars");
+                var posterFileName = await _fileStorage.UploadFileAsync(stream, request.Avatar.FileName, StoragePaths.UserAvatars);
                 user.ChangeAvatarFileName(posterFileName);
             }
             else if (!string.IsNullOrWhiteSpace(request.AvatarUrl))
             {
-                try
-                {
-                    using var http = new HttpClient();
-                    var response = await http.GetAsync(request.AvatarUrl);
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var bytes = await response.Content.ReadAsByteArrayAsync();
-                        var ext = response.Content.Headers.ContentType?.MediaType switch
-                        {
-                            "image/png" => ".png",
-                            "image/webp" => ".webp",
-                            _ => ".jpg"
-                        };
-
-                        var fileName = $"{Guid.NewGuid()}{ext}";
-                        using var ms = new MemoryStream(bytes);
-                        var saved = await _fileStorage.UploadFileAsync(ms, fileName, "user-avatars");
-                        user.ChangeAvatarFileName(saved);
-                    }
-                }
-                catch
-                {
-                }
+                var saved = await _fileStorage.UploadImageFromUrlAsync(request.AvatarUrl, StoragePaths.UserAvatars);
+                user.ChangeAvatarFileName(saved);
             }
 
             await _usersRepository.UpdateAsync(user);
@@ -70,9 +46,7 @@ namespace AnimeApp.Application.Services
         }
 
 
-        /// <summary>
-        /// Оновити нік пошту пароль
-        /// </summary>
+        /// <summary> Оновлює нік, пошту, пароль </summary>
         public async Task UpdateProfileAsync(int userId, UserUpdateRequest request)
         {
             var user = await GetUserByIdAsync(userId);
@@ -113,18 +87,14 @@ namespace AnimeApp.Application.Services
             await _usersRepository.UpdateAsync(user);
         }
 
-        /// <summary>
-        /// Видалити користувача
-        /// </summary>
+        /// <summary> Видаляє користувача </summary>
         public async Task DeleteAsync(int userId)
         {
             var user = await GetUserByIdAsync(userId);
             await _usersRepository.DeleteAsync(user);
         }
 
-        /// <summary>
-        /// Повертає користувача по ID
-        /// </summary>
+        /// <summary> Повертає користувача по ID </summary>
         public async Task<User> GetUserByIdAsync(int userId) =>
             await _usersRepository.GetByIdAsync(userId) ?? throw new NotFoundException("User", userId);
     }

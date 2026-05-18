@@ -1,7 +1,7 @@
 ﻿using AnimeApp.Application.Contracts.App;
 using AnimeApp.Core.Contracts;
 
-namespace AnimeApp.Application.Services
+namespace AnimeApp.Application.Services.AnimeServices
 {
     public class AnimeStatsService(IUserAnimeRepository userAnimeRepository) : IAnimeStatsService
     {

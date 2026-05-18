@@ -18,5 +18,6 @@ namespace AnimeApp.Core.Contracts
         Task AddRangeAsync(IEnumerable<Anime> animes);
         Task UpdateAsync(Anime anime);
         Task DeleteAsync(Anime anime);
+        Task<Anime?> GetByMoonIdAsync(int moonId);
     }
 }

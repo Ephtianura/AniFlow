@@ -3,6 +3,7 @@
     public record CreateGenreRequest(
         string NameEn,
         string? NameUa,
-        string? NameRu
+        string? NameRu,
+        TagType Type
         );
 }

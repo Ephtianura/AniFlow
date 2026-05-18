@@ -9,16 +9,26 @@ namespace AnimeApp.DataAccess.Repositories
     {
         private readonly AnimeAppDbContext _dbContext = db;
 
-        public async Task<Genre?> GetByIdAsync(int id) => await _dbContext.Genres
+        public async Task<Genre?> GetByIdAsync(int id) =>
+            await _dbContext.Genres
                .FirstOrDefaultAsync(a => a.Id == id);
 
-        public async Task<IEnumerable<Genre>> GetAllAsync()
-        {
-            return await _dbContext.Genres
+        public async Task<List<Genre>> GetByIdsAsync(List<int> id) =>
+            await _dbContext.Genres
+               .Where(g => id.Contains(g.Id)).ToListAsync();
+
+        public async Task<List<Genre>> GetBySlugsAsync(List<string> slugs) =>
+            await _dbContext.Genres
+               .Where(g => slugs.Contains(g.Slug)).ToListAsync();
+
+        public async Task<List<Genre>> GetByNamesAsync(List<string> namesEn, List<string> namesUa) =>
+            await _dbContext.Genres
+               .Where(g => namesEn.Contains(g.NameEn) || (g.NameUa != null && namesUa.Contains(g.NameUa))).ToListAsync();
+        public async Task<IEnumerable<Genre>> GetAllAsync() =>
+                await _dbContext.Genres
                 .AsNoTracking()
-                .OrderBy(g => g.NameUa)
+                .OrderBy(g => g.Type).ThenBy(g => g.NameUa)
                 .ToListAsync();
-        }
 
         public async Task AddAsync(Genre genre)
         {
@@ -39,6 +49,11 @@ namespace AnimeApp.DataAccess.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
+        public async Task UpdateRangeAsync(List<Genre> genre)
+        {
+            _dbContext.Genres.UpdateRange(genre);
+            await _dbContext.SaveChangesAsync();
+        }
         public async Task DeleteAsync(Genre genre)
         {
             _dbContext.Genres.Remove(genre);

@@ -3,14 +3,14 @@
 
     public record AnimeIdList
     (
-        List<AnimeIdDto> AnimeList,
+        List<AnimeIdDto> AnimeIds,
         int LastPage
     );
 
     public record AnimeIdDto
     (
         int MoonId,
-        int? MalIdx,
-        int? AnilistIdx
+        int? MalId,
+        int? AnilistId
     );
 }

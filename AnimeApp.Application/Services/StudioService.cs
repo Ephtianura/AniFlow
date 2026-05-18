@@ -3,6 +3,7 @@ using AnimeApp.Application.Contracts.Infra;
 using AnimeApp.Application.Dto.Requests.Studio;
 using AnimeApp.Application.Dto.Responses.Studio;
 using AnimeApp.Application.Exceptions;
+using AnimeApp.Application.Helpers;
 using AnimeApp.Core.Contracts;
 using AnimeApp.Core.Filters;
 using AnimeApp.Core.Models;
@@ -18,15 +19,16 @@ namespace AnimeApp.Application.Services
         public async Task<Studio?> GetByIdAsync(int id) =>
             await GetStudioByIdAsync(id);
 
-        public async Task<PagedResult<Studio>> GetAllAsync(StudioFilter filter) =>
-            await _studios.GetFilteredAsync(filter);
+        public Task<PagedResult<Studio>> GetAllAsync(StudioFilter filter) =>
+            _studios.GetFilteredAsync(filter);
 
         public async Task<Studio> CreateAsync(CreateStudioRequest request)
         {
             if (string.IsNullOrWhiteSpace(request.Name))
                 throw new ArgumentNullException("Studio name cannot be empty");
 
-            var studio = Studio.Create(request.Name, request.Description);
+            var studio = Studio.Create(name: request.Name, slug: "", description: request.Description);
+            studio.ChangeSlug(AniBuilder.GenerateSlug(studio.Name, studio.Id));
 
             await _studios.AddAsync(studio);
             return studio;
@@ -40,7 +42,7 @@ namespace AnimeApp.Application.Services
             if (poster != null)
             {
                 using var stream = poster.OpenReadStream();
-                var posterFileName = await _fileStorage.UploadFileAsync(stream, poster.FileName, "studio-posters");
+                var posterFileName = await _fileStorage.UploadFileAsync(stream, poster.FileName, StoragePaths.StudioPosters);
                 studio.ChangePoster(posterFileName);
             }
             if (poster == null)
@@ -61,7 +63,8 @@ namespace AnimeApp.Application.Services
                         throw new ArgumentException("Studio name cannot be empty");
 
 
-                    var studio = Studio.Create(g.Name, g.Description);
+                    var studio = Studio.Create(name: g.Name, slug: "", description: g.Description);
+                    studio.ChangeSlug(AniBuilder.GenerateSlug(studio.Name, studio.Id));
 
                     await _studios.AddAsync(studio);
 

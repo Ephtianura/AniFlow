@@ -1,25 +1,19 @@
 ﻿using AnimeApp.Application.Contracts.App;
-using AnimeApp.Application.Dto.Requests.Anime;
+using AnimeApp.Application.Dto.External;
 using AnimeApp.Application.Dto.Responses.Anime;
-using AnimeApp.Application.Services;
 using AnimeApp.Core.Filters;
 using AnimeApp.Infrastructure.RedisCache.AnimeApp.Core.Filters;
 
 namespace AnimeApp.Infrastructure.RedisCache
 {
-    public class AnimeCacheDecorator(
-        IRedisCache cache,
-        AnimeQueryService queryService,
-        AnimeCommandService commandService
-            ) : IAnimeQueryService, IAnimeCommandService
+    public class AnimeQueryCacheDecorator(IRedisCache cache, IAnimeQueryService queryService) : IAnimeQueryService
     {
         private readonly IRedisCache _cache = cache;
         private readonly IAnimeQueryService _queryService = queryService;
-        private readonly IAnimeCommandService _commandService = commandService;
 
         public async Task<AnimeResponse> GetByIdAsync(int id)
         {
-            var key = "anime:id:" + id;
+            var key = $"anime:id:{id}";
 
             var cached = await _cache.GetAsync<AnimeResponse>(key);
 
@@ -84,51 +78,27 @@ namespace AnimeApp.Infrastructure.RedisCache
             return await GetByIdAsync(animeId);
         }
 
-
-        public async Task UpdateAsync(int id, AnimeUpdateRequest request)
+        /// <summary>
+        /// Повертає iframe-епізоди та кешує результат на 1 годину,
+        /// щоб зменшити навантаження на балансери.
+        /// </summary>
+        public async Task<List<PlayerEpisodeSet>> GetEpisodes(int malId)
         {
-            var key = "anime:id:" + id;
+            var key = $"anime:episodes:{malId}";
 
-            await _commandService.UpdateAsync(id, request);
+            var cached = await _cache.GetAsync<List<PlayerEpisodeSet>>(key);
 
-            await _cache.RemoveAsync(key);
-            await _cache.RemoveByPrefixAsync("anime:filter:");
-            await _cache.RemoveAsync("anime:random:ids");
-        }
+            if (cached != null)
+                return cached;
 
-        public async Task UpdateFilesAsync(int id, AnimeUpdateFilesRequest request)
-        {
-            var key = "anime:id:" + id;
+            var episodes = await _queryService.GetEpisodes(malId);
 
-            await _commandService.UpdateFilesAsync(id, request);
+            await _cache.SetAsync(key, episodes, TimeSpan.FromHours(1));
 
-            await _cache.RemoveAsync(key);
-            await _cache.RemoveByPrefixAsync("anime:filter:");
-            await _cache.RemoveAsync("anime:random:ids");
-        }
-
-        public async Task<AnimeCreateResponse> CreateAsync(AnimeCreateRequest request)
-        {
-            var response = await _commandService.CreateAsync(request);
-
-            var key = "anime:id:" + response.Id;
-
-            await _cache.RemoveAsync(key);
-            await _cache.RemoveByPrefixAsync("anime:filter:");
-            await _cache.RemoveAsync("anime:random:ids");
-
-            return response;
-        }
-
-        public async Task DeleteAsync(int id)
-        {
-            await _commandService.DeleteAsync(id);
-
-            await _cache.RemoveAsync("anime:id:" + id);
-            await _cache.RemoveByPrefixAsync("anime:filter:");
-            await _cache.RemoveAsync("anime:random:ids");
+            return episodes;
         }
 
         public Task<List<int>> GetIdsAsync() => _queryService.GetIdsAsync();
+        
     }
 }

@@ -17,6 +17,12 @@ namespace AnimeApp.DataAccess.Repositories
                 .FirstOrDefaultAsync(s => s.Id == id);
         }
 
+        public async Task<Studio?> GetByNameAsync(string name)
+        {
+            return await _dbContext.Studios
+                .FirstOrDefaultAsync(s => s.Name == name);
+        }
+
         public async Task<PagedResult<Studio>> GetFilteredAsync(StudioFilter filter)
         {
             var query = _dbContext.Studios.AsQueryable();

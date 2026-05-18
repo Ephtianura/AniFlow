@@ -1,5 +1,6 @@
 ﻿using AnimeApp.Application.Contracts.App;
 using AnimeApp.Application.Contracts.Infra;
+using AnimeApp.Application.Dto.External;
 using AnimeApp.Application.Dto.Responses.Anime;
 using AnimeApp.Application.Exceptions;
 using AnimeApp.Core.Contracts;
@@ -7,15 +8,17 @@ using AnimeApp.Core.Filters;
 using AnimeApp.Core.Models;
 using AutoMapper;
 
-namespace AnimeApp.Application.Services
+namespace AnimeApp.Application.Services.AnimeServices
 {
     public class AnimeQueryService(
         IAnimeRepository animes,
         IS3FileStorageService fileStorage,
+        IMoonApiClient moonApi,
         IMapper mapper) : IAnimeQueryService
     {
         private readonly IAnimeRepository _animeRep = animes;
         private readonly IS3FileStorageService _fileStorage = fileStorage;
+        private readonly IMoonApiClient _moonApi = moonApi;
         private readonly IMapper _mapper = mapper;
 
         public async Task<AnimeResponse> GetByIdAsync(int animeId)
@@ -73,8 +76,20 @@ namespace AnimeApp.Application.Services
             );
         }
 
-        public Task<List<int>> GetIdsAsync() => _animeRep.GetRandomIdsAsync();
+        public async Task<List<PlayerEpisodeSet>> GetEpisodes(int malId)
+        {
+            List<PlayerEpisodeSet> result = [];
 
+            var moon = await _moonApi.GetEpisodes(malId);
+            result.Add(new PlayerEpisodeSet(AnimePlayer.Moon, moon));
+
+            //var kodik = await _kodikApi.GetEpisodes(malId);
+            //result.Add(new PlayerEpisodeSet(AnimePlayer.Kodik, kodik));
+
+            return result;
+        }
+
+        public Task<List<int>> GetIdsAsync() => _animeRep.GetRandomIdsAsync();
 
         // ============================== private methods ====================================
 

@@ -3,6 +3,7 @@
     public record UpdateGenreRequest(
         string? NameEn,
         string? NameUa,
-        string? NameRu
+        string? NameRu,
+        TagType? Type
         );
 }

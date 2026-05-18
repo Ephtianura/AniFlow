@@ -22,11 +22,28 @@ services:
       context: ./AnimeApp.Frontend/animeapp
       target: prod
       args:
-      - NEXT_PUBLIC_API_URL=${API_URL}
+        - NEXT_PUBLIC_API_URL=${API_URL}
     restart: always
     environment:
       NODE_ENV: production
       NEXT_PUBLIC_API_URL: ${API_URL}
+
+  postgres:
+    restart: always
+
+  redis:
+    restart: always
+
+  minio:
+    restart: always
+
+  rabbitmq:
+    restart: always
+    
+  seq:
+    restart: always
+    ports:
+      - "127.0.0.1:5341:80"
 
 networks:
   default:

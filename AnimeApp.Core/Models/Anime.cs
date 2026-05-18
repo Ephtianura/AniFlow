@@ -26,11 +26,11 @@ namespace AnimeApp.Core.Models
             DateTime? airedOn,
             DateTime? releasedOn,
             SeasonEnum? season,
-            int year,
-            double score,
-            int episodes,
-            int episodesAired,
-            int duration,
+            int? year,
+            double? score,
+            int? episodes,
+            int? episodesAired,
+            int? duration,
             bool nsfw
         )
         {
@@ -53,7 +53,7 @@ namespace AnimeApp.Core.Models
 
             AiredOn = airedOn;
             ReleasedOn = releasedOn;
-            Score = score;
+            Score = score ?? 0;
             TotalScores = 0;
             Episodes = episodes;
             EpisodesAired = episodesAired;
@@ -93,7 +93,7 @@ namespace AnimeApp.Core.Models
         public AnimeRatingEnum? Rating { get; private set; } // PG-13...
         public AnimeKindEnum? Kind { get; private set; }  // TV, Movie...
         public AnimeStatusEnum? Status { get; private set; } // Anons, Ongoing, Released
-        public AnimeSource? Source { get; private set; }
+        public AnimeSource? Source { get; set; }
 
         // Опис
         public string? Description { get; private set; }
@@ -112,7 +112,7 @@ namespace AnimeApp.Core.Models
         public List<Genre> Genres { get; private set; } = []; // Жанри  Many-to-Many
 
         public List<AnimeOst> Music { get; set; } = [];
-        public List<AnimeVideo> Promos { get; set; } = [];
+        public List<AnimeVideo> Promos { get; set; } = []; // jsonb???
 
         public List<ExternalLink>? ExternalLinks { get; set; } = []; // jsonb
 

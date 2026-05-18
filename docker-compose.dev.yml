@@ -40,3 +40,14 @@ services:
     ports:
       - "9000:9000"
       - "9001:9001"
+
+  rabbitmq:
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  seq:
+    environment:
+      SEQ_FIRSTRUN_NOAUTHENTICATION: "Y"
+    ports:
+      - "5341:80"

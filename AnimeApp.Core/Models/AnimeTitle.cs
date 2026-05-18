@@ -38,5 +38,7 @@ namespace AnimeApp.Core.Models
 
         public void ChangeType(TitleType type) =>
             Type = type;
+
+        public override string ToString() => $"{Value}";
     }
 }

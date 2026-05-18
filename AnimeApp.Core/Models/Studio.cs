@@ -4,8 +4,9 @@
     public class Studio
     {
         public Studio() { }
-        private Studio(string name, string slug, string description = "", string? posterFileName = null)
+        private Studio(string name, string slug, int? malId = null, string description = "", string? posterFileName = null)
         {
+            MalId = malId;
             ChangeName(name);
             ChangeSlug(slug);
             ChangeDescription(description);
@@ -13,6 +14,7 @@
         }
 
         public int Id { get; private set; }
+        public int? MalId { get; private set; }
         public string Name { get; private set; } = null!;
         public string Slug { get; private set; } = null!;
         public string Description { get; private set; } = string.Empty;
@@ -21,8 +23,8 @@
         public List<Anime> Animes { get; private set; } = [];
 
         // ================= Фабрика =================
-        public static Studio Create(string name, string slug, string description = "", string? posterFileName = null) =>
-            new(name, slug, description, posterFileName);
+        public static Studio Create( string name, string slug, int? malId = null, string description = "", string? posterFileName = null) =>
+            new(name, slug, malId, description, posterFileName);
 
         // ================= Методи =================
         public void ChangeName(string name)

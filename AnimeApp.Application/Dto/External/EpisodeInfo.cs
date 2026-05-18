@@ -1,6 +1,22 @@
 ﻿namespace AnimeApp.Application.Dto.External
 {
     /// <summary>
+    /// Результат отримання епізодів з одного відеоплеєра
+    /// </summary>
+    /// <param name="Player">Джерело відео</param>
+    /// <param name="Voices">Список доступних озвучок у межах цього плеєра</param>
+    public record PlayerEpisodeSet(
+        AnimePlayer Player,
+        List<VoiceEpisodeSet> Voices
+    );
+
+    public enum AnimePlayer
+    {
+        Moon,
+        Kodik
+    }
+
+    /// <summary>
     /// Набір серій, згрупованих за озвучкою.
     /// Використовується для структурування епізодів по різних варіантах озвучення.
     /// </summary>

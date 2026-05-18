@@ -1,6 +1,8 @@
 ﻿using AnimeApp.Application.Contracts.App;
-using AnimeApp.Application.Services;
+using AnimeApp.Application.Contracts.Infra;
+using AnimeApp.Infrastructure.ExternalApi.MoonAPI;
 using AnimeApp.Infrastructure.RedisCache;
+using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
 
 namespace AnimeApp.API.Extensions
@@ -19,16 +21,8 @@ namespace AnimeApp.API.Extensions
 
         public static IServiceCollection AddCacheDecorators(this IServiceCollection services)
         {
-            services.AddScoped<AnimeQueryService>();
-            services.AddScoped<AnimeCommandService>();
-
-            services.AddScoped<AnimeCacheDecorator>();
-
-            services.AddScoped<IAnimeQueryService>(sp =>
-                sp.GetRequiredService<AnimeCacheDecorator>());
-
-            services.AddScoped<IAnimeCommandService>(sp =>
-                sp.GetRequiredService<AnimeCacheDecorator>());
+            services.Decorate<IAnimeQueryService, AnimeQueryCacheDecorator>();
+            services.Decorate<IAnimeCommandService, AnimeCommandCacheDecorator>();
 
             return services;
         }

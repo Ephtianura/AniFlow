@@ -1,6 +1,7 @@
 ﻿using AnimeApp.Application.Contracts.App;
 using AnimeApp.Application.Dto.Requests.Genre;
 using AnimeApp.Application.Exceptions;
+using AnimeApp.Application.Helpers;
 using AnimeApp.Core.Contracts;
 using AnimeApp.Core.Models;
 
@@ -21,7 +22,12 @@ namespace AnimeApp.Application.Services
             if (string.IsNullOrWhiteSpace(request.NameEn))
                 throw new ArgumentNullException("English name cannot be empty");
 
-            var genre = Genre.Create(request.NameEn, request.NameUa, request.NameRu);
+            var genre = Genre.Create(
+                nameEn: request.NameEn,
+                slug: request.NameEn.ToLowerInvariant(),
+                type: request.Type,
+                nameUa: request.NameUa,
+                nameRu: request.NameRu);
 
             await _genres.AddAsync(genre);
             return genre;
@@ -35,7 +41,12 @@ namespace AnimeApp.Application.Services
                      if (string.IsNullOrWhiteSpace(g.NameEn))
                          throw new ArgumentNullException("English name cannot be empty");
 
-                     return Genre.Create(g.NameEn, g.NameUa, g.NameRu);
+                     return Genre.Create(
+                        nameEn: g.NameEn,
+                        slug: g.NameEn.ToLowerInvariant(),
+                        type: g.Type,
+                        nameUa: g.NameUa,
+                        nameRu: g.NameRu);
                  })
                  .ToList();
 
@@ -55,6 +66,9 @@ namespace AnimeApp.Application.Services
 
             if (request.NameRu != null)
                 genre.ChangeNameRu(request.NameRu);
+
+            if (request.Type != null)
+                genre.ChangeType(request.Type.Value);
 
             await _genres.UpdateAsync(genre);
         }

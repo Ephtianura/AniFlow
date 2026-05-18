@@ -9,18 +9,29 @@ namespace AnimeApp.API.Extensions
         {
             services.AddQuartz(q =>
             {
-                var jobKey = new JobKey("RecalculateAnimeRatingsJob");
-
-                q.AddJob<RecalculateAnimeRatingsJob>(opts => opts.WithIdentity(jobKey));
+                var recalcJobKey = new JobKey("RecalculateAnimeRatingsJob");
+                q.AddJob<RecalculateAnimeRatingsJob>(opts => opts.WithIdentity(recalcJobKey));
 
                 q.AddTrigger(opts => opts
-                    .ForJob(jobKey)
+                    .ForJob(recalcJobKey)
                     .WithIdentity("RecalculateAnimeStatsTrigger")
                     .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(3, 0))
                 );
+
+                // Поки нехай не працює
+                //var syncJobKey = new JobKey("SyncAnimeJob");
+                //q.AddJob<CheckAnimeUpdatesJob>(opts => opts.WithIdentity(syncJobKey));
+
+                //q.AddTrigger(opts => opts
+                //    .ForJob(syncJobKey)
+                //    .WithIdentity("CheckAnimeUpdatesTrigger")
+                //    .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(4, 0))
+                //);
+
             });
 
             services.AddQuartzHostedService(opt => opt.WaitForJobsToComplete = true);
+
             return services;
         }
     }

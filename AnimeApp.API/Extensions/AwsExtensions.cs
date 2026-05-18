@@ -26,11 +26,18 @@ namespace AnimeApp.API.Extensions
             });
 
             services.AddSingleton<IS3FileStorageService>(sp =>
-                new S3FileStorageService(
+            {
+                var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
+                var httpClient = httpClientFactory.CreateClient();
+                httpClient.DefaultRequestHeaders.Add("User-Agent", "AniFlow/1.0");
+
+                return new S3FileStorageService(
+                    httpClient,
                     sp.GetRequiredService<IAmazonS3>(),
-                    config["AWS:BucketName"],
+                    config["AWS:BucketName"]!,
                     sp.GetRequiredService<IConfiguration>()
-                ));
+                );
+            });
 
             return services;
         }

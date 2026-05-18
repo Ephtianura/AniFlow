@@ -25,6 +25,8 @@ namespace AnimeApp.DataAccess.Repositories
 
                .FirstOrDefaultAsync(a => a.Id == id);
         }
+        public Task<Anime?> GetByMoonIdAsync(int moonId) =>
+            _dbContext.Animes.FirstOrDefaultAsync(a => a.MoonId == moonId);
 
         public async Task<Anime?> GetRandomAsync()
         {
@@ -182,6 +184,8 @@ namespace AnimeApp.DataAccess.Repositories
             _dbContext.Animes.Remove(anime);
             await _dbContext.SaveChangesAsync();
         }
+
+        
     }
 }
 

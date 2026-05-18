@@ -104,22 +104,22 @@ namespace AnimeApp.DataAccess.Configurations
             builder.Property(a => a.PosterFileName)
                 .HasMaxLength(200);
 
-            builder.Property(a => a.Score)
+            builder.Property(s => s.Score)
                 .HasPrecision(3, 1); // 0.0 - 10.0
 
-            builder.Property(x => x.ExternalLinks)
+            builder.Property(e => e.ExternalLinks)
                .HasColumnType("jsonb");
 
             // Many - to - One: Music
-            builder.HasMany(x => x.Music)
-            .WithOne()
-            .HasForeignKey(x => x.AnimeId)
+            builder.HasMany(o => o.Music)
+            .WithOne(o => o.Anime) 
+            .HasForeignKey(o => o.AnimeId)
             .OnDelete(DeleteBehavior.Cascade);
 
             // Many - to - One: Promos
-            builder.HasMany(x => x.Promos)
-                .WithOne()
-                .HasForeignKey(x => x.AnimeId)
+            builder.HasMany(p => p.Promos)
+                .WithOne(p => p.Anime)
+                .HasForeignKey(p => p.AnimeId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             // One-to-Many: Studio
@@ -228,12 +228,7 @@ namespace AnimeApp.DataAccess.Configurations
             builder.Property(x => x.Type)
                 .HasConversion<string>();
 
-            // Составной індекс для швидкого пошуку по айді та сортування за порядком
-            builder.HasIndex(x => new
-            {
-                x.AnimeId,
-                x.Index
-            }).IsUnique();
+            builder.HasIndex(x => x.AnimeId);
 
             builder.HasMany(x => x.Videos)
                 .WithOne()
@@ -258,11 +253,7 @@ namespace AnimeApp.DataAccess.Configurations
             builder.Property(x => x.Kind)
                 .HasConversion<string>();
 
-            builder.HasIndex(x => new
-            {
-                x.AnimeId,
-                x.Index
-            }).IsUnique();
+            builder.HasIndex(x => x.AnimeId);
         }
     }
 

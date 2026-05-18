@@ -1,6 +1,7 @@
 ﻿using AnimeApp.API.Controllers;
 using AnimeApp.API.Dto;
 using AnimeApp.Application.Contracts.App;
+using AnimeApp.Application.Dto.External;
 using AnimeApp.Application.Dto.Requests.Anime;
 using AnimeApp.Application.Dto.Responses.Anime;
 using AnimeApp.Core.Filters;
@@ -11,7 +12,7 @@ namespace AnimeApp.Api.Controllers
 {
     [ApiController]
     [Route("api/anime")]
-    public class AnimesController(
+    public class AnimeController(
         IAnimeQueryService animeQueryService,
         IAnimeCommandService animeCommandService,
         IAnimeStatsService animeStatsService) : ControllerBase
@@ -28,7 +29,7 @@ namespace AnimeApp.Api.Controllers
             return Ok(anime);
         }
 
-        /// <summary> Повертає повну інформацію про аніме по slug </summary>
+        /// <summary> Повертає повну інформацію про аніме по slug. </summary>
         /// <remarks> Приклад запиту: <i>kusuriya-no-hitorigoto-2nd-season-1</i> </remarks>
         /// <exception cref="ArgumentException"></exception>
         [HttpGet("slug/{slug}")]
@@ -45,6 +46,23 @@ namespace AnimeApp.Api.Controllers
         {
             var anime = await _animeQueryService.GetRandomAsync();
             return Ok(anime);
+        }
+
+        /// <summary>
+        /// Повертає згруповані епізоди аніме за відеоплеєрами та озвучкам.
+        /// Кожен плеєра містить доступні озвучки та список епізодів для кожної озвучки.
+        /// </summary>
+        /// <param name="malId"> Ідентифікатор аніме в MyAnimeList. </param>
+        /// <returns> Колекцію плеєрів з вкладеною структурою озвучок та епізодів. </returns>
+        /// <remarks> 
+        ///     <para>MyAnimeListId = ShikimoriId</para>
+        ///     <para>Приклад запиту: <b>52034</b></para>
+        /// </remarks>
+        [HttpGet("episodes/{malId}")]
+        public async Task<ActionResult<PlayerEpisodeSet>> GetEpisodes(int malId)
+        {
+            var episodes = await _animeQueryService.GetEpisodes(malId);
+            return Ok(episodes);
         }
 
         /// <summary> Повертає аніме за фільтром. </summary>

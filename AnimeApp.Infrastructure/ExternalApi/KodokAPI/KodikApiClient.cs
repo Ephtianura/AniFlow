@@ -1,30 +1,67 @@
-﻿using AnimeApp.Infrastructure.Exceptions;
+﻿using AnimeApp.Application.Contracts.Infra;
+using AnimeApp.Application.Dto.External;
+using AnimeApp.Infrastructure.Exceptions;
+using AnimeApp.Infrastructure.ExternalApi.KodokAPI.Dto;
 using Microsoft.Extensions.Configuration;
 using System.Net.Http.Json;
 using System.Text.Json;
 
 namespace AnimeApp.Infrastructure.ExternalApi.KodokAPI
 {
-    public class KodikApiClient(HttpClient httpClient, IConfiguration config)
+    public class KodikApiClient(HttpClient httpClient, IConfiguration config) : IKodikApiClient
     {
         private readonly HttpClient _httpClient = httpClient;
         private readonly string _apiKey = config["KodikApi:ApiKey"]
             ?? throw new InvalidOperationException("KodikApi:ApiKey not configured");
-
-        //       W.I.P.
-
-        /// <summary> Повертає масив скріншотів </summary>
-        /// <param name="shikimoriId">ShikimoriId = MalId</param>
-        public Task<List<string>?> GetScreenshots(int shikimoriId)
+        public Task<KodikScreenshotsResult> GetScreenshots(int shikimoriId)
         {
-            var url = $"/search?token={_apiKey}&shikimori_id={shikimoriId}&limit=1&with_episodes_data=true";
+            var url = $"search?token={_apiKey}&shikimori_id={shikimoriId}&limit=1&with_episodes_data=true";
 
             return ExecuteKodikAsync(async () =>
             {
-                var response = await _httpClient.GetFromJsonAsync<List<string>?>(url)
+                var response = await _httpClient.GetFromJsonAsync<KodikResponse>(url)
                     ?? throw new ExternalApiEmptyResponseException("Kodik API returned empty response");
 
-                return response ?? null;
+                return new KodikScreenshotsResult(
+                    response.Result.SelectMany(i => i.KodikId).FirstOrDefault(),
+                    response.Result
+                    .SelectMany(s => s.Season.Values)
+                    .SelectMany(e => e.Episodes.Values)
+                    .SelectMany(sc => sc.Screenshots)
+                    .ToList()
+                    );
+            });
+        }
+
+        public Task<List<VoiceEpisodeSet>> GetEpisodes(int shikimoriId)
+        {
+            var url = $"search?token={_apiKey}&shikimori_id={shikimoriId}&limit=1&with_episodes_data=true";
+
+            return ExecuteKodikAsync(async () =>
+            {
+                var response = await _httpClient.GetFromJsonAsync<KodikResponse>(url)
+                    ?? throw new ExternalApiEmptyResponseException("Kodik API returned empty response");
+
+                var episodeLinks = response.Result.SelectMany(r => r.Season.Values).ToList();
+
+                return episodeLinks
+                .ConvertAll(s => new VoiceEpisodeSet(
+                    "",
+                    s.Episodes.Select(e =>
+                    {
+                        if (!int.TryParse(e.Key, out var episodeNumber))
+                            return null;
+
+                        return new EpisodeInfo(
+                            episodeNumber,
+                            e.Value.EpisodeLink,
+                            null,
+                            false
+                        );
+                    })
+                    .Where(x => x != null)
+                    .ToList()!
+                ));
             });
         }
 

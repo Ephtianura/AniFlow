@@ -4,10 +4,11 @@ namespace AnimeApp.Application.Dto.External
 {
     public record AnimeFullRaw(
         int MalId,
-        int? AnilistId,
+        int? MoonId,
+        int? AniListId,
 
         List<CompanyDto>? Companies,
-        List<GenreDto>? Genres,
+        List<GenreRawDto>? Genres,
 
         DateTime? AiredOn, // Дата першої серії
         DateTime? ReleasedOn, // Дата останньої серії
@@ -38,7 +39,7 @@ namespace AnimeApp.Application.Dto.External
 
         List<ExternalLink>? External,
         List<VideoDto>? Videos,
-        List<OstDto>? Ost
+        List<OstDto>? Osts
     );
 
     public record CompanyDto(
@@ -47,7 +48,7 @@ namespace AnimeApp.Application.Dto.External
         string? Image,
         string? Slug
     );
-    public record GenreDto(
+    public record GenreRawDto(
         string? NameUa,
         string? NameEn,
         string? Slug,

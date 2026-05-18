@@ -15,25 +15,23 @@ namespace AnimeApp.Infrastructure.ExternalApi.MoonAPI
         private readonly string _apiKey = config["MoonApi:ApiKey"]
             ?? throw new InvalidOperationException("MoonApi:ApiKey not configured");
 
-        public Task<AnimeIdList> GetAnimeIdsAsync(int page, int limit = 100)
+        #region Anime
+        public async Task<List<AnimeIdDto>> GetAllAnimeIdsAsync()
         {
-            var url = $"6.0/titles/filter?api_key={_apiKey}&page={page}&limit={limit}";
+            const int limit = 100;
 
-            return ExecuteMoonAsync(async () =>
+            var firstPage = await GetAnimeIdsPageAsync(1, limit);
+
+            var result = new List<AnimeIdDto>(firstPage.AnimeIds);
+
+            for (int page = 2; page <= firstPage.LastPage; page++)
             {
-                var response = await _httpClient.GetFromJsonAsync<MoonApiAnimeIdResponse>(url)
-                    ?? throw new ExternalApiEmptyResponseException("Moon API returned empty response");
+                var response = await GetAnimeIdsPageAsync(page, limit);
 
-                return new AnimeIdList(
-                    response.AnimeList
-                        .ConvertAll(x => new AnimeIdDto(
-                            x.MoonId,
-                            x.MalId,
-                            x.AnilistId
-                        )),
-                    response.LastPage
-                );
-            });
+                result.AddRange(response.AnimeIds);
+            }
+
+            return result;
         }
 
         public Task<AnimeFullRaw> GetFullAnimeInfo(int moonId)
@@ -56,7 +54,7 @@ namespace AnimeApp.Infrastructure.ExternalApi.MoonAPI
 
                 var genres = r.Genres
                 .Where(x => x != null)
-                .Select(g => new GenreDto(
+                .Select(g => new GenreRawDto(
                     g.NameUa, // Не впевнений, чи взагалі потрібні 3/4 полів
                     g.NameEn,
                     g.Slug,
@@ -92,7 +90,7 @@ namespace AnimeApp.Infrastructure.ExternalApi.MoonAPI
                 .ToList();
 
                 return new AnimeFullRaw(
-                    r.MalId, r.AnilistId, companies, genres, r.StartDate, r.EndDate, r.EpisodesReleased, r.EpisodesTotal,
+                    r.MalId, moonId, r.AnilistId, companies, genres, r.StartDate, r.EndDate, r.EpisodesReleased, r.EpisodesTotal,
                     r.SynopsisUa, r.SynopsisEn, r.MediaType, r.TitleUa, r.TitleEn, r.TitleJa, r.Synonyms,
                     null, r.Duration, r.Image, r.Status, r.Source, r.Rating, r.Score, r.Season, r.Year, r.Nsfw, r.Slug,
                     external, videos, osts
@@ -121,7 +119,105 @@ namespace AnimeApp.Infrastructure.ExternalApi.MoonAPI
             });
         }
 
-        public Task<List<EpisodeRecent>> LastAnimeUpdated(int page = 1, int limit = 100)
+        public async Task<List<EpisodeRecent>> LastAnimeUpdated()
+        {
+            const int limit = 10; // MoonApi обмежує ліміт до 10 
+            const int lastPage = 10;
+
+            var episodes = await LastAnimeUpdatedPage(1, limit);
+
+            var result = new List<EpisodeRecent>(episodes);
+
+            for (int page = 2; page <= lastPage; page++)
+            {
+                var response = await LastAnimeUpdatedPage(page, limit);
+
+                result.AddRange(response);
+            }
+
+            return result;
+        }
+        #endregion
+
+        #region Studio
+
+
+
+
+
+        #endregion
+
+        #region Genres
+
+        public async Task<TagsDto> GetAllTags()
+        {
+            var genresTask = GetAllGenres();
+            var themesTask = GetAllThemes();
+            var demographicsTask = GetAllDemographics();
+
+            var genres = await genresTask;
+            var themes = await themesTask;
+            var demographics = await demographicsTask;
+
+            return new TagsDto(genres, themes, demographics);
+        }
+
+        public Task<List<TagDto>> GetAllGenres()
+        {
+            var url = $"7.0/genres?api_key={_apiKey}";
+
+            return ExecuteMoonAsync(async () =>
+            {
+                var response = await _httpClient.GetFromJsonAsync<MoonTegsResponse>(url)
+                    ?? throw new ExternalApiEmptyResponseException("Moon API returned empty response");
+                return response.Tags
+                .ConvertAll(t => new TagDto(
+                    t.NameEn,
+                    t.NameUa,
+                    t.Slug));
+            });
+        }
+
+        public Task<List<TagDto>> GetAllThemes()
+        {
+            var url = $"7.0/themes?api_key={_apiKey}";
+
+            return ExecuteMoonAsync(async () =>
+            {
+                var response = await _httpClient.GetFromJsonAsync<MoonTegsResponse>(url)
+                    ?? throw new ExternalApiEmptyResponseException("Moon API returned empty response");
+                return response.Tags
+                .ConvertAll(t => new TagDto(
+                    t.NameEn,
+                    t.NameUa,
+                    t.Slug));
+            });
+        }
+
+        public Task<List<TagDto>> GetAllDemographics()
+        {
+            var url = $"7.0/demographics?api_key={_apiKey}";
+
+            return ExecuteMoonAsync(async () =>
+            {
+                var response = await _httpClient.GetFromJsonAsync<MoonTegsResponse>(url)
+                    ?? throw new ExternalApiEmptyResponseException("Moon API returned empty response");
+                return response.Tags
+                .ConvertAll(t => new TagDto(
+                    t.NameEn,
+                    t.NameUa,
+                    t.Slug));
+            });
+        }
+
+
+        #endregion
+
+        // ------------------------- private -------------------------
+        #region privates
+
+        /// <summary> Повертає останні оновлені епізоди з пагінацією </summary>
+        private Task<List<EpisodeRecent>> LastAnimeUpdatedPage(int page = 1, int limit = 10)
         {
             var url = $"7.0/episodes/recent?api_key={_apiKey}&page={page}&per_page={limit}&with_anime_info=true";
 
@@ -139,8 +235,29 @@ namespace AnimeApp.Infrastructure.ExternalApi.MoonAPI
             });
         }
 
+        /// <summary> Повертає AnimeIds з пагінацією </summary>
+        private Task<AnimeIdList> GetAnimeIdsPageAsync(int page = 1, int limit = 100)
+        {
+            var url = $"6.0/titles/filter?api_key={_apiKey}&page={page}&limit={limit}";
 
-        /// <summary> Функція для перевірки валідності MoonApi </summary>
+            return ExecuteMoonAsync(async () =>
+            {
+                var response = await _httpClient.GetFromJsonAsync<MoonApiAnimeIdResponse>(url)
+                    ?? throw new ExternalApiEmptyResponseException("Moon API returned empty response");
+
+                return new AnimeIdList(
+                    response.AnimeList
+                        .Select(x => new AnimeIdDto(
+                            x.MoonId,
+                            x.MalId,
+                            x.AnilistId
+                        )).ToList(),
+                    response.LastPage
+                );
+            });
+        }
+
+        /// <summary> Перевіряє валідність відповіді MoonApi </summary>
         /// <exception cref="ExternalApiTimeoutException"></exception>
         /// <exception cref="ExternalApiHttpException"></exception>
         /// <exception cref="ExternalApiInvalidResponseException"></exception>
@@ -163,5 +280,8 @@ namespace AnimeApp.Infrastructure.ExternalApi.MoonAPI
                 throw new ExternalApiInvalidResponseException("Moon API invalid JSON", ex);
             }
         }
+
+        #endregion
     }
 }
+

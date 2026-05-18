@@ -14,7 +14,7 @@ namespace AnimeApp.Application.Dto.Requests.Anime
         // =================== Studio / Genres ===================
 
         public int? StudiosId { get; set; }
-        public List<int>? GenresId { get; set; }
+        public List<int>? GenresIds { get; set; }
 
         // =================== Dates ===================
 

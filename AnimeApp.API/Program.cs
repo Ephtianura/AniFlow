@@ -1,9 +1,13 @@
 using AnimeApp.API.Extensions;
 using AnimeApp.API.Middleware.Exceptions;
 using Microsoft.AspNetCore.CookiePolicy;
+using Serilog;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.AddSerilogLogging();
+
 var configuration = builder.Configuration;
 
 builder.Services
@@ -15,6 +19,7 @@ builder.Services.AddSwaggerGen(); // Swagger
 builder.Services.AddSwaggerWithXml(); // Документація свагера
 
 builder.Services
+        .AddHttpClient()
         .AddValidation()                // FluentValidation
         .AddMapping()                   // Auto Mapper
         .AddServicesDI()                // DI сервісів, репозиторіїв та інфраструктури
@@ -25,13 +30,18 @@ builder.Services
         .AddCacheDecorators()           // Cache Decorator 
         .AddDatabase(configuration)     // DbContext
         .AddCustomCors(configuration)   // Cors 
-        .AddMoonApi(configuration);     // Moon Api
+        .AddMessageBus(configuration)   // RabbitMQ
+        .AddMoonApi(configuration)      // Moon Api
+        .AddKodikApi(configuration);     // Kodik Api;    
 
 
 
 var app = builder.Build();
 
-// Свагер
+// Serilog
+app.UseSerilogRequestLogging();
+
+// Swagger
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -41,7 +51,7 @@ if (app.Environment.IsDevelopment())
 app.UseRouting();
 app.UseCors("Cors");
 
-// Параметри кукі
+// Cookie Policy
 app.UseCookiePolicy(new CookiePolicyOptions
 {
     MinimumSameSitePolicy = SameSiteMode.None,
@@ -49,7 +59,7 @@ app.UseCookiePolicy(new CookiePolicyOptions
     Secure = CookieSecurePolicy.Always,
 });
 
-// Обробник помилок
+// Exception Middleware
 app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();

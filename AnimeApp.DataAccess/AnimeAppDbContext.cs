@@ -37,7 +37,7 @@ namespace AnimeApp.DataAccess
         {
             var entries = ChangeTracker
                 .Entries<IHasUpdatedAt>()
-                .Where(e => e.State == EntityState.Modified);
+                .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified);
 
             foreach (var entry in entries)
             {
