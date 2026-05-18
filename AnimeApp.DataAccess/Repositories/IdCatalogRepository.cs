@@ -50,23 +50,19 @@ namespace AnimeApp.DataAccess.Repositories
         public async Task AddAsync(AnimeIdCatalog catalog)
         {
             await _dbContext.AnimeIdCatalog.AddAsync(catalog);
-            await _dbContext.SaveChangesAsync();
         }
         public async Task AddRangeAsync(IEnumerable<AnimeIdCatalog> catalog)
         {
             if (catalog?.Any() != true) return;
             await _dbContext.AnimeIdCatalog.AddRangeAsync(catalog);
-            await _dbContext.SaveChangesAsync();
         }
         public async Task UpdateAsync(AnimeIdCatalog catalog)
         {
             _dbContext.AnimeIdCatalog.Update(catalog);
-            await _dbContext.SaveChangesAsync();
         }
         public async Task DeleteAsync(AnimeIdCatalog catalog)
         {
             _dbContext.AnimeIdCatalog.Remove(catalog);
-            await _dbContext.SaveChangesAsync();
         }
 
         

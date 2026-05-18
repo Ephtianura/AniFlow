@@ -13,12 +13,14 @@ namespace AnimeApp.Application.Services.AnimeServices
 {
     public class AnimeCommandService(
         IAnimeRepository animes,
+        IUnitOfWork unitOfWork,
         IStudioRepository studios,
         IGenreRepository genres,
         IS3FileStorageService fileStorage
         ) : IAnimeCommandService
     {
         private readonly IAnimeRepository _animeRep = animes;
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IStudioRepository _studios = studios;
         private readonly IGenreRepository _genres = genres;
         private readonly IS3FileStorageService _fileStorage = fileStorage;
@@ -88,12 +90,12 @@ namespace AnimeApp.Application.Services.AnimeServices
             });
 
             await _animeRep.AddAsync(anime);
-
+            await _unitOfWork.SaveChangesAsync();
             // Генерація URL з офіційного Romaji title
             anime.UpdateUrl(AniBuilder.GenerateSlug(officialRomajiTitle.Value, anime.Id));
 
             await _animeRep.UpdateAsync(anime);
-
+            await _unitOfWork.SaveChangesAsync();
             return new AnimeCreateResponse(
                 anime.Id,
                 anime.Url,
@@ -227,6 +229,7 @@ namespace AnimeApp.Application.Services.AnimeServices
                 anime.UpdateDuration(request.Duration.Value);
 
             await _animeRep.UpdateAsync(anime);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task UpdateFilesAsync(int id, AnimeUpdateFilesRequest request)
@@ -279,6 +282,7 @@ namespace AnimeApp.Application.Services.AnimeServices
            
 
             await _animeRep.UpdateAsync(anime);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(int animeId)

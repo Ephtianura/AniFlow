@@ -12,6 +12,7 @@ namespace AnimeApp.Application.Services.Importing
     public class AnimeImportService(
         IAnimeFactory animeFactory,
         IAnimeRepository animeRep,
+        IUnitOfWork unitOfWork,
         IMoonApiClient moonApi,
         IIdCatalogRepository catalogRep,
         IS3FileStorageService fileStorage,
@@ -20,6 +21,7 @@ namespace AnimeApp.Application.Services.Importing
     {
         private readonly IAnimeFactory _animeFactory = animeFactory;
         private readonly IAnimeRepository _animeRep = animeRep;
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMoonApiClient _moonApi = moonApi;
         private readonly IIdCatalogRepository _catalogRep = catalogRep;
         private readonly IS3FileStorageService _fileStorage = fileStorage;
@@ -36,7 +38,6 @@ namespace AnimeApp.Application.Services.Importing
 
                 var catalog = await _catalogRep.GetByIdsAsync(request.MoonId);
 
-                // На всякий
                 if (catalog == null)
                 {
                     catalog = AnimeIdCatalog.Create(request.MoonId, raw.MalId, anime.KodikId, true);
@@ -49,11 +50,13 @@ namespace AnimeApp.Application.Services.Importing
                 }
 
                 await _animeRep.AddAsync(anime);
-                // Save
+
+                await _unitOfWork.SaveChangesAsync();
 
                 anime.UpdateUrl($"{anime.Url}-{anime.Id}");
                 await _animeRep.UpdateAsync(anime);
-                // Save
+
+                await _unitOfWork.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -66,7 +69,7 @@ namespace AnimeApp.Application.Services.Importing
                         await _fileStorage.DeleteFilesAsync(toDelete);
                 }
 
-                _logger.LogError(ex, "Не вдалося створити аніме для MoonId: {MoonId}", request.MoonId);
+                _logger.LogError(ex, "Не вдалося створити аніме для MoonId: {MoonId}. Id: {AnimeId}. Url: {AnimeUrl}", request.MoonId, anime?.Id, anime?.Url);
                 throw new InvalidOperationException("Не вдалося створити аніме через внутрішню помилку.", ex);
             }
         }

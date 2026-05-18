@@ -1,6 +1,5 @@
 ﻿using AnimeApp.Application.Dto.Responses.Studio;
 using AnimeApp.Core.Enums;
-using AnimeApp.Core.Models;
 
 namespace AnimeApp.Application.Dto.Responses.Anime
 {
@@ -29,8 +28,8 @@ namespace AnimeApp.Application.Dto.Responses.Anime
         public List<string>? ScreenshotsUrls { get; set; } = [];
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-        public List<AnimeOst> Music { get; set; } = [];
-        public List<AnimeVideo> Promos { get; set; } = [];
+        public List<AnimeOstResponse> Music { get; set; } = [];
+        public List<AnimeVideoResponse> Promos { get; set; } = [];
         public List<ExternalLink> ExternalLinks { get; set; } = [];
         public StudioAnimeResponse? Studio { get; set; }
         public List<GenreResponse>? Genres { get; set; } = [];

@@ -18,15 +18,13 @@ namespace AnimeApp.DataAccess.Repositories
                .Include(a => a.Genres)
                .Include(a => a.Studio)
                .Include(a => a.Music)
-                    .ThenInclude(r => r.Videos)
-               .Include(a => a.Promos)
+                    .ThenInclude(v => v.Videos)
+               .Include(a => a.Promos.Where(p => p.AnimeOstId == null))
                .Include(a => a.Relateds)
                     .ThenInclude(r => r.RelatedAnime)
 
                .FirstOrDefaultAsync(a => a.Id == id);
         }
-        public Task<Anime?> GetByMoonIdAsync(int moonId) =>
-            _dbContext.Animes.FirstOrDefaultAsync(a => a.MoonId == moonId);
 
         public async Task<Anime?> GetRandomAsync()
         {
@@ -36,14 +34,20 @@ namespace AnimeApp.DataAccess.Repositories
             var index = new Random().Next(count);
 
             return await _dbContext.Animes
-                .Include(a => a.Titles)
-                .Include(a => a.Genres)
-                .Include(a => a.Studio)
-                .Include(a => a.Relateds)
+               .Include(a => a.Titles)
+               .Include(a => a.Genres)
+               .Include(a => a.Studio)
+               .Include(a => a.Music)
+                    .ThenInclude(v => v.Videos)
+               .Include(a => a.Promos.Where(p => p.AnimeOstId == null))
+               .Include(a => a.Relateds)
                     .ThenInclude(r => r.RelatedAnime)
                 .Skip(index)
                 .FirstOrDefaultAsync();
         }
+
+        public Task<Anime?> GetByMoonIdAsync(int moonId) =>
+          _dbContext.Animes.FirstOrDefaultAsync(a => a.MoonId == moonId);
 
         public async Task<List<int>> GetRandomIdsAsync(int count = 100)
         {
@@ -165,18 +169,10 @@ namespace AnimeApp.DataAccess.Repositories
         public async Task AddAsync(Anime anime)
         {
             await _dbContext.Animes.AddAsync(anime);
-            await _dbContext.SaveChangesAsync();
-        }
-
-        public async Task AddRangeAsync(IEnumerable<Anime> animes)
-        {
-            await _dbContext.Animes.AddRangeAsync(animes);
-            await _dbContext.SaveChangesAsync();
         }
         public async Task UpdateAsync(Anime anime)
         {
-            _dbContext.Animes.Update(anime);
-            await _dbContext.SaveChangesAsync();
+             _dbContext.Animes.Update(anime);
         }
 
         public async Task DeleteAsync(Anime anime)
@@ -185,7 +181,7 @@ namespace AnimeApp.DataAccess.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
-        
+
     }
 }
 

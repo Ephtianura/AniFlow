@@ -249,12 +249,33 @@ namespace AnimeApp.Application.Helpers
                         continue;
 
                     result.Add(AnimeTitle.Create(
-                        synonym.Trim(),
-                        TitleLanguage.Ukrainian,
-                        TitleType.Synonym));
+                           synonym.Trim(),
+                           DetectLanguage(synonym),
+                           TitleType.Synonym));
+
                 }
             }
             return result;
+        }
+
+        public static TitleLanguage DetectLanguage(string input)
+        {
+            foreach (char c in input)
+            {
+                // Японська 
+                if ((c >= '\u3040' && c <= '\u309F') ||   // Hiragana
+                    (c >= '\u30A0' && c <= '\u30FF') ||   // Katakana
+                    (c >= '\u4E00' && c <= '\u9FFF'))     // Kanji
+                {
+                    return TitleLanguage.Japanese;
+                }
+
+                // Латиниця
+                if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'))
+                    return TitleLanguage.English;
+            }
+
+            return TitleLanguage.Ukrainian;
         }
 
         public static string BuildMainRomajiSlug(string? slug, string? titleJa, string? titleEn)

@@ -12,11 +12,13 @@ namespace AnimeApp.Application.Services.Importing
 {
     public class AnimeSyncService(
         IMoonApiClient moonApi,
+        IUnitOfWork unitOfWork,
         IIdCatalogRepository catalogRep,
         IPublishEndpoint publishEndpoint,
         IGengesFactory gengesFactory) : IAnimeSyncService
     {
         private readonly IMoonApiClient _moonApi = moonApi;
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IIdCatalogRepository _catalogRep = catalogRep;
         private readonly IPublishEndpoint _publishEndpoint = publishEndpoint;
         private readonly IGengesFactory _gengesFactory = gengesFactory;
@@ -40,6 +42,7 @@ namespace AnimeApp.Application.Services.Importing
 
             await _catalogRep.AddRangeAsync(idCatalog);
             res.Created = idCatalog.Count;
+            await _unitOfWork.SaveChangesAsync();
             return res;
         }
 
@@ -78,6 +81,7 @@ namespace AnimeApp.Application.Services.Importing
                 {
                     catalogEntry = AnimeIdCatalog.Create(update.MoonId, update.MalId ?? 0);
                     await _catalogRep.AddAsync(catalogEntry);
+                    await _unitOfWork.SaveChangesAsync();
 
                     await _publishEndpoint.Publish(new ParseNewAnimeCommand(catalogEntry.MoonId));
                 }

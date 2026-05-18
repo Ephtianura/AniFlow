@@ -25,6 +25,8 @@ namespace AnimeApp.Application.Services.AnimeServices
         {
             var anime = await GetAnimeByIdAsync(animeId);
 
+            anime.Promos = anime.Promos.Where(p => p.AnimeOstId == null).ToList();
+
             var response = _mapper.Map<AnimeResponse>(anime);
 
             response.PosterUrl = GetPosterUrl(anime.PosterFileName);
@@ -39,7 +41,6 @@ namespace AnimeApp.Application.Services.AnimeServices
                         related.PosterUrl = _fileStorage.GetUrl(relatedAnime.PosterFileName);
                 }
             }
-
             return response;
         }
 

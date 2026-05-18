@@ -43,6 +43,9 @@
             CreateMap<AnimeTitle, TitleResponse>();
             CreateMap<Genre, GenreResponse>();
 
+            CreateMap<AnimeOst, AnimeOstResponse>();
+            CreateMap<AnimeVideo, AnimeVideoResponse>();
+
 
             CreateMap<AnimeTitle, AnimeTitleRequest>().ReverseMap();
 

@@ -15,7 +15,6 @@ namespace AnimeApp.Core.Contracts
 
         Task<PagedResult<Anime>> GetFilteredAsync(AnimeFilter filter);
         Task AddAsync(Anime anime);
-        Task AddRangeAsync(IEnumerable<Anime> animes);
         Task UpdateAsync(Anime anime);
         Task DeleteAsync(Anime anime);
         Task<Anime?> GetByMoonIdAsync(int moonId);
