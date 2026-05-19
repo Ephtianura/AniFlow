@@ -39,6 +39,7 @@ export interface AnimeTitle {
 
 export interface Anime {
     id: number;
+    malId?: number;
     titles: AnimeTitle[];
     airedOn: string;
     releasedOn: string;
@@ -115,5 +116,21 @@ export interface ApiErrorResponse {
   title?: string;
   status?: number;
   errors?: Record<string, string[]>; 
+}
+
+// Player
+export interface PlayerEpisodeSet {
+  player: string;
+  voices: VoiceEpisodeSet[];
+}
+export interface VoiceEpisodeSet {
+  voice: string;
+  episodes: EpisodeInfo[]; 
+}
+export interface EpisodeInfo {
+  episode: number;
+  videoUrl: string;
+  poster?: string;
+  subtitles: boolean;
 }
 

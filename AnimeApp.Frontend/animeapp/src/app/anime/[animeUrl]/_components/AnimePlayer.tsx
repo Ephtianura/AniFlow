@@ -1,42 +1,114 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { TelegramShareButton } from "react-share";
-import { FaTelegramPlane } from "react-icons/fa";
 import PlayerSettings from "./PlayerSettings";
 import EpisodeSelector from "./EpisodeSelector";
-import { AnimeTitle } from "@/core/types";
+import { AnimeTitle, EpisodeInfo, PlayerEpisodeSet } from "@/core/types";
 import pullUkrTitle from "../_functions/pullUkrTitle";
 import clsx from "clsx";
+import TgShareButton from "./TgShareButton";
 
 type Props = {
     titles: AnimeTitle[];
     rating?: string;
+    players: PlayerEpisodeSet[];
 };
-const VOICE_DUMMY = [
-    { id: '1', name: 'AniLibria' },
-    { id: '2', name: 'AniFanUA' },
-    { id: '3', name: 'Субтитри' },
-];
 
-const PLAYER_DUMMY = [
-    { id: 'moon', name: 'MoonPlayer' },
-    { id: 'kodik', name: 'Kodik' },
-];
+export default function AnimePlayer({ titles, rating, players }: Props) {
 
-export default function AnimePlayer({ titles, rating }: Props) {
-    const [url, setUrl] = useState("");
+    if (!players?.length) return null;
+    const hasAnyEpisodes = players.some(p =>
+        p.voices?.some(v => v.episodes?.length > 0)
+    );
+    if (!hasAnyEpisodes) return null;
+
     const title = pullUkrTitle(titles)
 
-    const handleVoice = (id: string) => console.log("Выбрана озвучка:", id);
-    const handlePlayer = (id: string) => console.log("Выбран плеер:", id);
-
+    const [selectedPlayer, setSelectedPlayer] = useState<PlayerEpisodeSet | null>(null);
+    const [selectedVoiceIndex, setSelectedVoiceIndex] = useState(0);
     const [selectedEpisode, setSelectedEpisode] = useState(1);
-    const totalEpisodes = 24;
+
+    const activeVoiceId =
+        selectedPlayer?.voices?.[selectedVoiceIndex]
+            ? String(selectedVoiceIndex)
+            : '0';
 
     useEffect(() => {
-        setUrl(window.location.href);
-    }, []);
+        if (!players?.length) return;
+
+        const defaultPlayer = players[0];
+        const defaultVoice = defaultPlayer.voices?.[0];
+
+        setSelectedPlayer(defaultPlayer);
+
+        if (defaultVoice) {
+            setSelectedVoiceIndex(0);
+            setSelectedEpisode(defaultVoice.episodes?.[0]?.episode ?? 1);
+        }
+    }, [players]);
+
+    const currentEpisodes =
+        selectedPlayer?.voices?.[selectedVoiceIndex]?.episodes ?? [];
+
+    const currentEpisode = currentEpisodes.find(e => e.episode === selectedEpisode);
+
+    const totalEpisodes =
+        currentEpisodes.length
+            ? Math.max(...currentEpisodes.map(e => e.episode))
+            : 0;
+
+    const iframeSrc = currentEpisode?.videoUrl;
+
+
+    const playerOptions = players.map(p => ({
+        id: p.player,
+        name: p.player
+    }));
+
+    const voiceOptions =
+        selectedPlayer?.voices?.map((v, i) => ({
+            id: String(i),
+            name: v.voice
+        })) ?? [];
+
+    const handlePlayer = (id: string) => {
+        if (selectedPlayer?.player === id) return;
+
+        const player = players.find(p => p.player === id);
+        if (!player) return;
+
+        setSelectedPlayer(player);
+        setSelectedVoiceIndex(0);
+
+        const firstVoice = player.voices?.[0];
+        setSelectedEpisode(firstVoice?.episodes?.[0]?.episode ?? 1);
+    };
+
+    const handleVoice = (id: string) => {
+        const idx = Number(id);
+
+        if (selectedVoiceIndex === idx) return;
+
+        const newEpisodes = selectedPlayer?.voices?.[idx]?.episodes ?? [];
+        const resolved = resolveEpisode(newEpisodes, selectedEpisode);
+
+        setSelectedVoiceIndex(idx);
+        setSelectedEpisode(resolved);
+    };
+
+    const resolveEpisode = (episodes: EpisodeInfo[], target: number) => {
+        if (!episodes.length) return 1;
+
+        const sorted = [...episodes].sort((a, b) => a.episode - b.episode);
+
+        const exact = sorted.find(e => e.episode === target);
+        if (exact) return exact.episode;
+
+        const lower = sorted.filter(e => e.episode < target);
+        if (lower.length) return lower[lower.length - 1].episode;
+
+        return sorted[0].episode;
+    };
 
     return (
         <div className="relative my-3 -mx-4 flex items-center justify-center playerRef">
@@ -75,7 +147,7 @@ export default function AnimePlayer({ titles, rating }: Props) {
                         {/* iframe */}
                         <iframe
                             className="w-full aspect-video mb-2 rounded "
-                            src="https://moonanime.art/iframe/ghjcjuznaqkxzposoa/"
+                            src={iframeSrc}
                             allow="autoplay *; fullscreen *">
                         </iframe>
 
@@ -92,8 +164,10 @@ export default function AnimePlayer({ titles, rating }: Props) {
                     {/* Озвучка та вибор плеєру*/}
                     <div className="hidden lg:block flex-col px-2 lg:w-75">
                         <PlayerSettings
-                            voices={VOICE_DUMMY}
-                            players={PLAYER_DUMMY}
+                            voices={voiceOptions}
+                            players={playerOptions}
+                            activeVoiceId={activeVoiceId}
+                            activePlayerId={selectedPlayer?.player.toString() ?? ''}
                             onVoiceChange={handleVoice}
                             onPlayerChange={handlePlayer}
                         />
@@ -102,24 +176,7 @@ export default function AnimePlayer({ titles, rating }: Props) {
                 </div>
 
                 {/* Поділитися */}
-                <div className="py-3 border-y border-[#3f3e3f] flex gap-2 items-center">
-                    <span className="text-player-text text-lg">Поділитися з друзями:</span>
-                    <TelegramShareButton url={url} >
-                        <div className={clsx(
-                            "bg-[#468bcc] flex items-center gap-2 px-2 py-0.5 rounded-xs",
-                            "hover:bg-[#509fe8]",
-                            "active:scale-95 transition-all duration-200"
-                        )}>
-                            <FaTelegramPlane className="w-5 h-5" />
-                            <span>Telegram</span>
-                        </div>
-                    </TelegramShareButton>
-                </div>
-
-                {/* <div className="flex gap-2 items-center text-lg">
-                    <span className="text-player-text ">Дата виходу:</span>
-                    <span className="text-white">{"10 січня 2025"}</span>
-                </div> */}
+                <TgShareButton />
 
             </div>
         </div>

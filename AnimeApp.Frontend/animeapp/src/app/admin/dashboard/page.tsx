@@ -5,10 +5,8 @@ import { useAnimes } from "@/hooks/useAnimes";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, PieChart, Pie, Cell, CartesianGrid, Legend } from "recharts";
 import WhiteCard from '@/components/WhiteCard';
 import { ResponsiveContainer } from "recharts";
-import { AiOutlineNumber } from "react-icons/ai";
-import { AnimeKindEnum, AnimeKindMap } from "@/core/AnimeKind";
-import { AnimeStatusEnum, AnimeStatusMap } from "@/core/AnimeStatus";
-import { AnimeRatingEnum, AnimeRatingMap } from "@/core/AnimeRating";
+import { AnimeKindMap } from "@/core/AnimeKind";
+import {AnimeStatusMap } from "@/core/AnimeStatus";
 import { SeasonEnum, SeasonMap } from "@/core/types";
 
 

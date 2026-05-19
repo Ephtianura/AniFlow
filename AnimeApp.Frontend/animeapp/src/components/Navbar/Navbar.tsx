@@ -9,7 +9,7 @@ import UserAvatar from "./UserAvatar";
 export default function Navbar() {
 
   return (
-    <nav className="bg-bg-dark shadow-md sticky top-0 z-50 border-b-3 border-primary text-white mb-6">
+    <nav className="bg-bg-dark shadow-md sticky top-0 z-90 border-b-3 border-primary text-white mb-6">
 
       {/* Десктопна версія */}
       <div className="hidden lg:flex justify-between items-center mx-auto w-full max-w-7xl px-4  h-12">

@@ -42,10 +42,10 @@ export const AnimeScreenshotsUploader: React.FC<AnimeScreenshotsUploaderProps> =
             </div>
 
             {/* Предпросмотр скриншотов */}
-            <div className="flex gap-2 flex-wrap">
+            <div className="grid  grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-6 gap-2">
                 {previews.map((src, i) => (
-                    <div key={i} className="relative w-[150px] h-[100px] rounded overflow-hidden">
-                        <img src={src} className="w-full h-full object-cover rounded" alt={`screenshot-${i}`} />
+                    <div key={i} className="relative  rounded overflow-hidden">
+                        <img src={src} className="w-full h-25 aspect-video  object-cover rounded" alt={`screenshot-${i}`} />
                         <button
                             onClick={() => removeScreenshot(i)}
                             className="absolute top-1 right-1 bg-red-400 text-white w-6 h-6 flex items-center justify-center rounded-full hover:bg-red-500 transition-colors duration-100 cursor-pointer"

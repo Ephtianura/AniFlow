@@ -13,7 +13,8 @@ import pullUkrTitle from './_functions/pullUkrTitle';
 import { getUserStatus } from './_functions/getUserStatus';
 import { getAnime } from './_functions/getAnime';
 import { AnimeIdProvider } from './_components/animeIdProvider';
-
+import AnimeDescription from './_components/AnimeDescription';
+import { getPlayers } from './_functions/getPlayers';
 export async function generateMetadata({ params, }: { params: { animeUrl: string }; }) {
     const { animeUrl } = await params;
     const anime = await getAnime(animeUrl);
@@ -30,6 +31,7 @@ export default async function AnimePage({ params, }: { params: { animeUrl: strin
     const anime = await getAnime(animeUrl)
     const userStatus = await getUserStatus(anime.id)
     if (userStatus) userStatus.animeId = anime.id
+    const players = await getPlayers(anime.malId)
 
     return (
         <WhiteCard>
@@ -88,16 +90,12 @@ export default async function AnimePage({ params, }: { params: { animeUrl: strin
                     </div>
 
                     {/* Опис */}
-                    <div className='py-4'>
-                        {anime.description.split('\n').map((param, index) => (
-                            <p key={index} className='text-primary-black text-justify mb-2'>
-                                {param}
-                            </p>
-                        ))}
+                    <div className='pt-4'>
+                        <AnimeDescription description={anime.description} />
                     </div>
 
                     {/* Кадри */}
-                    <div className='mt-3 w-full'>
+                    <div className='w-full'>
                         <ScreenshotsPreview images={anime.screenshotsUrls} />
                     </div>
 
@@ -106,7 +104,7 @@ export default async function AnimePage({ params, }: { params: { animeUrl: strin
 
                     {/* Плеєр */}
                     <div id="anime-player">
-                        <AnimePlayer titles={anime.titles} rating={anime.rating} />
+                        <AnimePlayer titles={anime.titles} rating={anime.rating} players = {players} />
                     </div>
 
                 </div>

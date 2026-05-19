@@ -38,7 +38,7 @@ export default function PosterViewer({ posterUrl}: PosterViewerProps) {
     return (
         <>
             {/* Превью с hover-лупой */}
-            <div className="relative cursor-pointer w-full sm:w-[250px] aspect-5/7 shrink-0 select-none" >
+            <div className="relative cursor-pointer w-full sm:w-[250px] xl:w-[300px] aspect-5/7 shrink-0 select-none" >
                 <div onClick={() => setOpen(true)}>
                     <img
                         src={posterUrl || "/404.gif"}
