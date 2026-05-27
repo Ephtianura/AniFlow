@@ -87,7 +87,7 @@ export default function AnimeTabs({ counts }: AnimeTabsProps) {
                         setIsEnd(swiper.isEnd);
                     }}
                 >
-
+ 
                     {tabsConfig.map(({ key, label, icon: Icon }) => {
                         const count = counts[key] ?? 0;
                         const isActive = currentType === key;

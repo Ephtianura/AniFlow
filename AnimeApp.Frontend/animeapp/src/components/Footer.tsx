@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export default function Footer() {
     return (
-        <footer className="bg-bg-dark shadow-[0_0_15px_rgba(0,0,0,0.2)] bottom-0 z-50 border-t-3 border-primary mt-6 ">
+        <footer className="bg-bg-dark shadow-[0_0_15px_rgba(0,0,0,0.2)] bottom-0 z-50 border-t-3 border-primary mt-4">
             <div className="flex flex-col w-full max-w-7xl mx-auto px-4 text-gray-text text-sm sm:text-base">
 
                 {/* Ряд 1 - Авторіські права */}

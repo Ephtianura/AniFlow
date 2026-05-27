@@ -49,6 +49,15 @@ namespace AnimeApp.Api.Controllers
             return Ok(anime);
         }
 
+        /// <summary> Повертає рандомний слуг. </summary>
+        [HttpGet("random/slug")]
+        public async Task<ActionResult<AnimeSlugResponse>> GetRandomSlug()
+        {
+            var slug = await _animeQueryService.GetRandomSlugAsync();
+            return Ok(slug);
+        }
+
+
         /// <summary>
         /// Повертає згруповані епізоди аніме за відеоплеєрами та озвучкам.
         /// Кожен плеєра містить доступні озвучки та список епізодів для кожної озвучки.

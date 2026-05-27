@@ -107,13 +107,29 @@ html {
   }
 
   .h4 {
-    @apply text-2xl font-medium -mb-2;
+    @apply text-[1.5rem] font-medium -mb-2;
   }
   .view-btn {
     @apply p-1 hover:text-primary-black rounded-xs cursor-pointer active:scale-95 transition;
   }
   :focus-visible {
     @apply outline-none ring-2 ring-purple-500 ring-offset-2 rounded-sm;
+  }
+  .primary-link {
+    @apply hover:underline text-primary transition-colors duration-100;
+  }
+
+  .home-arrow {
+    @apply z-20 absolute top-38 -translate-y-1/2
+    w-12 aspect-square rounded-full
+    bg-gray-200 hover:bg-white
+    transition-all duration-500
+    cursor-pointer
+    flex items-center justify-center
+    shadow-lg
+    active:scale-100 hover:scale-110
+    group-hover:opacity-90 group-hover:pointer-events-auto
+    opacity-0 pointer-events-none;
   }
 }
 

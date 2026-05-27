@@ -42,7 +42,7 @@ export default function ScreenshotsViewer({ images, currentIndex, onClose, onCha
                 closing ? "opacity-0" : "opacity-100"
             }`}
         >
-            <div className="absolute top-0 w-full h-13 bg-black/40 backdrop-blur flex items-center justify-between px-6 text-white text-lg">
+            <div className="absolute top-0 w-full h-15 bg-black/40 backdrop-blur flex items-center justify-between px-6 text-white text-lg">
                 <span>{currentIndex + 1} / {images.length}</span>
                 <button onClick={handleClose}>
                     <IoClose className="w-8 h-8" />

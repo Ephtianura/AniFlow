@@ -60,6 +60,12 @@ namespace AnimeApp.Application.Services.AnimeServices
             return response;
         }
 
+        public async Task<AnimeSlugResponse> GetRandomSlugAsync()
+        {
+            var slug = await _animeRep.GetRandomSlugAsync();
+            return new AnimeSlugResponse(slug);
+        }
+
         public async Task<PagedResult<AnimesResponse>> GetFilteredAsync(AnimeFilter filter)
         {
             var pagedResult = await _animeRep.GetFilteredAsync(filter);
@@ -180,6 +186,7 @@ namespace AnimeApp.Application.Services.AnimeServices
                 }
             }
         }
+
 
     }
 }

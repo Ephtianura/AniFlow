@@ -5,8 +5,8 @@ import { FaListUl } from "react-icons/fa";
 import { BsGrid3X3GapFill } from "react-icons/bs";
 import { IoGrid } from "react-icons/io5";
 import { useUpdateQuery } from "../_functions/useUpdateQuery";
+import { ViewMode } from "@/components/AnimeCard";
 
-export type ViewMode = "grid" | "gridLarge" | "list";
 
 type Props = {
     view?: ViewMode;

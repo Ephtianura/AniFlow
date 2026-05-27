@@ -19,7 +19,6 @@ export default function LoginForm() {
             await login(form);
             window.location.href = "/";
         } catch (err: any) {
-            // console.log(`LOG:::${err.messages}`)
             const message = Array.isArray(err.messages)
                 ? err.messages.find(Boolean)
                 : null;

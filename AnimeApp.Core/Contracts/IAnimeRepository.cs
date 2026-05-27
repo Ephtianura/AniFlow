@@ -10,9 +10,6 @@ namespace AnimeApp.Core.Contracts
         /// <summary> Повертає рандомне аніме </summary>
         Task<Anime?> GetRandomAsync();
 
-        /// <summary> Повертає N кількість рандомних аніме Id </summary>
-        Task<List<int>> GetRandomIdsAsync(int count = 100);
-
         Task<PagedResult<Anime>> GetFilteredAsync(AnimeFilter filter);
         Task AddAsync(Anime anime);
         Task UpdateAsync(Anime anime);
@@ -20,5 +17,6 @@ namespace AnimeApp.Core.Contracts
         Task<Anime?> GetByMoonIdAsync(int moonId);
         Task<Anime?> GetByMalIdAsync(int malId);
         Task<List<int>> GetAllMixedIdsAsync();
+        Task<string> GetRandomSlugAsync();
     }
 }

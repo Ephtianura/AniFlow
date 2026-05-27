@@ -63,7 +63,7 @@ export const AnimeInfo: React.FC<Props> = ({ anime }) => {
                                 href={{ pathname: "/animes", query: { minEpisodes: anime.episodes, maxEpisodes: anime.episodes } }}
                                 className="hover:underline hover:text-purple-700 cursor-pointer"
                             >
-                                {anime.episodes}
+                                <span>{anime.episodesAired} / {anime.episodes ?? "?"}</span>
                             </Link>
                         </p>
                     </>

@@ -28,14 +28,9 @@ export async function generateMetadata({ params, }: { params: { animeUrl: string
 }
 
 export default async function AnimePage({ params, }: { params: { animeUrl: string }; }) {
-    const start = performance.now();
-
     const { animeUrl } = await params;
 
     const anime = await getAnime(animeUrl)
-
-    // const userStatus = await getUserStatus(anime.id)
-    // const players = await getPlayers(anime.malId)
 
     const userStatusPromise = getUserStatus(anime.id)
     const playersPromise = getPlayers(anime.malId)
@@ -44,7 +39,6 @@ export default async function AnimePage({ params, }: { params: { animeUrl: strin
         userStatusPromise,
         playersPromise,
     ]);
-    console.log("anime load:", performance.now() - start);
 
     return (
         <WhiteCard>

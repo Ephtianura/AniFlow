@@ -5,12 +5,13 @@ import { AnimeStatusEnum } from '@/core/enums/AnimeStatus';
 import { AnimeRatingEnum } from '@/core/enums/AnimeRating';
 import { SeasonEnum } from '@/core/enums/Season';
 import SortDescButton from './_components/SortDescButton';
-import ViewModeButton, { ViewMode } from './_components/ViewModeButton';
+import ViewModeButton from './_components/ViewModeButton';
 import { getAnimes } from './_functions/getAnimes';
 import { buildApiQuery } from './_functions/buildApiQuery';
 import { AnimeSortBy } from '@/core/enums/AnimeSortBy';
 import AnimesCards from './_components/AnimesCards';
 import AnimeFilter from './_components/AnimeFilter';
+import { ViewMode } from '@/components/AnimeCard';
 
 export type SearchParams = {
     search?: string

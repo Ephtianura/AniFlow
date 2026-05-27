@@ -17,6 +17,7 @@ namespace AnimeApp.Application.Dto.Responses.Anime
 
         public double Score { get; set; }
         public int? Episodes { get; set; }
+        public int? EpisodesAired { get; set; }
         public SeasonEnum? Season { get; set; }
         public int? Year { get; set; }
 
@@ -28,5 +29,8 @@ namespace AnimeApp.Application.Dto.Responses.Anime
 
         public List<GenreResponse> Genres { get; set; } = [];
         public StudioAnimeResponse? Studio { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
     }
 }

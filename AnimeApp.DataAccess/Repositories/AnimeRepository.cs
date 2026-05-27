@@ -29,9 +29,15 @@ namespace AnimeApp.DataAccess.Repositories
                 .FirstOrDefaultAsync(a => a.Id == id);
         }
 
+        public Task<Anime?> GetByMoonIdAsync(int moonId) =>
+         _dbContext.Animes.FirstOrDefaultAsync(a => a.MoonId == moonId);
+
+        public Task<Anime?> GetByMalIdAsync(int malId) =>
+          _dbContext.Animes.FirstOrDefaultAsync(a => a.MalId == malId);
+
         public async Task<Anime?> GetRandomAsync()
         {
-            var ids = await _dbContext.Animes.Select(a => a.Id).ToListAsync(); 
+            var ids = await _dbContext.Animes.Select(a => a.Id).ToListAsync();
             if (ids.Count == 0) return null;
 
             var randomId = ids[Random.Shared.Next(ids.Count)];
@@ -39,11 +45,17 @@ namespace AnimeApp.DataAccess.Repositories
             return await GetByIdAsync(randomId);
         }
 
-        public Task<Anime?> GetByMoonIdAsync(int moonId) =>
-          _dbContext.Animes.FirstOrDefaultAsync(a => a.MoonId == moonId);
+        public async Task<string?> GetRandomSlugAsync()
+        {
+            using var connection = _dbContext.Database.GetDbConnection();
+            await connection.OpenAsync();
 
-        public Task<Anime?> GetByMalIdAsync(int malId) =>
-          _dbContext.Animes.FirstOrDefaultAsync(a => a.MalId == malId);
+            using var command = connection.CreateCommand();
+            command.CommandText = "SELECT slug FROM Animes ORDER BY RANDOM() LIMIT 1";
+
+            var result = await command.ExecuteScalarAsync();
+            return result as string;
+        }
 
         public async Task<List<int>> GetAllMixedIdsAsync()
         {
@@ -66,16 +78,7 @@ namespace AnimeApp.DataAccess.Repositories
             return allIds;
         }
 
-        public async Task<List<int>> GetRandomIdsAsync(int count = 100)
-        {
-            var totalCount = await _dbContext.Animes.CountAsync();
-
-            return await _dbContext.Animes
-               .OrderBy(x => Guid.NewGuid())
-               .Select(x => x.Id)
-               .Take(count)
-               .ToListAsync();
-        }
+      
 
         public async Task<PagedResult<Anime>> GetFilteredAsync(AnimeFilter filter)
         {
@@ -187,6 +190,9 @@ namespace AnimeApp.DataAccess.Repositories
                 AnimeSortBy.CreatedAt => filter.SortDesc
                     ? query.OrderByDescending(a => a.CreatedAt).ThenBy(a => a.Id)
                     : query.OrderBy(a => a.CreatedAt).ThenBy(a => a.Id),
+                AnimeSortBy.UpdatedAt => filter.SortDesc
+                   ? query.OrderByDescending(a => a.UpdatedAt).ThenBy(a => a.Id)
+                   : query.OrderBy(a => a.UpdatedAt).ThenBy(a => a.Id),
 
                 _ => query.OrderBy(a => a.Score).ThenBy(a => a.Id) // default
             };
@@ -220,7 +226,7 @@ namespace AnimeApp.DataAccess.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
-
+     
     }
 }
 

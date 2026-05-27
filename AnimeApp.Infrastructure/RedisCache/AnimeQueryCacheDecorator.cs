@@ -42,6 +42,8 @@ namespace AnimeApp.Infrastructure.RedisCache
             return animes;
         }
 
+        public Task<AnimeSlugResponse> GetRandomSlugAsync() => _queryService.GetRandomSlugAsync();
+
         /// <summary> Кешує рандомні аніме. </summary>
         /// <returns> Одне рандомне аніме з кешу або бази </returns>
         public async Task<AnimeResponse> GetRandomAsync()
@@ -99,6 +101,6 @@ namespace AnimeApp.Infrastructure.RedisCache
         }
 
         public Task<List<int>> GetIdsAsync() => _queryService.GetIdsAsync();
-        
+
     }
 }

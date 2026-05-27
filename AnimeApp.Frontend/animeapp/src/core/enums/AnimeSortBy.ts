@@ -5,4 +5,5 @@ export enum AnimeSortBy {
     AiredOn = "AiredOn",
     ReleasedOn = "ReleasedOn",
     CreatedAt = "CreatedAt",
+    UpdatedAt = "UpdatedAt",
 }

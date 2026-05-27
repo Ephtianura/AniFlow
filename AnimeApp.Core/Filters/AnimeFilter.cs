@@ -53,7 +53,8 @@ namespace AnimeApp.Core.Filters
             Episodes,
             AiredOn,
             ReleasedOn,
-            CreatedAt
+            CreatedAt,
+            UpdatedAt
         }
 
         public void Normalize()

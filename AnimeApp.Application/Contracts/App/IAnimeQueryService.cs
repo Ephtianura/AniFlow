@@ -24,6 +24,7 @@ namespace AnimeApp.Application.Contracts.App
 
         /// <summary> Повертає список ID всіх аніме </summary>
         Task<List<int>> GetIdsAsync();
+        Task<AnimeSlugResponse> GetRandomSlugAsync();
     }
 
     public interface IAnimeCommandService

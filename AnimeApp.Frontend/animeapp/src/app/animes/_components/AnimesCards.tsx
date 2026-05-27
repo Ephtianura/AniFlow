@@ -1,8 +1,7 @@
 'use client';
 
-import AnimeCard from '@/components/AnimeCard';
+import AnimeCard, { ViewMode } from '@/components/AnimeCard';
 import { Animes, PagedResult } from '@/core/types';
-import { ViewMode } from './ViewModeButton';
 import clsx from 'clsx';
 import { useInView } from 'react-intersection-observer';
 import { useEffect, useState } from 'react';

@@ -119,6 +119,7 @@ export interface Animes {
   releasedOn?: string | null;
   score: number;
   episodes?: number | null;
+  episodesAired?: number | null;
   season?: SeasonEnum | null;
   year?: number | null;
   rating?: AnimeRatingEnum | null;
@@ -127,6 +128,8 @@ export interface Animes {
   description?: string | null;
   genres: Genre[];
   studio?: Studio | null;
+  createdAt?: string | null;
+  updatedAt?: string | null;
 }
 
 export interface PagedResult<T> {

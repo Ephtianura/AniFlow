@@ -49,16 +49,16 @@ export default function SearchBar() {
     }, [searchQuery]);
 
     return (
-        <div ref={containerRef} className="relative flex items-center">
+        <div ref={containerRef} className="relative flex items-center ">
 
             {/* Кнопка пошуку */}
             <button
                 onClick={() => setOpen(o => !o)}
-                className="flex items-center lg:px-3 lg:py-2 cursor-pointer"
+                className="flex items-center lg:px-3 lg:py-2 cursor-pointer group"
             >
                 <div className="lg:border-x lg:px-4 border-gray-text-light">
                     <MdOutlineSearch className="w-8 h-8 lg:w-6 lg:h-7 hover:text-btn-hover-dark 
-                    transition-colors duration-200 active:scale-95" />
+                    transition group-active:scale-95 duration-200" />
                 </div>
             </button>
 

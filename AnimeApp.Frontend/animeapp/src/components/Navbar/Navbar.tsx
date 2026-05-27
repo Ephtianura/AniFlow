@@ -1,19 +1,19 @@
 import Link from "next/link";
 import SearchBar from "./SearchBar";
-import RandomAnimeButton from "./RandomAnimeButton";
 import AdminButton from "./AdminButton";
 import LoginButtons from "./LoginButtons";
 import UserAvatar from "./UserAvatar";
 import { getMe } from "../../hooks/getMe";
+import BurgerMenu from "./BurgerMenu";
 
 export default async function Navbar() {
   const me = await getMe();
 
   return (
-    <nav className="bg-bg-dark shadow-md sticky top-0 z-90 border-b-3 border-primary text-white mb-6 select-none">
+    <nav className="bg-bg-dark shadow-md fixed top-0 left-0 right-0 z-90 border-b-3 border-primary text-white select-none">
 
       {/* Десктопна версія */}
-      <div className="hidden lg:flex justify-between items-center mx-auto w-full max-w-7xl xl:max-w-[1600px] py-2 px-4 h-15 text-md">
+      <div className="hidden md:flex justify-between items-center mx-auto w-full max-w-7xl xl:max-w-[1600px] py-2 px-4 h-15 text-md">
 
         <div className="flex items-center gap-10">
 
@@ -31,16 +31,20 @@ export default async function Navbar() {
           <div className="flex justify-left font-light items-center">
 
             {/* Аніме */}
-            <Link href="/animes" className="nav-button"> Аніме </Link>
+            <Link href="/animes" className="nav-button">
+              Аніме
+            </Link>
 
             {/* Персонажі */}
             {/* <Link href="/characters" className="nav-button"> Персонажі </Link> */}
 
             {/* Випадкове аніме */}
-            <RandomAnimeButton />
+            <Link href={"/anime/random"} className="nav-button">
+              Випадкове аніме
+            </Link>
 
             {/* Адмін-панель */}
-            <AdminButton me = {me}/>
+            <AdminButton me={me} />
 
           </div>
         </div>
@@ -49,23 +53,22 @@ export default async function Navbar() {
         <div className="flex items-center text-md py-1 font-light ">
 
           {/* Ім'я */}
-          <UserAvatar me = {me}/>
+          <UserAvatar me={me} />
 
           {/* Пошук */}
           <SearchBar />
 
           {/* Вийти / Увійти */}
-          <LoginButtons me = {me}/>
+          <LoginButtons me={me} />
         </div>
 
       </div>
 
       {/* Мобільна версія */}
-
-      <div className="lg:hidden flex relative items-center justify-between w-full px-4 py-2 h-15">
+      <div className="md:hidden flex relative items-center justify-between w-full px-3 py-2 h-15">
 
         <div className="flex-">
-          <UserAvatar me = {me}/>
+          <UserAvatar me={me} />
         </div>
 
 
@@ -78,7 +81,10 @@ export default async function Navbar() {
           AniFlow
         </Link>
 
-        <SearchBar />
+        <div className="flex gap-3 items-center">
+          <SearchBar />
+          <BurgerMenu me={me} />
+        </div>
 
       </div>
 
