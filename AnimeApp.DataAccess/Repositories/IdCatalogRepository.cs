@@ -8,7 +8,7 @@ namespace AnimeApp.DataAccess.Repositories
     {
         private readonly AnimeAppDbContext _dbContext = db;
 
-        public async Task<AnimeIdCatalog?> GetByIdsAsync(int? moonId = null, int? malId = null, int? kodikId = null)
+        public async Task<AnimeIdCatalog?> GetByIdsAsync(int? moonId = null, int? malId = null, string? kodikId = null)
         {
             if (moonId == null && malId == null && kodikId == null) return null;
 

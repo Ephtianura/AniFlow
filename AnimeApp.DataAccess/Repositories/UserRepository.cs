@@ -12,18 +12,9 @@ namespace AnimeApp.DataAccess.Repositories
         public async Task<User?> GetByIdAsync(int id) =>
             await _dbContext.Users.FindAsync(id);
 
-        public async Task<User?> GetByEmailAsync(string email)
-        {
-            return await _dbContext.Users
+        public async Task<User?> GetByEmailAsync(string email) => 
+            await _dbContext.Users
                 .FirstOrDefaultAsync(u => u.Email == email.ToLower());
-        }
-        public async Task<User?> GetWithAnimeListAsync(int userId)
-        {
-            return await _dbContext.Users
-                       .Include(u => u.UserAnimes)
-                       .ThenInclude(ua => ua.Anime)
-                       .FirstOrDefaultAsync(u => u.Id == userId);
-        }
 
         public async Task<PagedResult<User>> GetFilteredAsync(UserFilter filter)
         {
@@ -69,7 +60,6 @@ namespace AnimeApp.DataAccess.Repositories
 
             return new PagedResult<User>(items, totalCount, filter.Page, filter.PageSize);
         }
-
 
 
         public async Task AddAsync(User user)

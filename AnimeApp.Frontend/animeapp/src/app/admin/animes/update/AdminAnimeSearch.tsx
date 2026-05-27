@@ -2,7 +2,8 @@
 import { useState } from "react";
 import { apiFetch } from "@/lib/api";
 import { BiSolidStar } from "react-icons/bi";
-import { AnimeKindMap } from "@/core/AnimeKind";
+import { Animes, PagedResult } from "@/core/types";
+import { AnimeKindMap } from "@/core/enums/AnimeKind";
 
 interface AdminAnimeSearchProps {
     onSelect: (anime: any) => void; // функция вызывается при выборе аниме
@@ -17,8 +18,8 @@ export const AdminAnimeSearch : React.FC<AdminAnimeSearchProps> = ({ onSelect })
         setSearchQuery(value);
         if (value.length >= 3) {
             try {
-                const results = await apiFetch(`/anime?search=${encodeURIComponent(value)}&sortBy=Score&sortDesc=true`);
-                setSearchResults(results.items || []);
+                const results = await apiFetch<PagedResult<Animes>>(`/anime?search=${encodeURIComponent(value)}&sortBy=Score&sortDesc=true`);
+                setSearchResults(results.items);
                 setShowDropdown(true);
             } catch (err) {
                 console.error(err);

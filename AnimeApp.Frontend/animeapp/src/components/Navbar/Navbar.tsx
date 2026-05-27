@@ -4,20 +4,21 @@ import RandomAnimeButton from "./RandomAnimeButton";
 import AdminButton from "./AdminButton";
 import LoginButtons from "./LoginButtons";
 import UserAvatar from "./UserAvatar";
+import { getMe } from "../../hooks/getMe";
 
-
-export default function Navbar() {
+export default async function Navbar() {
+  const me = await getMe();
 
   return (
-    <nav className="bg-bg-dark shadow-md sticky top-0 z-90 border-b-3 border-primary text-white mb-6">
+    <nav className="bg-bg-dark shadow-md sticky top-0 z-90 border-b-3 border-primary text-white mb-6 select-none">
 
       {/* Десктопна версія */}
-      <div className="hidden lg:flex justify-between items-center mx-auto w-full max-w-7xl px-4  h-12">
+      <div className="hidden lg:flex justify-between items-center mx-auto w-full max-w-7xl xl:max-w-[1600px] py-2 px-4 h-15 text-md">
 
         <div className="flex items-center gap-10">
 
           {/* Колонка 1 - Ім'я сайту */}
-          <Link href="/" className="font-bold text-xl transition-colors flex items-center gap-2">
+          <Link href="/" className="font-bold text-xl transition-colors flex items-center gap-2 py-2">
             <img
               src="/favicon.ico"
               alt="AnimeApp Logo"
@@ -27,7 +28,7 @@ export default function Navbar() {
           </Link>
 
           {/* Колонка 2 - Панель навігації */}
-          <div className="flex justify-left gap-4 font-light">
+          <div className="flex justify-left font-light items-center">
 
             {/* Аніме */}
             <Link href="/animes" className="nav-button"> Аніме </Link>
@@ -39,7 +40,7 @@ export default function Navbar() {
             <RandomAnimeButton />
 
             {/* Адмін-панель */}
-            <AdminButton />
+            <AdminButton me = {me}/>
 
           </div>
         </div>
@@ -48,14 +49,13 @@ export default function Navbar() {
         <div className="flex items-center text-md py-1 font-light ">
 
           {/* Ім'я */}
-          <UserAvatar />
+          <UserAvatar me = {me}/>
 
           {/* Пошук */}
           <SearchBar />
 
           {/* Вийти / Увійти */}
-          <LoginButtons />
-
+          <LoginButtons me = {me}/>
         </div>
 
       </div>
@@ -65,7 +65,7 @@ export default function Navbar() {
       <div className="lg:hidden flex relative items-center justify-between w-full px-4 py-2 h-15">
 
         <div className="flex-">
-          <UserAvatar />
+          <UserAvatar me = {me}/>
         </div>
 
 

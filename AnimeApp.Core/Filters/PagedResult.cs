@@ -1,20 +1,18 @@
 ﻿namespace AnimeApp.Core.Filters
 {
-    public class PagedResult<T>
+    public class PagedResult<T>(
+        IReadOnlyList<T> items,
+        int totalCount,
+        int page,
+        int pageSize)
     {
-        public IReadOnlyList<T> Items { get; }
-        public int TotalCount { get; }
-        public int Page { get; }
-        public int PageSize { get; }
+        public IReadOnlyList<T> Items { get; } = items;
+        public int TotalCount { get; } = totalCount;
+        public int Page { get; } = page;
+        public int PageSize { get; } = pageSize;
         public int TotalPages => (int)Math.Ceiling(TotalCount / (double)PageSize);
-            
-        public PagedResult(IReadOnlyList<T> items, int totalCount, int page, int pageSize)
-        {
-            Items = items;
-            TotalCount = totalCount;
-            Page = page;
-            PageSize = pageSize;
-        }
-    }
 
+        public bool HasNext => Page < TotalPages;
+        public bool HasPrevious => Page > 1;
+    }
 }

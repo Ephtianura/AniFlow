@@ -14,6 +14,9 @@ services:
       - postgres
       - redis
       - minio
+      - seq
+    volumes:
+      - keys:/keys
 
   # Frontend
   frontend:
@@ -39,11 +42,10 @@ services:
 
   rabbitmq:
     restart: always
-    
+
   seq:
-    restart: always
     ports:
-      - "127.0.0.1:5341:80"
+      - "5341:80"
 
 networks:
   default:

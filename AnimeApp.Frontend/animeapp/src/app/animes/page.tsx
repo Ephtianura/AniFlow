@@ -1,92 +1,90 @@
-"use client";
-
-import AnimeFiler from '@/components/AnimeFilter';
-import { FaListUl } from "react-icons/fa";
-import { IoGrid } from "react-icons/io5";
-import { BsGrid3X3GapFill } from "react-icons/bs";
-import AnimeCard from '@/components/AnimeCard';
 import WhiteCard from '@/components/WhiteCard';
-import { useEffect, useRef, useState } from "react";
-import { apiFetch } from "@/lib/api";
-import { FaSortAlphaDown, FaSortAlphaDownAlt } from "react-icons/fa";
-import { useSearchParams } from "next/navigation";
-import CustomSelect from '@/app/animes/SortSelect';
-import { toast } from 'react-toastify';
-import { Animes, Pagination } from '@/core/types';
+import SortSelect from '@/app/animes/_components/SortSelect';
+import { AnimeKindEnum } from '@/core/enums/AnimeKind';
+import { AnimeStatusEnum } from '@/core/enums/AnimeStatus';
+import { AnimeRatingEnum } from '@/core/enums/AnimeRating';
+import { SeasonEnum } from '@/core/enums/Season';
+import SortDescButton from './_components/SortDescButton';
+import ViewModeButton, { ViewMode } from './_components/ViewModeButton';
+import { getAnimes } from './_functions/getAnimes';
+import { buildApiQuery } from './_functions/buildApiQuery';
+import { AnimeSortBy } from '@/core/enums/AnimeSortBy';
+import AnimesCards from './_components/AnimesCards';
+import AnimeFilter from './_components/AnimeFilter';
 
+export type SearchParams = {
+    search?: string
 
-// export const metadata = {
-//     title: "Каталог аніме | AniFlow",
-//     description:
-//         "Великий каталог аніме: нові серії та популярні тайтли українською мовою. Зручні фільтри та перегляд онлайн безкоштовно на AniFlow.",
-// };
-type ViewMode = "grid" | "gridLarge" | "list";
+    //slug
+    genres?: string
+    //slug
+    studio?: string
 
-export default function AnimeListPage() {
-    const searchParams = useSearchParams();
-    const [animes, setAnimes] = useState<Animes[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [loadingMore, setLoadingMore] = useState(false);
-    const [page, setPage] = useState(1);
-    const [hasMore, setHasMore] = useState(true);
-    const [viewMode, setViewMode] = useState<ViewMode>("list");
+    kind?: AnimeKindEnum
+    status?: AnimeStatusEnum
+    rating?: AnimeRatingEnum
+    season?: SeasonEnum
+    year?: string
 
-    // Стейты для фильтров (их лучше тоже синхронизировать с URL, но пока так)
-    const [sortBy, setSortBy] = useState("Score");
-    const [sortDesc, setSortDesc] = useState(true);
+    airedFrom?: string
+    airedTo?: string
 
-    const fetchAnimes = async (isInitial: boolean) => {
-        if (loadingMore || (!isInitial && !hasMore)) return;
+    releasedFrom?: string
+    releasedTo?: string
 
-        isInitial ? setLoading(true) : setLoadingMore(true);
+    minScore?: string
+    maxScore?: string
 
-        try {
-            const targetPage = isInitial ? 1 : page + 1;
-            const params = new URLSearchParams(searchParams);
-            params.set("SortBy", sortBy);
-            params.set("SortDesc", String(sortDesc));
-            params.set("Page", String(targetPage));
-            params.set("Limit", "20");
+    minEpisodes?: string
+    maxEpisodes?: string
 
-            const data = await apiFetch<Pagination<Animes>>(`/anime?${params.toString()}`);
-            const animes = data.items;
+    sortBy?: AnimeSortBy
+    sortDesc?: string
 
-            setAnimes(prev => isInitial ? animes : [...prev, ...animes]);
-            setPage(prev => isInitial ? 1 : prev + 1);
-            setHasMore(animes.length === 20);
-        } catch (err: any) {
-            if (err.status >= 500) toast.error("Сервер приліг поспати...");
-        } finally {
-            isInitial ? setLoading(false) : setLoadingMore(false);
-        }
-    };
+    page?: string
 
+    view: ViewMode
+}
 
-    useEffect(() => {
-        fetchAnimes(true);
-    }, [searchParams, sortBy, sortDesc]);
+type SearchParamsProps = {
+    searchParams: Promise<SearchParams>
+}
 
-    const observerTarget = useRef(null);
+export default async function AnimeListPage({ searchParams }: SearchParamsProps) {
+    const resolvedParams = await searchParams
 
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            entries => {
-                if (entries[0].isIntersecting && hasMore && !loading && !loadingMore) {
-                    fetchAnimes(false);
-                }
-            },
-            { threshold: 1.0 }
-        );
+    const viewMode = resolvedParams.view || "list";
 
-        if (observerTarget.current) observer.observe(observerTarget.current);
-        return () => observer.disconnect();
-    }, [hasMore, loading, loadingMore, page]);
+    const apiQuery = buildApiQuery(resolvedParams, 1, 20);
 
-    if (loading) return <WhiteCard>Завантаження...</WhiteCard>;
+    const res = await getAnimes(apiQuery);
 
+    if (!res || !res.items.length)
+        return (
+            <>
+                <WhiteCard>
+                    <div>
+                        <h1 className='text-primary-black text-4xl font-medium pb-4'>
+                            Список аніме
+                        </h1>
+                        <div className='p-4 bg-purple-200 border-2 border-purple-300 rounded-lg text-primary-black'>
+                            Нічого не знайдено ¯\_(ツ)_/¯
+                        </div>
+                    </div>
+                </WhiteCard>
+
+                <AnimeFilter />
+            </>
+        )
+
+    const hasNext = res.hasNext;
+
+    // const parsedPage = Number(resolvedParams.page);
+    // const animes = res.items;
+    // const currentPage = Number.isFinite(parsedPage) && parsedPage > 0 ? parsedPage : 1;
 
     return (
-        <main className='lg:grid grid-cols-[1fr_auto] gap-8 items-start'>
+        <>
             <WhiteCard>
                 <div >
                     <h1 className='text-primary-black text-4xl font-medium pb-4'>
@@ -94,7 +92,7 @@ export default function AnimeListPage() {
                     </h1>
 
                     {/* Панель управління */}
-                    <div className='py-4 mb-4 border-hr-clr border-y'>
+                    <div className='py-4 mb-4 border-hr-clr border-y select-none'>
                         <div className='flex flex-col gap-2 items-center sm:flex-row sm:justify-between '>
 
                             {/* --- Сортування --- */}
@@ -103,71 +101,25 @@ export default function AnimeListPage() {
                                     Сортувати по:
                                 </p>
 
-                                <CustomSelect sortBy={sortBy} setSortBy={setSortBy} />
+                                {/* По якому критерію сортувати */}
+                                <SortSelect initSortBy={resolvedParams.sortBy} />
 
-                                {/* Сортування */}
-                                <button
-                                    onClick={() => setSortDesc(prev => !prev)}
-                                    className="text-primary-black p-2 mt-px border border-btn-border-light rounded-xs bg-white 
-                                    hover:bg-btn-hover transition
-                                    active:scale-95
-                                    active:bg-gray-200
-                                    active:border-gray-300"
-                                >
-                                    {sortDesc
-                                        ? <FaSortAlphaDownAlt className="w-5 h-5 cursor-pointer" />
-                                        : <FaSortAlphaDown className="w-5 h-5 cursor-pointer" />
-                                    }
-                                </button>
+                                {/* За зростанням або спаданням */}
+                                <SortDescButton />
                             </div>
 
                             {/* --- Режим --- */}
-                            <div className='flex gap-3 items-center text-primary-grey'>
-                                <button onClick={() => setViewMode("grid")}
-                                    className={`view-btn ${viewMode === "grid" && "hover:text-white text-white bg-primary"}`}>
-                                    <BsGrid3X3GapFill className='w-7 h-7' />
-                                </button>
+                            <ViewModeButton view={viewMode} />
 
-                                <button onClick={() => setViewMode("gridLarge")}
-                                    className={`view-btn ${viewMode === "gridLarge" && "hover:text-white text-white bg-primary"}`}>
-                                    <IoGrid className='w-7 h-7' />
-                                </button>
-
-                                <button onClick={() => setViewMode("list")}
-                                    className={`view-btn ${viewMode === "list" && "hover:text-white text-white bg-primary"}`}>
-                                    <FaListUl className='w-7 h-7' />
-                                </button>
-                            </div>
                         </div>
                     </div>
 
                     {/* --- Карточки --- */}
-                    <div className={
-                        viewMode === "grid" ? "grid sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 gap-6" : viewMode === "gridLarge" ? "grid md:grid-cols-2"
-                            : "flex flex-col"}>
-
-                        {animes.map((anime) => (
-                            <AnimeCard
-                                key={anime.id}
-                                id={anime.id}
-                                title={anime.titles.find(t => t.language === "Ukrainian")?.value || anime.titles[0].value}
-                                subTitle={anime.titles.find(t => t.language === "Romaji")?.value}
-                                rating={anime.score}
-                                kind={anime.kind}
-                                year={anime.year}
-                                genres={anime.genres}
-                                description={anime.description}
-                                posterUrl={anime.posterUrl || undefined}
-                                url={anime.url}
-                                viewMode={viewMode}
-                            />
-                        ))}
-                    </div>
-                    {/* Триггер для загрузки */}
-                    <div ref={observerTarget} ></div>
+                    <AnimesCards pagedAnimes={res} viewMode={viewMode} apiQuery={apiQuery} hasNext={hasNext} />
                 </div>
             </WhiteCard>
-            <AnimeFiler />
-        </main>
+
+            <AnimeFilter />
+        </>
     );
 }

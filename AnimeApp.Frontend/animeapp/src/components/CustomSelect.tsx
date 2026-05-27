@@ -2,32 +2,32 @@
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/react';
 import { FaSort } from 'react-icons/fa';
 
-interface Option {
-  value: string | null;
+interface Option<T> {
+  value: T;
   label: string;
 }
 
-interface UniversalSelectProps {
-  value: string | null;
-  onChange: (value: string | null) => void;
-  options: Option[];
+interface UniversalSelectProps<T> {
+  value: T;
+  onChange: (value: T) => void;
+  options: Option<T>[];
   placeholder?: string;
   className?: string;
 }
 
-export default function CustomSelect({
+export default function CustomSelect<T>({
   value,
   onChange,
   options,
   placeholder = "Оберіть зі списку",
   className = ""
-}: UniversalSelectProps) {
+}: UniversalSelectProps<T>) {
   const selectedOption = options.find(opt => opt.value === value);
 
   return (
     <div className={`relative w-full ${className}`}>
       <Listbox value={value} onChange={onChange}>
-        <ListboxButton className="btn-primary w-full text-left flex justify-between items-center h-[38px]">
+        <ListboxButton className="btn-primary w-full text-left flex justify-between items-center h-9.5">
           <span className="truncate">
             {selectedOption ? selectedOption.label : placeholder}
           </span>
@@ -37,7 +37,7 @@ export default function CustomSelect({
         <ListboxOptions
           transition
           anchor="bottom start"
-          className="z-100 w-(--button-width) mt-1 rounded-xs border border-btn-border-light bg-white py-2 shadow-lg transition duration-100 ease-in data-[closed]:opacity-0"
+          className="z-100 w-(--button-width) mt-1 rounded-xs border border-btn-border-light bg-white py-2 shadow-lg transition duration-100 ease-in data-closed:opacity-0"
         >
           {options.map((option, idx) => (
             <ListboxOption

@@ -18,5 +18,7 @@ namespace AnimeApp.Core.Contracts
         Task UpdateAsync(Anime anime);
         Task DeleteAsync(Anime anime);
         Task<Anime?> GetByMoonIdAsync(int moonId);
+        Task<Anime?> GetByMalIdAsync(int malId);
+        Task<List<int>> GetAllMixedIdsAsync();
     }
 }

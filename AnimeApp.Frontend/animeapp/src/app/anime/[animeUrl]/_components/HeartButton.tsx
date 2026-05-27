@@ -1,23 +1,18 @@
 "use client";
 
-import { useUserAnimeStore } from "@/stores/useUserAnimeStore";
 import { apiFetch } from "@/lib/api";
 import { FaHeart, FaRegHeart } from "react-icons/fa6";
 import { toast } from "react-toastify";
-import { useAuth } from "@/context/AuthContext";
 import { useAnimeId } from "./animeIdProvider";
+import { useState } from "react";
 
+// Зпростив архітектуру
 export default function HeartButton() {
-    const {animeId} = useAnimeId();
-
-    const item = useUserAnimeStore((s) => s.data[animeId]);
-    const updateField = useUserAnimeStore((s) => s.updateField);
-    // const markClean = useUserAnimeStore((s) => s.markClean);
-    const isFavorite = item?.data?.isFavorite ?? false;
-    const { isLoggedIn } = useAuth();
+    const { animeId, userAnime } = useAnimeId();
+    const [isFavorite, setFavorite] = useState(userAnime?.isFavorite ?? false)
 
     const toggleFavorite = async () => {
-        if (!isLoggedIn) {
+        if (!userAnime) {
             toast.info("Будь ласка, увійдіть в акаунт, щоб додавати в обране");
             return;
         }
@@ -25,23 +20,21 @@ export default function HeartButton() {
         const nextValue = !isFavorite;
 
         // Оптимистично обновляем в сторе
-        updateField(animeId, { isFavorite: nextValue })
+        setFavorite(nextValue)
 
         try {
-            // Запрос на бэк
             await apiFetch(`/user/me/${animeId}`, {
                 method: nextValue ? "PATCH" : "DELETE",
                 body: JSON.stringify({ isFavorite: true }),
             });
         } catch (error) {
-            // Откат в случае ошибки
-            updateField(animeId, { isFavorite: !nextValue })
+            setFavorite(!nextValue)
             toast.error("Не вдалося додати до улюбленного :<");
         }
     };
 
     return (
-        <div >
+        <div>
             <button className="relative justify-end active:scale-90 transition cursor-pointer" onClick={toggleFavorite}>
 
                 <FaHeart className={`absolute w-8 h-8 text-primary transition-all duration-200 

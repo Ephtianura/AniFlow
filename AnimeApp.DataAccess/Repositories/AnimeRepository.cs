@@ -3,6 +3,7 @@ using AnimeApp.Core.Enums;
 using AnimeApp.Core.Filters;
 using AnimeApp.Core.Models;
 using Microsoft.EntityFrameworkCore;
+using static AnimeApp.Core.Filters.AnimeFilter;
 
 namespace AnimeApp.DataAccess.Repositories
 {
@@ -14,40 +15,56 @@ namespace AnimeApp.DataAccess.Repositories
         public async Task<Anime?> GetByIdAsync(int id)
         {
             return await _dbContext.Animes
-               .Include(a => a.Titles)
-               .Include(a => a.Genres)
-               .Include(a => a.Studio)
-               .Include(a => a.Music)
+                .AsNoTracking()
+                .AsSplitQuery()
+                .Include(a => a.Titles)
+                .Include(a => a.Genres)
+                .Include(a => a.Studio)
+                .Include(a => a.Music)
                     .ThenInclude(v => v.Videos)
-               .Include(a => a.Promos.Where(p => p.AnimeOstId == null))
-               .Include(a => a.Relateds)
+                .Include(a => a.Promos.Where(p => p.AnimeOstId == null))
+                .Include(a => a.Relateds)
                     .ThenInclude(r => r.RelatedAnime)
 
-               .FirstOrDefaultAsync(a => a.Id == id);
+                .FirstOrDefaultAsync(a => a.Id == id);
         }
 
         public async Task<Anime?> GetRandomAsync()
         {
-            var count = await _dbContext.Animes.CountAsync();
-            if (count == 0) return null;
+            var ids = await _dbContext.Animes.Select(a => a.Id).ToListAsync(); 
+            if (ids.Count == 0) return null;
 
-            var index = new Random().Next(count);
+            var randomId = ids[Random.Shared.Next(ids.Count)];
 
-            return await _dbContext.Animes
-               .Include(a => a.Titles)
-               .Include(a => a.Genres)
-               .Include(a => a.Studio)
-               .Include(a => a.Music)
-                    .ThenInclude(v => v.Videos)
-               .Include(a => a.Promos.Where(p => p.AnimeOstId == null))
-               .Include(a => a.Relateds)
-                    .ThenInclude(r => r.RelatedAnime)
-                .Skip(index)
-                .FirstOrDefaultAsync();
+            return await GetByIdAsync(randomId);
         }
 
         public Task<Anime?> GetByMoonIdAsync(int moonId) =>
           _dbContext.Animes.FirstOrDefaultAsync(a => a.MoonId == moonId);
+
+        public Task<Anime?> GetByMalIdAsync(int malId) =>
+          _dbContext.Animes.FirstOrDefaultAsync(a => a.MalId == malId);
+
+        public async Task<List<int>> GetAllMixedIdsAsync()
+        {
+            var allIds = await _dbContext.Animes
+                .AsNoTracking()
+                .Select(x => x.Id)
+                .ToListAsync();
+
+            Random rng = Random.Shared;
+            int n = allIds.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = rng.Next(n + 1);
+                int value = allIds[k];
+                allIds[k] = allIds[n];
+                allIds[n] = value;
+            }
+
+            return allIds;
+        }
 
         public async Task<List<int>> GetRandomIdsAsync(int count = 100)
         {
@@ -62,6 +79,7 @@ namespace AnimeApp.DataAccess.Repositories
 
         public async Task<PagedResult<Anime>> GetFilteredAsync(AnimeFilter filter)
         {
+            filter.Normalize();
             var query = _dbContext.Animes
                 .Include(a => a.Titles)
                 .Include(a => a.Genres)
@@ -82,14 +100,21 @@ namespace AnimeApp.DataAccess.Repositories
 
             // =================== GENRES ===================
             if (filter.GenresId != null && filter.GenresId.Any())
-            {
-                query = query.Where(a => a.Genres.Any(g => filter.GenresId.Contains(g.Id)));
-            }
+                query = query.Where(a =>
+                    a.Genres.Any(g => filter.GenresId.Contains(g.Id)));
+
+            if (filter.GenresSlugs != null && filter.GenresSlugs.Any())
+                query = query.Where(a =>
+                    a.Genres.Any(g => filter.GenresSlugs.Contains(g.Slug)));
 
             // =================== STUDIO ===================
             if (filter.StudioId.HasValue)
             {
                 query = query.Where(a => a.StudiosId == filter.StudioId);
+            }
+            else if (!string.IsNullOrWhiteSpace(filter.StudioSlug))
+            {
+                query = query.Where(a => a.Studio != null && a.Studio.Slug == filter.StudioSlug);
             }
 
             // =================== ENUM FILTERS ===================
@@ -135,9 +160,9 @@ namespace AnimeApp.DataAccess.Repositories
                 query = query.Where(a => a.Episodes <= filter.MaxEpisodes);
 
             // =================== SORTING ===================
-            query = filter.SortBy?.ToLower() switch
+            query = filter.SortBy switch
             {
-                "title" => filter.SortDesc
+                AnimeSortBy.Title => filter.SortDesc
                     ? query.OrderByDescending(a => a.Titles
                         .Where(t => t.Language == TitleLanguage.Ukrainian && t.Type == TitleType.Official)
                         .Select(t => t.Value)
@@ -147,12 +172,26 @@ namespace AnimeApp.DataAccess.Repositories
                         .Select(t => t.Value)
                         .FirstOrDefault()),
 
-                "score" => filter.SortDesc ? query.OrderByDescending(a => a.Score) : query.OrderBy(a => a.Score),
-                "episodes" => filter.SortDesc ? query.OrderByDescending(a => a.Episodes) : query.OrderBy(a => a.Episodes),
-                "airedon" => filter.SortDesc ? query.OrderByDescending(a => a.AiredOn) : query.OrderBy(a => a.AiredOn),
-                "releasedon" => filter.SortDesc ? query.OrderByDescending(a => a.ReleasedOn) : query.OrderBy(a => a.ReleasedOn),
-                _ => query.OrderBy(a => a.Id) // default
+                AnimeSortBy.Score => filter.SortDesc
+                    ? query.OrderByDescending(a => a.Score).ThenBy(a => a.Id)
+                    : query.OrderBy(a => a.Score).ThenBy(a => a.Id),
+                AnimeSortBy.Episodes => filter.SortDesc
+                    ? query.OrderByDescending(a => a.Episodes).ThenBy(a => a.Id)
+                    : query.OrderBy(a => a.Episodes).ThenBy(a => a.Id),
+                AnimeSortBy.AiredOn => filter.SortDesc
+                    ? query.OrderByDescending(a => a.AiredOn).ThenBy(a => a.Id)
+                    : query.OrderBy(a => a.AiredOn).ThenBy(a => a.Id),
+                AnimeSortBy.ReleasedOn => filter.SortDesc
+                    ? query.OrderByDescending(a => a.ReleasedOn).ThenBy(a => a.Id)
+                    : query.OrderBy(a => a.ReleasedOn).ThenBy(a => a.Id),
+                AnimeSortBy.CreatedAt => filter.SortDesc
+                    ? query.OrderByDescending(a => a.CreatedAt).ThenBy(a => a.Id)
+                    : query.OrderBy(a => a.CreatedAt).ThenBy(a => a.Id),
+
+                _ => query.OrderBy(a => a.Score).ThenBy(a => a.Id) // default
             };
+
+
 
             // =================== PAGINATION ===================
             var totalCount = await query.CountAsync();
@@ -172,7 +211,7 @@ namespace AnimeApp.DataAccess.Repositories
         }
         public async Task UpdateAsync(Anime anime)
         {
-             _dbContext.Animes.Update(anime);
+            _dbContext.Animes.Update(anime);
         }
 
         public async Task DeleteAsync(Anime anime)

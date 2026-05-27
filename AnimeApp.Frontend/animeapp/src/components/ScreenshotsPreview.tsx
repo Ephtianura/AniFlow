@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { IoSearch } from "react-icons/io5";
 import ScreenshotsViewer from "./ScreenshotsViewer";
 
@@ -9,6 +9,8 @@ interface ScreenshotsPreviewProps {
 }
 
 export default function ScreenshotsPreview({ images }: ScreenshotsPreviewProps) {
+    if (!images || images.length <= 0) return null;
+    
     const [open, setOpen] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -17,7 +19,7 @@ export default function ScreenshotsPreview({ images }: ScreenshotsPreviewProps) 
         setOpen(true);
     };
 
-    const visibleImages = images.slice(0, 4);
+    const visibleImages = (images ?? []).slice(0, 4);
     return (
         <>
             <div className="mt-3">
@@ -37,11 +39,11 @@ export default function ScreenshotsPreview({ images }: ScreenshotsPreviewProps) 
                                 key={i}
                                 onClick={() => openViewer(i)}
                                 className={`
-                    relative group cursor-pointer overflow-hidden rounded aspect-video hover:scale-103 transition-transform duration-300
-                    ${i === 1 ? "hidden sm:block" : ""}
-                    ${i === 2 ? "hidden md:block" : ""}
-                    ${i === 3 ? "hidden lg:block" : ""}
-                `}
+                                        relative group cursor-pointer overflow-hidden rounded aspect-video hover:scale-103 transition-transform duration-300
+                                        ${i === 1 ? "hidden sm:block" : ""}
+                                        ${i === 2 ? "hidden md:block" : ""}
+                                        ${i === 3 ? "hidden lg:block" : ""}
+                                    `}
                             >
                                 <img src={src} className="w-full h-full object-cover" alt={`Кадр ${i}`} />
 

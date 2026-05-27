@@ -4,9 +4,8 @@ import PosterViewer from '@/components/PosterViewer';
 import { AnimeInfo } from "./_components/AnimeInfo";
 import { RelatedAnimeList } from "./_components/RelatedAnimeList";
 import ListSelect from "./_components/ListSelect";
-import AnimePlayer from "./_components/AnimePlayer";
+import AnimePlayer from "./_components/Player/AnimePlayer";
 import WatchButton from "./_components/WatchButton";
-import Rating from "./_components/Rating";
 import AnimeTitles from "./_components/AnimeTitles";
 import { UserAnimeHydrator } from '@/stores/userAnimeHydrator';
 import pullUkrTitle from './_functions/pullUkrTitle';
@@ -15,6 +14,8 @@ import { getAnime } from './_functions/getAnime';
 import { AnimeIdProvider } from './_components/animeIdProvider';
 import AnimeDescription from './_components/AnimeDescription';
 import { getPlayers } from './_functions/getPlayers';
+import Rating from './_components/Rating';
+
 export async function generateMetadata({ params, }: { params: { animeUrl: string }; }) {
     const { animeUrl } = await params;
     const anime = await getAnime(animeUrl);
@@ -27,11 +28,23 @@ export async function generateMetadata({ params, }: { params: { animeUrl: string
 }
 
 export default async function AnimePage({ params, }: { params: { animeUrl: string }; }) {
+    const start = performance.now();
+
     const { animeUrl } = await params;
+
     const anime = await getAnime(animeUrl)
-    const userStatus = await getUserStatus(anime.id)
-    if (userStatus) userStatus.animeId = anime.id
-    const players = await getPlayers(anime.malId)
+
+    // const userStatus = await getUserStatus(anime.id)
+    // const players = await getPlayers(anime.malId)
+
+    const userStatusPromise = getUserStatus(anime.id)
+    const playersPromise = getPlayers(anime.malId)
+
+    const [userStatus, players] = await Promise.all([
+        userStatusPromise,
+        playersPromise,
+    ]);
+    console.log("anime load:", performance.now() - start);
 
     return (
         <WhiteCard>
@@ -104,7 +117,7 @@ export default async function AnimePage({ params, }: { params: { animeUrl: strin
 
                     {/* Плеєр */}
                     <div id="anime-player">
-                        <AnimePlayer titles={anime.titles} rating={anime.rating} players = {players} />
+                        <AnimePlayer titles={anime.titles} rating={anime.rating} players={players} />
                     </div>
 
                 </div>
@@ -112,4 +125,3 @@ export default async function AnimePage({ params, }: { params: { animeUrl: strin
         </WhiteCard>
     )
 }
-

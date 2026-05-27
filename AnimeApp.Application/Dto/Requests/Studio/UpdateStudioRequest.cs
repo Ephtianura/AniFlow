@@ -2,6 +2,8 @@
 {
     public record UpdateStudioRequest(
        string? Name,
+       string? MalId,
+       string? Slug,
        string? Description = ""
        );
 }

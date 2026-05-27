@@ -2,10 +2,11 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { apiFetch } from "@/lib/api";
-import { RelationKindEnum, RelationKindMap } from "@/core/RelationKind";
 import { BiSolidStar } from "react-icons/bi";
-import { AnimeKindMap } from "@/core/AnimeKind";
 import { IoClose } from "react-icons/io5";
+import { Animes, PagedResult } from "@/core/types";
+import { RelationKindEnum, RelationKindMap } from "@/core/enums/RelationKind";
+import { AnimeKindMap } from "@/core/enums/AnimeKind";
 
 interface RelatedAnime {
     relatedAnimeId: number;
@@ -34,8 +35,8 @@ export const RelatedAnimeSelector: React.FC<Props> = ({ initialRelatedAnimes = [
         setSearchQuery(value);
         if (value.length >= 3) {
             try {
-                const results = await apiFetch(`/anime?search=${encodeURIComponent(value)}&sortBy=Score&sortDesc=true`);
-                setSearchResults(results.items || []);
+                const results = await apiFetch<PagedResult<Animes>>(`/anime?search=${encodeURIComponent(value)}&sortBy=Score&sortDesc=true`);
+                setSearchResults(results.items);
                 setShowDropdown(true);
 
                 if (inputRef.current) {

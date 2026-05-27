@@ -1,5 +1,4 @@
 ﻿using AnimeApp.Application.Exceptions;
-using AnimeApp.Infrastructure.Exceptions;
 using System.Net;
 
 namespace AnimeApp.API.Middleware.Exceptions;

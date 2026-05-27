@@ -1,5 +1,6 @@
-﻿using System.Net;
+﻿using AnimeApp.Application.Helpers;
 using FluentValidation;
+using System.Net;
 
 namespace AnimeApp.API.Middleware.Exceptions
 {
@@ -52,7 +53,7 @@ namespace AnimeApp.API.Middleware.Exceptions
                 if (status == 0)
                 {
                     status = HttpStatusCode.InternalServerError;
-                    logger.LogError(exception, "Unhandled exception");
+                    logger.LogError(LogEvents.UnhandledException, exception, "Unhandled exception");
 
                     message = env.IsDevelopment()
                         ? exception.Message

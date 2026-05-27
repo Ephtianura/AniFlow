@@ -2,7 +2,6 @@
 using AnimeApp.Application.Contracts.Infra;
 using AnimeApp.Application.Dto.External;
 using AnimeApp.Application.Dto.Responses.Anime;
-using AnimeApp.Application.Helpers;
 using AnimeApp.Core.Contracts;
 using AnimeApp.Core.Models;
 
@@ -12,7 +11,6 @@ namespace AnimeApp.Application.Services.Importing
     {
         private readonly IGenreRepository _genreRep = genreRep;
         private readonly IMoonApiClient _moonApi = moonApi;
-
 
         public async Task<List<Genre>> GetGenresFromRaw(List<GenreRawDto> raw)
         {

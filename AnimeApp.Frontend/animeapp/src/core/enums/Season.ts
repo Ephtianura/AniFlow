@@ -1,0 +1,30 @@
+export enum SeasonEnum {
+  Winter = "Winter",
+  Spring = "Spring",
+  Summer = "Summer",
+  Fall = "Fall",
+}
+// Переводы
+export const SeasonMap: Record<string, string> = {
+  Winter: "Зима",
+  Spring: "Весна",
+  Summer: "Літо",
+  Fall: "Осінь",
+};
+
+export const SeasonTextMap: Record<SeasonEnum, string> = {
+  [SeasonEnum.Spring]: "весняного",
+  [SeasonEnum.Summer]: "літнього",
+  [SeasonEnum.Fall]: "осіннього",
+  [SeasonEnum.Winter]: "зимового",
+}
+
+export function getCurrentSeason(): SeasonEnum {
+  const month = new Date().getMonth() + 1
+
+  if (month >= 3 && month <= 5) return SeasonEnum.Spring
+  if (month >= 6 && month <= 8) return SeasonEnum.Summer
+  if (month >= 9 && month <= 11) return SeasonEnum.Fall
+
+  return SeasonEnum.Winter
+}

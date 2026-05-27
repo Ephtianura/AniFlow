@@ -28,10 +28,6 @@ export const AnimeIdProvider = ({
 
 export const useAnimeId = () => {
   const context = useContext(AnimeIdContext);
-
-  if (context === null) {
-    throw new Error('useAnimeId must be used inside AnimeIdProvider');
-  }
-
+  if (context === null) throw new Error('useAnimeId must be used inside AnimeIdProvider');
   return context;
 };

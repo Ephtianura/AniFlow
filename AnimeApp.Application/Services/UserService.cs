@@ -1,6 +1,7 @@
 ﻿using AnimeApp.Application.Contracts.App;
 using AnimeApp.Application.Contracts.Infra;
 using AnimeApp.Application.Dto.Requests.User;
+using AnimeApp.Application.Dto.Responses.User;
 using AnimeApp.Application.Exceptions;
 using AnimeApp.Application.Helpers;
 using AnimeApp.Core.Contracts;
@@ -16,33 +17,53 @@ namespace AnimeApp.Application.Services
         private readonly IS3FileStorageService _fileStorage = fileStorage;
 
         /// <summary> Повертає користувача по ID </summary>
-        public async Task<User> GetByIdAsync(int userId) => await GetUserByIdAsync(userId);
+        public async Task<GetUserMeResponse> GetByIdAsync(int userId)
+        {
+            var user = await GetUserByIdAsync(userId);
+            string avatarUrl = null;
+            if (user.AvatarFileName != null)
+                avatarUrl = _fileStorage.GetUrl(user.AvatarFileName);
+
+            return new GetUserMeResponse(
+                user.Id,
+                user.Nickname,
+                avatarUrl,
+                user.Email,
+                user.Role
+            );
+        }
 
         /// <summary> Повертає користувачів за фільтрами </summary>
         public async Task<PagedResult<User>> GetFilteredAsync(UserFilter filter) => await _usersRepository.GetFilteredAsync(filter);
 
-        /// <summary>
-        /// Оновлює Аватар
-        /// </summary>
-        public async Task<User> UpdateFilesAsync(int id, UserUpdateFilesRequest request)
+        /// <summary> Оновлює Аватар і Банер </summary>
+        public async Task<UserUpdateFilesResponse> UpdateFilesAsync(int id, UserUpdateFilesRequest request)
         {
             var user = await GetUserByIdAsync(id);
+            string? avatarUrl = null;
+            string? bannerUrl = null;
 
             // ===================== Оновлення постера =====================
             if (request.Avatar != null)
             {
                 using var stream = request.Avatar.OpenReadStream();
-                var posterFileName = await _fileStorage.UploadFileAsync(stream, request.Avatar.FileName, StoragePaths.UserAvatars);
-                user.ChangeAvatarFileName(posterFileName);
+                var avatarFileName = await _fileStorage.UploadFileAsync(stream, request.Avatar.FileName, StoragePaths.UserAvatars);
+                user.ChangeAvatarFileName(avatarFileName);
+                avatarUrl = _fileStorage.GetUrl(avatarFileName);
             }
-            else if (!string.IsNullOrWhiteSpace(request.AvatarUrl))
+
+            // ===================== Оновлення банеру =====================
+            if (request.Banner != null)
             {
-                var saved = await _fileStorage.UploadImageFromUrlAsync(request.AvatarUrl, StoragePaths.UserAvatars);
-                user.ChangeAvatarFileName(saved);
+                using var stream = request.Banner.OpenReadStream();
+                var bannerFileName = await _fileStorage.UploadFileAsync(stream, request.Banner.FileName, StoragePaths.UserPosters);
+                user.ChangeBannerFileName(bannerFileName);
+                bannerUrl = _fileStorage.GetUrl(bannerFileName);
             }
 
             await _usersRepository.UpdateAsync(user);
-            return user;
+
+            return new UserUpdateFilesResponse(avatarUrl, bannerUrl);
         }
 
 

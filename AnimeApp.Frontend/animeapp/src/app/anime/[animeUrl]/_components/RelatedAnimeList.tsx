@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { AnimeKindEnum, AnimeKindMap } from "@/core/AnimeKind";
-import { RelationKindEnum, RelationKindMap } from "@/core/RelationKind";
 import { RelatedAnime } from "@/core/types";
 import pullUkrTitle from "../_functions/pullUkrTitle";
+import { AnimeKindEnum, AnimeKindMap } from "@/core/enums/AnimeKind";
+import { RelationKindEnum, RelationKindMap } from "@/core/enums/RelationKind";
 
 interface Props {
     relateds: RelatedAnime[];
@@ -23,7 +23,7 @@ export const RelatedAnimeList: React.FC<Props> = ({ relateds }) => {
         const enumValue =
             typeof kind === "number"
                 ? kind
-                : (AnimeKindEnum[kind as keyof typeof AnimeKindEnum] ?? AnimeKindEnum.Unknown);
+                : (AnimeKindEnum[kind as keyof typeof AnimeKindEnum]);
         return AnimeKindMap[AnimeKindEnum[enumValue] as keyof typeof AnimeKindMap] ?? "";
     };
 

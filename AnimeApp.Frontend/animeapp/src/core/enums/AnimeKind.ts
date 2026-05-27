@@ -1,6 +1,5 @@
 // src/core/AnimeKind.ts
 export const AnimeKindMap: Record<string, string> = {
-  Unknown: "Невідомо",
   TV: "ТБ Серіал",
   Movie: "Фільм",
   OVA: "OVA",
@@ -12,14 +11,13 @@ export const AnimeKindMap: Record<string, string> = {
   CM: "CM",
 };
 export enum AnimeKindEnum {
-  Unknown = 0,
-  TV = 1,
-  Movie = 2,
-  OVA = 3,
-  ONA = 4,
-  Special = 5,
-  TVSpecial = 6,
-  Music = 7,
-  PV = 8,
-  CM = 9,
+  TV = "TV",
+  Movie = "Movie",
+  OVA = "OVA",
+  ONA = "ONA",
+  Special = "Special",
+  TVSpecial = "TVSpecial",
+  Music = "Music",
+  PV = "PV",
+  CM = "CM",
 }

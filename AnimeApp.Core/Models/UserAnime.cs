@@ -7,10 +7,10 @@ namespace AnimeApp.Core.Models
     {
         public UserAnime() { }
 
-        private UserAnime(User user, Anime anime)
+        private UserAnime(int userId, int animeId)
         {
-            InitUser(user);
-            InitAnime(anime);
+            InitUser(userId);
+            InitAnime(animeId);
             MyList = null;
             Rating = null;
             IsFavorite = false;
@@ -26,33 +26,18 @@ namespace AnimeApp.Core.Models
         public bool IsFavorite { get; private set; }        // Чи улюблене аніме 
         public DateTime UpdatedAt { get; private set; }
 
-        // Nav
-        public User User { get; private set; } = null!;
-        public Anime Anime { get; private set; } = null!;
-
         public bool IsEmpty() =>
                 Rating == null
                 && MyList == null
                 && !IsFavorite;
 
         // ===================== Створення =====================
-        public static UserAnime Create(User user, Anime anime)
-        {
-            ArgumentNullException.ThrowIfNull(user);
-            ArgumentNullException.ThrowIfNull(anime);
-            return new UserAnime(user, anime);
-        }
+        public static UserAnime Create(int userId, int animeId) => new(userId, animeId);
 
-        private void InitUser(User user)
-        {
-            User = user ?? throw new ArgumentNullException(nameof(user));
-            UserId = user.Id;
-        }
-        private void InitAnime(Anime anime)
-        {
-            Anime = anime ?? throw new ArgumentNullException(nameof(anime));
-            AnimeId = anime.Id;
-        }
+        private void InitUser(int userId) =>
+            UserId = userId;
+        private void InitAnime(int animeId) =>
+            AnimeId = animeId;
 
         // ===================== Оновлення =====================
         public void MoveToList(MyListEnum? list) => MyList = list;

@@ -1,5 +1,6 @@
 ﻿using AnimeApp.API.Controllers;
 using AnimeApp.API.Dto;
+using AnimeApp.API.Filters;
 using AnimeApp.Application.Contracts.App;
 using AnimeApp.Application.Dto.External;
 using AnimeApp.Application.Dto.Requests.Anime;
@@ -67,8 +68,10 @@ namespace AnimeApp.Api.Controllers
 
         /// <summary> Повертає аніме за фільтром. </summary>
         [HttpGet]
+        [AllowInvalidModelState]
         public async Task<ActionResult<PagedResult<AnimesResponse>>> GetFiltered([FromQuery] AnimeFilter filter)
         {
+            filter.Normalize();
             var animes = await _animeQueryService.GetFilteredAsync(filter);
             return Ok(animes);
         }

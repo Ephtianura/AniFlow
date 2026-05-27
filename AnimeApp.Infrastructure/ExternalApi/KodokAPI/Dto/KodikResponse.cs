@@ -11,7 +11,7 @@ namespace AnimeApp.Infrastructure.ExternalApi.KodokAPI.Dto
     public class KodikSearchInfo
     {
         [JsonPropertyName("id")]
-        public string KodikId { get; set; } = null!;
+        public string? KodikId { get; set; }
 
         [JsonPropertyName("shikimori_id")]
         [JsonConverter(typeof(NullableIntFromStringConverter))]

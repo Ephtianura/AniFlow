@@ -8,11 +8,9 @@ import {
 } from "@headlessui/react";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MyListEnum, MyListMap } from "@/core/MyList";
+import { MyListEnum, MyListMap } from "@/core/enums/MyList";
 import { apiFetch } from "@/lib/api";
-import { useUserAnimeStore } from "@/stores/useUserAnimeStore";
 import { useAnimeId } from "./animeIdProvider";
-import { useAuth } from "@/context/AuthContext";
 import { toast } from "react-toastify";
 
 type Option = {
@@ -21,11 +19,8 @@ type Option = {
 };
 
 export default function ListSelect() {
-    const { animeId } = useAnimeId();
-    const item = useUserAnimeStore((s) => s.data[animeId]);
-    const updateList = useUserAnimeStore((s) => s.updateField);
-    const myList = item?.data?.myList ?? null;
-    const { isLoggedIn } = useAuth();
+    const { animeId, userAnime } = useAnimeId();
+    const [myList, setMyList] = useState(userAnime?.myList ?? null)
 
     const options: Option[] = [
         ...Object.keys(MyListEnum)
@@ -44,20 +39,17 @@ export default function ListSelect() {
             : []),
     ];
 
-    const [selected, setSelected] = useState<Option | null>(null);
-
-    useEffect(() => {
-        if (!myList) {
-            setSelected(null);
-            return;
-        }
-        const found = options.find((o) => o.value === myList);
-        setSelected(found ?? null);
-    }, [myList]);
+    const [selected, setSelected] = useState<Option | null>(() => {
+        if (!userAnime?.myList) return null;
+        return Object.keys(MyListEnum)
+            .filter(k => isNaN(Number(k)))
+            .map(k => ({ value: k, label: MyListMap[k] }))
+            .find(o => o.value === userAnime.myList) ?? null;
+    });
 
     // Обновляет список
     const handleChange = async (option: Option | null) => {
-        if (!isLoggedIn) {
+        if (!userAnime) {
             toast.info("Будь ласка, увійдіть в акаунт, щоб додавати до списку");
             return;
         }
@@ -65,57 +57,48 @@ export default function ListSelect() {
             setSelected(option);
         }
         if (option?.value === "__remove__") {
-            const query = new URLSearchParams({
-                List: "true",
-            }).toString();
-
-
+          
             const prevList = option.value;
-
+            const payload = { myList: true };
             setSelected(null);
-            updateList(animeId, { myList: null });
+            setMyList(null);
             try {
-                // Запрос на бэк
-                await apiFetch(`/user/me/${animeId}?${query}`, {
+                await apiFetch(`/user/me/${animeId}`, {
                     method: "DELETE",
+                    body: JSON.stringify(payload),
                 });
             } catch (error) {
-                // Откат 
-                updateList(animeId, { myList: prevList });
+                setMyList(prevList);
                 toast.error("Не вдалося прибрати зі списку :<");
             }
             return;
         }
         if (option) {
             const payload = { myList: option.value };
-
             const prevList = option.value;
 
             // Оптимистичный апдейт
-            updateList(animeId, { myList: option.value });
-
+            setMyList(option.value);
             try {
-                // Запрос на бэк
                 await apiFetch(`/user/me/${animeId}`, {
                     method: "PATCH",
                     body: JSON.stringify(payload),
                 });
             } catch (error) {
-                // Откат в случае ошибки
-                updateList(animeId, { myList: prevList });
+                setMyList(prevList);
                 toast.error("Не вдалося додати до списку :<");
             }
         }
     };
 
     return (
-        /* open — это встроенное состояние Headless UI */
         <Combobox value={selected} onChange={handleChange}>
             {({ open }) => (
+
                 <div className="relative inline-block w-full">
                     {/* BUTTON */}
                     <ComboboxButton
-                        className="btn-primary transition-transform w-full text-left flex items-center justify-between"
+                        className="btn-primary transition-transform w-full text-left flex items-center justify-between cursor-pointer"
                     >
                         <span>
                             {selected ? selected.label : "Додати до списку"}
@@ -138,7 +121,6 @@ export default function ListSelect() {
 
                                 <ComboboxOptions static className="flex flex-col outline-none">
                                     {options.map((option) => {
-                                        // Проверяем, является ли эта опция кнопкой удаления
                                         const isRemove = option.value === "__remove__";
 
                                         return (
@@ -163,5 +145,6 @@ export default function ListSelect() {
                 </div>
             )}
         </Combobox>
+
     );
 }

@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { apiFetch } from "@/lib/api";
 import { toast } from "react-toastify";
-import { TitleLanguage } from "@/core/types";
-import { TitleType } from "@/core/types";
-import { AnimeKindEnum } from "@/core/AnimeKind";
-import { AnimeStatusEnum } from "@/core/AnimeStatus";
-import { AnimeRatingEnum } from "@/core/AnimeRating";
+import { Anime, AnimeCreateReponse, Genre, PagedResult, Studio } from "@/core/types";
+import { AnimeStatusEnum } from "@/core/enums/AnimeStatus";
+import { AnimeRatingEnum } from "@/core/enums/AnimeRating";
+import { TitleLanguage, TitleType } from "@/core/enums/AnimeTitle";
+import { AnimeKindEnum } from "@/core/enums/AnimeKind";
 
 export function useAnimeForm() {
     const [errors, setErrors] = useState<Record<string, string[]>>({});
@@ -16,15 +16,15 @@ export function useAnimeForm() {
     const [posterPreview, setPosterPreview] = useState<string | null>(null);
     const [screenshots, setScreenshots] = useState<File[]>([]);
     const [previews, setPreviews] = useState<string[]>([]);
-    const [genres, setGenres] = useState<{ id: number; nameUa: string }[]>([]);
+    const [genres, setGenres] = useState<Genre[]>([]);
     const [selectedGenres, setSelectedGenres] = useState<number[]>([]);
-    const [studios, setStudios] = useState<{ id: number; name: string }[]>([]);
+    const [studios, setStudios] = useState<Studio[]>([]);
     const [selectedStudio, setSelectedStudio] = useState<number | null>(null);
     const [airedOn, setAiredOn] = useState("");
     const [releasedOn, setReleasedOn] = useState("");
-    const [kind, setKind] = useState<AnimeKindEnum>(AnimeKindEnum.Unknown);
-    const [status, setStatus] = useState<AnimeStatusEnum>(AnimeStatusEnum.Unknown);
-    const [rating, setRating] = useState<AnimeRatingEnum>(AnimeRatingEnum.Unknown);
+    const [kind, setKind] = useState<AnimeKindEnum | null>(null);
+    const [status, setStatus] = useState<AnimeStatusEnum | null>(null);
+    const [rating, setRating] = useState<AnimeRatingEnum | null>(null);
     const [score, setScore] = useState(0);
     const [episodes, setEpisodes] = useState(0);
     const [episodesAired, setEpisodesAired] = useState(0);
@@ -34,11 +34,11 @@ export function useAnimeForm() {
     useEffect(() => {
         async function fetchData() {
             try {
-                const genresData = await apiFetch("/Genres");
+                const genresData = await apiFetch<Genre[]>("/Genres");
                 setGenres(genresData);
 
-                const studiosData = await apiFetch("/Studios");
-                setStudios(studiosData.items || []);
+                const studiosData = await apiFetch<PagedResult<Studio>>("/Studios");
+                setStudios([...studiosData.items]);
             } catch (err) {
                 console.error(err);
             }
@@ -100,13 +100,13 @@ export function useAnimeForm() {
                 description: description.trim() || "No description"
             };
 
-            const createdAnime = await apiFetch("/anime", {
+            const createdAnime = await apiFetch<AnimeCreateReponse>("/anime", {
                 method: "POST",
                 body: JSON.stringify(payload),
                 headers: { "Content-Type": "application/json" }
             });
 
-            if (!createdAnime.id) throw new Error("Не удалось создать аніме");
+            if (!createdAnime.id) throw new Error("Не вдалося создать аніме");
 
             const formData = new FormData();
 
@@ -125,7 +125,7 @@ export function useAnimeForm() {
             setScreenshots([]); setPreviews([]);
             setSelectedGenres([]); setSelectedStudio(null);
             setAiredOn(""); setReleasedOn("");
-            setKind(AnimeKindEnum.Unknown); setStatus(AnimeStatusEnum.Unknown); setRating(AnimeRatingEnum.Unknown);
+            setKind(null); setStatus(null); setRating(null);
             setScore(0); setEpisodes(0); setEpisodesAired(0); setDuration(0); setDescription("");
 
             toast.success("Аніме успішно створено!");

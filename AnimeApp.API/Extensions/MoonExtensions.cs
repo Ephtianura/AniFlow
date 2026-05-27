@@ -16,7 +16,7 @@ namespace AnimeApp.API.Extensions
             services.AddHttpClient<MoonApiClient>(client =>
             {
                 client.BaseAddress = new Uri(baseUrl);
-                client.Timeout = TimeSpan.FromSeconds(10);
+                client.Timeout = TimeSpan.FromSeconds(15);
             });
 
             services.AddScoped<IMoonApiClient>(provider =>

@@ -1,4 +1,5 @@
 ﻿using AnimeApp.Core.Contracts;
+using AnimeApp.Core.Enums;
 using AnimeApp.Core.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,13 +13,59 @@ namespace AnimeApp.DataAccess.Repositories
             => await _dbContext.UserAnimes
                 .Where(userAnime => userAnime.AnimeId == animeId && userAnime.Rating.HasValue)
                 .AverageAsync(userAnime => (double)userAnime.Rating!.Value);
-               
+
         public async Task<int> GetRatingsCountAsync(int animeId)
             => await _dbContext.UserAnimes
                 .CountAsync(userAnime => userAnime.AnimeId == animeId && userAnime.Rating.HasValue);
-                
+
         public async Task<UserAnime?> GetUserAnimeStatusAsync(int userId, int animeId) =>
             await _dbContext.UserAnimes.FindAsync(userId, animeId);
+
+        public async Task<List<UserAnime>> GetAllUserStatus(int userId, MyListEnum? list) =>
+            await _dbContext.UserAnimes
+                .Where(ua => ua.UserId == userId &&
+                             (!list.HasValue || ua.MyList == list))
+                .ToListAsync();
+
+        public async Task<List<UserAnimeStatsData>> GetStatsDataByUserIdAsync(int userId) =>
+                     await (from ua in _dbContext.UserAnimes
+                            join a in _dbContext.Animes on ua.AnimeId equals a.Id
+                            where ua.UserId == userId
+                            select new UserAnimeStatsData(ua.MyList, ua.Rating, ua.IsFavorite, a.Episodes, a.Duration))
+                         .ToListAsync();
+
+        public async Task<List<UserAnimeWithDetails>> GetAllUserStatusWithDetailsAsync(int userId, MyListEnum? status, bool? isFavorite = null)
+        {
+            var query = from ua in _dbContext.UserAnimes
+                        join a in _dbContext.Animes on ua.AnimeId equals a.Id
+                        where ua.UserId == userId
+                        select new { ua, a };
+
+            if (status.HasValue)
+                query = query.Where(x => x.ua.MyList == status.Value);
+
+            if (isFavorite.HasValue)
+                query = query.Where(x => x.ua.IsFavorite == isFavorite.Value);
+
+            return await query
+                .AsNoTracking()
+                .Select(x => new UserAnimeWithDetails(
+                    x.ua.MyList,
+                    x.ua.Rating,
+                    x.ua.IsFavorite,
+                    new AnimeDto(
+                        x.a.Id,
+                        x.a.PosterFileName,
+                        x.a.Kind,
+                        x.a.Episodes,
+                        x.a.Score,
+                        x.a.TotalScores,
+                        x.a.Url,
+                        x.a.Titles
+                    )
+                ))
+                .ToListAsync();
+        }
 
         public async Task RecalculateAnimeRatings()
         {

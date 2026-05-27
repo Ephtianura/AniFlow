@@ -1,11 +1,7 @@
 "use client";
 
+import { Genre } from "@/core/types";
 import React from "react";
-
-interface Genre {
-    id: number;
-    nameUa: string;
-}
 
 interface AnimeGenresSelectorProps {
     genres: Genre[];

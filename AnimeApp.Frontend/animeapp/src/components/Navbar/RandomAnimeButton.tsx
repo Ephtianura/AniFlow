@@ -1,8 +1,10 @@
 "use client";
 
 import { Anime } from "@/core/types";
+import { getKawaiiError, KawaiiErrorType } from "@/hooks/getKawaiiError";
 import { apiFetch } from "@/lib/api";
 import { useRouter } from 'next/navigation'
+import { toast } from "react-toastify";
 
 export default function RandomAnimeButton() {
     const router = useRouter();
@@ -11,19 +13,20 @@ export default function RandomAnimeButton() {
         try {
             const data = await apiFetch<Anime>("/anime/random");
             router.push(`/anime/${data.url}`);
-        } catch (err) {
-            throw err;
+        } catch (err: any) {
+            toast.error(
+                err.messages?.[0]
+                ?? getKawaiiError(KawaiiErrorType.Network)
+            );
         }
     }
 
     return (
-        <div>
-            <button
-                onClick={handleRandomClick}
-                className="nav-button"
-            >
-                Випадкове аніме
-            </button>
-        </div>
+        <button
+            onClick={handleRandomClick}
+            className="nav-button"
+        >
+            Випадкове аніме
+        </button>
     )
 }

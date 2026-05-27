@@ -4,7 +4,9 @@ using AnimeApp.Application.Dto.External;
 using AnimeApp.Application.Helpers;
 using AnimeApp.Core.Enums;
 using AnimeApp.Core.Models;
+using MassTransit;
 using Microsoft.Extensions.Logging;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AnimeApp.Application.Services.Importing
 {
@@ -93,13 +95,15 @@ namespace AnimeApp.Application.Services.Importing
             try
             {
                 var kodikResponse = await _kodikApi.GetScreenshots(malId);
+
                 var screenshots = await _fileStorage.UploadImagesFromUrlsAsync(kodikResponse.Screenshots, StoragePaths.AnimeScreenshots); // Надо константу
                 anime.UpdateScreenshotsFileName(screenshots);
                 anime.KodikId = kodikResponse.KodikId;
+                _logger.LogInformation(LogEvents.KodikScreenshotsLoaded,"Скріншоти для аніме {AnimeName} успішно створені! Кількість скріншотів: {Screenshots}", anime.Titles.FirstOrDefault(), screenshots.Count);
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex, "Не вдалося завантажити скріншоти з KodikAPI для аніме {AnimeName}, Id: {AnimeId}, MalId: {MalId}", anime.Titles.FirstOrDefault(), anime.Id, malId);
+                _logger.LogWarning(LogEvents.KodikScreenshotsFailed, ex, "Не вдалося завантажити скріншоти з KodikAPI для аніме {AnimeName}, Id: {AnimeId}, MalId: {MalId}", anime.Titles.FirstOrDefault(), anime.Id, malId);
                 return;
             }
         }
@@ -197,10 +201,11 @@ namespace AnimeApp.Application.Services.Importing
                 // Мутація
                 anime.Music = music;
                 anime.Promos = promos;
+                _logger.LogInformation(LogEvents.AnimeMusicLoaded, "Ости для аніме {AnimeName} успішно створені! Остів: {Osts}, Промо: {Promos}", anime.Titles.FirstOrDefault(), music.Count, promos.Count);
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex, "Невдалося завантажити ости для аніме {AnimeName}, Id: {AnimeId}", anime.Titles.FirstOrDefault(), anime.Id);
+                _logger.LogWarning(LogEvents.AnimeMusicFailed, ex, "Невдалося завантажити ости для аніме {AnimeName}, Id: {AnimeId}", anime.Titles.FirstOrDefault(), anime.Id);
                 return;
             }
         }

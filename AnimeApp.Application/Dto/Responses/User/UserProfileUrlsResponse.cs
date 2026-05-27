@@ -5,6 +5,7 @@
         public int Id { get; set; }
         public string Nickname { get; set; } = null!;
         public string? AvatarUrl { get; set; }
+        public string? BannerUrl { get; set; }
         public string Email { get; set; } = null!;
         public DateTime DateOfRegistration { get; set; }
 

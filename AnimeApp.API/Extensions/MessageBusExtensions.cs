@@ -1,30 +1,43 @@
-﻿using MassTransit;
+﻿    using AnimeApp.Infrastructure.Messaging.Consumers;
+    using MassTransit;
 
-namespace AnimeApp.API.Extensions
-{
-    public static class MessageBusExtensions
+    namespace AnimeApp.API.Extensions
     {
-        public static IServiceCollection AddMessageBus(this IServiceCollection services, IConfiguration configuration)
+        public static class MessageBusExtensions
         {
-            services.AddMassTransit(x =>
+            public static IServiceCollection AddMessageBus(this IServiceCollection services, IConfiguration configuration)
             {
-                x.SetKebabCaseEndpointNameFormatter();
-
-                x.AddConsumers(typeof(Program).Assembly);
-
-                x.UsingRabbitMq((context, cfg) =>
+                services.AddMassTransit(x =>
                 {
-                    cfg.Host(configuration["RabbitMQ:Host"], "/", h =>
+                    x.SetKebabCaseEndpointNameFormatter();
+
+                    x.AddConsumers(typeof(ParseNewAnimeConsumer).Assembly);
+
+                    x.UsingRabbitMq((context, cfg) =>
                     {
-                        h.Username(configuration["RabbitMQ:Username"]!);
-                        h.Password(configuration["RabbitMQ:Password"]!);
+                        cfg.Host(configuration["RabbitMQ:Host"], "/", h =>
+                        {
+                            h.Username(configuration["RabbitMQ:Username"]!);
+                            h.Password(configuration["RabbitMQ:Password"]!);
+                        });
+
+                        cfg.ReceiveEndpoint("parse-new-anime", e =>
+                        {
+                            e.ConcurrentMessageLimit = 5;
+                            e.PrefetchCount = 5;
+
+                            e.UseMessageRetry(r =>
+                                r.Interval(1, TimeSpan.FromSeconds(5)));
+
+                            e.SetQuorumQueue();
+
+                            e.ConfigureConsumer<ParseNewAnimeConsumer>(context);
+                        });
+
                     });
-
-                    cfg.ConfigureEndpoints(context);
                 });
-            });
 
-            return services;
+                return services;
+            }
         }
     }
-}

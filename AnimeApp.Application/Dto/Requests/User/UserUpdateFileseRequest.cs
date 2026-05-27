@@ -4,6 +4,6 @@ namespace AnimeApp.Application.Dto.Requests.User
 {
     public record UserUpdateFilesRequest(
          IFormFile? Avatar,
-         string? AvatarUrl             
+         IFormFile? Banner
     );
 }

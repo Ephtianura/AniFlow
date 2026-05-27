@@ -19,4 +19,8 @@
     <ProjectReference Include="..\AnimeApp.Application\AnimeApp.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Exceptions\" />
+  </ItemGroup>
+
 </Project>

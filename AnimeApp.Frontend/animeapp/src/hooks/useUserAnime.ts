@@ -2,16 +2,7 @@
 "use client";
 import { useState } from "react";
 import { apiFetch } from "@/lib/api";
-
-export enum MyListEnum {
-    None = "None",
-    Planned = "Planned",
-    Watching = "Watching",
-    Completed = "Completed",
-    Rewatching = "Rewatching",
-    On_hold = "On_hold",
-    Dropped = "Dropped"
-}
+import { MyListEnum } from "@/core/enums/MyList";
 
 export function useUserAnime() {
     const [saving, setSaving] = useState(false);

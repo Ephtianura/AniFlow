@@ -1,6 +1,7 @@
 using AnimeApp.API.Extensions;
 using AnimeApp.API.Middleware.Exceptions;
 using Microsoft.AspNetCore.CookiePolicy;
+using Microsoft.AspNetCore.DataProtection;
 using Serilog;
 using System.Text.Json.Serialization;
 
@@ -17,9 +18,12 @@ builder.Services
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(); // Swagger
 builder.Services.AddSwaggerWithXml(); // Документація свагера
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo("/keys"));
 
 builder.Services
         .AddHttpClient()
+        .AddCustomValidation()          // Filters
         .AddValidation()                // FluentValidation
         .AddMapping()                   // Auto Mapper
         .AddServicesDI()                // DI сервісів, репозиторіїв та інфраструктури
@@ -62,7 +66,8 @@ app.UseCookiePolicy(new CookiePolicyOptions
 // Exception Middleware
 app.UseMiddleware<ExceptionMiddleware>();
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+    app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();

@@ -4,15 +4,18 @@ using AnimeApp.Application.Dto.External;
 using AnimeApp.Application.Helpers;
 using AnimeApp.Core.Contracts;
 using AnimeApp.Core.Models;
+using Microsoft.Extensions.Logging;
 
 namespace AnimeApp.Application.Services.Importing
 {
     public class StudioFactory(
         IStudioRepository studioRep,
-        IS3FileStorageService fileStorage) : IStudioFactory
+        IS3FileStorageService fileStorage,
+        ILogger<StudioFactory> logger) : IStudioFactory
     {
         private readonly IS3FileStorageService _fileStorage = fileStorage;
         private readonly IStudioRepository _studioRep = studioRep;
+        private readonly ILogger<StudioFactory> _logger = logger;
 
         public async Task<Studio?> GetStudioFromRaw(List<CompanyDto>? raw)
         {
@@ -21,10 +24,10 @@ namespace AnimeApp.Application.Services.Importing
             var studioRaw = raw.FirstOrDefault(s => s.Type == "studio");
             if (studioRaw == null) return null;
 
-
             var studio = await _studioRep.GetByNameAsync(studioRaw.Name);
-            if (studio != null )
+            if (studio != null)
             {
+                _logger.LogInformation(LogEvents.StudioFound, "Студія {StudioName} знайдена!", studio.Name);
                 if (studio.Slug == null)
                 {
                     if (studio.Slug == null && studioRaw.Slug != null)
@@ -35,10 +38,12 @@ namespace AnimeApp.Application.Services.Importing
                             await _fileStorage.UploadImageFromUrlAsync(studioRaw.Image, StoragePaths.StudioPosters));
 
                     await _studioRep.UpdateAsync(studio);
+                    _logger.LogInformation(LogEvents.StudioUpdated, "Студію {StudioName} оновлено!", studio.Name);
                 }
             }
             else
             {
+                _logger.LogInformation("Студію {StudioName} не знайдено в базі. Починаємо створення...", studioRaw.Name);
                 studio = await CreateStudioFromRaw(studioRaw);
             }
 
@@ -66,6 +71,7 @@ namespace AnimeApp.Application.Services.Importing
             }
 
             await _studioRep.AddAsync(studio);
+            _logger.LogInformation(LogEvents.StudioCreated, "Студія {StudioName} успішно створена!", studio.Name);
             return studio;
         }
     }

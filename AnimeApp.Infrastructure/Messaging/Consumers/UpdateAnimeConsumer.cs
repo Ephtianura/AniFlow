@@ -1,10 +1,10 @@
-﻿using AnimeApp.Application.Contracts.Commands;
-using AnimeApp.Application.Services.Importing;
+﻿using AnimeApp.Application.Contracts.App;
+using AnimeApp.Application.Contracts.Commands;
 using MassTransit;
 
 namespace AnimeApp.Infrastructure.Messaging.Consumers
 {
-    public class UpdateAnimeConsumer(AnimeImportService service): IConsumer<UpdateAnimeCommand>
+    public class UpdateAnimeConsumer(IAnimeImportService service): IConsumer<UpdateAnimeCommand>
     {
         public async Task Consume(ConsumeContext<UpdateAnimeCommand> context) =>
             await service.UpdateTechFields(context.Message);

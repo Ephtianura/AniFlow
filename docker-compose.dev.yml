@@ -15,6 +15,9 @@ services:
       - postgres
       - redis
       - minio
+      - seq
+    volumes:
+      - keys:/keys
 
   # Frontend
   frontend:
@@ -49,3 +52,8 @@ services:
   seq:
     ports:
       - "5341:80"
+
+networks:
+  default:
+    name: npm_default
+    external: true

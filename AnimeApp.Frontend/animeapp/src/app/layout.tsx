@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 
+//@ts-ignore
 import "./globals.css";
+//@ts-ignore
 import "react-toastify/dist/ReactToastify.css";
 
 import Navbar from '@/components/Navbar/Navbar';
 import Footer from '@/components/Footer';
-import { AuthProvider } from "@/context/AuthContext";
 import { ToastContainer } from "react-toastify";
 import { ThemeProvider } from 'next-themes'
 
@@ -24,33 +25,31 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="uk" suppressHydrationWarning>
       <body
-        className="antialiased transition-colors bg-bg-light h-screen flex flex-col"
-        suppressHydrationWarning={true} 
+        className="antialiased transition-colors bg-bg-light min-h-screen flex flex-col text-primary-black" 
+        suppressHydrationWarning={true}
       >
-        <AuthProvider>
-          {/* Navbar / Header */}
-          <Navbar />
-          {/* Page Content */}
-          <main className="flex-1 px-3 w-full max-w-7xl xl:max-w-[1600px]  mx-auto">
-            {children}
-            {/* <ThemeProvider attribute="class"></ThemeProvider> */}
-            <ToastContainer
-              className="select-none"
-              limit={1}
-              position="top-right"
-              autoClose={3000}
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-            />
-          </main>
-          {/* Footer */}
-          <Footer />
-        </AuthProvider>
+        {/* Navbar */}
+        <Navbar />
+        {/* Page Content */}
+        <main className="flex-1 px-3 w-full max-w-7xl xl:max-w-[1600px]  mx-auto">
+          {children}
+          {/* <ThemeProvider attribute="class"></ThemeProvider> */}
+          <ToastContainer
+            className="select-none"
+            limit={2}
+            position="top-right"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+          />
+        </main>
+        {/* Footer */}
+        <Footer />
       </body>
     </html >
   );

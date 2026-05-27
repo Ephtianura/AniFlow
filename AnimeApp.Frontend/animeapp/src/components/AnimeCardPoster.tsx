@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { BiSolidStar } from "react-icons/bi";
-
 interface AnimeCardPosterProps {
     title: string;
     rating: number;
@@ -13,7 +12,7 @@ export default function AnimeCardPoster(props: AnimeCardPosterProps) {
 
     return (
         <div className="relative h-full w-full">
-            <div className="absolute top-2 left-[-5px] w-16 h-9 z-10 bg-[#FFD400]  flex items-center rounded-tl-[1px]"
+            <div className="absolute top-2 left-[-5px] w-16 h-9 z-10 bg-[#FFD400] flex items-center rounded-tl-[1px]"
                 style={{ clipPath: "polygon(100% 0, 90% 35%, 100% 75%, 8% 75%, 8% 100%, 0 75%, 0 0)" }}>
                 <div className="flex gap-1 items-center mb-2 px-2">
                     <BiSolidStar className="w-4 h-4" />

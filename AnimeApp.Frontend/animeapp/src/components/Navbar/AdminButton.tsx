@@ -1,14 +1,14 @@
-"use client";
-
-import { useAuth } from "@/context/AuthContext";
+import { UserRole } from "@/core/enums/UserRole";
+import { UserMeResponse } from "@/core/types";
 import Link from "next/link";
 
-export default function AdminButton() {
-  const { userRole } = useAuth();
-
+type Props = {
+    me: UserMeResponse | null
+}
+export default function AdminButton({ me }: Props) {
     return (
-        <div>
-            {userRole === "Admin" && (
+        <>
+            {me?.role === UserRole.Admin && (
                 <div>
                     <Link
                         href="/admin/dashboard"
@@ -18,6 +18,6 @@ export default function AdminButton() {
                     </Link>
                 </div>
             )}
-        </div>
+        </>
     )
 }

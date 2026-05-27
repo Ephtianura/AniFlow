@@ -36,7 +36,7 @@
 :root {
   /* Фон */
   --color-bg-light: #e9ebee;
-  --color-bg-dark: #343a40;
+  --color-bg-dark: #30353b;
 
   /* 🎨 Основні кольори  */
   --color-primary: #9457ff;
@@ -83,16 +83,17 @@ html {
 
 @layer components {
   .nav-button {
-    @apply hover:text-btn-hover-dark transition-colors duration-200 cursor-pointer;
+    @apply hover:text-btn-hover-dark transition-colors duration-200 cursor-pointer px-3 py-2;
   }
 
   .btn-primary {
-    @apply w-full px-3 py-1.5 bg-white text-gray-text-dark 
+    @apply w-full px-3 py-1.5 bg-white text-gray-text-dark
            shadow-sm rounded-xs border border-btn-border-light 
-           transition-colors duration-200 
+           transition-all duration-200 
            hover:border-btn-border-dark 
            focus:outline-none focus:border-btn-border-dark 
-           focus:shadow-[inset_0_2px_5px_rgba(0,0,0,0.06),inset_0_-2px_4px_rgba(255,255,255,0.1)];
+           focus:shadow-[inset_0_2px_5px_rgba(0,0,0,0.06),inset_0_-2px_4px_rgba(255,255,255,0.1)]
+           disabled:opacity-50 disabled:cursor-auto;
   }
 
   .btn-purple {

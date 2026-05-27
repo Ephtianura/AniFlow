@@ -1,4 +1,5 @@
-import { AnimeTitle, TitleLanguage, TitleType } from "@/core/types";
+import { TitleLanguage, TitleType } from "@/core/enums/AnimeTitle";
+import { AnimeTitle } from "@/core/types";
 
 export default function PullUkrTitle(titles: AnimeTitle[]) {
     const title =

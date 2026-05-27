@@ -38,7 +38,7 @@ namespace AnimeApp.DataAccess.Configurations
 
             // Навігація
             builder.HasMany(u => u.UserAnimes)
-                .WithOne(ua => ua.User)
+                .WithOne()
                 .HasForeignKey(ua => ua.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
@@ -66,11 +66,11 @@ namespace AnimeApp.DataAccess.Configurations
                 .IsRequired();
 
             // Навігація
-            builder.HasOne(ua => ua.User)
-                .WithMany(u => u.UserAnimes)
-                .HasForeignKey(ua => ua.UserId);
+            builder.HasOne<User>()
+               .WithMany(u => u.UserAnimes)
+               .HasForeignKey(ua => ua.UserId);
 
-            builder.HasOne(ua => ua.Anime)
+            builder.HasOne<Anime>()
                 .WithMany(a => a.UserAnimes)
                 .HasForeignKey(ua => ua.AnimeId)
                 .OnDelete(DeleteBehavior.Cascade);
@@ -160,7 +160,7 @@ namespace AnimeApp.DataAccess.Configurations
 
 
             builder.HasMany(a => a.UserAnimes)
-             .WithOne(ua => ua.Anime)
+             .WithOne()
              .HasForeignKey(ua => ua.AnimeId);
         }
     }

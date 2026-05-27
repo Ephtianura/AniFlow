@@ -1,16 +1,18 @@
 import Link from "next/link";
 
-import { AnimeKindMap } from "@/core/AnimeKind";
-import {  AnimeStatusMap } from "@/core/AnimeStatus";
-import {  AnimeRatingMap } from "@/core/AnimeRating";
-import {  SeasonMap, Anime } from "@/core/types";
-import { formatAnimeDates } from "./FormatAnimeDates";
+import { AnimeStatusMap } from "@/core/enums/AnimeStatus";
+import { AnimeRatingMap } from "@/core/enums/AnimeRating";
+import { Anime } from "@/core/types";
+import { formatAnimeDates } from "../_functions/FormatAnimeDates";
+import { AnimeKindEnum, AnimeKindMap } from "@/core/enums/AnimeKind";
+import { SeasonMap } from "@/core/enums/Season";
+import { AnimeSourceMap } from "@/core/enums/AnimeSource";
 
 interface Props {
     anime: Anime;
 }
 
-export function formatDuration(minutes: number, kind?: string) {
+export function formatDuration(minutes: number, kind?: AnimeKindEnum | null) {
     if (!minutes) return "";
 
     const hrs = Math.floor(minutes / 60);
@@ -18,13 +20,13 @@ export function formatDuration(minutes: number, kind?: string) {
 
     let result = "";
 
-    if (hrs > 0) 
+    if (hrs > 0)
         result += `${hrs} год.`;
-    if (mins > 0) 
+    if (mins > 0)
         result += (hrs > 0 ? " " : "") + `${mins} хв.`;
 
     // Если фильм — без слова "серія"
-    if (kind === "Movie" || kind === "Film" || kind === "movie") {
+    if (kind === AnimeKindEnum.Movie) {
         return result;
     }
 
@@ -35,7 +37,6 @@ export function formatDuration(minutes: number, kind?: string) {
 export const AnimeInfo: React.FC<Props> = ({ anime }) => {
     const formatted = formatAnimeDates(anime);
 
-    
     return (
         <div>
             <div className="grid grid-cols-[35%_65%] gap-x-4 gap-y-1">
@@ -59,7 +60,7 @@ export const AnimeInfo: React.FC<Props> = ({ anime }) => {
                         <p className="text-gray-dark">Епізоди</p>
                         <p className="text-primary-black">
                             <Link
-                                href={{ pathname: "/animes", query: { MinEpisodes: anime.episodes, MaxEpisodes: anime.episodes } }}
+                                href={{ pathname: "/animes", query: { minEpisodes: anime.episodes, maxEpisodes: anime.episodes } }}
                                 className="hover:underline hover:text-purple-700 cursor-pointer"
                             >
                                 {anime.episodes}
@@ -76,7 +77,7 @@ export const AnimeInfo: React.FC<Props> = ({ anime }) => {
                                 href={{ pathname: "/animes", query: { status: anime.status } }}
                                 className="hover:underline hover:text-purple-700 cursor-pointer"
                             >
-                                {AnimeStatusMap[anime.status]}
+                                {anime.status && AnimeStatusMap[anime.status]}
                             </Link>
                         </p>
                     </>
@@ -89,7 +90,7 @@ export const AnimeInfo: React.FC<Props> = ({ anime }) => {
                             {anime.genres.map((genre, index) => (
                                 <Link
                                     key={genre.id}
-                                    href={{ pathname: "/animes", query: { GenresId: genre.id } }}
+                                    href={{ pathname: "/animes", query: { genres: genre.slug } }}
                                     className="hover:underline hover:text-purple-700 cursor-pointer"
                                 >
                                     {genre.nameUa}
@@ -97,6 +98,15 @@ export const AnimeInfo: React.FC<Props> = ({ anime }) => {
                                 </Link>
                             ))}
                         </div>
+                    </>
+                )}
+
+                {(anime.source) && (
+                    <>
+                        <p className="text-gray-dark">Першоджерело</p>
+                        <p className="text-primary-black">
+                            {AnimeSourceMap[anime.source]}
+                        </p>
                     </>
                 )}
 
@@ -126,7 +136,7 @@ export const AnimeInfo: React.FC<Props> = ({ anime }) => {
                         <p className="text-gray-dark">Студія</p>
                         <p className="text-primary hover:underline hover:text-purple-700 cursor-pointer">
                             <Link
-                                href={{ pathname: "/animes", query: { StudioId: anime.studio.id } }}
+                                href={{ pathname: "/animes", query: { studio: anime.studio.slug } }}
                                 className="hover:underline hover:text-purple-700 cursor-pointer"
                             >
                                 {anime.studio.name}

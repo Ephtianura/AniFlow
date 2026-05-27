@@ -1,22 +1,23 @@
 import Link from "next/link";
 import { BiSolidStar } from "react-icons/bi";
-import { AnimeKindMap } from "@/core/AnimeKind";
 import AnimeCardPoster from "./AnimeCardPoster";
+import { AnimeKindEnum, AnimeKindMap } from "@/core/enums/AnimeKind";
+import { Genre } from "@/core/types";
+import AnimeDescription from "@/app/anime/[animeUrl]/_components/AnimeDescription";
+import { KindLink } from "./KindLink";
+import { YearLink } from "./YearLink";
+import { TitleLink } from "./TitleLink";
+import { SubTitle } from "./SubTitle";
 
-interface Genre {
-    id: number;
-    nameEn: string;
-    nameUa: string;
-}
 interface AnimeCardProps {
     id: number;
     title: string;
     subTitle?: string;
     rating: number;
-    kind: string;
-    year: number;
+    kind?: AnimeKindEnum | null;
+    year?: number | null;
     genres: Genre[];
-    description: string;
+    description?: string | null;
     posterUrl?: string;
     url: string;
     viewMode: "small" | "grid" | "gridLarge" | "list";
@@ -46,13 +47,10 @@ export default function AnimeCard(props: AnimeCardProps) {
 
                 <div className="flex flex-col">
                     {/* Підназва */}
-                    {subTitle && (
-                        <p className="text-gray-dark text-xs line-clamp-1">{subTitle}</p>
-                    )}
+                    <SubTitle subTitle={subTitle} />
+
                     {/* Назва */}
-                    <Link href={`/anime/${url}`} className="text-primary text-xl hover:underline line-clamp-1">
-                        {title}
-                    </Link>
+                    <TitleLink title={title} url={url} className="line-clamp-1" />
                 </div>
 
             </div>
@@ -76,31 +74,22 @@ export default function AnimeCard(props: AnimeCardProps) {
 
                 <div className="flex flex-col">
                     {/* Підназва */}
-                    {subTitle && (
-                        <p className="text-gray-dark text-xs line-clamp-1">{subTitle}</p>
-                    )}
+                    <SubTitle subTitle={subTitle} />
+
                     {/* Назва */}
-                    <Link href={`/anime/${url}`} className="text-primary text-xl hover:underline line-clamp-2">
-                        {title}
-                    </Link>
+                    <TitleLink title={title} url={url} className="line-clamp-2" />
+
                     <div className="text-primary-black text-md flex gap-1">
                         {/* KIND */}
-                        <Link
-                            href={{ pathname: "/animes", query: { kind: kind } }}
-                            className="underline hover:text-primary"
-                        >
-                            {AnimeKindMap[kind]}
-                        </Link>
-
-                        <span className="text-gray-dark">/</span>
+                        {kind && <>
+                            <KindLink kind={kind} />
+                            <span className="text-gray-dark">/</span>
+                        </>}
 
                         {/* YEAR */}
-                        <Link
-                            href={{ pathname: "/animes", query: { year: year } }}
-                            className="underline hover:text-primary"
-                        >
-                            {year}
-                        </Link>
+                        {year && <>
+                            <YearLink year={year} />
+                        </>}
                     </div>
                 </div>
 
@@ -124,34 +113,23 @@ export default function AnimeCard(props: AnimeCardProps) {
                     </div>
 
                     <div className="flex flex-col">
-                        <Link href={`/anime/${url}`} className="text-primary text-xl hover:underline line-clamp-3">
-                            {title}
-                        </Link>
-                        {subTitle && (
-                            <p className="text-gray-dark text-xs line-clamp-1">{subTitle}</p>
-                        )}
+                        <TitleLink title={title} url={url} />
+                        <SubTitle subTitle={subTitle} />
+
                         <div className="line-clamp-2">
                             <div className="text-primary-black text-md py-2 flex flex-wrap items-center gap-1  ">
 
                                 {/* KIND */}
-                                <Link
-                                    href={{ pathname: "/animes", query: { kind: kind } }}
-                                    className="underline hover:text-primary"
-                                >
-                                    {AnimeKindMap[kind]}
-                                </Link>
-
-                                <span className="text-gray-dark">/</span>
+                                {kind && <>
+                                    <KindLink kind={kind} />
+                                    <span className="text-gray-dark">/</span>
+                                </>}
 
                                 {/* YEAR */}
-                                <Link
-                                    href={{ pathname: "/animes", query: { year: year } }}
-                                    className="underline hover:text-primary"
-                                >
-                                    {year}
-                                </Link>
-
-                                <span className="hidden sm:inline-flex text-gray-dark">/</span>
+                                {year && <>
+                                    <YearLink year={year} />
+                                    <span className="hidden sm:inline-flex text-gray-dark">/</span>
+                                </>}
 
                                 {/* GENRES */}
                                 {genres.map((genre, index) => (
@@ -190,45 +168,30 @@ export default function AnimeCard(props: AnimeCardProps) {
                     />
                 </div>
 
-                {/* Назва */}
                 <div className="flex flex-col">
-                    <Link
-                        href={`/anime/${url}`}
-                        className="text-primary text-xl hover:underline"
-                    >
-                        {title}
-                    </Link>
+                    {/* Назва */}
+                    <TitleLink title={title} url={url} />
 
                     {/* Підназва */}
-                    {subTitle && (
-                        <p className="text-gray-dark text-xs">{subTitle}</p>
-                    )}
+                    <SubTitle subTitle={subTitle} />
 
                     <div className="text-primary-black text-md py-2 flex flex-wrap items-center gap-1">
 
                         {/* KIND */}
-                        <Link
-                            href={{ pathname: "/animes", query: { kind: kind } }}
-                            className="underline hover:text-primary"
-                        >
-                            {AnimeKindMap[kind]}
-                        </Link>
-
-                        <span className="text-gray-dark">/</span>
+                        {kind && <>
+                            <KindLink kind={kind} />
+                            <span className="text-gray-dark">/</span>
+                        </>}
 
                         {/* YEAR */}
-                        <Link
-                            href={{ pathname: "/animes", query: { year: year } }}
-                            className="underline hover:text-primary"
-                        >
-                            {year}
-                        </Link>
-
-                        <span className="text-gray-dark">/</span>
+                        {year && <>
+                            <YearLink year={year} />
+                            <span className="hidden sm:flex text-gray-dark">/</span>
+                        </>}
 
                         {/* GENRES */}
                         {genres.map((genre, index) => (
-                            <span key={genre.id} className="flex items-center gap-0">
+                            <span key={genre.id} className="hidden sm:flex items-center gap-0 ">
                                 <Link
                                     href={{ pathname: "/animes", query: { GenresId: genre.id } }}
                                     className="underline hover:text-primary"
@@ -243,9 +206,7 @@ export default function AnimeCard(props: AnimeCardProps) {
 
                     {/* Опис */}
                     <div className="hidden md:block">
-                        <p className="text-primary-black text-md line-clamp-3">
-                            {description || ""}
-                        </p>
+                        <AnimeDescription description={description} className="line-clamp-3" />
                     </div>
                 </div>
 

@@ -1,4 +1,7 @@
 ﻿using AnimeApp.Core.Filters;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
 
 namespace AnimeApp.Infrastructure.RedisCache
 {
@@ -8,32 +11,13 @@ namespace AnimeApp.Infrastructure.RedisCache
         {
             public static string ToCacheKey(this AnimeFilter f)
             {
-                var genres = f.GenresId == null
-                    ? "null"
-                    : string.Join(",", f.GenresId.OrderBy(x => x));
+                var json = JsonSerializer.Serialize(f);
 
-                return string.Join("|",
-                    $"search={f.Search}",
-                    $"genres={genres}",
-                    $"studio={f.StudioId}",
-                    $"kind={f.Kind}",
-                    $"status={f.Status}",
-                    $"rating={f.Rating}",
-                    $"season={f.Season}",
-                    $"year={f.Year}",
-                    $"airedFrom={f.AiredFrom:yyyyMMdd}",
-                    $"airedTo={f.AiredTo:yyyyMMdd}",
-                    $"releasedFrom={f.ReleasedFrom:yyyyMMdd}",
-                    $"releasedTo={f.ReleasedTo:yyyyMMdd}",
-                    $"minScore={f.MinScore}",
-                    $"maxScore={f.MaxScore}",
-                    $"minEp={f.MinEpisodes}",
-                    $"maxEp={f.MaxEpisodes}",
-                    $"sort={f.SortBy}",
-                    $"desc={f.SortDesc}",
-                    $"page={f.Page}",
-                    $"size={f.PageSize}"
-                );
+                using var sha = SHA256.Create();
+
+                var bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(json));
+
+                return Convert.ToHexString(bytes);
             }
         }
     }

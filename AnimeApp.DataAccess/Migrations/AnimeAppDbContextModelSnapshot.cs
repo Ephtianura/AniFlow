@@ -60,8 +60,8 @@ namespace AnimeApp.DataAccess.Migrations
                     b.Property<int?>("Kind")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("KodikId")
-                        .HasColumnType("integer");
+                    b.Property<string>("KodikId")
+                        .HasColumnType("text");
 
                     b.Property<int?>("MalId")
                         .HasColumnType("integer");
@@ -139,8 +139,8 @@ namespace AnimeApp.DataAccess.Migrations
                     b.Property<bool>("IsParsed")
                         .HasColumnType("boolean");
 
-                    b.Property<int?>("KodikId")
-                        .HasColumnType("integer");
+                    b.Property<string>("KodikId")
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("timestamp with time zone");
@@ -332,6 +332,9 @@ namespace AnimeApp.DataAccess.Migrations
                     b.Property<string>("AvatarFileName")
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
+
+                    b.Property<string>("BannerFileName")
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("DateOfRegistration")
                         .HasColumnType("timestamp with time zone");

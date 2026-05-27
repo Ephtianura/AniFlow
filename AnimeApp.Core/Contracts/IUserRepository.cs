@@ -10,7 +10,6 @@ namespace AnimeApp.Core.Contracts
         Task<User?> GetByEmailAsync(string email);
         Task<User?> GetByIdAsync(int id);
         Task<PagedResult<User>> GetFilteredAsync(UserFilter filter);
-        Task<User?> GetWithAnimeListAsync(int userId);
         Task UpdateAsync(User user);
     }
 }

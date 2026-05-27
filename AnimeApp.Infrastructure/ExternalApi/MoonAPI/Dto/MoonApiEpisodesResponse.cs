@@ -5,7 +5,7 @@ namespace AnimeApp.Infrastructure.ExternalApi.MoonAPI.Dto
     public class MoonEpisodeDto
     {
         [JsonPropertyName("episode")]
-        public int Episode { get; set; }
+        public int? Episode { get; set; }
 
         [JsonPropertyName("video_url")]
         public string VideoUrl { get; set; } = null!;

@@ -7,34 +7,80 @@ using AnimeApp.Application.Helpers;
 using AnimeApp.Core.Contracts;
 using AnimeApp.Core.Filters;
 using AnimeApp.Core.Models;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 
 namespace AnimeApp.Application.Services
 {
-    public class StudioService(IStudioRepository studios, IS3FileStorageService fileStorage) : IStudioService
+    public class StudioService(IStudioRepository studios, IS3FileStorageService fileStorage, IMapper mapper) : IStudioService
     {
-        private readonly IStudioRepository _studios = studios;
+        private readonly IStudioRepository _studiosRep = studios;
         private readonly IS3FileStorageService _fileStorage = fileStorage;
+        private readonly IMapper _mapper = mapper;
 
-        public async Task<Studio?> GetByIdAsync(int id) =>
-            await GetStudioByIdAsync(id);
+        public async Task<StudioResponse> GetByIdAsync(int id)
+        {
+            Studio studio = await GetStudioByIdAsync(id);
+            var response = _mapper.Map<StudioResponse>(studio);
 
-        public Task<PagedResult<Studio>> GetAllAsync(StudioFilter filter) =>
-            _studios.GetFilteredAsync(filter);
+            if (!string.IsNullOrWhiteSpace(studio.PosterFileName))
+                response.PosterUrl = _fileStorage.GetUrl(studio.PosterFileName);
 
-        public async Task<Studio> CreateAsync(CreateStudioRequest request)
+            response.Animes = response.Animes
+               .ConvertAll(a =>
+               {
+                   if (!string.IsNullOrWhiteSpace(a.PosterUrl))
+                       a.PosterUrl = _fileStorage.GetUrl(a.PosterUrl);
+
+                   return a;
+               });
+            return response;
+        }
+
+        public async Task<PagedResult<StudiosResponse>> GetAllAsync(StudioFilter filter)
+        {
+            var studios = await _studiosRep.GetFilteredAsync(filter);
+
+            var mappedStudios = studios.Items.Select(s => new StudiosResponse()
+            {
+                Id = s.Id,
+                MalId = s.MalId,
+                Slug = s.Slug,
+                Name = s.Name,
+                Description = s.Description,
+                PosterUrl = string.IsNullOrWhiteSpace(s.PosterFileName) ? null
+                    : _fileStorage.GetUrl(s.PosterFileName),
+            }
+            ).ToList();
+
+            return new PagedResult<StudiosResponse>(
+                items: mappedStudios,
+                totalCount: studios.TotalCount,
+                page: studios.Page,
+                pageSize: studios.PageSize
+            );
+        }
+
+        public async Task<StudioResponse> CreateAsync(CreateStudioRequest request)
         {
             if (string.IsNullOrWhiteSpace(request.Name))
                 throw new ArgumentNullException("Studio name cannot be empty");
 
-            var studio = Studio.Create(name: request.Name, slug: "", description: request.Description);
-            studio.ChangeSlug(AniBuilder.GenerateSlug(studio.Name, studio.Id));
+            var studio = Studio.Create(name: request.Name, slug: "unknown", description: request.Description);
+            await _studiosRep.AddAsync(studio);
 
-            await _studios.AddAsync(studio);
-            return studio;
+            studio.ChangeSlug(AniBuilder.GenerateSlug(studio.Name, studio.Id));
+            await _studiosRep.UpdateAsync(studio);
+
+            var response = _mapper.Map<StudioResponse>(studio);
+
+            if (!string.IsNullOrWhiteSpace(studio.PosterFileName))
+                response.PosterUrl = _fileStorage.GetUrl(studio.PosterFileName);
+
+            return response;
         }
 
-        public async Task<Studio> UpdateFilesAsync(int id, IFormFile? poster)
+        public async Task UpdateFilesAsync(int id, IFormFile? poster)
         {
             var studio = await GetStudioByIdAsync(id);
 
@@ -48,39 +94,7 @@ namespace AnimeApp.Application.Services
             if (poster == null)
                 throw new ArgumentException("At least 1 poster or 1 screenshot must be uploaded.");
 
-            await _studios.UpdateAsync(studio);
-            return studio;
-
-        }
-        public async Task<List<StudioCreationResult>> CreateManyWithErrorsAsync(IEnumerable<CreateStudioRequest> studiosData)
-        {
-            var tasks = studiosData.Select(async g =>
-            {
-                var result = new StudioCreationResult { Request = g };
-                try
-                {
-                    if (string.IsNullOrWhiteSpace(g.Name))
-                        throw new ArgumentException("Studio name cannot be empty");
-
-
-                    var studio = Studio.Create(name: g.Name, slug: "", description: g.Description);
-                    studio.ChangeSlug(AniBuilder.GenerateSlug(studio.Name, studio.Id));
-
-                    await _studios.AddAsync(studio);
-
-                    result.Studio = studio;
-                }
-                catch (Exception ex)
-                {
-                    result.Error = ex.Message;
-                }
-
-                return result;
-            });
-
-            var results = await Task.WhenAll(tasks);
-
-            return results.ToList();
+            await _studiosRep.UpdateAsync(studio);
         }
 
         public async Task UpdateAsync(int id, UpdateStudioRequest request)
@@ -98,16 +112,16 @@ namespace AnimeApp.Application.Services
             if (request.Description != null)
                 studio.ChangeDescription(request.Description);
 
-            await _studios.UpdateAsync(studio);
+            await _studiosRep.UpdateAsync(studio);
         }
 
         public async Task DeleteAsync(int id)
         {
             var studio = await GetStudioByIdAsync(id);
-            await _studios.DeleteAsync(studio);
+            await _studiosRep.DeleteAsync(studio);
         }
 
         private async Task<Studio> GetStudioByIdAsync(int id) =>
-            await _studios.GetByIdAsync(id) ?? throw new NotFoundException("Studio", id);
+            await _studiosRep.GetByIdAsync(id) ?? throw new NotFoundException("Studio", id);
     }
 }

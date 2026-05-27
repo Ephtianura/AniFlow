@@ -6,6 +6,7 @@
         public const string AnimePosters = "anime-posters";
         public const string StudioPosters = "studio-posters";
         public const string UserAvatars = "user-avatars";
-        
+        public const string UserPosters = "user-posters";
+
     }
 }

@@ -1,6 +1,6 @@
 ﻿using AnimeApp.Application.Contracts.Infra;
 using AnimeApp.Application.Dto.External;
-using AnimeApp.Infrastructure.Exceptions;
+using AnimeApp.Application.Exceptions;
 using AnimeApp.Infrastructure.ExternalApi.KodokAPI.Dto;
 using Microsoft.Extensions.Configuration;
 using System.Net.Http.Json;
@@ -22,14 +22,20 @@ namespace AnimeApp.Infrastructure.ExternalApi.KodokAPI
                 var response = await _httpClient.GetFromJsonAsync<KodikResponse>(url)
                     ?? throw new ExternalApiEmptyResponseException("Kodik API returned empty response");
 
-                return new KodikScreenshotsResult(
-                    response.Result.SelectMany(i => i.KodikId).FirstOrDefault(),
-                    response.Result
-                    .SelectMany(s => s.Season.Values)
-                    .SelectMany(e => e.Episodes.Values)
+                var kodikId = response.Result?
+                    .Where(i => i != null && !string.IsNullOrWhiteSpace(i.KodikId))
+                    .Select(i => i.KodikId)
+                    .FirstOrDefault();
+
+                var screenshots = response.Result?
+                    .Where(s => s?.Season != null)
+                    .SelectMany(s => s.Season.Values.Where(v => v?.Episodes != null))
+                    .SelectMany(e => e.Episodes.Values.Where(v => v?.Screenshots != null))
                     .SelectMany(sc => sc.Screenshots)
-                    .ToList()
-                    );
+                    .Where(url => !string.IsNullOrWhiteSpace(url)) 
+                    .ToList() ?? [];
+
+                return new KodikScreenshotsResult(kodikId, screenshots);
             });
         }
 

@@ -13,49 +13,33 @@ namespace AnimeApp.API.Controllers
     [Authorize(Policy = "UserPolicy")]
     [ApiController]
     [Route("api/user/me")]
-    public class UserAnimeController(IMapper mapper, IS3FileStorageService fileUrl, IUserAnimeService userAnimeService) : ControllerBase
+    public class UserAnimeController(IUserAnimeService userAnimeService) : ControllerBase
     {
         private readonly IUserAnimeService _userAnimeService = userAnimeService;
-        private readonly IMapper _mapper = mapper;
-        private readonly IS3FileStorageService _fileUrl = fileUrl;
-
 
         /// <summary>Повертає повну інформацію про свій профіль разом зі сводкою про переглянуті аніме</summary>
         [HttpGet("profile")]
         public async Task<IActionResult> GetProfile()
         {
             var userId = Helper.GetUserIdOrThrow(User);
-            var user = await _userAnimeService.GetUserProfileAsync(userId);
-
-            var response = _mapper.Map<UserProfileUrlsResponse>(user);
-
-            if (!string.IsNullOrWhiteSpace(user.AvatarFileName))
-                response.AvatarUrl = _fileUrl.GetUrl(user.AvatarFileName);
-            return Ok(response);
+            var profile = await _userAnimeService.GetUserProfileAsync(userId);
+            return Ok(profile);
         }
 
         /// <summary>Повертає список всіх аніме, які оцінено/додано до списку. Разом з підрахунком загальної кількості</summary>
         [HttpGet("animes")]
-        public async Task<IActionResult> GetAnimeList(MyListEnum? myList)
+        public async Task<IActionResult> GetAnimeList(MyListEnum? myList, bool? isFavorite = null)
         {
             var userId = Helper.GetUserIdOrThrow(User);
-            if (myList is null)
-            {
-                var userAnimeList = await _userAnimeService.GetUserAnimeListAsync(userId);
-                return Ok(userAnimeList);
-            }
-            else
-            {
-                var userAnimeList = await _userAnimeService.GetUserAnimesByStatusAsync(userId, myList);
-                return Ok(userAnimeList);
-            }
+            var userAnimeList = await _userAnimeService.GetUserAnimesAsync(userId, myList, isFavorite);
+            return Ok(userAnimeList);
         }
 
         /// <summary>
         /// Повертає свою оцінку та список конкретного аніме.
         /// </summary>
         /// <remarks>
-        /// Ендпойнт, який викликається, щоб побачити до якого списку додав користувач аніме та як оцінив.
+        /// Викликається, щоб побачити до якого списку додав користувач аніме та як оцінив.
         /// </remarks>
         [HttpGet("animes/{animeId}")]
         public async Task<IActionResult> GetUserAnimeStatus(int animeId)
@@ -93,7 +77,7 @@ namespace AnimeApp.API.Controllers
         public async Task<IActionResult> DeleteAnimeData(int animeId, [FromBody] DeleteStatusTargets target)
         {
             var userId = Helper.GetUserIdOrThrow(User);
-           
+
             await _userAnimeService.RemoveUserStatusAsync(userId, animeId, target);
 
             return NoContent();

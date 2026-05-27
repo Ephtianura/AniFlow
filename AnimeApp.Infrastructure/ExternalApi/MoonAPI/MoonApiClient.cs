@@ -1,7 +1,7 @@
 ﻿using AnimeApp.Application.Contracts.Infra;
 using AnimeApp.Application.Dto.External;
+using AnimeApp.Application.Exceptions;
 using AnimeApp.Core.Enums;
-using AnimeApp.Infrastructure.Exceptions;
 using AnimeApp.Infrastructure.ExternalApi.MoonAPI.Dto;
 using Microsoft.Extensions.Configuration;
 using System.Net.Http.Json;
@@ -140,10 +140,6 @@ namespace AnimeApp.Infrastructure.ExternalApi.MoonAPI
         #endregion
 
         #region Studio
-
-
-
-
 
         #endregion
 

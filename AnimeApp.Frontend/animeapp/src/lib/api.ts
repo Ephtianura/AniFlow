@@ -1,5 +1,5 @@
-import { ApiErrorResponse } from "@/core/types";
-import { ApiError } from "./ApiError";
+import { getKawaiiError, KawaiiErrorType } from "@/hooks/getKawaiiError";
+import { parseApiErrors } from "@/hooks/parseApiErrors";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL!;
 
@@ -9,9 +9,8 @@ type ApiFetchOptions = RequestInit & {
 
 export async function apiFetch<T>(
   endpoint: string,
-  options: ApiFetchOptions = {}
+  options: ApiFetchOptions = {},
 ): Promise<T> {
-  
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), 8000);
 
@@ -29,40 +28,51 @@ export async function apiFetch<T>(
     }
   }
 
-  const res = await fetch(`${API_URL}${endpoint}`, {
-    ...options,
-    cache: options?.cache,
-    headers,
-    credentials: "include",
-  });
-  clearTimeout(id);
-  // Пробуем распарсить JSON, но не падаем, если там пусто или текст
+  let res: any = null;
+  try {
+    res = await fetch(`${API_URL}${endpoint}`, {
+      ...options,
+      cache: options?.cache,
+      headers,
+      credentials: "include",
+    });
+    clearTimeout(id);
+  } catch {
+    throw {
+      status: 0,
+      messages: [getKawaiiError(KawaiiErrorType.Network)],
+    };
+  }
+
+  // Пробуем распарсить JSON
   let data: any = null;
-  const contentType = res.headers.get("content-type");
-  if (contentType && contentType.includes("application/json")) {
+  try {
     const text = await res.text();
     data = text ? JSON.parse(text) : null;
+  } catch {
+    data = null;
   }
 
   // Важная отладка (не трогать)
-  if (process.env.NODE_ENV === 'development') {
-    console.log("📤 API Response:", endpoint, "status:", res.status, "body:", data);
+  if (process.env.NODE_ENV === "development") {
+    console.log(
+      "📤 API Response:",
+      endpoint,
+      "status:",
+      res.status,
+      "body:",
+      data,
+    );
   }
 
-  // Если статус не 2xx
+  // Парсинг ошибок
   if (!res.ok) {
-  let errorData: ApiErrorResponse;
-  
-  try {
-    errorData = await res.json();
-  } catch {
-    errorData = { title: `Interval server error: ${res.statusText}` };
+    const messages = parseApiErrors(res, data);
+    throw {
+      status: res.status,
+      messages,
+    };
   }
-
-  const error = new ApiError(errorData, res.status);
-
-  throw error;
-}
 
   return data;
 }

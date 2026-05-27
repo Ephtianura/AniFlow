@@ -67,7 +67,7 @@ namespace AnimeApp.Core.Models
 
         /*!*/
         public int? MoonId { get; set; }
-        public int? KodikId { get; set; }
+        public string? KodikId { get; set; }
         public int? MalId { get; set; }
         public int? AniListId { get; set; }
         public string? MoonSlug { get; set; }

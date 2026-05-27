@@ -42,9 +42,8 @@ services:
     container_name: rabbitmq_aniflow
     hostname: rabbitmq
     environment:
-      RabbitMQ__Host: ${RABBITMQ_HOST}
-      RabbitMQ__Username: ${RABBITMQ_DEFAULT_USER}
-      RabbitMQ__Password: ${RABBITMQ_DEFAULT_PASS}
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
     volumes:
       - aniflow_rabbitmq_data:/var/lib/rabbitmq
 
@@ -63,3 +62,4 @@ volumes:
   minio_data:
   aniflow_rabbitmq_data:
   aniflow_seq_data:
+  keys:

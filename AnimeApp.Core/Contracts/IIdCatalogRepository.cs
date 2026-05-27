@@ -4,7 +4,7 @@ namespace AnimeApp.Core.Contracts
 {
     public interface IIdCatalogRepository
     {
-        Task<AnimeIdCatalog?> GetByIdsAsync(int? moonId = null, int? malId = null, int? kodikId = null);
+        Task<AnimeIdCatalog?> GetByIdsAsync(int? moonId = null, int? malId = null, string? kodikId = null);
         Task<List<AnimeIdCatalog>> GetByMoonIdsAsync(List<int> ids);
         Task AddAsync(AnimeIdCatalog catalog);
         Task AddRangeAsync(IEnumerable<AnimeIdCatalog> catalog);

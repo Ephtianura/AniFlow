@@ -3,8 +3,9 @@
 import React, { useState } from "react";
 import { BsFillStarFill } from "react-icons/bs";
 import { FaSort } from "react-icons/fa";
-import { MyListEnum, useUserAnime } from "@/hooks/useUserAnime";
+import { useUserAnime } from "@/hooks/useUserAnime";
 import WhiteCard from "@/components/WhiteCard";
+import { MyListEnum } from "@/core/enums/MyList";
 
 interface Props {
     animeId: number;

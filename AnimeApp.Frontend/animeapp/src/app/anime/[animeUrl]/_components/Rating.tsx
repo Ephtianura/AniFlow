@@ -1,13 +1,13 @@
 'use client';
+
 import { apiFetch } from '@/lib/api';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { BsFillStarFill } from 'react-icons/bs';
 import HeartButton from './HeartButton';
 import clsx from 'clsx';
 import { useAnimeId } from './animeIdProvider';
-import { useUserAnimeStore } from '@/stores/useUserAnimeStore';
-import { useAuth } from '@/context/AuthContext';
 import { toast } from 'react-toastify';
+import { RiStarOffFill } from "react-icons/ri";
 
 interface RatingProps {
     score: number;
@@ -27,37 +27,31 @@ const RATING_LABELS: Record<number, string> = {
     10: "Шедевр"
 };
 
+// Зпростив архітектуру
 export default function Rating({ score, totalScores }: RatingProps) {
     const { animeId, userAnime } = useAnimeId();
-
-    const item = useUserAnimeStore((s) => s.data[animeId]);
-    const updateRating = useUserAnimeStore((s) => s.updateField);
-    const currentUserRating = item?.data?.rating ?? 0;
-    const { isLoggedIn } = useAuth();
+    const [userRating, setUserRating] = useState(userAnime?.rating ?? 0)
 
     const [hoveredRating, setHoveredRating] = useState<number | null>(null);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const onRateChange = async (val: number) => {
-        if (!isLoggedIn) {
+        if (!userRating) {
             toast.info("Будь ласка, увійдіть в акаунт, щоб оцінити");
             return;
         }
 
-        const prevRating = currentUserRating;
+        const prevRating = userRating;
 
         // Оптимистичный апдейт
-        updateRating(animeId, { rating: val })
+        setUserRating(val)
         try {
-            // Запрос на бэк
             await apiFetch(`/user/me/${animeId}`, {
                 method: "PATCH",
                 body: JSON.stringify({ rating: val }),
             });
         } catch (error) {
-            // Откат в случае ошибки
-            updateRating(animeId, { rating: prevRating })
-
+            setUserRating(prevRating)
             toast.error("Не вдалося оцінити :<");
         }
     };
@@ -96,10 +90,10 @@ export default function Rating({ score, totalScores }: RatingProps) {
                 >
                     {/* Кнопка "Оцінити аніме"*/}
                     <div className={`flex items-center w-35 md:w-30 py-1 h-full transition-colors duration-400 cursor-pointer border-l border-[#B2B2B2]
-                    ${isMenuOpen || currentUserRating > 0 ? 'bg-primary text-white border-primary' : 'bg-transparent text-primary-black'}`}
+                    ${isMenuOpen || userRating > 0 ? 'bg-primary text-white border-primary' : 'bg-transparent text-primary-black'}`}
                     >
                         <div className="flex items-center gap-2 pl-2">
-                            <BsFillStarFill className={`w-7 h-7 mb-1 shrink-0 transition-colors ${isMenuOpen || currentUserRating > 0 ? 'text-white' : 'text-[#D1D1D1]'}`} />
+                            <BsFillStarFill className={`w-7 h-7 mb-1 shrink-0 transition-colors ${isMenuOpen || userRating > 0 ? 'text-white' : 'text-[#D1D1D1]'}`} />
 
                             <div className="flex flex-col leading-tight">
                                 <div className="flex flex-col justify-center leading-tight shrink-0">
@@ -114,10 +108,10 @@ export default function Rating({ score, totalScores }: RatingProps) {
                                             );
                                         }
                                         // Приоритет 2: Текущая сохраненная оценка
-                                        if (currentUserRating > 0) {
+                                        if (userRating > 0) {
                                             return (
                                                 <div className="flex flex-col items-center">
-                                                    <span className="text-lg font-medium leading-none">{currentUserRating}</span>
+                                                    <span className="text-lg font-medium leading-none">{userRating}</span>
                                                     <span className="text-[13px]">Моя оцінка</span>
                                                 </div>
                                             );
@@ -141,7 +135,7 @@ export default function Rating({ score, totalScores }: RatingProps) {
                     `}>
                         {Array.from({ length: 10 }).map((_, i) => {
                             const starValue = i + 1;
-                            const isActive = (hoveredRating ?? currentUserRating) >= starValue;
+                            const isActive = (hoveredRating ?? userRating) >= starValue;
 
                             return (
                                 <div
@@ -165,6 +159,7 @@ export default function Rating({ score, totalScores }: RatingProps) {
                                 </div>
                             );
                         })}
+                        <RiStarOffFill />
                     </div>
                 </div>
             </div>

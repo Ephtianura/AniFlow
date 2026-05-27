@@ -69,7 +69,7 @@ namespace AnimeApp.Infrastructure.RedisCache
                 throw new ArgumentException("Anime is missing");
 
             // Заносимо до кешу айдішки
-            await _cache.SetAsync("anime:random:ids", animeIds, TimeSpan.FromMinutes(5));
+            await _cache.SetAsync("anime:random:ids", animeIds, TimeSpan.FromMinutes(60));
 
             // Беремо рандомний айді
             int animeId = animeIds[Random.Shared.Next(animeIds.Count)];

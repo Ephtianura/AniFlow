@@ -22,8 +22,7 @@ namespace AnimeApp.API.Controllers
         {
             var userId = Helper.GetUserIdOrThrow(User);
             var user = await _userService.GetByIdAsync(userId);
-            var response = _mapper.Map<GetUserMeResponse>(user);
-            return Ok(response);
+            return Ok(user);
         }
 
         /// <summary>Оновлює профіль</summary>
@@ -36,12 +35,13 @@ namespace AnimeApp.API.Controllers
         }
 
         /// <summary>Оновлює аватар</summary>
+        /// <returns>Урл на поточні аватар та постер</returns>
         [HttpPatch("me/files")]
         public async Task<IActionResult> UpdateFiles([FromForm] UserUpdateFilesRequest request)
         {
             var userId = Helper.GetUserIdOrThrow(User);
-            await _userService.UpdateFilesAsync(userId, request);
-            return NoContent();
+            var res = await _userService.UpdateFilesAsync(userId, request);
+            return Ok(res);
         }
 
         /// <summary>Повертає користувача по ID</summary>

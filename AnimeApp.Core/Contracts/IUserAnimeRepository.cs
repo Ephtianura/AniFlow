@@ -1,4 +1,5 @@
-﻿using AnimeApp.Core.Models;
+﻿using AnimeApp.Core.Enums;
+using AnimeApp.Core.Models;
 
 namespace AnimeApp.Core.Contracts
 {
@@ -19,5 +20,8 @@ namespace AnimeApp.Core.Contracts
         Task AddAsync(UserAnime userAnime);
         Task UpdateAsync(UserAnime userAnime);
         Task DeleteAsync(UserAnime userAnime);
+        Task<List<UserAnime>> GetAllUserStatus(int userId, MyListEnum? list);
+        Task<List<UserAnimeStatsData>> GetStatsDataByUserIdAsync(int userId);
+        Task<List<UserAnimeWithDetails>> GetAllUserStatusWithDetailsAsync(int userId, MyListEnum? status, bool? isFavorite);
     }
 }

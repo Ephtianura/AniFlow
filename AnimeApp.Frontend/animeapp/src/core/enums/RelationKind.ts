@@ -1,4 +1,3 @@
-// src/core/relationKind.ts
 export enum RelationKindEnum {
     Adaptation,
     AlternativeSetting,

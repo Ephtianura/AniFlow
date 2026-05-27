@@ -36,7 +36,7 @@
     /// <param name="Poster">Зображення-прев’ю епізоду (може бути відсутнім).</param>
     /// <param name="Subtitles">Чи доступні субтитри для цього епізоду.</param>
     public record EpisodeInfo(
-        int Episode,
+        int? Episode,
         string VideoUrl,
         string? Poster,
         bool Subtitles

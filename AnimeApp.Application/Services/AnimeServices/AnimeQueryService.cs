@@ -7,6 +7,7 @@ using AnimeApp.Core.Contracts;
 using AnimeApp.Core.Filters;
 using AnimeApp.Core.Models;
 using AutoMapper;
+using Microsoft.Extensions.Logging;
 
 namespace AnimeApp.Application.Services.AnimeServices
 {
@@ -14,15 +15,19 @@ namespace AnimeApp.Application.Services.AnimeServices
         IAnimeRepository animes,
         IS3FileStorageService fileStorage,
         IMoonApiClient moonApi,
-        IMapper mapper) : IAnimeQueryService
+        IMapper mapper,
+        ILogger<AnimeQueryService> logger) : IAnimeQueryService
     {
         private readonly IAnimeRepository _animeRep = animes;
         private readonly IS3FileStorageService _fileStorage = fileStorage;
         private readonly IMoonApiClient _moonApi = moonApi;
         private readonly IMapper _mapper = mapper;
+        private readonly ILogger<AnimeQueryService> _logger = logger;
 
         public async Task<AnimeResponse> GetByIdAsync(int animeId)
         {
+            //_logger.LogWarning("Тест логування");
+
             var anime = await GetAnimeByIdAsync(animeId);
 
             anime.Promos = anime.Promos.Where(p => p.AnimeOstId == null).ToList();
@@ -59,12 +64,12 @@ namespace AnimeApp.Application.Services.AnimeServices
         {
             var pagedResult = await _animeRep.GetFilteredAsync(filter);
 
-            var mappedItems = pagedResult.Items.Select(anime =>
+            var mappedItems = pagedResult.Items.Select(a =>
             {
-                var animeDto = _mapper.Map<AnimesResponse>(anime);
+                var animeDto = _mapper.Map<AnimesResponse>(a);
 
-                if (!string.IsNullOrWhiteSpace(anime.PosterFileName))
-                    animeDto = animeDto with { PosterUrl = _fileStorage.GetUrl(anime.PosterFileName) };
+                if (!string.IsNullOrWhiteSpace(a.PosterFileName))
+                    animeDto.PosterUrl = _fileStorage.GetUrl(a.PosterFileName);
 
                 return animeDto;
             }).ToList();
@@ -81,16 +86,28 @@ namespace AnimeApp.Application.Services.AnimeServices
         {
             List<PlayerEpisodeSet> result = [];
 
-            var moon = await _moonApi.GetEpisodes(malId);
-            result.Add(new PlayerEpisodeSet(AnimePlayer.Moon, moon));
+            // Moon
+            List<VoiceEpisodeSet> moon = [];
+            try
+            {
+                moon = await _moonApi.GetEpisodes(malId);
+            }
+            catch (ExternalApiException ex)
+            {
+                _logger.LogWarning(ex, "MoonApi не повернув епізоди. MalId: {MalId}", malId);
+            }
+            var moonSorded = NormalizeEpisodes(moon);
+            result.Add(new PlayerEpisodeSet(
+                AnimePlayer.Moon, moonSorded));
 
+            // Kodik
             //var kodik = await _kodikApi.GetEpisodes(malId);
             //result.Add(new PlayerEpisodeSet(AnimePlayer.Kodik, kodik));
 
             return result;
         }
 
-        public Task<List<int>> GetIdsAsync() => _animeRep.GetRandomIdsAsync();
+        public Task<List<int>> GetIdsAsync() => _animeRep.GetAllMixedIdsAsync();
 
         // ============================== private methods ====================================
 
@@ -108,5 +125,61 @@ namespace AnimeApp.Application.Services.AnimeServices
             screenshotsFileNames?.Any() == true
                 ? screenshotsFileNames.ConvertAll(_fileStorage.GetUrl)
                 : null;
+
+
+        private List<VoiceEpisodeSet> NormalizeEpisodes(List<VoiceEpisodeSet> episodes)
+        {
+            foreach (var voiceSet in episodes)
+            {
+                FixNullEpisodes(voiceSet);
+            }
+
+            var moonSorted = episodes
+            .OrderByDescending(x =>
+                (x.Episodes.Count * 100) +
+                (x.Episodes.Any(e => e.Subtitles) ? 10 : 0) -
+                (x.Voice.Contains("sub", StringComparison.OrdinalIgnoreCase) ||
+                (x.Voice.Contains("суб", StringComparison.OrdinalIgnoreCase)) ? 50 : 0))
+                .ToList();
+
+            return moonSorted;
+        }
+        private void FixNullEpisodes(VoiceEpisodeSet voiceSet)
+        {
+            var nullEpisodes = voiceSet.Episodes
+                .Where(e => e.Episode == null)
+                .ToList();
+
+            if (nullEpisodes.Count == 0)
+                return;
+
+            var takenEpisodes = voiceSet.Episodes
+                .Where(e => e.Episode != null)
+                .Select(e => e.Episode!.Value)
+                .ToHashSet();
+
+            int nextCandidate = takenEpisodes.Count > 0 ? takenEpisodes.Max() + 1 : 1;
+
+            foreach (var nullEpisode in nullEpisodes)
+            {
+                //int candidate = 69;
+                //while (takenEpisodes.Contains(candidate))
+                //    candidate += 100;
+
+                int candidate = nextCandidate;
+                while (takenEpisodes.Contains(candidate))
+                    candidate++;
+
+                takenEpisodes.Add(candidate);
+
+                int index = voiceSet.Episodes.IndexOf(nullEpisode);
+                if (index != -1)
+                {
+                    voiceSet.Episodes[index] =
+                        nullEpisode with { Episode = candidate };
+                }
+            }
+        }
+
     }
 }

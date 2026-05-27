@@ -6,7 +6,7 @@ export async function getUserStatus(animeId: number) {
   try {
     const cookieHeader = (await headers()).get("cookie") ?? "";
     const userStatus = await apiFetch<UserAnime | null>(
-      `/user/me/animes/${animeId}`,
+      `/user/me/animes/${animeId}?t=${Date.now()}`,
       { cookieHeader, cache: "no-store", next: { revalidate: 0 } },
     );
     return userStatus;
