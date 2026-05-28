@@ -22,7 +22,7 @@ export default function AdminSidebar() {
   };
 
   return (
-    <div className="hidden lg:block bg-white shadow-[0_0_10px_rgba(0,0,0,0.05)] border border-[#DFDFDF] w-60 xl:w-85">
+    <div className="hidden lg:block bg-white shadow-[0_0_10px_rgba(0,0,0,0.05)] border border-[#DFDFDF] w-full">
       <div className="flex flex-col text-primary-black">
 
         {/* Меню */}
@@ -66,12 +66,12 @@ export default function AdminSidebar() {
             <p>Управління жанрами</p>
           </div>
         </Link>
-        <Link href="/admin/cache">
+        {/* <Link href="/admin/cache">
           <div className={linkClasses("/admin/cache")}>
             <DiRedis  className="w-6 h-6" />
             <p>Управління кешем</p>
           </div>
-        </Link>
+        </Link> */}
 
         {/* <Link href="/admin/users">
           <div className="px-5 py-3 flex items-center gap-2 hover:bg-btn-sidebar-hover border-b-1 border-[#DFDFDF]">

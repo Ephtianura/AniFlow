@@ -102,7 +102,7 @@ export default function AnimeCard(props: AnimeCardProps) {
     if (viewMode === "gridLarge") {
         return (
             <div className="py-4">
-                <div className="flex gap-4">
+                <div className="flex flex-col xs:flex-row gap-4">
                     {/* Постер */}
                     <div className="relative w-[90px] aspect-5/7 shrink-0">
                         <AnimeCardPoster
@@ -114,7 +114,7 @@ export default function AnimeCard(props: AnimeCardProps) {
                     </div>
 
                     <div className="flex flex-col">
-                        <TitleLink title={title} url={url} />
+                        <TitleLink title={title} url={url} className="line-clamp-1! xs:line-clamp-2!" />
                         <SubTitle subTitle={subTitle} />
 
                         <div className="line-clamp-2">
@@ -160,7 +160,7 @@ export default function AnimeCard(props: AnimeCardProps) {
     // LIST VIEW 
     return (
         <div className="py-4">
-            <div className="flex gap-4">
+            <div className="flex flex-col xs:flex-row gap-4">
 
                 {/* Постер */}
                 <div className="relative w-[clamp(120px,20vw,150px)] aspect-5/7 shrink-0">
@@ -174,7 +174,7 @@ export default function AnimeCard(props: AnimeCardProps) {
 
                 <div className="flex flex-col">
                     {/* Назва */}
-                    <TitleLink title={title} url={url} />
+                    <TitleLink title={title} url={url} className="line-clamp-1! sm:line-clamp-2!" />
 
                     {/* Підназва */}
                     <SubTitle subTitle={subTitle} />

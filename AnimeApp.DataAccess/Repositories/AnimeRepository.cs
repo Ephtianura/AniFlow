@@ -51,7 +51,7 @@ namespace AnimeApp.DataAccess.Repositories
             await connection.OpenAsync();
 
             using var command = connection.CreateCommand();
-            command.CommandText = "SELECT slug FROM Animes ORDER BY RANDOM() LIMIT 1";
+            command.CommandText = "SELECT \"Url\" FROM \"Animes\" ORDER BY RANDOM() LIMIT 1";
 
             var result = await command.ExecuteScalarAsync();
             return result as string;

@@ -58,9 +58,9 @@ export default function ProfileImages({ avatarUrl: avaratInit, bannerUrl: banner
     }
 
     return (
-        <div>
+        <>
             {/* Баннер */}
-            <div className="relative bg-white h-100 -m-4">
+            <div className="relative bg-white h-100 -m-4 select-none">
                 <img src={bannerUrl ?? "/NotFound.jpg"} alt="" className=" object-cover h-full w-full" />
 
                 {onEdit && (<>
@@ -156,6 +156,6 @@ export default function ProfileImages({ avatarUrl: avaratInit, bannerUrl: banner
                 </div>
 
             </div>
-        </div>
+        </>
     )
 }

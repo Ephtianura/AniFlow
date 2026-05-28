@@ -8,7 +8,7 @@ import { AnimeStudioSelector } from "../_components/AnimeStudioSelector";
 // import { AnimeMainData } from "../_components/AnimeMainData";
 import { FormErrors } from "../_components/FormErrors";
 
-import { PrimaryButton } from "../../PrimaryButton";
+import { PrimaryButton } from "../../_components/PrimaryButton";
 
 
 import { useAnimeForm } from "./useAnimeForm";

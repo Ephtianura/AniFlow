@@ -12,6 +12,7 @@ import { AnimeSortBy } from '@/core/enums/AnimeSortBy';
 import AnimesCards from './_components/AnimesCards';
 import AnimeFilter from './_components/AnimeFilter';
 import { ViewMode } from '@/components/AnimeCard';
+import AnimeFilters from './_components/AnimeFilters';
 
 export type SearchParams = {
     search?: string
@@ -74,7 +75,7 @@ export default async function AnimeListPage({ searchParams }: SearchParamsProps)
                     </div>
                 </WhiteCard>
 
-                <AnimeFilter />
+                <AnimeFilters />
             </>
         )
 
@@ -98,7 +99,7 @@ export default async function AnimeListPage({ searchParams }: SearchParamsProps)
 
                             {/* --- Сортування --- */}
                             <div className='flex items-center gap-2'>
-                                <p className=' text-gray-text-dark text-sm'>
+                                <p className='hidden xs:block text-gray-text-dark text-sm'>
                                     Сортувати по:
                                 </p>
 
@@ -120,7 +121,7 @@ export default async function AnimeListPage({ searchParams }: SearchParamsProps)
                 </div>
             </WhiteCard>
 
-            <AnimeFilter />
+            <AnimeFilters />
         </>
     );
 }

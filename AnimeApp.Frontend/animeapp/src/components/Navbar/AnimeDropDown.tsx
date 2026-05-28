@@ -1,18 +1,19 @@
 "use client";
 
-import Link from "next/link";
 import WhiteCard from "../WhiteCard";
-import { AnimeKindMap } from "@/core/enums/AnimeKind";
 import { getTitle } from "@/app/anime/[animeUrl]/_functions/getTitle";
 import { Animes } from "@/core/types";
 import { TitleLanguage, TitleType } from "@/core/enums/AnimeTitle";
 import { KindLink } from "../KindLink";
 import { YearLink } from "../YearLink";
+import { useRouter } from "next/navigation";
 
 type Props = {
     animes: Animes[]
+    onClose: () => void;
 }
-export default function AnimeDropDown({ animes }: Props) {
+export default function AnimeDropDown({ animes, onClose }: Props) {
+    const router = useRouter();
 
     return (
         <WhiteCard className="overflow-y-auto max-h-[550px]">
@@ -34,12 +35,15 @@ export default function AnimeDropDown({ animes }: Props) {
                 const romaji = getTitle(anime.titles, TitleLanguage.Romaji, TitleType.Official)
                 const isLast = index === animes.length - 1;
 
+                const goToAnime = () => {
+                    router.push(`/anime/${anime.url}`);
+                    onClose()
+                };
+
                 return (
                     <div key={anime.id}>
-                        <Link
-                            href={`/anime/${anime.url}`}
+                        <div onClick={goToAnime}
                             className="flex gap-2 py-3 px-3 hover:bg-gray-100 cursor-pointer"
-                        // onClick={() => setOpen(false)}
                         >
                             {/* Картинка */}
                             <img
@@ -63,7 +67,7 @@ export default function AnimeDropDown({ animes }: Props) {
                                     {anime.kind && <KindLink kind={anime.kind} />}
                                 </div>
                             </div>
-                        </Link>
+                        </div>
 
                         {!isLast && <hr className="text-hr-clr" />}
                         {isLast && <hr className="border text-primary" />}

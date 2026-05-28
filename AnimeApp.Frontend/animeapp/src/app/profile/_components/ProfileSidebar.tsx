@@ -4,8 +4,9 @@ import { MdSpeakerNotes } from "react-icons/md";
 import { FaGears } from "react-icons/fa6";
 
 export default function ProfileSidebar() {
+  
   return (
-    <div className="hidden lg:block bg-white shadow-[0_0_10px_rgba(0,0,0,0.05)] border border-[#DFDFDF] w-85">
+    <div className="hidden lg:block bg-white shadow-[0_0_10px_rgba(0,0,0,0.05)] border border-[#DFDFDF] w-full">
       <div className="flex flex-col text-primary-black">
 
         {/* Меню */}

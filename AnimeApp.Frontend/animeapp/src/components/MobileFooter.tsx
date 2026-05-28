@@ -9,7 +9,7 @@ const footerItems = [
     { href: "/", label: "Головна", icon: FiHome, },
     { href: "/animes", label: "Аніме", icon: LuYoutube, },
     { href: "/anime/random", label: "Випадкове", icon: LuDices, },
-    { href: "/profile", label: "Профіль", icon: LuLibraryBig, },
+    { href: "/profile", label: "Профіль", icon: LuLibraryBig, className: "hidden xs:flex"},
     // { href: "", label: "Налаштування", icon: LuDices, },
 ];
 // dark:bg-[#242525]
@@ -18,9 +18,9 @@ const footerItems = [
 export default function MobileFooter() {
     return (
         <nav className={clsx(
-            "fixed bottom-0 left-0 right-0 z-50 px-3 py-1.5 h-16 ",
+            "fixed bottom-0 left-0 right-0 z-30 px-3 py-1.5 h-16 ",
             "bg-bg-dark text-gray-200 border-t-3 border-primary",
-            "flex justify-around items-center md:hidden"
+            "flex justify-around items-center md:hidden select-none"
         )}>
             {footerItems.map((item) => {
                 const Icon = item.icon;
@@ -29,7 +29,7 @@ export default function MobileFooter() {
                     <Link
                         key={item.label}
                         href={item.href}
-                        className='flex flex-col gap items-center px-3'
+                        className={`flex flex-col gap items-center px-3 ${item.className}`}
                     >
                         <Icon className='w-5.5 h-5.5' />
                         <span className='text-[11px]'>{item.label}</span>

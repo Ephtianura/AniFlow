@@ -46,7 +46,7 @@ function TabItem({ label, count, selected, onClick, itemId }: any) {
     <button
       onClick={onClick}
       className={`
-        mx-2 flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 whitespace-nowrap select-none
+        mx-2 slider-btn text-sm font-medium rounded-full transition-all duration-200 whitespace-nowrap select-none
         ${selected 
           ? 'bg-zinc-700 text-white shadow-md' 
           : 'bg-zinc-800/50 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200'

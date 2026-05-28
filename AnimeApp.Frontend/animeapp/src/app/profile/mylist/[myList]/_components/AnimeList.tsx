@@ -27,7 +27,7 @@ export default function AnimeList({ userAnimeList: animeList }: Props) {
             <div className="grid sm:grid-cols-2 gap-6.5">
 
                 {animeList.animes.map((anime, index) => (
-                    <div className="flex gap-3 items-start">
+                    <div key={anime.id} className="flex gap-3 items-start">
                         <div className="flex gap-3 items-center">
 
                             <span className="text-2xl font-semibold text-[#A7ACB1] w-9 text-right shrink-0 select-none">

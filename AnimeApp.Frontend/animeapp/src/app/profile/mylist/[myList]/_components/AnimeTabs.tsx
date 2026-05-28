@@ -44,7 +44,7 @@ interface AnimeTabsProps {
 
 export default function AnimeTabs({ counts }: AnimeTabsProps) {
     const pathname = usePathname();
-     const currentType =
+    const currentType =
         pathname.split("/").pop() as TabType || MyListEnum.Watching;
 
     const createHref = (value: TabType) => {
@@ -87,16 +87,14 @@ export default function AnimeTabs({ counts }: AnimeTabsProps) {
                         setIsEnd(swiper.isEnd);
                     }}
                 >
- 
+
                     {tabsConfig.map(({ key, label, icon: Icon }) => {
                         const count = counts[key] ?? 0;
                         const isActive = currentType === key;
 
                         return (
-                            <SwiperSlide className="w-fit! mr-1 last:mr-0">
-                                <Link
-                                    key={key}
-                                    href={createHref(key)}
+                            <SwiperSlide key={key} className="w-fit! mr-1 last:mr-0">
+                                <Link href={createHref(key)}
                                     className={`px-4 py-2 text-primary-black rounded-lg flex gap-2 items-center transition-colors duration-200 
                                 ${isActive
                                             ? "bg-[#E5E5E5]"
@@ -108,7 +106,6 @@ export default function AnimeTabs({ counts }: AnimeTabsProps) {
                                     <span className="text-xs font-medium">{count}</span>
                                 </Link>
                             </SwiperSlide>
-
                         );
                     })}
                 </Swiper>
@@ -124,10 +121,6 @@ export default function AnimeTabs({ counts }: AnimeTabsProps) {
                 >
                     <MdNavigateNext className="w-8 h-8" />
                 </button>
-
-
-
-
 
             </div>
         </div >

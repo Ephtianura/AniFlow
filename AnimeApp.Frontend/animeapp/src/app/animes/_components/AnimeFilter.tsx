@@ -213,8 +213,8 @@ export default function AnimeFilter() {
   };
 
   return (
-    <div className="bg-white shadow-[0_0_10px_rgba(0,0,0,0.05)] border border-[#DFDFDF] hidden lg:block w-85 select-none">
-      <header className="bg-bg-dark text-white">
+    <div className="bg-white shadow-[0_0_10px_rgba(0,0,0,0.05)] lg:border border-[#DFDFDF] h-full w-full select-none overflow-y-auto xs:overflow-clip">
+      <header className="bg-bg-dark text-white w-full ">
         <div
           className="bg-primary flex items-center gap-2 px-4 py-3"
           style={{ clipPath: "polygon(0 0, 60% 0, 50% 100%, 0% 100%)" }}
@@ -224,7 +224,7 @@ export default function AnimeFilter() {
         </div>
       </header>
 
-      <div className="flex flex-col p-4 space-y-4">
+      <div className="flex flex-col p-4 space-y-4 w-full h-full">
         
         {/* Рік */}
         <div className="mb-10">

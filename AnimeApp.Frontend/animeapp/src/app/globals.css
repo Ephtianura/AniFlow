@@ -119,6 +119,14 @@ html {
     @apply hover:underline text-primary transition-colors duration-100;
   }
 
+  .slider-opener {
+    @apply fixed top-20 right-5 z-20 bg-bg-dark text-white px-2 py-1 rounded flex gap-2 items-center select-none;
+  }
+
+  .slider-btn {
+    @apply flex items-center gap-2 px-4 py-2;
+  }
+
   .home-arrow {
     @apply z-20 absolute top-38 -translate-y-1/2
     w-12 aspect-square rounded-full

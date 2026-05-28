@@ -6,6 +6,7 @@ import { MdOutlineSearch } from "react-icons/md";
 import { Animes, PagedResult } from "@/core/types";
 import { apiFetch } from "@/lib/api";
 import AnimeDropDown from "./AnimeDropDown";
+import clsx from "clsx";
 
 export default function SearchBar() {
     const [open, setOpen] = useState(false);
@@ -57,8 +58,9 @@ export default function SearchBar() {
                 className="flex items-center lg:px-3 lg:py-2 cursor-pointer group"
             >
                 <div className="lg:border-x lg:px-4 border-gray-text-light">
-                    <MdOutlineSearch className="w-8 h-8 lg:w-6 lg:h-7 hover:text-btn-hover-dark 
-                    transition group-active:scale-95 duration-200" />
+                    <MdOutlineSearch className={clsx(
+                        "w-8 h-8 lg:w-6 lg:h-7 ",
+                        "hover:text-btn-hover-dark transition group-active:scale-95 duration-200")} />
                 </div>
             </button>
 
@@ -108,7 +110,7 @@ export default function SearchBar() {
                                     style={{ overflow: "hidden" }}
                                     className="absolute z-50 top-full left-0 w-full shadow-lg rounded-xs mt-1 max-h-[550px] overflow-x-hidden bg-white origin-top"
                                 >
-                                    <AnimeDropDown animes={animes} />
+                                    <AnimeDropDown animes={animes} onClose={() => setOpen(false)} />
                                 </motion.div>
                             )}
                         </div>

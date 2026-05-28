@@ -9,7 +9,7 @@ import { AnimeStudioSelector } from "../_components/AnimeStudioSelector";
 import { FormErrors } from "../_components/FormErrors";
 import { RelatedAnimeSelector } from "./RelatedAnimeSelector";
 
-import { PrimaryButton } from "../../PrimaryButton";
+import { PrimaryButton } from "../../_components/PrimaryButton";
 
 // import { useUpdateAnimeForm } from "./useUpdateAnimeForm";
 import { AdminAnimeSearch } from "./AdminAnimeSearch";

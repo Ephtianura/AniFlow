@@ -4,13 +4,14 @@ import AdminButton from "./AdminButton";
 import LoginButtons from "./LoginButtons";
 import UserAvatar from "./UserAvatar";
 import { getMe } from "../../hooks/getMe";
-import BurgerMenu from "./BurgerMenu";
+import BurgerMenuButton from "./BurgerMenuButton";
+
 
 export default async function Navbar() {
   const me = await getMe();
 
   return (
-    <nav className="bg-bg-dark shadow-md fixed top-0 left-0 right-0 z-90 border-b-3 border-primary text-white select-none">
+    <nav className="bg-bg-dark shadow-md fixed top-0 left-0 right-0 z-40 border-b-3 border-primary text-white select-none">
 
       {/* Десктопна версія */}
       <div className="hidden md:flex justify-between items-center mx-auto w-full max-w-7xl xl:max-w-[1600px] py-2 px-4 h-15 text-md">
@@ -83,7 +84,7 @@ export default async function Navbar() {
 
         <div className="flex gap-3 items-center">
           <SearchBar />
-          <BurgerMenu me={me} />
+          <BurgerMenuButton me={me} />
         </div>
 
       </div>
