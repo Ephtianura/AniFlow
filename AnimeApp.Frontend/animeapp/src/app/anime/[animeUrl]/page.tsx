@@ -15,6 +15,7 @@ import { AnimeIdProvider } from './_components/animeIdProvider';
 import AnimeDescription from './_components/AnimeDescription';
 import { getPlayers } from './_functions/getPlayers';
 import Rating from './_components/Rating';
+import OstsPreview from './_components/OstsPreview';
 
 export async function generateMetadata({ params, }: { params: { animeUrl: string }; }) {
     const { animeUrl } = await params;
@@ -105,6 +106,8 @@ export default async function AnimePage({ params, }: { params: { animeUrl: strin
                     <div className='w-full'>
                         <ScreenshotsPreview images={anime.screenshotsUrls} />
                     </div>
+
+                        <OstsPreview osts={anime.music} promos={anime.promos} />
 
                     {/* Пов'язане */}
                     <RelatedAnimeList relateds={anime.relateds || []} />

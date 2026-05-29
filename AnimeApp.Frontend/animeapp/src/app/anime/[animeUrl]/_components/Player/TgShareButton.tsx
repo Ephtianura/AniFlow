@@ -12,7 +12,7 @@ export default function TgShareButton() {
     }, []);
 
     return (
-        <div className="py-3 border-y border-[#3f3e3f] flex gap-2 items-center">
+        <div className="py-3 border-y border-[#3f3e3f] flex gap-2 items-center select-none">
             <span className="text-player-text text-lg">Поділитися з друзями:</span>
             <TelegramShareButton url={url} >
                 <div className={clsx(

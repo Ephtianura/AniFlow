@@ -25,7 +25,7 @@ export default function CustomSelect<T>({
   const selectedOption = options.find(opt => opt.value === value);
 
   return (
-    <div className={`relative w-full ${className}`}>
+    <div className={`relative w-full select-none ${className}`}>
       <Listbox value={value} onChange={onChange}>
         <ListboxButton className="btn-primary w-full text-left flex justify-between items-center h-9.5">
           <span className="truncate">

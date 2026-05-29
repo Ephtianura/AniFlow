@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 import { randomAnimeMiddleware } from "./middlewares/randomAnime";
 import { myListRedirect } from "./middlewares/myListRedirect";
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const randomResponse = await randomAnimeMiddleware(request);
   if (randomResponse) return randomResponse;
 

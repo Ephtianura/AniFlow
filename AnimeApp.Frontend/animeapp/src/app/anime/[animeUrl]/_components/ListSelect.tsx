@@ -95,7 +95,7 @@ export default function ListSelect() {
         <Combobox value={selected} onChange={handleChange}>
             {({ open }) => (
 
-                <div className="relative inline-block w-full">
+                <div className="relative inline-block w-full select-none">
                     {/* BUTTON */}
                     <ComboboxButton
                         className="btn-primary transition-transform w-full text-left flex items-center justify-between cursor-pointer"

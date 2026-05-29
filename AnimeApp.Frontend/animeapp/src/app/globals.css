@@ -139,6 +139,14 @@ html {
     group-hover:opacity-90 group-hover:pointer-events-auto
     opacity-0 pointer-events-none;
   }
+
+  .my-scrollbar .simplebar-track.simplebar-horizontal {
+    height: 2px;
+  }
+
+  .my-scrollbar .simplebar-scrollbar:before {
+    background: #a855f7; /* например фиолетовый */
+  }
 }
 
 @layer utilities {

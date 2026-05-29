@@ -38,7 +38,7 @@ export default function MultiSelect<T, TId extends string | number>({
     .join(", ") || placeholder;
 
   return (
-    <Popover className={`relative w-full ${className}`}>
+    <Popover className={`relative w-full select-none ${className}`}>
       <PopoverButton className="btn-primary flex items-center justify-between w-full h-[38px] text-left outline-none">
         <span className="truncate pr-2 text-primary-black">{buttonText}</span>
         <FaSort className="w-4 h-4 text-gray-text-dark shrink-0" />
