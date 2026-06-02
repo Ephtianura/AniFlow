@@ -159,7 +159,7 @@ export default function AnimeCard(props: AnimeCardProps) {
 
     // LIST VIEW 
     return (
-        <div className="py-4">
+        <div className="py-4 ">
             <div className="flex flex-col xs:flex-row gap-4">
 
                 {/* Постер */}
@@ -213,7 +213,7 @@ export default function AnimeCard(props: AnimeCardProps) {
 
                     {/* Опис */}
                     <div className="hidden md:block">
-                        <AnimeDescription description={description} className="line-clamp-3" />
+                        <AnimeDescription description={description} className="line-clamp-3! max-h-18!" />
                     </div>
                 </div>
 

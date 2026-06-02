@@ -23,7 +23,7 @@ export default function MultiSelect<T, TId extends string | number>({
   placeholder = "Оберіть...",
   className = ""
 }: MultiSelectProps<T, TId>) {
-  
+
   const handleToggle = (id: TId) => {
     // TypeScript теперь знает, что id того же типа, что и элементы массива
     const newSelection = selectedIds.includes(id)
@@ -47,7 +47,9 @@ export default function MultiSelect<T, TId extends string | number>({
       <PopoverPanel
         transition
         anchor="bottom start"
-        className="z-100 w-(--button-width) py-1 mt-1 bg-white border border-btn-border-light rounded shadow-lg h-70 overflow-y-auto transition duration-100 ease-in data-closed:opacity-0"
+        className="z-100 w-(--button-width) py-1 mt-1 bg-white border border-btn-border-light rounded shadow-lg h-70 
+        overflow-y-auto scrollbar-thin  white-scroll
+         transition duration-100 ease-in data-closed:opacity-0"
       >
         <div className="py-1">
           {options.map((option, index) => {
@@ -81,7 +83,7 @@ export default function MultiSelect<T, TId extends string | number>({
                     <polyline points="20 6 9 17 4 12"></polyline>
                   </svg>
                 </div>
-                
+
                 <span className={`ml-3 text-sm ${isChecked ? 'text-primary-black font-medium' : 'text-gray-600'}`}>
                   {label}
                 </span>

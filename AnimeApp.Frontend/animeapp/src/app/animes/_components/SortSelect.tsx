@@ -47,6 +47,7 @@ export default function SortSelect({ initSortBy }: Props) {
 
                 {/* Выпадающий список */}
                 <ListboxOptions
+                    modal={false}
                     transition
                     anchor="bottom start"
                     className="z-50 w-(--button-width) outline-none mt-1 rounded-xs border border-btn-border-light bg-white py-2 shadow-lg ring-1 ring-black/5 transition duration-100 ease-in data-[closed]:opacity-0"

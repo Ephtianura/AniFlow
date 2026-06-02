@@ -20,7 +20,7 @@ export default function AnimeDescription({ description, className }: Props) {
                     p: ({ node, ...props }) => (
                         <p
                             {...props}
-                            className="mb-4! last:mb-0 line-clamp-18"
+                            className={`mb-4! last:mb-0 line-clamp-18  ${className}`}
                         />
                     ),
                 }}

@@ -107,7 +107,7 @@ export default async function AnimePage({ params, }: { params: { animeUrl: strin
                         <ScreenshotsPreview images={anime.screenshotsUrls} />
                     </div>
 
-                        <OstsPreview osts={anime.music} promos={anime.promos} />
+                    <OstsPreview anime={anime} />
 
                     {/* Пов'язане */}
                     <RelatedAnimeList relateds={anime.relateds || []} />

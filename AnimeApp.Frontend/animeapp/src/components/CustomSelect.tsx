@@ -38,6 +38,7 @@ export default function CustomSelect<T>({
           transition
           anchor="bottom start"
           className="z-100 w-(--button-width) mt-1 rounded-xs border border-btn-border-light bg-white py-2 shadow-lg transition duration-100 ease-in data-closed:opacity-0"
+          modal={false}
         >
           {options.map((option, idx) => (
             <ListboxOption

@@ -1,16 +1,17 @@
 export enum VideoKind {
-  Other = 0,
+  // Other
+  Other = "Other",
 
   // Музикальні типи
-  AnimeVersion = 1, // TV-Size
-  ArtistVersion = 2, // Full
-  Live = 3, // Концерт
+  AnimeVersion = "AnimeVersion", // TV-Size
+  ArtistVersion = "ArtistVersion", // Full
+  Live = "Live", // Концерт
 
   // Короткі промо/трейлери
-  Promo = 10, // PV
-  Trailer = 11,
-  Teaser = 12,
-  Commercial = 13, // CM
+  Promo = "Promo", // PV
+  Trailer = "Trailer",
+  Teaser = "Teaser",
+  Commercial = "Commercial", // CM
 }
 
 export const VideoKindLabel: Record<VideoKind, string> = {

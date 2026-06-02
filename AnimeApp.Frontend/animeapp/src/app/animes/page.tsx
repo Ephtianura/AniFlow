@@ -10,7 +10,6 @@ import { getAnimes } from './_functions/getAnimes';
 import { buildApiQuery } from './_functions/buildApiQuery';
 import { AnimeSortBy } from '@/core/enums/AnimeSortBy';
 import AnimesCards from './_components/AnimesCards';
-import AnimeFilter from './_components/AnimeFilter';
 import { ViewMode } from '@/components/AnimeCard';
 import AnimeFilters from './_components/AnimeFilters';
 

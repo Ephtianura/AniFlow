@@ -1,31 +1,36 @@
 "use client";
-
-import { AnimeOstResponse, AnimeVideoResponse } from "@/core/types";
-import { useState } from "react";
+import { Anime, AnimeOstResponse, AnimeVideoResponse } from "@/core/types";
 import { FaPlay } from "react-icons/fa";
-import SimpleBar from 'simplebar-react';
-//@ts-ignore
-import 'simplebar-react/dist/simplebar.min.css';
 
-interface ScreenshotsPreviewProps {
-    osts: AnimeOstResponse[],
-    promos: AnimeVideoResponse[]
+import { usePlayerStore } from "@/stores/usePlayerStore";
+import { getTitle } from "../_functions/getTitle";
+import { TitleLanguage, TitleType } from "@/core/enums/AnimeTitle";
+import { getYoutubeThumbnail } from "../../../../hooks/getYoutubeThumbnail";
+
+type Props = {
+    anime: Anime
 }
 
-export default function OstsPreview({ osts, promos }: ScreenshotsPreviewProps) {
-    if ((!osts || osts.length === 0) && (!promos || promos.length === 0)) {
-        return null;
+type TrackItem =
+    | {
+        type: "ost";
+        ost: AnimeOstResponse;
+        video: AnimeVideoResponse;
     }
-
-    const [open, setOpen] = useState(false);
-    const [currentIndex, setCurrentIndex] = useState(0);
-
-    const openViewer = (index: number) => {
-        setCurrentIndex(index);
-        setOpen(true);
+    | {
+        type: "promo";
+        video: AnimeVideoResponse;
     };
 
-    const allVideos = [
+export default function OstsPreview({ anime }: Props) {
+    const osts = anime.music;
+    const promos = anime.promos;
+    const animeTitle = getTitle(anime.titles, TitleLanguage.Romaji, TitleType.Official) ?? "Anime";
+    const animePoster = anime.posterUrl ?? "";
+
+    if ((!osts || osts.length === 0) && (!promos || promos.length === 0)) return null;
+
+    const allVideos: TrackItem[] = [
         ...osts
             .sort((a, b) => a.index - b.index)
             .flatMap((ost) =>
@@ -48,15 +53,29 @@ export default function OstsPreview({ osts, promos }: ScreenshotsPreviewProps) {
 
     const visibleVideos = (allVideos ?? []).slice(0, 5);
 
+    const openPlayer = usePlayerStore((state) => state.openPlayer);
+
+    const handleStartPlay = (item: TrackItem) => {
+        const id =
+            item.type === "ost"
+                ? `ost-${item.ost.id}-vid-${item.video.id}`
+                : `promo-${item.video.id}`;
+
+        if (!id) return;
+
+        openPlayer({
+            animeTitle,
+            animePoster,
+            osts,
+            promos,
+            trackId: id
+        });
+    };
+
     return (
         <>
             <div className="mt-3 select-none">
-                <div className="flex justify-between">
-                    <h4 className="text-primary-black text-2xl font-medium mb-3">Медія</h4>
-                    <button>
-                        Відкрити плеєр
-                    </button>
-                </div>
+                <h4 className="text-primary-black text-2xl font-medium mb-3">Медія</h4>
 
                 <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                     {visibleVideos.map((item, i) => {
@@ -65,7 +84,7 @@ export default function OstsPreview({ osts, promos }: ScreenshotsPreviewProps) {
                         const showCounter = isLastVisible && hasMore;
 
                         return (
-                            <div key={i} onClick={() => openViewer(i)}
+                            <div key={i} onClick={() => handleStartPlay(item)}
                                 className={`
                                         relative group cursor-pointer overflow-hidden rounded aspect-video hover:scale-103 transition-transform duration-300
                                     ${i === 1 ? "hidden xs:block" : ""}
@@ -94,35 +113,7 @@ export default function OstsPreview({ osts, promos }: ScreenshotsPreviewProps) {
                     })}
                 </div>
             </div>
-
-            {/* {open && (
-                <OstsOverlay
-                    osts={osts}
-                    osts={osts}
-                    onClose={() => setOpen(false)}
-                 onChangeIndex={setCurrentIndex}
-                />
-            )} */}
         </>
     );
 }
 
-export const getYoutubeThumbnail = (url: string) => {
-    try {
-        const parsed = new URL(url);
-
-        let videoId: string | null = null;
-
-        if (parsed.hostname.includes("youtu.be")) {
-            videoId = parsed.pathname.slice(1);
-        } else {
-            videoId = parsed.searchParams.get("v");
-        }
-
-        if (!videoId) return null;
-
-        return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-    } catch {
-        return null;
-    }
-};

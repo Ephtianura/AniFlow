@@ -6,7 +6,7 @@ import {
     ComboboxOption,
     ComboboxOptions,
 } from "@headlessui/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MyListEnum, MyListMap } from "@/core/enums/MyList";
 import { apiFetch } from "@/lib/api";
@@ -92,7 +92,7 @@ export default function ListSelect() {
     };
 
     return (
-        <Combobox value={selected} onChange={handleChange}>
+        <Combobox value={selected} onChange={handleChange} >
             {({ open }) => (
 
                 <div className="relative inline-block w-full select-none">
@@ -119,7 +119,7 @@ export default function ListSelect() {
                                 className="absolute left-0 top-full w-full bg-white shadow-lg border border-hr-clr origin-top z-50 rounded-xs"
                             >
 
-                                <ComboboxOptions static className="flex flex-col outline-none">
+                                <ComboboxOptions static className="flex flex-col outline-none" modal={false}>
                                     {options.map((option) => {
                                         const isRemove = option.value === "__remove__";
 

@@ -1,10 +1,10 @@
 import { AnimeKindEnum } from "@/core/enums/AnimeKind";
-import { ViewMode } from "../_components/ViewModeButton";
 import { SearchParams } from "../page";
 import { AnimeStatusEnum } from "@/core/enums/AnimeStatus";
 import { SeasonEnum } from "@/core/enums/Season";
 import { AnimeRatingEnum } from "@/core/enums/AnimeRating";
 import { AnimeSortBy } from "@/core/enums/AnimeSortBy";
+import { ViewMode } from "@/components/AnimeCard";
 
 export function parseSearchParams(searchParams: URLSearchParams): SearchParams {
     return {

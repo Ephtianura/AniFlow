@@ -10,7 +10,7 @@
   --color-primary-text: #c68aff;
   --color-primary-hover: #b58aff;
   --color-primary-black: #212529;
-
+  --color-primary-player: #9f93b8;
   /* Кнопки */
   --color-btn-hover: #f0f0f0;
   --color-btn-hover-dark: #dcdcdc;
@@ -37,11 +37,14 @@
   /* Фон */
   --color-bg-light: #e9ebee;
   --color-bg-dark: #30353b;
-
+  /* https://colorscheme.ru/#4o61Onj--w0w0 */
+  /* https://colorscheme.ru/#4o61Onj--w0w0 */
   /* 🎨 Основні кольори  */
   --color-primary: #9457ff;
   --color-primary-hover: #b58aff;
   --color-primary-black: #212529;
+  --color-primary-player: #9f93b8;
+  /* https://colorscheme.ru/#4o61Onj--w0w0 */
 
   /* Кнопки */
   --color-btn-hover: #f0f0f0;
@@ -69,16 +72,45 @@ body {
 
 html {
   overflow-x: hidden;
-  overflow-y: auto !important;
+  overflow-y: auto;
+  /* overflow-y: auto !important; */
   padding-right: 0 !important;
 
   max-width: 100%;
   scroll-behavior: smooth;
 }
 
-/* Для Chrome, Edge и Safari */
 * {
-  scrollbar-color: #9457ff #343a40;
+  scrollbar-color: #9457ff #30353b;
+}
+
+.white-scroll {
+  scrollbar-color: #9457ff #ffffff;
+}
+.white-scroll::-webkit-scrollbar-track {
+  background: #ffffff;
+}
+.white-scroll::-webkit-scrollbar-thumb {
+  background-color: #9457ff;
+  border-radius: 4px;
+}
+.transparent-scroll {
+  scrollbar-color: #9457ff transparent;
+}
+.transparent-scroll::-webkit-scrollbar-track {
+  background: transparent;
+  display: none;
+}
+.transparent-scroll::-webkit-scrollbar-thumb {
+  background-color: #9457ff;
+  border-radius: 4px;
+}
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  transition: transform 0.2s ease;
+}
+input[type="range"]::-webkit-slider-thumb {
+  transition: background-color 0.2s ease;
 }
 
 @layer components {
@@ -140,12 +172,18 @@ html {
     opacity-0 pointer-events-none;
   }
 
-  .my-scrollbar .simplebar-track.simplebar-horizontal {
-    height: 2px;
+  .ost-player-btn {
+    @apply p-2 hover:bg-[#453D53] rounded-full aspect-square transition cursor-pointer duration-300
+    active:scale-95;
   }
 
-  .my-scrollbar .simplebar-scrollbar:before {
-    background: #a855f7; /* например фиолетовый */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 }
 

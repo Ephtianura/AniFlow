@@ -10,6 +10,7 @@ import Footer from '@/components/Footer';
 import { ToastContainer } from "react-toastify";
 import { ThemeProvider } from 'next-themes'
 import MobileFooter from "@/components/MobileFooter";
+import GlobalOstPlayer from "./anime/[animeUrl]/_components/GlobalPlayer/GlobalOstPlayer";
 
 export const metadata: Metadata = {
   title: "AniFlow",
@@ -26,14 +27,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="uk" suppressHydrationWarning>
       <body
-        className="antialiased transition-colors bg-bg-light min-h-screen flex flex-col text-primary-black"
+        className="antialiased transition-colors bg-bg-light min-h-screen flex flex-col text-primary-black "
         suppressHydrationWarning={true}
       >
         {/* Navbar */}
         <Navbar />
 
         {/* Page Content */}
-        <main className="flex-1 px-3 mb-20 w-full max-w-7xl xl:max-w-[1600px] mt-21  mx-auto">
+        <main className="flex-1 px-3 mb-20 w-full max-w-7xl xl:max-w-[1600px] mt-21 mx-auto">
           {children}
           {/* <ThemeProvider attribute="class"></ThemeProvider> */}
           <ToastContainer
@@ -49,6 +50,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             draggable
             pauseOnHover
           />
+
+          <GlobalOstPlayer/>
         </main>
         {/* Footer */}
         <Footer />

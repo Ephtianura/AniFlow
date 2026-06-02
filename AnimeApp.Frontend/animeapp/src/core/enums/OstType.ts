@@ -1,8 +1,8 @@
 export enum OstType {
-  Other,
-  Opening,
-  Ending,
-  Insert,
+  Other = "Other",
+  Opening = "Opening",
+  Ending = "Ending",
+  Insert = "Insert",
 }
 
 export const OstTypeMap: Record<OstType, string> = {
