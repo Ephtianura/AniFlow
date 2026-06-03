@@ -34,6 +34,7 @@ export function formatDuration(minutes: number, kind?: AnimeKindEnum | null) {
     return result + " ~ серія";
 }
 
+
 export const AnimeInfo: React.FC<Props> = ({ anime }) => {
     const formatted = formatAnimeDates(anime);
 
@@ -103,7 +104,8 @@ export const AnimeInfo: React.FC<Props> = ({ anime }) => {
 
                 {(anime.source) && (
                     <>
-                        <p className="text-gray-dark">Першоджерело</p>
+                        <p className="text-gray-dark sm:hidden">Джерело</p>
+                        <p className="text-gray-dark hidden sm:flex">Першоджерело</p>
                         <p className="text-primary-black">
                             {AnimeSourceMap[anime.source]}
                         </p>
@@ -115,7 +117,7 @@ export const AnimeInfo: React.FC<Props> = ({ anime }) => {
                         <p className="text-gray-dark">Сезон</p>
                         <p className="text-primary hover:underline hover:text-purple-700 cursor-pointer">
                             <Link
-                                href={{ pathname: "/animes", query: { season: anime.season } }}
+                                href={{ pathname: "/animes", query: { season: anime.season, year: anime.year } }}
                                 className="hover:underline hover:text-purple-700 cursor-pointer"
                             >
                                 {anime.season ? SeasonMap[anime.season] : ""} {anime.year || ""}
@@ -173,7 +175,6 @@ export const AnimeInfo: React.FC<Props> = ({ anime }) => {
                         </p>
                     </>
                 )}
-
             </div>
         </div>
     );

@@ -16,6 +16,8 @@ import AnimeDescription from './_components/AnimeDescription';
 import { getPlayers } from './_functions/getPlayers';
 import Rating from './_components/Rating';
 import OstsPreview from './_components/OstsPreview';
+import Nsfw from './_components/Nsfw';
+import ExternalLinks from './_components/ExternalLinks';
 
 export async function generateMetadata({ params, }: { params: { animeUrl: string }; }) {
     const { animeUrl } = await params;
@@ -44,8 +46,12 @@ export default async function AnimePage({ params, }: { params: { animeUrl: strin
     return (
         <WhiteCard>
             <AnimeIdProvider animeId={anime.id} userAnime={userStatus}>
-                {/* Засунути дані користувача у сховище */}
+                {/* Помістити дані користувача у сховище */}
                 <UserAnimeHydrator data={userStatus} />
+
+                {/* Nsfw */}
+                <Nsfw isNsfw={anime.nsfw} />
+
                 <div className='flex flex-col'>
 
                     {/* Постер та інформація */}
@@ -97,8 +103,13 @@ export default async function AnimePage({ params, }: { params: { animeUrl: strin
                         </div>
                     </div>
 
+                    {/* Лінки */}
+                    <div className='pt-4 hidden xs:flex'>
+                        <ExternalLinks externalLinks={anime.externalLinks} />
+                    </div>
+
                     {/* Опис */}
-                    <div className='pt-4'>
+                    <div className='pt-2'>
                         <AnimeDescription description={anime.description} />
                     </div>
 
@@ -107,6 +118,7 @@ export default async function AnimePage({ params, }: { params: { animeUrl: strin
                         <ScreenshotsPreview images={anime.screenshotsUrls} />
                     </div>
 
+                    {/* Ости */}
                     <OstsPreview anime={anime} />
 
                     {/* Пов'язане */}

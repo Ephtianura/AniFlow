@@ -3,13 +3,13 @@
 import { useState, useMemo } from 'react';
 import { MdOutlineSubtitles } from "react-icons/md";
 
-interface Option {
+export interface Option {
     id: string;
     name: string;
     isSubtitles?: boolean;
 }
 
-interface PlayerSettingsProps {
+export interface PlayerSettingsProps {
     voices: Option[];
     players: Option[];
     activeVoiceId: string;
@@ -68,7 +68,6 @@ export default function PlayerSettings({
 
     return (
         <div>
-
             {/* Tabs */}
             <div className="flex border-b border-gray-700 w-full mb-4">
                 {['voice', 'player'].map((tab) => (

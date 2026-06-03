@@ -27,7 +27,7 @@ export default function ScreenshotsPreview({ images }: ScreenshotsPreviewProps) 
     const visibleImages = (images ?? []).slice(0, 8);
     return (
         <>
-            <div className="mt-3 select-none w-full h-full">
+            <div className="select-none w-full h-full">
                 <h4 className="text-primary-black text-2xl font-medium">Кадри</h4>
 
 
@@ -49,7 +49,7 @@ export default function ScreenshotsPreview({ images }: ScreenshotsPreviewProps) 
                                 >
                                     <div
                                         onClick={() => openViewer(i)}
-                                        className="relative group cursor-pointer rounded-lg overflow-hidden w-40 md:w-50 lg:w-90.5 transition-all duration-300 ease-out hover:scale-103 hover:shadow-lg will-change-transform"
+                                        className="relative group cursor-pointer rounded-lg overflow-hidden w-60 lg:w-90.5 transition-all duration-300 ease-out hover:scale-103 hover:shadow-lg will-change-transform"
                                     >
                                         <img
                                             src={src}
@@ -70,12 +70,10 @@ export default function ScreenshotsPreview({ images }: ScreenshotsPreviewProps) 
                                         )}
                                     </div>
                                 </SwiperSlide>
-
                             );
                         })}
                     </Swiper>
                 </div>
-
             </div >
 
             {open && (
@@ -85,8 +83,7 @@ export default function ScreenshotsPreview({ images }: ScreenshotsPreviewProps) 
                     onClose={() => setOpen(false)}
                     onChangeIndex={setCurrentIndex}
                 />
-            )
-            }
+            )}
         </>
     );
 }

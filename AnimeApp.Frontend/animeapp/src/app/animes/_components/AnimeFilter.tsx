@@ -157,7 +157,7 @@ export default function AnimeFilter() {
   const handleApply = () => {
     const params = new URLSearchParams(searchParams.toString());
     const currentParamsString = searchParams.toString();
-    
+
     params.delete("page");
 
     if (localGenres.length > 0) {
@@ -182,11 +182,11 @@ export default function AnimeFilter() {
     const cleanForCompare = (str: string) => {
       const p = new URLSearchParams(str);
       p.delete("page");
-      p.sort(); 
+      p.sort();
       return p.toString();
     };
     if (cleanForCompare(currentParamsString) === cleanForCompare(nextParamsString)) {
-      return; 
+      return;
     }
 
     router.push(`/animes?${nextParamsString}`);
@@ -196,15 +196,20 @@ export default function AnimeFilter() {
     const params = new URLSearchParams(searchParams.toString());
 
     const filtersToRemove = [
-      Filters.Genres, 
-      Filters.Kind, 
-      Filters.Status, 
-      Filters.Rating, 
-      Filters.AiredFrom, 
-      Filters.AiredTo, 
-      "page"
+      Filters.Genres,
+      Filters.Kind,
+      Filters.Status,
+      Filters.Rating,
+      Filters.AiredFrom,
+      Filters.AiredTo,
+      "page",
+      "year",
+      "season",
+      "studio",
+      "maxEpisodes",
+      "minEpisodes"
     ];
-    
+
     const hasActiveFilters = filtersToRemove.some(key => searchParams.has(key));
     if (!hasActiveFilters) return;
 
@@ -225,7 +230,7 @@ export default function AnimeFilter() {
       </header>
 
       <div className="flex flex-col p-4 space-y-4 w-full h-full">
-        
+
         {/* Рік */}
         <div className="mb-10">
           <h3 className="font-medium py-2 text-center select-none">Рік виходу</h3>

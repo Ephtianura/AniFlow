@@ -22,9 +22,9 @@ export const SeasonTextMap: Record<SeasonEnum, string> = {
 export function getCurrentSeason(): SeasonEnum {
   const month = new Date().getMonth() + 1
 
-  if (month >= 3 && month <= 5) return SeasonEnum.Spring
-  if (month >= 6 && month <= 8) return SeasonEnum.Summer
-  if (month >= 9 && month <= 11) return SeasonEnum.Fall
+  if (month >= 4 && month <= 6) return SeasonEnum.Spring
+  if (month >= 7 && month <= 9) return SeasonEnum.Summer
+  if (month >= 10 && month <= 12) return SeasonEnum.Fall
 
   return SeasonEnum.Winter
 }

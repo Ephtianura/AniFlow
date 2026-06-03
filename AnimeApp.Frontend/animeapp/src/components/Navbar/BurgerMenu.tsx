@@ -6,12 +6,12 @@ import { useEffect } from "react";
 import { IoCloseSharp } from "react-icons/io5";
 import { LuSettings, LuShieldMinus } from "react-icons/lu";
 import { TbLogout, TbLogin } from "react-icons/tb";
-import clsx from "clsx";
 import { logout } from "@/hooks/logout";
 import { UserRole } from "@/core/enums/UserRole";
 import { FiHome } from "react-icons/fi";
 import { LuLibraryBig } from "react-icons/lu";
 import { motion, AnimatePresence } from "framer-motion";
+import { createPortal } from 'react-dom';
 
 type Props = {
     me: UserMeResponse | null;
@@ -43,7 +43,7 @@ export default function BurgerMenu({ me, onClose }: Props) {
 
     const currentYear = new Date().getFullYear()
     const prevYear = new Date().getFullYear() - 1
-    return (
+    return createPortal(
         <div className="fixed left-0 top-0 w-full h-full z-50 pointer-events-none select-none">
 
             <motion.div
@@ -62,11 +62,12 @@ export default function BurgerMenu({ me, onClose }: Props) {
                     duration: 0.25,
                     ease: "easeOut",
                 }}
-                className="relative h-full w-full max-w-100 z-20 pointer-events-auto"
+                className="relative h-full w-full max-w-100 z-50 pointer-events-auto"
             >
                 <div className="bg-bg-dark flex flex-col h-full border-r-3 border-primary ">
-                    <div className="flex items-center justify-center relative p-4">
+                    <div className="flex items-center justify-center relative p-4 text-white">
                         <Link href={"/"} className="text-2xl">AniFlow</Link>
+                       
                         <button className="absolute right-2 text-xl p-2 active:scale-95 transition" onClick={onClose}>
                             <IoCloseSharp className="w-8 h-8" />
                         </button>
@@ -121,7 +122,8 @@ export default function BurgerMenu({ me, onClose }: Props) {
                     </div>
                 </div>
             </motion.div>
-        </div>
+        </div>,
+        document.body
 
     )
 }

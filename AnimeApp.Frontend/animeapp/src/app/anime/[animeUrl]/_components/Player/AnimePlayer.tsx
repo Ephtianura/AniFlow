@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import EpisodeSelector from "./EpisodeSelector";
+import EpisodeSelectorDesktop from "./EpisodeSelectorDesktop";
 import { AnimeTitle, EpisodeInfo, PlayerEpisodeSet } from "@/core/types";
 import pullUkrTitle from "../../_functions/pullUkrTitle";
 import clsx from "clsx";
 import { AnimeRatingEnum } from "@/core/enums/AnimeRating";
 import TgShareButton from "./TgShareButton";
-import PlayerSettings from "./PlayerSettings";
+import AdaptivePlayerSettings from "./AdaptivePlayerSettings";
+import EpisodeSelectorMobile from "./EpisodeSelectorMobile";
 
 type Props = {
     titles: AnimeTitle[];
@@ -28,6 +29,8 @@ export default function AnimePlayer({ titles, rating, players }: Props) {
     const [selectedPlayer, setSelectedPlayer] = useState<PlayerEpisodeSet | null>(null);
     const [selectedVoiceIndex, setSelectedVoiceIndex] = useState(0);
     const [selectedEpisode, setSelectedEpisode] = useState(1);
+
+    const [isMobileSettingsOpen, setIsMobileSettingsOpen] = useState(false);
 
     const activeVoiceId =
         selectedPlayer?.voices?.[selectedVoiceIndex]
@@ -59,7 +62,6 @@ export default function AnimePlayer({ titles, rating, players }: Props) {
             : 0;
 
     const iframeSrc = currentEpisode?.videoUrl;
-
 
     const playerOptions = players.map(p => ({
         id: p.player,
@@ -112,16 +114,16 @@ export default function AnimePlayer({ titles, rating, players }: Props) {
     };
 
     return (
-        <div className="relative my-3 -mx-4 flex items-center justify-center playerRef">
+        <div className="relative my-3 -mx-4 flex items-center justify-center playerRef ">
 
-            {/* ФОН*/}
+            {/* ФОН */}
             <div className={clsx(
                 "absolute top-0 left-1/2 -translate-x-1/2 w-screen h-full bg-[#18191A] z-0",
                 "shadow-[0_-10px_30px_var(--tw-shadow-color),0_10px_30px_var(--tw-shadow-color)] shadow-purple-400")}>
             </div>
 
             {/* КОНТЕНТ */}
-            <div className="relative z-10 w-full h-full text-white py-4 flex flex-col gap-4 ">
+            <div className="relative w-full h-full text-white py-4 flex flex-col gap-4 ">
 
                 {/* Назва */}
                 <div className="flex justify-between ">
@@ -153,26 +155,42 @@ export default function AnimePlayer({ titles, rating, players }: Props) {
                         </iframe>
 
                         {/* Вибір серії */}
-                        <div className="">
-                            <EpisodeSelector
-                                totalEpisodes={totalEpisodes}
-                                currentEpisode={selectedEpisode}
-                                onEpisodeChange={(ep) => setSelectedEpisode(ep)}
-                            />
-                        </div>
+                        <>
+                            <div className="hidden lg:block">
+                                <EpisodeSelectorDesktop
+                                    totalEpisodes={totalEpisodes}
+                                    currentEpisode={selectedEpisode}
+                                    onEpisodeChange={(ep) => setSelectedEpisode(ep)}
+                                />
+                            </div>
+                            <div className="lg:hidden">
+                                <EpisodeSelectorMobile
+                                    totalEpisodes={totalEpisodes}
+                                    currentEpisode={selectedEpisode}
+                                    onEpisodeChange={(ep) => setSelectedEpisode(ep)}
+
+                                    activePlayer={selectedPlayer?.player ?? ''}
+                                    activeVoice={selectedPlayer?.voices?.[selectedVoiceIndex]?.voice ?? ''}
+                                    onOpenMobileSettings={() => setIsMobileSettingsOpen(true)}
+                                />
+                            </div>
+                        </>
+
                     </div>
 
                     {/* Озвучка та вибор плеєру*/}
-                    <div className="hidden lg:block flex-col px-2 lg:w-75">
-                        <PlayerSettings
-                            voices={voiceOptions}
-                            players={playerOptions}
-                            activeVoiceId={activeVoiceId}
-                            activePlayerId={selectedPlayer?.player.toString() ?? ''}
-                            onVoiceChange={handleVoice}
-                            onPlayerChange={handlePlayer}
-                        />
-                    </div>
+                    <AdaptivePlayerSettings
+                        option={{
+                            voices: voiceOptions,
+                            players: playerOptions,
+                            activeVoiceId: activeVoiceId,
+                            activePlayerId: selectedPlayer?.player.toString() ?? '',
+                            onVoiceChange: handleVoice,
+                            onPlayerChange: handlePlayer,
+                        }}
+                        isMobileOpen={isMobileSettingsOpen}
+                        onClose={() => setIsMobileSettingsOpen(!isMobileSettingsOpen)}
+                    />
 
                 </div>
 

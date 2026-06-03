@@ -96,7 +96,7 @@ const OstList = React.memo(function OstList() {
                                         </div>
                                         {/* Spotify */}
                                         {ost.spotifyUrl && (
-                                            <Link href={ost.spotifyUrl}>
+                                            <Link href={ost.spotifyUrl} target="_blank" rel="noopener noreferrer">
                                                 <FaSpotify className="text-[#1ED760] w-6 h-6 mr-4 hover:text-[#47d578] transition hover:scale-110 active:scale-95" />
                                             </Link>
                                         )}
@@ -115,7 +115,7 @@ const OstList = React.memo(function OstList() {
                                                 style={{ overflow: "hidden" }}
                                                 className=""
                                             >
-                                                <div className="grid grid-cols-2 xl:grid-cols-3 gap-1 px-2">
+                                                <div className="grid grid-cols-2 2xl:grid-cols-3 gap-1 px-2">
                                                     {ost.videos.map((video) => (
                                                         <VideoCard key={video.index} video={video} ostId={ost.id} />
                                                     ))}

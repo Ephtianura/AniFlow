@@ -5,6 +5,8 @@ import LoginButtons from "./LoginButtons";
 import UserAvatar from "./UserAvatar";
 import { getMe } from "../../hooks/getMe";
 import BurgerMenuButton from "./BurgerMenuButton";
+import Logo from "../Logo";
+import RandomAnimeButton from "./RandomAnimeButton";
 
 
 export default async function Navbar() {
@@ -25,7 +27,7 @@ export default async function Navbar() {
               alt="AnimeApp Logo"
               className="w-9 h-9"
             />
-            AniFlow
+            <Logo className="w-22 h-10" />
           </Link>
 
           {/* Колонка 2 - Панель навігації */}
@@ -40,9 +42,7 @@ export default async function Navbar() {
             {/* <Link href="/characters" className="nav-button"> Персонажі </Link> */}
 
             {/* Випадкове аніме */}
-            <Link href={"/anime/random"} className="nav-button">
-              Випадкове аніме
-            </Link>
+           <RandomAnimeButton/>
 
             {/* Адмін-панель */}
             <AdminButton me={me} />
@@ -73,13 +73,14 @@ export default async function Navbar() {
         </div>
 
 
-        <Link href="/" className="absolute left-1/2 transform -translate-x-1/2 font-bold text-xl transition-colors flex items-center gap-2">
+        <Link href="/" className="absolute left-1/2 transform -translate-x-1/2 font-bold text-xl transition-colors 
+        flex items-center gap-2">
           <img
             src="/favicon.ico"
             alt="AnimeApp Logo"
             className="w-9 h-9"
           />
-          AniFlow
+          <Logo className="w-22 h-6" />
         </Link>
 
         <div className="flex gap-3 items-center">

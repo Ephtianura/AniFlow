@@ -29,7 +29,7 @@ export default function ViewModeButton({ view }: Props) {
             </button>
 
             <button onClick={() => updateView("gridLarge")}
-                className={`view-btn  ${viewMode === "gridLarge" && "hover:text-white text-white bg-primary "}`}>
+                className={`view-btn hidden sm:block ${viewMode === "gridLarge" && "hover:text-white text-white bg-primary "}`}>
                 <IoGrid className='w-7 h-7' />
             </button>
 

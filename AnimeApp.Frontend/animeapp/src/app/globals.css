@@ -133,9 +133,21 @@ input[type="range"]::-webkit-slider-thumb {
     /* 1. Внешнее свечение */
     /* 2. Внутренняя тень: смещение по Y (2px), размытие (4px) */
     @apply px-3 py-1.5 bg-primary rounded-sm hover:bg-purple-600 transition cursor-pointer border-transparent border
-    active:bg-purple-700 active:border-purple-800/60 
-    active:shadow-[0_0_20px_rgba(148,87,255,0.5),inset_0_3px_5px_rgba(0,0,0,0.3)]
-    active:ring-4 active:ring-purple-300/80;
+      active:bg-purple-700 active:border-purple-800/60 
+      active:shadow-[0_0_20px_rgba(148,87,255,0.5),inset_0_3px_5px_rgba(0,0,0,0.3)]
+      active:ring-4 active:ring-purple-300/80 select-none;
+  }
+  .btn-white {
+    @apply px-3 py-1.5 bg-white rounded-sm hover:bg-gray-200
+          transition cursor-pointer border-transparent border
+          active:bg-gray-100 active:border-gray-300/60 text-primary-black
+          active:shadow-[0_0_20px_rgba(255,255,255,0.5),inset_0_3px_5px_rgba(0,0,0,0.3)]
+          active:ring-4 active:ring-white/80 select-none;
+  }
+
+  .btn-player-mobile {
+    @apply border border-[#6C757D] rounded-lg active:bg-[#6c757d] transition
+    hover:ring-2 active:ring-2 ring-[#42474C] cursor-pointer ;
   }
 
   .h4 {

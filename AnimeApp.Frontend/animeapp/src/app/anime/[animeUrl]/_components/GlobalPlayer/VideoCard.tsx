@@ -41,7 +41,7 @@ export default function VideoCard({ video, ostId }: Props) {
                     </div>
                 )}
                 <div className="absolute right-2 top-1">
-                    <Link href={video.url}>
+                    <Link href={video.url} target="_blank" rel="noopener noreferrer">
                         <FaYoutube className="text-[#FF0033] w-5 h-5 hover:text-[#ff3961] transition hover:scale-110" />
                     </Link>
                 </div>

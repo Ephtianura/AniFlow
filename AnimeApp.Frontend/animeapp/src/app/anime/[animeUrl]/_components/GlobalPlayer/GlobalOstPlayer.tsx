@@ -28,7 +28,7 @@ export default function GlobalOstPlayer() {
 
     return (
         <>
-            <div ref={constraintsRef} className="fixed inset-0 pointer-events-none z-50 m-4 mb-51 sm:mb-35 " />
+            <div ref={constraintsRef} className="fixed inset-0 pointer-events-none z-40 m-4 mb-51 sm:mb-35 " />
 
             {/* Фон */}
             <AnimatePresence>
@@ -48,8 +48,8 @@ export default function GlobalOstPlayer() {
                 drag={store.isMini}
                 dragConstraints={constraintsRef}
                 dragElastic={0.1}
-                className={`fixed z-50 select-none ${store.isMini
-                    ? "bottom-51 sm:bottom-35 left-4 w-75 aspect-video md:px-0 shadow-2xl touch-none"
+                className={`fixed z-40 select-none ${store.isMini
+                    ? "bottom-51 sm:bottom-35 left-4 w-75  aspect-video md:px-0 shadow-2xl touch-none"
                     : "top-20 bottom-39 left-0 right-0 w-full h-auto md:px-[5%] transform-none!"
                     }`}
                 onDoubleClick={() => { if (store.isMini) store.setIsMini(false); }}
@@ -61,7 +61,6 @@ export default function GlobalOstPlayer() {
 
                     {/* Player */}
                     <div className="relative w-full h-full ">
-
                         <PlayerVideoContainer isFullscreen={isFullscreen} />
                     </div>
 
@@ -89,7 +88,7 @@ export default function GlobalOstPlayer() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className={`fixed ${store.isMini ? `bottom-16` : `bottom-0`} sm:bottom-0 left-0 w-full z-60`}
+                        className={`fixed ${store.isMini ? `bottom-16` : `bottom-0`} sm:bottom-0 left-0 w-full z-40`}
                     >
                         <MusicControlButtons isFullScreen={false} />
                     </motion.div>

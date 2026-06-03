@@ -37,7 +37,7 @@
     "**/*.mts",
     ".next\\dev/types/**/*.ts",
     ".next\\dev/types/**/*.ts"
-, "src/app/admin/dashboard/pagecopy.tsx"  ],
+, "src/app/admin/dashboard/pagecopy.tsx", "src/app/anime/[animeUrl]/_components/Nsfw.tsx"  ],
   "exclude": [
     "node_modules"
   ]

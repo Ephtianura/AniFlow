@@ -48,7 +48,7 @@ export default function AnimeCard(props: AnimeCardProps) {
                     <SubTitle subTitle={subTitle} />
 
                     {/* Назва */}
-                    <TitleLink title={title} url={url} className="line-clamp-1!" />
+                    <TitleLink title={title} url={url} className="line-clamp-1! break-all!" />
                 </div>
 
             </div>

@@ -1,4 +1,5 @@
 'use client';
+
 import clsx from 'clsx';
 import { useState, useRef, useEffect } from 'react';
 import { MdNavigateBefore, MdNavigateNext } from 'react-icons/md';
@@ -9,7 +10,7 @@ interface EpisodeSelectorProps {
     onEpisodeChange: (episode: number) => void;
 }
 
-export default function EpisodeSelector({
+export default function EpisodeSelectorDesktop({
     totalEpisodes,
     currentEpisode,
     onEpisodeChange
@@ -65,7 +66,7 @@ export default function EpisodeSelector({
     };
 
     return (
-        <div className="hidden lg:flex gap-3 items-center h-10">
+        <div className="flex gap-3 items-center h-10">
             <div className="flex items-center gap-2 shrink-0">
                 <div className="border-b border-dashed flex gap-1 text-player-text text-sm">
                     <span className="hidden xl:block">Серія</span>
