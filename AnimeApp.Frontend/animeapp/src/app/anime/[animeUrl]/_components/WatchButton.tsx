@@ -6,7 +6,7 @@ export default function WatchButton() {
     <a href="#anime-player" className="btn-purple select-none" >
       <div className="flex gap-2 items-center justify-center">
         <div className="rounded-full bg-white p-1 justify-center items-center flex">
-          <RiPlayLargeFill />
+          <RiPlayLargeFill className="text-primary-black"/>
         </div>
         <span className="text-white">Дивитися онлайн</span>
       </div>

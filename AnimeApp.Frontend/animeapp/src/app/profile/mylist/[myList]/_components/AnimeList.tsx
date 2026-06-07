@@ -35,7 +35,7 @@ export default function AnimeList({ userAnimeList: animeList }: Props) {
                             </span>
 
                             <Link className="w-25 aspect-5/7" href={`/anime/${anime.url}`}>
-                                <img src={anime.posterUrl ?? "/404.gif"} alt="123" className="w-full h-full aspect-5/7 shrink-0 object-cover rounded-lg" />
+                                <img src={anime.posterUrl ?? "/NotFound.jpg"} alt="123" className="w-full h-full aspect-5/7 shrink-0 object-cover rounded-lg" />
 
                             </Link>
                         </div>

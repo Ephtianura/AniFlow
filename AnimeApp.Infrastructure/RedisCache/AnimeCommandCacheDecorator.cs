@@ -1,6 +1,7 @@
 ﻿using AnimeApp.Application.Contracts.App;
 using AnimeApp.Application.Dto.Requests.Anime;
 using AnimeApp.Application.Dto.Responses.Anime;
+using Quartz.Util;
 
 namespace AnimeApp.Infrastructure.RedisCache
 {
@@ -9,26 +10,22 @@ namespace AnimeApp.Infrastructure.RedisCache
         private readonly IRedisCache _cache = cache;
         private readonly IAnimeCommandService _commandService = commandService;
 
-        public async Task UpdateAsync(int id, AnimeUpdateRequest request)
+        public async Task UpdateBaseAsync(int id, AnimeUpdateRequest request)
         {
+            await _commandService.UpdateBaseAsync(id, request);
+
             var key = $"anime:id:{id}";
-
-            await _commandService.UpdateAsync(id, request);
-
             await _cache.RemoveAsync(key);
             await _cache.RemoveByPrefixAsync("anime:filter:");
-            await _cache.RemoveAsync("anime:random:ids");
         }
 
         public async Task UpdateFilesAsync(int id, AnimeUpdateFilesRequest request)
         {
-            var key = $"anime:id:{id}";
-
             await _commandService.UpdateFilesAsync(id, request);
 
+            var key = $"anime:id:{id}";
             await _cache.RemoveAsync(key);
             await _cache.RemoveByPrefixAsync("anime:filter:");
-            await _cache.RemoveAsync("anime:random:ids");
         }
 
         public async Task<AnimeCreateResponse> CreateAsync(AnimeCreateRequest request)
@@ -39,7 +36,6 @@ namespace AnimeApp.Infrastructure.RedisCache
 
             await _cache.RemoveAsync(key);
             await _cache.RemoveByPrefixAsync("anime:filter:");
-            await _cache.RemoveAsync("anime:random:ids");
 
             return response;
         }
@@ -50,8 +46,28 @@ namespace AnimeApp.Infrastructure.RedisCache
 
             await _cache.RemoveAsync($"anime:id:{id}");
             await _cache.RemoveByPrefixAsync("anime:filter:");
-            await _cache.RemoveAsync("anime:random:ids");
         }
 
+        public async Task OrderScreenshots(int id, AnimeOrderScreenshotsRequest request)
+        {
+            var key = $"anime:id:{id}";
+            await _commandService.OrderScreenshots(id, request);
+            await _cache.RemoveAsync(key);
+        }
+
+        public async Task<RelatedUpdateResult> UpdateRelated(int id, RelatedsAnimeRequest request)
+        {
+            var result = await _commandService.UpdateRelated(id, request);
+
+            var idsToInvalidate = new HashSet<int> { id };
+            idsToInvalidate.UnionWith(result.Current.Select(c => c.RelatedAnimeId));
+            idsToInvalidate.UnionWith(result.Updated.Select(u => u.RelatedAnimeId));
+            idsToInvalidate.UnionWith(result.Deleted.Select(d => d.RelatedAnimeId));
+
+            var cacheKeys = idsToInvalidate.Select(animeId => $"anime:id:{animeId}");
+
+            await _cache.RemoveMultipleAsync(cacheKeys);
+            return result;
+        }
     }
 }

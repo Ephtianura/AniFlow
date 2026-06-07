@@ -25,9 +25,9 @@ export default function CustomSelect<T>({
   const selectedOption = options.find(opt => opt.value === value);
 
   return (
-    <div className={`relative w-full select-none ${className}`}>
+    <div className={`relative w-full select-none  ${className}`}>
       <Listbox value={value} onChange={onChange}>
-        <ListboxButton className="btn-primary w-full text-left flex justify-between items-center h-9.5">
+        <ListboxButton className={`btn-primary w-full text-left flex justify-between items-center h-9.5 cursor-pointer ${className}`}>
           <span className="truncate">
             {selectedOption ? selectedOption.label : placeholder}
           </span>
@@ -37,7 +37,7 @@ export default function CustomSelect<T>({
         <ListboxOptions
           transition
           anchor="bottom start"
-          className="z-100 w-(--button-width) mt-1 rounded-xs border border-btn-border-light bg-white py-2 shadow-lg transition duration-100 ease-in data-closed:opacity-0"
+          className="z-100 w-(--button-width) mt-1  rounded-xs border border-btn-border-light bg-white py-2 shadow-lg transition duration-100 ease-in data-closed:opacity-0"
           modal={false}
         >
           {options.map((option, idx) => (

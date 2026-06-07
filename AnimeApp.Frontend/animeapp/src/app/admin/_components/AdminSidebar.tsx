@@ -37,11 +37,11 @@ export default function AdminSidebar() {
           </div>
         </Link>
 
-        <Link href="/admin/animes/create">
+        <Link href="/admin/anime/create">
           <div className={linkClasses([
-            "/admin/animes/create",
-            "/admin/animes/update",
-            "/admin/animes/delete"
+            "/admin/anime/create",
+            "/admin/anime/update",
+            "/admin/anime/delete"
           ])}>
             <RiMovie2AiLine className="w-5 h-5" />
             <p>Управління аніме</p>
@@ -59,13 +59,17 @@ export default function AdminSidebar() {
           </div>
         </Link>
 
-
-        <Link href="/admin/genres">
-          <div className={linkClasses("/admin/genres")}>
+        <Link href="/admin/genres/create">
+          <div className={linkClasses([
+            "/admin/genres/create",
+            "/admin/genres/update",
+            "/admin/genres/delete"
+          ])}>
             <FaMasksTheater className="w-5 h-5" />
             <p>Управління жанрами</p>
           </div>
         </Link>
+
         {/* <Link href="/admin/cache">
           <div className={linkClasses("/admin/cache")}>
             <DiRedis  className="w-6 h-6" />

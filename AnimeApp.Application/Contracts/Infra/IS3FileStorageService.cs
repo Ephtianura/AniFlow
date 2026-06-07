@@ -14,7 +14,7 @@ namespace AnimeApp.Application.Contracts.Infra
         
         /// <summary> Завантажує файл в S3 по url </summary>
         /// <returns> Назва файлів у S3 </returns>
-        Task<string?> UploadImageFromUrlAsync(string url, string folder);
+        Task<string?> UploadImageFromUrlAsync(string url, string folder, CancellationToken ct = default);
 
         /// <summary> Видаляє файли в S3 по відносних шляхах файлів</summary>
         /// <returns> Кількість успішно видалених файлів та помилок </returns>

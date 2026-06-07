@@ -64,7 +64,7 @@ export default function MobileAdminSidebar() {
                         <TbHomeStats className="w-5 h-5" />
                         <p>Головна</p>
                       </Link>
-                      <Link href="/admin/animes/create" className="slider-btn" onClick={onClose}>
+                      <Link href="/admin/anime/create" className="slider-btn" onClick={onClose}>
                         <RiMovie2AiLine className="w-5 h-5" />
                         <p>Управління аніме</p>
                       </Link>
@@ -72,7 +72,7 @@ export default function MobileAdminSidebar() {
                         <LuBuilding2 className="w-5 h-5" />
                         <p>Управління студіями</p>
                       </Link>
-                      <Link href="/admin/genres" className="slider-btn" onClick={onClose}>
+                      <Link href="/admin/genres/create" className="slider-btn" onClick={onClose}>
                         <FaMasksTheater className="w-5 h-5" />
                         <p>Управління жанрами</p>
                       </Link>

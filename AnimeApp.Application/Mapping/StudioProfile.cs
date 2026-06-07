@@ -5,6 +5,7 @@ using AnimeApp.Application.Dto.Responses.Studio;
 using AnimeApp.Core.Filters;
 using AnimeApp.Core.Models;
 using AutoMapper;
+using AnimeApp.Application.Contracts.Infra;
 
 
 
@@ -27,6 +28,8 @@ namespace AnimeApp.Application.Mapping
 
             CreateMap<PagedResult<Studio>, PagedResultResponse<StudioResponse>>()
                 .ConvertUsing(new PagedResultConverter<Studio, StudioResponse>());
+
+
         }
     }
 

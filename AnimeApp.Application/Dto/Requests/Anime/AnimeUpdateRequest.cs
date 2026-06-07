@@ -6,7 +6,7 @@ namespace AnimeApp.Application.Dto.Requests.Anime
          List<AnimeTitleRequest>? Titles, 
 
          int? StudiosId,
-         List<int>? GenresId,
+         List<int>? GenresIds,
 
          DateTime? AiredOn,
          DateTime? ReleasedOn,
@@ -14,6 +14,7 @@ namespace AnimeApp.Application.Dto.Requests.Anime
          AnimeKindEnum? Kind,
          AnimeStatusEnum? Status,
          AnimeRatingEnum? Rating, 
+         AnimeSource? Source,
 
          double? Score,
          int? Episodes,
@@ -21,6 +22,6 @@ namespace AnimeApp.Application.Dto.Requests.Anime
          int? Duration,
 
          string? Description,
-         List<RelatedsAnimeRequest>? RelatedsAnimes
+         bool? Nsfw
     );
 }

@@ -1,19 +1,14 @@
-﻿using AnimeApp.Application.Dto.Responses.Anime;
+﻿using AnimeApp.Application.Contracts.App;
 using AnimeApp.Application.Dto.Requests.Studio;
-using AnimeApp.Core.Filters;
 using AnimeApp.Core.Models;
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using AnimeApp.Application.Dto.Responses.Studio;
-using AnimeApp.Application.Contracts.Infra;
-using AnimeApp.Application.Contracts.App;
 
 namespace AnimeApp.Api.Controllers
 {
     [ApiController]
     [Route("api/studios")]
-    public class StudiosController(IStudioService studioService, IMapper mapper, IS3FileStorageService fileUrl) : ControllerBase
+    public class StudiosController(IStudioService studioService) : ControllerBase
     {
         private readonly IStudioService _studioService = studioService;
 
@@ -40,9 +35,8 @@ namespace AnimeApp.Api.Controllers
         [HttpPost]
         public async Task<ActionResult> Create([FromBody] CreateStudioRequest request)
         {
-            await _studioService.CreateAsync(request);
-            return Created();
-            //return CreatedAtAction(nameof(GetById), new { id = studio.Id }, studio);
+            var response = await _studioService.CreateAsync(request);
+            return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
         }
 
         /// <summary> Завантажує постер для студії через form-data </summary>

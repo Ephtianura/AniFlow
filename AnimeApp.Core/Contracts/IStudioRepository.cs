@@ -8,9 +8,10 @@ namespace AnimeApp.Core.Contracts
         Task AddAsync(Studio studio);
         Task AddRangeAsync(IEnumerable<Studio> studios);
         Task DeleteAsync(Studio studio);
-        Task<Studio?> GetByIdAsync(int id);
+        Task<Studio?> GetWithAnimesByIdAsync(int id);
         Task<PagedResult<Studio>> GetFilteredAsync(StudioFilter filter);
         Task UpdateAsync(Studio studio);
         Task<Studio?> GetByNameAsync(string name);
+        Task<Studio?> GetByIdAsync(int id);
     }
 }

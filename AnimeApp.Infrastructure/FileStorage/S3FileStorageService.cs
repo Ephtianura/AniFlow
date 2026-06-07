@@ -3,7 +3,9 @@ using Amazon.S3.Transfer;
 using AnimeApp.Application.Contracts.Infra;
 using AnimeApp.Application.Dto.External;
 using Microsoft.Extensions.Configuration;
-using System.Net.Http;
+using Microsoft.Extensions.Logging;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats;
 
 namespace AnimeApp.Infrastructure.FileStorage
 {
@@ -11,12 +13,15 @@ namespace AnimeApp.Infrastructure.FileStorage
         HttpClient httpClient,
         IAmazonS3 s3Client,
         string bucketName,
-        IConfiguration config) : IS3FileStorageService
+        IConfiguration config,
+        ILogger<S3FileStorageService> logger) : IS3FileStorageService
     {
         private readonly HttpClient _httpClient = httpClient;
         private readonly IAmazonS3 _s3Client = s3Client;
+        private ILogger<S3FileStorageService> _logger = logger;
         private readonly string _bucketName = bucketName;
         private readonly string _baseUrl = config["Minio:PublicUrl"]!.TrimEnd('/');
+
 
         public async Task<string> UploadFileAsync(Stream fileStream, string fileName, string folder)
         {
@@ -36,33 +41,33 @@ namespace AnimeApp.Infrastructure.FileStorage
             return key;
         }
 
-        public async Task<string?> UploadImageFromUrlAsync(string url, string folder)
+
+        public async Task<string?> UploadImageFromUrlAsync(string url, string folder, CancellationToken ct = default)
         {
             try
             {
-                using var response = await _httpClient.GetAsync(url);
+                // 1. Скачиваем сразу в массив байт (HttpClient сам выкачает поток в память)
+                byte[] imageBytes = await _httpClient.GetByteArrayAsync(url, ct);
 
-                if (!response.IsSuccessStatusCode)
-                    return null;
-
-                var contentType = response.Content.Headers.ContentType?.MediaType;
-
-                var ext = contentType switch
+                // 2. ImageSharp умеет определять формат прямо из массива байт одной строчкой!
+                var format = Image.DetectFormat(imageBytes);
+                if (format == null)
                 {
-                    "image/png" => ".png",
-                    "image/webp" => ".webp",
-                    _ => ".jpg"
-                };
+                    _logger.LogWarning("Файл по сигнтуре не является валидным изображением: {Url}", url);
+                    return null;
+                }
 
-                var fileName = $"{Guid.NewGuid()}{ext}";
+                // 3. Достаем расширение и генерируем имя
+                var ext = format.FileExtensions.First();
+                var fileName = $"{Guid.NewGuid()}.{ext}";
 
-                await using var stream = await response.Content.ReadAsStreamAsync();
-
-                return await UploadFileAsync(stream, fileName, folder);
+                // 4. Оборачиваем массив в легкий MemoryStream только для метода загрузки
+                using var uploadStream = new MemoryStream(imageBytes);
+                return await UploadFileAsync(uploadStream, fileName, folder);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Помилка завантаження зображення {url}: {ex.Message}");
+                _logger.LogError(ex, "Не удалось скачать картинку по URL: {Url}", url);
                 return null;
             }
         }
@@ -102,12 +107,12 @@ namespace AnimeApp.Infrastructure.FileStorage
             var response = await _s3Client.DeleteObjectsAsync(request);
 
             return new S3DeleteResult
-                {
-                    Deleted = response.DeletedObjects?
+            {
+                Deleted = response.DeletedObjects?
                         .Select(x => x.Key)
                         .ToList() ?? [],
 
-                    Errors = response.DeleteErrors?
+                Errors = response.DeleteErrors?
                         .Select(e => new S3DeleteError
                         {
                             Key = e.Key,
@@ -115,7 +120,7 @@ namespace AnimeApp.Infrastructure.FileStorage
                             Message = e.Message
                         })
                         .ToList() ?? []
-                };
+            };
 
         }
 

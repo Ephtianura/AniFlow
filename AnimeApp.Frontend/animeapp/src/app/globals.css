@@ -125,7 +125,7 @@ input[type="range"]::-webkit-slider-thumb {
            hover:border-btn-border-dark 
            focus:outline-none focus:border-btn-border-dark 
            focus:shadow-[inset_0_2px_5px_rgba(0,0,0,0.06),inset_0_-2px_4px_rgba(255,255,255,0.1)]
-           disabled:opacity-50 disabled:cursor-auto;
+           disabled:opacity-50 disabled:cursor-auto select-none;
   }
 
   .btn-purple {
@@ -135,7 +135,13 @@ input[type="range"]::-webkit-slider-thumb {
     @apply px-3 py-1.5 bg-primary rounded-sm hover:bg-purple-600 transition cursor-pointer border-transparent border
       active:bg-purple-700 active:border-purple-800/60 
       active:shadow-[0_0_20px_rgba(148,87,255,0.5),inset_0_3px_5px_rgba(0,0,0,0.3)]
-      active:ring-4 active:ring-purple-300/80 select-none;
+      active:ring-4 active:ring-purple-300/80 select-none text-white;
+  }
+  .btn-red {
+    @apply px-3 py-1.5 bg-red-600 rounded-sm hover:bg-red-700 transition cursor-pointer border-transparent border
+    active:bg-red-800 active:border-red-900/60
+    active:shadow-[0_0_20px_rgba(220,38,38,0.5),inset_0_3px_5px_rgba(0,0,0,0.3)]
+    active:ring-4 active:ring-red-400/80 select-none;
   }
   .btn-white {
     @apply px-3 py-1.5 bg-white rounded-sm hover:bg-gray-200
@@ -147,7 +153,7 @@ input[type="range"]::-webkit-slider-thumb {
 
   .btn-player-mobile {
     @apply border border-[#6C757D] rounded-lg active:bg-[#6c757d] transition
-    hover:ring-2 active:ring-2 ring-[#42474C] cursor-pointer ;
+    hover:ring-2 active:ring-2 ring-[#42474C] cursor-pointer;
   }
 
   .h4 {
@@ -230,5 +236,10 @@ input[type="range"]::-webkit-slider-thumb {
   .animate-blinds-up {
     transform-origin: top;
     animation: blindsUp 0.2s ease-in forwards;
+  }
+
+  img {
+    @apply select-none;
+    /* -webkit-user-drag: none; */
   }
 }

@@ -4,19 +4,17 @@ import WhiteCard from "../WhiteCard";
 import { getTitle } from "@/app/anime/[animeUrl]/_functions/getTitle";
 import { Animes } from "@/core/types";
 import { TitleLanguage, TitleType } from "@/core/enums/AnimeTitle";
-import { KindLink } from "../KindLink";
-import { YearLink } from "../YearLink";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { AnimeKindMap } from "@/core/enums/AnimeKind";
 
 type Props = {
     animes: Animes[]
     onClose: () => void;
 }
 export default function AnimeDropDown({ animes, onClose }: Props) {
-    const router = useRouter();
 
     return (
-        <WhiteCard className="overflow-y-auto max-h-[550px]">
+        <WhiteCard className="overflow-y-auto transparent-scroll max-h-[550px]">
             <div className="flex items-center gap-2 -mt-2 pb-2 border-b-2 border-primary">
                 <h1 className="text-primary-black text-lg font-medium">
                     Аніме знайдено:
@@ -35,19 +33,14 @@ export default function AnimeDropDown({ animes, onClose }: Props) {
                 const romaji = getTitle(anime.titles, TitleLanguage.Romaji, TitleType.Official)
                 const isLast = index === animes.length - 1;
 
-                const goToAnime = () => {
-                    router.push(`/anime/${anime.url}`);
-                    onClose()
-                };
-
                 return (
                     <div key={anime.id}>
-                        <div onClick={goToAnime}
+                        <Link href={`/anime/${anime.url}`}
                             className="flex gap-2 py-3 px-3 hover:bg-gray-100 cursor-pointer"
                         >
                             {/* Картинка */}
                             <img
-                                src={anime.posterUrl || "/404.gif"}
+                                src={anime.posterUrl || "/NotFound.jpg"}
                                 alt={ua || romaji}
                                 className="w-14 aspect-5/7 object-cover shrink-0 rounded-xs"
                             />
@@ -56,18 +49,22 @@ export default function AnimeDropDown({ animes, onClose }: Props) {
                             <div className="flex flex-col justify-between">
                                 <div>
                                     <p className="font-medium text-primary text-xl line-clamp-2 sm:line-clamp-1">{ua || romaji}</p>
-                                    <p className="font- text-gray-text-dark text-sm -mt-1 line-clamp-1">{romaji}</p>
+                                    <p className="text-gray-text-dark text-sm -mt-1 line-clamp-1">{romaji}</p>
                                 </div>
 
                                 <div className="text-primary-black font-normal hidden sm:flex flex-col sm:flex-row gap-1 ">
                                     {/* YEAR */}
-                                    {anime.year && <YearLink year={anime.year} />}
+                                    {anime.year &&
+                                        <span className="underline">{anime.year} </span>
+                                    }
 
                                     {/* KIND */}
-                                    {anime.kind && <KindLink kind={anime.kind} />}
+                                    {anime.kind && (
+                                        <span className="underline">{AnimeKindMap[anime.kind as keyof typeof AnimeKindMap] ?? anime.kind}</span>
+                                    )}
                                 </div>
                             </div>
-                        </div>
+                        </Link>
 
                         {!isLast && <hr className="text-hr-clr" />}
                         {isLast && <hr className="border text-primary" />}

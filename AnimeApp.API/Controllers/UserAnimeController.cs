@@ -1,9 +1,7 @@
 ﻿using AnimeApp.Application.Contracts.App;
-using AnimeApp.Application.Contracts.Infra;
 using AnimeApp.Application.Dto.Requests.User;
 using AnimeApp.Application.Dto.Responses.User;
 using AnimeApp.Core.Enums;
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

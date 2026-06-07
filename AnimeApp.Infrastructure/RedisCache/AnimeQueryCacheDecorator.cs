@@ -46,6 +46,8 @@ namespace AnimeApp.Infrastructure.RedisCache
 
         /// <summary> Кешує рандомні аніме. </summary>
         /// <returns> Одне рандомне аніме з кешу або бази </returns>
+        /// 
+        ///              !Не використовується.!
         public async Task<AnimeResponse> GetRandomAsync()
         {
             // Ідемо в редіс, отримувати список рандомних айді

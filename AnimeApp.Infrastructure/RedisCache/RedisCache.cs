@@ -25,6 +25,16 @@ namespace AnimeApp.Infrastructure.RedisCache
         public Task RemoveAsync(string key)
             => _db.KeyDeleteAsync(key);
 
+        public async Task RemoveMultipleAsync(IEnumerable<string> keys)
+        {
+            if (keys == null || !keys.Any())
+                return;
+
+            var redisKeys = keys.Select(k => (RedisKey)k).ToArray();
+
+            await _db.KeyDeleteAsync(redisKeys);
+        }
+
         public async Task RemoveByPrefixAsync(string prefix)
         {
             var endpoints = _db.Multiplexer.GetEndPoints();
@@ -37,5 +47,6 @@ namespace AnimeApp.Infrastructure.RedisCache
                     await _db.KeyDeleteAsync(key);
             }
         }
+
     }
 }

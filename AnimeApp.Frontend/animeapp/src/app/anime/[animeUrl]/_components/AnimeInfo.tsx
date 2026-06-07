@@ -37,7 +37,7 @@ export function formatDuration(minutes: number, kind?: AnimeKindEnum | null) {
 
 export const AnimeInfo: React.FC<Props> = ({ anime }) => {
     const formatted = formatAnimeDates(anime);
-
+    const visibleGenres = anime.genres.slice(0, 15);
     return (
         <div>
             <div className="grid grid-cols-[35%_65%] gap-x-4 gap-y-1">
@@ -84,18 +84,18 @@ export const AnimeInfo: React.FC<Props> = ({ anime }) => {
                     </>
                 )}
 
-                {anime.genres?.length > 0 && (
+                {visibleGenres?.length > 0 && (
                     <>
                         <p className="text-gray-dark">Жанр</p>
-                        <div className="text-primary flex gap-1 flex-wrap">
-                            {anime.genres.map((genre, index) => (
+                        <div className="text-primary flex gap-1 flex-wrap ">
+                            {visibleGenres.map((genre, index) => (
                                 <Link
                                     key={genre.id}
                                     href={{ pathname: "/animes", query: { genres: genre.slug } }}
                                     className="hover:underline hover:text-purple-700 cursor-pointer"
                                 >
                                     {genre.nameUa}
-                                    {index < anime.genres.length - 1 && <span className="text-primary-black">, </span>}
+                                    {index < visibleGenres.length - 1 && <span className="text-primary-black">, </span>}
                                 </Link>
                             ))}
                         </div>

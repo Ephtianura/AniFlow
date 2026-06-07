@@ -22,6 +22,12 @@ namespace AnimeApp.Application.Exceptions
         public NotFoundException(string entityName)
             : base($"{entityName} not found.") { }
     }
+
+    public class BadRequestException : Exception
+    {
+        public BadRequestException(string message)
+            : base(message) { }
+    }
     public class AlreadyExistsException : Exception
     {
         public AlreadyExistsException()

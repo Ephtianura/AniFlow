@@ -8,6 +8,8 @@ using AnimeApp.Application.Mapping;
 using AnimeApp.Core.Contracts;
 using AnimeApp.Core.Enums;
 using AnimeApp.Core.Models;
+using Microsoft.Extensions.Logging;
+using System.Xml.Linq;
 
 namespace AnimeApp.Application.Services.AnimeServices
 {
@@ -16,7 +18,8 @@ namespace AnimeApp.Application.Services.AnimeServices
         IUnitOfWork unitOfWork,
         IStudioRepository studios,
         IGenreRepository genres,
-        IS3FileStorageService fileStorage
+        IS3FileStorageService fileStorage,
+        ILogger<AnimeCommandService> logger
         ) : IAnimeCommandService
     {
         private readonly IAnimeRepository _animeRep = animes;
@@ -24,7 +27,9 @@ namespace AnimeApp.Application.Services.AnimeServices
         private readonly IStudioRepository _studios = studios;
         private readonly IGenreRepository _genres = genres;
         private readonly IS3FileStorageService _fileStorage = fileStorage;
+        private readonly ILogger<AnimeCommandService> _logger = logger;
 
+        // Create
         public async Task<AnimeCreateResponse> CreateAsync(AnimeCreateRequest request)
         {
             // Створити назви
@@ -40,7 +45,7 @@ namespace AnimeApp.Application.Services.AnimeServices
             Studio? studio = null;
             if (request.StudiosId.HasValue)
             {
-                studio = await _studios.GetByIdAsync(request.StudiosId.Value);
+                studio = await _studios.GetWithAnimesByIdAsync(request.StudiosId.Value);
                 if (studio == null)
                     throw new NotFoundException("Studio", request.StudiosId.Value);
             }
@@ -76,6 +81,7 @@ namespace AnimeApp.Application.Services.AnimeServices
                 Kind = request.Kind,
                 Status = request.Status,
                 Rating = request.Rating,
+                Source = request.Source,
                 Description = request.Description,
                 Studio = studio,
                 Genres = genres,
@@ -86,7 +92,8 @@ namespace AnimeApp.Application.Services.AnimeServices
                 Score = request.Score,
                 Episodes = request.Episodes,
                 EpisodesAired = request.EpisodesAired,
-                Duration = request.Duration
+                Duration = request.Duration,
+                Nsfw = request.Nsfw
             });
 
             await _animeRep.AddAsync(anime);
@@ -94,7 +101,6 @@ namespace AnimeApp.Application.Services.AnimeServices
             // Генерація URL з офіційного Romaji title
             anime.UpdateUrl(AniBuilder.GenerateSlug(officialRomajiTitle.Value, anime.Id));
 
-            await _animeRep.UpdateAsync(anime);
             await _unitOfWork.SaveChangesAsync();
             return new AnimeCreateResponse(
                 anime.Id,
@@ -103,32 +109,43 @@ namespace AnimeApp.Application.Services.AnimeServices
             );
         }
 
-        public async Task UpdateAsync(int id, AnimeUpdateRequest request)
+        // Update
+        public async Task UpdateBaseAsync(int animeId, AnimeUpdateRequest request)
         {
-            var anime = await GetAnimeByIdAsync(id);
+            var anime = await _animeRep.GetWithGenresStudioByIdAsync(animeId)
+                ?? throw new NotFoundException("Anime", animeId);
 
             // ===================== Studio =====================
             if (request.StudiosId.HasValue && request.StudiosId.Value != anime.StudiosId)
             {
-                var studio = await _studios.GetByIdAsync(request.StudiosId.Value)
+                var studio = await _studios.GetWithAnimesByIdAsync(request.StudiosId.Value)
                     ?? throw new NotFoundException("Studio", request.StudiosId.Value);
                 anime.SetStudio(studio);
             }
 
             // ===================== Genres =====================
-            if (request.GenresId != null)
+            if (request.GenresIds != null)
             {
-                var genres = new List<Genre>();
-                foreach (var genreId in request.GenresId)
+                var requestedGenres = await _genres.GetByIdsAsync(request.GenresIds);
+
+                if (requestedGenres.Count != request.GenresIds.Count)
+                    throw new BadRequestException("Some genre IDs are invalid.");
+
+                var genresToRemove = anime.Genres.Where(g => !request.GenresIds.Contains(g.Id)).ToList();
+
+                foreach (var genre in genresToRemove)
                 {
-                    var genre = await _genres.GetByIdAsync(genreId);
-                    if (genre != null) genres.Add(genre);
+                    anime.RemoveGenre(genre);
                 }
 
-                // Оновити жанри
-                anime.Genres.Clear();
-                foreach (var g in genres)
-                    anime.AddGenre(g);
+                var currentGenreIds = anime.Genres.Select(g => g.Id).ToHashSet();
+                foreach (var genre in requestedGenres)
+                {
+                    if (!currentGenreIds.Contains(genre.Id))
+                    {
+                        anime.AddGenre(genre);
+                    }
+                }
             }
 
             // ===================== Titles =====================
@@ -150,49 +167,7 @@ namespace AnimeApp.Application.Services.AnimeServices
                 }
             }
 
-            // !!!------------------ Потребує рефакторінгу... ------------------!!!
-
-            // ===================== Relateds =====================
-            if (request.RelatedsAnimes != null)
-            {
-                var newRelations = request.RelatedsAnimes;
-
-                // 1. Видаляємо старі зв'язки, яких немає у новому списку
-                var existingIds = anime.Relateds.ConvertAll(r => r.RelatedAnimeId);
-                var newIds = newRelations.ConvertAll(r => r.RelatedAnimeId);
-
-                var toRemove = existingIds.Except(newIds).ToList();
-
-                foreach (var relatedId in toRemove)
-                {
-                    anime.RemoveRelated(relatedId);
-
-                    // Двостороннє видалення (якщо було)
-                    var relatedAnime = await GetAnimeByIdAsync(relatedId);
-                    relatedAnime.RemoveRelated(anime.Id);
-                }
-
-                // 2. Додаємо нові зв'язки (або оновлюємо старі)
-                foreach (var rel in newRelations)
-                {
-                    var relatedAnime = await GetAnimeByIdAsync(rel.RelatedAnimeId);
-
-                    // Прямий зв'язок
-                    anime.AddRelated(relatedAnime, rel.RelationKind);
-
-                    // Зворотний зв'язок, якщо є мапінг
-                    var reverse = RelationKindMap.GetReverse(rel.RelationKind);
-                    if (reverse != null)
-                    {
-                        relatedAnime.AddRelated(anime, reverse.Value);
-                    }
-                }
-            }
-
             // ===================== Інші =====================
-            if (!string.IsNullOrWhiteSpace(request.Description) && request.Description != anime.Description)
-                anime.UpdateDescription(request.Description);
-
             if (request.AiredOn.HasValue && request.AiredOn != anime.AiredOn)
             {
                 DateTime? airedOnUtc = request.AiredOn?.ToUniversalTime();
@@ -210,6 +185,8 @@ namespace AnimeApp.Application.Services.AnimeServices
                 anime.UpdateStatus(request.Status.Value);
             if (request.Rating.HasValue && request.Rating != anime.Rating)
                 anime.UpdateRating(request.Rating.Value);
+            if (request.Source.HasValue && request.Source != anime.Source)
+                anime.Source = request.Source.Value;
 
             if (request.AiredOn.HasValue)
             {
@@ -228,18 +205,24 @@ namespace AnimeApp.Application.Services.AnimeServices
             if (request.Duration.HasValue && request.Duration != anime.Duration)
                 anime.UpdateDuration(request.Duration.Value);
 
-            await _animeRep.UpdateAsync(anime);
+            if (!string.IsNullOrWhiteSpace(request.Description) && request.Description != anime.Description)
+                anime.UpdateDescription(request.Description);
+
+            if (request.Nsfw.HasValue && request.Nsfw != anime.Nsfw)
+                anime.Nsfw = request.Nsfw.Value;
+
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task UpdateFilesAsync(int id, AnimeUpdateFilesRequest request)
+        // Update Files
+        public async Task UpdateFilesAsync(int animeId, AnimeUpdateFilesRequest request)
         {
             if (request.Poster == null && string.IsNullOrWhiteSpace(request.PosterUrl) &&
                (request.Screenshots == null || !request.Screenshots.Any()) &&
                 (request.ScreenshotUrls == null || !request.ScreenshotUrls.Any()))
                 throw new ArgumentException("Необхідно завантажити хоча б постер чи один скріншот.");
 
-            var anime = await GetAnimeByIdAsync(id);
+            var anime = await GetAnimeOrThrowAsync(animeId);
 
             // ===================== Оновлення постера =====================
             if (request.Poster != null)
@@ -279,23 +262,174 @@ namespace AnimeApp.Application.Services.AnimeServices
 
             if (screenshotFiles.Count != 0)
                 anime.UpdateScreenshotsFileName(screenshotFiles);
-           
 
-            await _animeRep.UpdateAsync(anime);
             await _unitOfWork.SaveChangesAsync();
         }
 
+        // Delete
         public async Task DeleteAsync(int animeId)
         {
-            var anime = await GetAnimeByIdAsync(animeId);
-            await _animeRep.DeleteAsync(anime);
+            var anime = await GetAnimeOrThrowAsync(animeId);
+
+            var filesToDelete = new List<string>();
+
+            if (!string.IsNullOrWhiteSpace(anime.PosterFileName))
+                filesToDelete.Add(anime.PosterFileName);
+
+            if (anime.ScreenshotsFileName != null)
+                filesToDelete.AddRange(anime.ScreenshotsFileName);
+
+            try
+            {
+                await _animeRep.DeleteAsync(anime);
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Не вдалося видалити аніме {AnimeTitle}. AnimeId: {AnimeId}",
+                    anime.Titles, animeId);
+                throw;
+            }
+
+
+            var s3Result = await _fileStorage.DeleteFilesAsync(filesToDelete);
+
+            if (s3Result?.Errors != null && s3Result.Errors.Count != 0)
+            {
+                _logger.LogWarning("Не вдалося видалити медіа при видаленні аніме {AnimeTitle}. AnimeId: {AnimeId}. S3Errors: {S3Errors}",
+                    anime.OfficialRomajiTitle, animeId, s3Result.Errors);
+            }
         }
+
+        // Order
+        public async Task OrderScreenshots(int animeId, AnimeOrderScreenshotsRequest request)
+        {
+            var anime = await GetAnimeOrThrowAsync(animeId);
+
+            var currentScreenshots = anime.ScreenshotsFileName ?? [];
+
+            var candidateToDelete = currentScreenshots.Except(currentScreenshots).ToList();
+
+            var realDeletedFromS3 = new List<string>();
+
+            if (candidateToDelete.Count != 0)
+            {
+                var s3Result = await _fileStorage.DeleteFilesAsync(candidateToDelete);
+
+                if (s3Result?.Deleted != null)
+                    realDeletedFromS3 = s3Result.Deleted;
+
+                if (s3Result?.Errors != null && s3Result.Errors.Count != 0)
+                {
+                    _logger.LogWarning("Не вдалося видалити скріншоти для аніме {AnimeTitle}. AnimeId: {AnimeId}. S3Errors: {S3Errors}",
+                        anime.OfficialRomajiTitle, animeId, s3Result.Errors);
+                }
+            }
+
+            var failedToDelete = candidateToDelete.Except(realDeletedFromS3).ToList();
+
+            if (failedToDelete.Count != 0)
+            {
+                request.OrderedScreenshots.AddRange(failedToDelete);
+            }
+
+            anime.UpdateScreenshotsFileName(request.OrderedScreenshots);
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+
+        // Related
+        public async Task<RelatedUpdateResult> UpdateRelated(int animeId, RelatedsAnimeRequest request)
+        {
+            var anime = await _animeRep.GetWithRelateds(animeId)
+                ?? throw new NotFoundException("Anime", animeId);
+
+            var newRelations = request.RelatedsAnimes ?? [];
+
+            // Видаляємо зв'язки, яких більше немає у запиті
+            var existingIds = anime.Relateds.ConvertAll(r => r.RelatedAnimeId);
+            var newIds = newRelations.ConvertAll(r => r.RelatedAnimeId);
+            var toRemove = existingIds.Except(newIds).ToList();
+
+            var updatedList = new List<RelatedAnimeItem>();
+            var deletedList = new List<RelatedAnimeItem>();
+
+            foreach (var relatedId in toRemove)
+            {
+                var oldRelation = anime.Relateds.FirstOrDefault(r => r.RelatedAnimeId == relatedId);
+                if (oldRelation != null)
+                {
+                    deletedList.Add(new RelatedAnimeItem(relatedId, oldRelation.Type));
+                }
+
+                anime.RemoveRelated(relatedId);
+
+                // Видаляємо зворотний зв'язок
+                var relatedAnime = await _animeRep.GetWithRelateds(relatedId);
+                relatedAnime?.RemoveRelated(anime.Id);
+            }
+
+            // Оновлюємо або додаємо зв'язки
+            foreach (var rel in newRelations)
+            {
+                var existingRelation =
+                    anime.Relateds.FirstOrDefault(r => r.RelatedAnimeId == rel.RelatedAnimeId);
+
+                if (existingRelation != null)
+                {
+                    // Якщо тип змінився — оновлюємо обидві сторони
+                    if (existingRelation.Type != rel.RelationKind)
+                    {
+                        updatedList.Add(rel);
+
+                        existingRelation.UpdateType(rel.RelationKind);
+
+                        var relatedAnime = await _animeRep.GetWithRelateds(rel.RelatedAnimeId);
+                        var reverseKind = RelationKindMap.GetReverse(rel.RelationKind);
+
+                        if (relatedAnime != null && reverseKind != null)
+                        {
+                            var reverseRelation =
+                                relatedAnime.Relateds.FirstOrDefault(r => r.RelatedAnimeId == anime.Id);
+
+                            reverseRelation?.UpdateType(reverseKind.Value);
+                        }
+                    }
+                }
+                else
+                {
+                    // Створюємо новий зв'язок
+                    var relatedAnime = await _animeRep.GetWithRelateds(rel.RelatedAnimeId);
+
+                    if (relatedAnime != null)
+                    {
+                        anime.AddRelated(relatedAnime, rel.RelationKind);
+
+                        // Додаємо зворотний зв'язок
+                        var reverse = RelationKindMap.GetReverse(rel.RelationKind);
+
+                        if (reverse != null)
+                        {
+                            relatedAnime.AddRelated(anime, reverse.Value);
+                        }
+                    }
+                }
+            }
+
+            await _unitOfWork.SaveChangesAsync();
+
+            var currentList = anime.Relateds.ConvertAll(r => new RelatedAnimeItem(r.RelatedAnimeId, r.Type));
+
+            return new RelatedUpdateResult(currentList, updatedList, deletedList);
+        }
+
 
         // ============================== private methods ====================================
 
-        /// <summary> Повертає сутність аніме по айді </summary>
+        /// <summary> Повертає аніме по айді </summary>
         /// <exception cref="NotFoundException"></exception>
-        private async Task<Anime> GetAnimeByIdAsync(int animeId) =>
-            await _animeRep.GetByIdAsync(animeId) ?? throw new NotFoundException("Anime", animeId);       
+        private async Task<Anime> GetAnimeOrThrowAsync(int animeId) =>
+            await _animeRep.GetByIdAsync(animeId) ?? throw new NotFoundException("Anime", animeId);
+
     }
 }

@@ -4,6 +4,7 @@
         string? NameEn,
         string? NameUa,
         string? NameRu,
+        string? Slug,
         TagType? Type
         );
 }

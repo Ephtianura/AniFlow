@@ -7,9 +7,10 @@ using AnimeApp.Core.Models;
 
 namespace AnimeApp.Application.Services
 {
-    public class GenreService(IGenreRepository genres) : IGenreService
+    public class GenreService(IGenreRepository genres, IUnitOfWork unitOfWork) : IGenreService
     {
         private readonly IGenreRepository _genres = genres;
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
         public async Task<Genre?> GetByIdAsync(int id) =>
             await GetGenreByIdAsync(id);
@@ -20,11 +21,11 @@ namespace AnimeApp.Application.Services
         public async Task<Genre> CreateAsync(CreateGenreRequest request)
         {
             if (string.IsNullOrWhiteSpace(request.NameEn))
-                throw new ArgumentNullException("English name cannot be empty");
+                throw new BadRequestException("English name cannot be empty");
 
             var genre = Genre.Create(
                 nameEn: request.NameEn,
-                slug: request.NameEn.ToLowerInvariant(),
+                slug: AniBuilder.GenerateSlug(request.NameEn),
                 type: request.Type,
                 nameUa: request.NameUa,
                 nameRu: request.NameRu);
@@ -39,7 +40,7 @@ namespace AnimeApp.Application.Services
                  .Select(g =>
                  {
                      if (string.IsNullOrWhiteSpace(g.NameEn))
-                         throw new ArgumentNullException("English name cannot be empty");
+                         throw new BadRequestException("English name cannot be empty");
 
                      return Genre.Create(
                         nameEn: g.NameEn,
@@ -60,17 +61,16 @@ namespace AnimeApp.Application.Services
 
             if (request.NameEn != null)
                 genre.ChangeNameEn(request.NameEn);
-
             if (request.NameUa != null)
                 genre.ChangeNameUa(request.NameUa);
-
             if (request.NameRu != null)
                 genre.ChangeNameRu(request.NameRu);
-
             if (request.Type != null)
                 genre.ChangeType(request.Type.Value);
+            if (request.Slug != null)
+                genre.ChangeSlug(request.Slug);
 
-            await _genres.UpdateAsync(genre);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(int id)

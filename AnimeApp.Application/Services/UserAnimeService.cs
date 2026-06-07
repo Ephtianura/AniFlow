@@ -8,17 +8,18 @@ using AnimeApp.Application.Exceptions;
 using AnimeApp.Core.Contracts;
 using AnimeApp.Core.Enums;
 using AnimeApp.Core.Models;
-using MassTransit;
 
 namespace AnimeApp.Application.Services
 {
     public class UserAnimeService(
         IUserRepository users,
         IUserAnimeRepository usersAnimes,
+        IUnitOfWork unitOfWork,
         IS3FileStorageService fileStorage) : IUserAnimeService
     {
         private readonly IUserRepository _usersRepo = users;
         private readonly IUserAnimeRepository _userAnimesRepo = usersAnimes;
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IS3FileStorageService _fileStorage = fileStorage;
 
 
@@ -168,7 +169,7 @@ namespace AnimeApp.Application.Services
                 if (request.IsFavorite is true)
                     userAnime.MarkAsFavorites();
 
-                await _userAnimesRepo.UpdateAsync(userAnime);
+                await _unitOfWork.SaveChangesAsync();
             }
 
         }
@@ -192,7 +193,7 @@ namespace AnimeApp.Application.Services
             if (userAnime.IsEmpty())
                 await _userAnimesRepo.DeleteAsync(userAnime);
             else
-                await _userAnimesRepo.UpdateAsync(userAnime);
+                await _unitOfWork.SaveChangesAsync();
         }
 
         /// <summary>

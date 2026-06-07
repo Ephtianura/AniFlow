@@ -5,6 +5,14 @@ import { UserRole } from "@/core/enums/UserRole";
 import { notFound } from "next/navigation";
 import AdminSidebars from "./_components/AdminSidebars";
 
+export async function generateMetadata() {
+    const me = await getMe();
+    if (!me || me.role !== UserRole.Admin) {
+        notFound(); 
+    }
+    return {}; 
+}
+
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const me = await getMe()
   if (!me || me.role != UserRole.Admin) notFound();

@@ -9,6 +9,11 @@ namespace AnimeApp.Application.Helpers
     {
         public static string GenerateSlug(string value, int id)
         {
+            value = GenerateSlug(value);
+            return $"{value}-{id}";
+        }
+        public static string GenerateSlug(string value)
+        {
             value = value.Trim().ToLowerInvariant();
 
             // Видалити все окрім a-z 0-9
@@ -20,7 +25,7 @@ namespace AnimeApp.Application.Helpers
             // Заміна повторів "---" на "-"
             value = Regex.Replace(value, @"-+", "-");
 
-            return $"{value}-{id}";
+            return value;
         }
 
         /// <summary> Розраховує та повертає сезон по місяцю випуску </summary>

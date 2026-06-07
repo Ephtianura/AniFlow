@@ -10,11 +10,13 @@ namespace AnimeApp.Application.Services.Importing
 {
     public class StudioFactory(
         IStudioRepository studioRep,
+        IUnitOfWork unitOfWork,
         IS3FileStorageService fileStorage,
         ILogger<StudioFactory> logger) : IStudioFactory
     {
-        private readonly IS3FileStorageService _fileStorage = fileStorage;
         private readonly IStudioRepository _studioRep = studioRep;
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IS3FileStorageService _fileStorage = fileStorage;
         private readonly ILogger<StudioFactory> _logger = logger;
 
         public async Task<Studio?> GetStudioFromRaw(List<CompanyDto>? raw)
@@ -37,7 +39,7 @@ namespace AnimeApp.Application.Services.Importing
                         studio.ChangePoster(
                             await _fileStorage.UploadImageFromUrlAsync(studioRaw.Image, StoragePaths.StudioPosters));
 
-                    await _studioRep.UpdateAsync(studio);
+                    await _unitOfWork.SaveChangesAsync();
                     _logger.LogInformation(LogEvents.StudioUpdated, "Студію {StudioName} оновлено!", studio.Name);
                 }
             }

@@ -20,7 +20,7 @@ export default function AnimeCardPoster(props: AnimeCardPosterProps) {
                 </div>
             </div>
             <Link href={`/anime/${url}`} className="text-primary text-xl hover:underline">
-                <img src={posterUrl || "/404.gif"} alt={title} className="w-full h-full object-cover aspect-5/7 rounded-xs" />
+                <img src={posterUrl || "/NotFound.jpg"} alt={title} className="w-full h-full object-cover aspect-5/7 rounded-xs" />
             </Link>
         </div>
     )

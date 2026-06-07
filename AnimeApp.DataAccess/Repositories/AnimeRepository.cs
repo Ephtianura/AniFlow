@@ -12,7 +12,10 @@ namespace AnimeApp.DataAccess.Repositories
     {
         private readonly AnimeAppDbContext _dbContext = db;
 
-        public async Task<Anime?> GetByIdAsync(int id)
+        public async Task<Anime?> GetByIdAsync(int id) =>
+             await _dbContext.Animes.FirstOrDefaultAsync(a => a.Id == id);
+
+        public async Task<Anime?> GetFullByIdAsync(int id)
         {
             return await _dbContext.Animes
                 .AsNoTracking()
@@ -29,6 +32,21 @@ namespace AnimeApp.DataAccess.Repositories
                 .FirstOrDefaultAsync(a => a.Id == id);
         }
 
+        public async Task<Anime?> GetWithGenresStudioByIdAsync(int id)
+        {
+            return await _dbContext.Animes
+                .Include(a => a.Genres)
+                .Include(a => a.Studio)
+                .FirstOrDefaultAsync(a => a.Id == id);
+        }
+        public async Task<Anime?> GetWithRelateds(int animeId)
+        {
+            return await _dbContext.Animes
+            .Include(a => a.Relateds)
+                    .ThenInclude(r => r.RelatedAnime)
+             .FirstOrDefaultAsync(a => a.Id == animeId);
+        }
+
         public Task<Anime?> GetByMoonIdAsync(int moonId) =>
          _dbContext.Animes.FirstOrDefaultAsync(a => a.MoonId == moonId);
 
@@ -42,9 +60,10 @@ namespace AnimeApp.DataAccess.Repositories
 
             var randomId = ids[Random.Shared.Next(ids.Count)];
 
-            return await GetByIdAsync(randomId);
+            return await GetFullByIdAsync(randomId);
         }
 
+        // ======================================== TODO:
         public async Task<string?> GetRandomSlugAsync()
         {
             using var connection = _dbContext.Database.GetDbConnection();
@@ -78,7 +97,7 @@ namespace AnimeApp.DataAccess.Repositories
             return allIds;
         }
 
-      
+
 
         public async Task<PagedResult<Anime>> GetFilteredAsync(AnimeFilter filter)
         {
@@ -209,8 +228,6 @@ namespace AnimeApp.DataAccess.Repositories
             return new PagedResult<Anime>(items, totalCount, filter.Page, filter.PageSize);
         }
 
-
-
         public async Task AddAsync(Anime anime)
         {
             await _dbContext.Animes.AddAsync(anime);
@@ -224,9 +241,7 @@ namespace AnimeApp.DataAccess.Repositories
         {
             _dbContext.Animes.Remove(anime);
             await _dbContext.SaveChangesAsync();
-        }
-
-     
+        }               
     }
 }
 

@@ -72,18 +72,6 @@ export interface AnimeOstResponse {
   videos: AnimeVideoResponse[];
 }
 
-export interface AnimeCreateReponse {
-  id: number;
-  titles: AnimeTitle[];
-  url: string;
-}
-
-export interface AnimeCreateReponse {
-  id: number;
-  titles: AnimeTitle[];
-  url: string;
-}
-
 export interface RelatedAnime {
   id: number;
   relationKind: keyof typeof RelationKindEnum;
@@ -139,7 +127,7 @@ export interface PagedResult<T> {
   pageSize: number;
   totalPages: number;
   hasNext: boolean;
-  hasPrevious : boolean;
+  hasPrevious: boolean;
 }
 
 export interface ApiError {
@@ -205,10 +193,10 @@ export interface UserProfile {
   timeSpent: string;
 }
 export interface UserMeResponse {
-  id: number,
-  nickname: string,
-  avatarUrl: string | null,
-  role: UserRole,
+  id: number;
+  nickname: string;
+  avatarUrl: string | null;
+  role: UserRole;
 }
 
 export interface UserAnimeList {
@@ -236,3 +224,8 @@ export interface AnimeInListResponse {
   posterUrl?: string | null;
 }
 
+export interface AnimeCreateResponse {
+  id: number;
+  url: string;
+  titles: AnimeTitle[];
+}

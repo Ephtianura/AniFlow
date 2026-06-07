@@ -12,15 +12,16 @@ using Microsoft.AspNetCore.Http;
 
 namespace AnimeApp.Application.Services
 {
-    public class StudioService(IStudioRepository studios, IS3FileStorageService fileStorage, IMapper mapper) : IStudioService
+    public class StudioService(IStudioRepository studios, IUnitOfWork unitOfWork, IS3FileStorageService fileStorage, IMapper mapper) : IStudioService
     {
         private readonly IStudioRepository _studiosRep = studios;
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IS3FileStorageService _fileStorage = fileStorage;
         private readonly IMapper _mapper = mapper;
 
         public async Task<StudioResponse> GetByIdAsync(int id)
         {
-            Studio studio = await GetStudioByIdAsync(id);
+            Studio studio = await GetStudioWithAnimes(id);
             var response = _mapper.Map<StudioResponse>(studio);
 
             if (!string.IsNullOrWhiteSpace(studio.PosterFileName))
@@ -64,13 +65,13 @@ namespace AnimeApp.Application.Services
         public async Task<StudioResponse> CreateAsync(CreateStudioRequest request)
         {
             if (string.IsNullOrWhiteSpace(request.Name))
-                throw new ArgumentNullException("Studio name cannot be empty");
+                throw new BadRequestException("Studio name cannot be empty");
 
-            var studio = Studio.Create(name: request.Name, slug: "unknown", description: request.Description);
+            var studio = Studio.Create(name: request.Name, slug: "unknown", description: request.Description ?? "");
             await _studiosRep.AddAsync(studio);
 
             studio.ChangeSlug(AniBuilder.GenerateSlug(studio.Name, studio.Id));
-            await _studiosRep.UpdateAsync(studio);
+            await _unitOfWork.SaveChangesAsync();
 
             var response = _mapper.Map<StudioResponse>(studio);
 
@@ -80,26 +81,28 @@ namespace AnimeApp.Application.Services
             return response;
         }
 
+        // ===================== Файли =====================
         public async Task UpdateFilesAsync(int id, IFormFile? poster)
         {
-            var studio = await GetStudioByIdAsync(id);
+            var studio = await GetStudio(id);
 
-            // ===================== Файли =====================
             if (poster != null)
             {
                 using var stream = poster.OpenReadStream();
                 var posterFileName = await _fileStorage.UploadFileAsync(stream, poster.FileName, StoragePaths.StudioPosters);
                 studio.ChangePoster(posterFileName);
             }
-            if (poster == null)
-                throw new ArgumentException("At least 1 poster or 1 screenshot must be uploaded.");
+            else
+            {
+                studio.ChangePoster(null);
+            }
 
-            await _studiosRep.UpdateAsync(studio);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(int id, UpdateStudioRequest request)
         {
-            var studio = await GetStudioByIdAsync(id);
+            var studio = await GetStudio(id);
 
             if (request.Name != null)
             {
@@ -112,16 +115,23 @@ namespace AnimeApp.Application.Services
             if (request.Description != null)
                 studio.ChangeDescription(request.Description);
 
-            await _studiosRep.UpdateAsync(studio);
+            if (request.Slug != null)
+                studio.ChangeSlug(request.Slug);
+            if (request.MalId != null)
+                studio.ChangeMalId(request.MalId);
+
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(int id)
         {
-            var studio = await GetStudioByIdAsync(id);
+            var studio = await GetStudioWithAnimes(id);
             await _studiosRep.DeleteAsync(studio);
         }
 
-        private async Task<Studio> GetStudioByIdAsync(int id) =>
+        private async Task<Studio> GetStudio(int id) =>
             await _studiosRep.GetByIdAsync(id) ?? throw new NotFoundException("Studio", id);
+        private async Task<Studio> GetStudioWithAnimes(int id) =>
+            await _studiosRep.GetWithAnimesByIdAsync(id) ?? throw new NotFoundException("Studio", id);
     }
 }

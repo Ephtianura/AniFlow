@@ -1,4 +1,6 @@
 ﻿using AnimeApp.Core.Models;
+using System.Text.RegularExpressions;
+using System.Xml.Linq;
 
 namespace AnimeApp.Core.Models
 {
@@ -39,7 +41,11 @@ namespace AnimeApp.Core.Models
         {
             if (string.IsNullOrWhiteSpace(slug))
                 throw new ArgumentException("Genre slug cannot be empty", nameof(slug));
-            Slug = slug.Trim().ToLower();
+
+            if (!Regex.IsMatch(slug, "^[a-z-]+$"))
+                throw new ArgumentException("Slug must contains only latin characters", nameof(slug));
+
+            Slug = slug.Trim().ToLowerInvariant();
         }
 
         public void ChangeType(TagType type) => Type = type;

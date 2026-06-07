@@ -7,8 +7,7 @@ export function getTitle(
   type: TitleType,
 ) {
   const title =
-    titles.find((t) => t.language === lang && t.type === type)?.value ||
-    titles.find((t) => t.language === lang)?.value;
+    titles.find((t) => t.language === lang && t.type === type)?.value || "";
 
   return title;
 }

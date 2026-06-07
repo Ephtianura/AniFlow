@@ -62,7 +62,7 @@ export default async function AnimePage({ params, }: { params: { animeUrl: strin
 
                             {/* Постер */}
                             {/* Та додати до обраного */}
-                            <PosterViewer posterUrl={anime.posterUrl || "/404.gif"} />
+                            <PosterViewer posterUrl={anime.posterUrl || "/NotFound.jpg"} />
 
                             {/* Кнопка та список */}
                             <WhiteCard>

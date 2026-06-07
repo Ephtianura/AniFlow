@@ -10,9 +10,10 @@ using AnimeApp.Core.Models;
 
 namespace AnimeApp.Application.Services
 {
-    public class UserService(IUserRepository users, IPasswordHasher passwordHasher, IS3FileStorageService fileStorage) : IUserService
+    public class UserService(IUserRepository users, IUnitOfWork unitOfWork, IPasswordHasher passwordHasher, IS3FileStorageService fileStorage) : IUserService
     {
         private readonly IUserRepository _usersRepository = users;
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IPasswordHasher _passwordHasher = passwordHasher;
         private readonly IS3FileStorageService _fileStorage = fileStorage;
 
@@ -20,7 +21,7 @@ namespace AnimeApp.Application.Services
         public async Task<GetUserMeResponse> GetByIdAsync(int userId)
         {
             var user = await GetUserByIdAsync(userId);
-            string avatarUrl = null;
+            string? avatarUrl = null;
             if (user.AvatarFileName != null)
                 avatarUrl = _fileStorage.GetUrl(user.AvatarFileName);
 
@@ -61,7 +62,7 @@ namespace AnimeApp.Application.Services
                 bannerUrl = _fileStorage.GetUrl(bannerFileName);
             }
 
-            await _usersRepository.UpdateAsync(user);
+            await _unitOfWork.SaveChangesAsync();
 
             return new UserUpdateFilesResponse(avatarUrl, bannerUrl);
         }
@@ -85,7 +86,7 @@ namespace AnimeApp.Application.Services
             if (!string.IsNullOrEmpty(request.Password))
                 user.ChangePassword(_passwordHasher.Generate(request.Password));
 
-            await _usersRepository.UpdateAsync(user);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task UserUpdateByAdminAsync(int userId, UserUpdateAdminRequest request)
@@ -105,7 +106,7 @@ namespace AnimeApp.Application.Services
             if (request.Role.HasValue && request.Role != user.Role)
                 user.ChangeRole(request.Role.Value);
 
-            await _usersRepository.UpdateAsync(user);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         /// <summary> Видаляє користувача </summary>

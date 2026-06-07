@@ -1,18 +1,17 @@
 export enum RelationKindEnum {
-    Adaptation,
-    AlternativeSetting,
-    AlternativeVersion,
-    Character,
-    FullStory,
-    Other,
-    ParentStory,
-    Prequel,
-    Sequel,
-    SideStory,
-    SpinOff,
-    Summary
+    Adaptation = "Adaptation",
+    AlternativeSetting = "AlternativeSetting",
+    AlternativeVersion = "AlternativeVersion",
+    Character = "Character",
+    FullStory = "FullStory",
+    Other = "Other",
+    ParentStory = "ParentStory",
+    Prequel = "Prequel",
+    Sequel = "Sequel",
+    SideStory = "SideStory",
+    SpinOff = "SpinOff",
+    Summary = "Summary",
 }
-
 export const RelationKindMap: Record<RelationKindEnum, { label: string; description: string }> = {
     [RelationKindEnum.Adaptation]: { label: "Адаптація", description: "Наприклад, аніме за мангою" },
     [RelationKindEnum.AlternativeSetting]: { label: "Альтернативний сеттинг", description: "Інша версія світу чи обстановки" },

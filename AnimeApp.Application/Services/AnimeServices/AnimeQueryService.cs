@@ -28,7 +28,7 @@ namespace AnimeApp.Application.Services.AnimeServices
         {
             //_logger.LogWarning("Тест логування");
 
-            var anime = await GetAnimeByIdAsync(animeId);
+            var anime = await GetFullAnimeOrThrowAsync(animeId);
 
             anime.Promos = anime.Promos.Where(p => p.AnimeOstId == null).ToList();
 
@@ -117,10 +117,10 @@ namespace AnimeApp.Application.Services.AnimeServices
 
         // ============================== private methods ====================================
 
-        /// <summary> Повертає сутність аніме по айді </summary>
+        /// <summary> Повертає повну сутність аніме по айді </summary>
         /// <exception cref="NotFoundException"></exception>
-        private async Task<Anime> GetAnimeByIdAsync(int animeId) =>
-            await _animeRep.GetByIdAsync(animeId) ?? throw new NotFoundException("Anime", animeId);
+        private async Task<Anime> GetFullAnimeOrThrowAsync(int animeId) =>
+            await _animeRep.GetFullByIdAsync(animeId) ?? throw new NotFoundException("Anime", animeId);
 
         private string? GetPosterUrl(string? posterFileName) =>
             string.IsNullOrWhiteSpace(posterFileName)

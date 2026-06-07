@@ -1,5 +1,5 @@
 import React from "react";
-import { StudiosNav } from "./StudiosNav";
+import { StudiosNav } from "./_components/StudiosNav";
 
 interface AnimesLayout {
     children: React.ReactNode;

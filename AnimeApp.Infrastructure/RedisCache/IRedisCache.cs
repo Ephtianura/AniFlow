@@ -7,5 +7,6 @@ namespace AnimeApp.Infrastructure.RedisCache
         Task RemoveAsync(string key);
         Task RemoveByPrefixAsync(string prefix);
         Task SetAsync<T>(string key, T value, TimeSpan ttl);
+        Task RemoveMultipleAsync(IEnumerable<string> keys);
     }
 }

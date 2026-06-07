@@ -40,7 +40,7 @@ public class AnimeUpdateRequestValidator : AbstractValidator<AnimeUpdateRequest>
 
 
         // ================= GenresId ===================
-        RuleFor(r => r.GenresId)
+        RuleFor(r => r.GenresIds)
             .Must(list => list == null || list.All(id => id > 0))
             .WithMessage("GenresId must contain only positive IDs.");
 

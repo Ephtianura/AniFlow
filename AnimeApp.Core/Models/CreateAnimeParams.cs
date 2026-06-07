@@ -10,6 +10,7 @@ namespace AnimeApp.Core.Models
         public AnimeKindEnum? Kind { get; init; }
         public AnimeStatusEnum? Status { get; init; }
         public AnimeRatingEnum? Rating { get; init; }
+        public AnimeSource? Source { get; init; }
 
         public string? Description { get; init; } 
         public string? PosterFileName { get; init; }

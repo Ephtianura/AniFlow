@@ -11,6 +11,7 @@ public static class ExceptionGroups
         [HttpStatusCode.BadRequest] = // 400
         [
             typeof(ArgumentException),
+            typeof(BadRequestException),
             typeof(AuthenticationException),
             typeof(ArgumentNullException),
             typeof(ArgumentOutOfRangeException)

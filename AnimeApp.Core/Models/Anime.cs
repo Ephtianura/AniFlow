@@ -15,7 +15,7 @@ namespace AnimeApp.Core.Models
             AnimeKindEnum? kind,
             AnimeStatusEnum? status,
             AnimeRatingEnum? rating,
-
+            AnimeSource? source,
             string? description,
             string? posterFileName,
 
@@ -41,6 +41,7 @@ namespace AnimeApp.Core.Models
             Season = season;
             Year = year;
             Rating = rating;
+            Source = source;
             Description = description;
             PosterFileName = posterFileName;
             Studio = studio;
@@ -112,7 +113,7 @@ namespace AnimeApp.Core.Models
         public List<Genre> Genres { get; private set; } = []; // Жанри  Many-to-Many
 
         public List<AnimeOst> Music { get; set; } = [];
-        public List<AnimeVideo> Promos { get; set; } = []; // jsonb???
+        public List<AnimeVideo> Promos { get; set; } = [];
 
         public List<ExternalLink>? ExternalLinks { get; set; } = []; // jsonb
 
@@ -130,13 +131,19 @@ namespace AnimeApp.Core.Models
                 throw new ArgumentException("Anime must have at least one title in Romaji.", nameof(p.Titles));
 
             return new Anime(
-                p.Titles, p.Url, p.Kind, p.Status, p.Rating, p.Description, p.PosterFileName,
+                p.Titles, p.Url, p.Kind, p.Status, p.Rating, p.Source, p.Description, p.PosterFileName,
                 p.Studio, p.Genres, p.Screenshots, p.AiredOn, p.ReleasedOn, p.Season, p.Year,
                 p.Score, p.Episodes, p.EpisodesAired, p.Duration, p.Nsfw
             );
         }
 
         // ================= Методи =================
+
+        public string OfficialRomajiTitle =>
+                Titles?.FirstOrDefault(t =>
+                        t.Type == TitleType.Official &&
+                        t.Language == TitleLanguage.Romaji)?.Value
+                ?? "¯\\_(ツ)_/¯";
 
         // Назви
         public void AddTitle(AnimeTitle title)

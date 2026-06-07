@@ -10,7 +10,10 @@ namespace AnimeApp.DataAccess.Repositories
     {
         private readonly AnimeAppDbContext _dbContext = db;
 
-        public async Task<Studio?> GetByIdAsync(int id)
+        public async Task<Studio?> GetByIdAsync(int id) =>
+            await _dbContext.Studios.FirstOrDefaultAsync(s => s.Id == id);
+
+        public async Task<Studio?> GetWithAnimesByIdAsync(int id)
         {
             return await _dbContext.Studios
                 .Include(s => s.Animes) // Всі аніме студії

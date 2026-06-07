@@ -1,4 +1,7 @@
-﻿namespace AnimeApp.Core.Models
+﻿using System.Text.RegularExpressions;
+using System.Xml.Linq;
+
+namespace AnimeApp.Core.Models
 {
     // ================= STUDIO =================
     public class Studio
@@ -23,14 +26,19 @@
         public List<Anime> Animes { get; private set; } = [];
 
         // ================= Фабрика =================
-        public static Studio Create( string name, string slug, int? malId = null, string description = "", string? posterFileName = null) =>
+        public static Studio Create(string name, string slug, int? malId = null, string description = "", string? posterFileName = null) =>
             new(name, slug, malId, description, posterFileName);
 
         // ================= Методи =================
+
         public void ChangeName(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentException("Studio name cannot be empty", nameof(name));
+                throw new ArgumentException("Name cannot be empty", nameof(name));
+
+            if (!Regex.IsMatch(name, "^[a-zA-Z0-9 -]+$"))
+                throw new ArgumentException("Name contains invalid characters", nameof(name));
+
             Name = name;
         }
 
@@ -38,6 +46,10 @@
         {
             if (string.IsNullOrWhiteSpace(slug))
                 throw new ArgumentException("Studio slug cannot be empty", nameof(slug));
+
+            if (!Regex.IsMatch(slug, "^[a-z0-9-]+$"))
+                throw new ArgumentException("Slug contains invalid characters", nameof(slug));
+
             Slug = slug.Trim().ToLower();
         }
 
@@ -46,5 +58,8 @@
 
         public void ChangePoster(string? posterFileName) =>
             PosterFileName = posterFileName;
+        public void ChangeMalId(int? malId) =>
+            MalId = malId;
+
     }
 }
