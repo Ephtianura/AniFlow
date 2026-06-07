@@ -185,7 +185,7 @@ namespace AnimeApp.DataAccess.Configurations
             builder.HasOne(ar => ar.RelatedAnime)
                    .WithMany()
                    .HasForeignKey(ar => ar.RelatedAnimeId)
-                   .OnDelete(DeleteBehavior.Restrict); // Не видаляти друге аніме
+                   .OnDelete(DeleteBehavior.Cascade);
         }
     }
 

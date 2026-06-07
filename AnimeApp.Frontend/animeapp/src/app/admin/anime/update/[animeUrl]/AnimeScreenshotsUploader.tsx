@@ -5,6 +5,7 @@ import { RiFolderUploadLine } from "react-icons/ri";
 import { apiFetch } from "@/lib/api";
 import { toast } from "react-toastify";
 import SortableScreenshotGrid from "./SortableScreenshotGrid";
+import { LeaveConfirmationModal } from "@/app/admin/_components/LeaveConfirmationModal";
 
 interface ScreenshotItem {
     id: string;
@@ -215,6 +216,7 @@ export const AnimeScreenshotsUploader: React.FC<AnimeScreenshotsUploaderProps> =
                     : "bg-gray-50 border-gray-200"
             }`}
         >
+            <LeaveConfirmationModal isDirty={isDirty} />
             <div className={`flex flex-col sm:flex-row gap-2 justify-between items-center ${isDirty && `h-18`} sm:h-8`}>
                 <h2 className="font-medium text-xl line-clamp-1">Скріншоти ({items.length})</h2>
 

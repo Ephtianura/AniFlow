@@ -10,6 +10,7 @@ import { LiaToolsSolid } from "react-icons/lia";
 import { FaMasksTheater } from "react-icons/fa6";
 import { RiMovie2AiLine } from "react-icons/ri";
 import { TbHomeStats } from "react-icons/tb";
+import { FaChartBar } from "react-icons/fa";
 
 export default function MobileAdminSidebar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -75,6 +76,10 @@ export default function MobileAdminSidebar() {
                       <Link href="/admin/genres/create" className="slider-btn" onClick={onClose}>
                         <FaMasksTheater className="w-5 h-5" />
                         <p>Управління жанрами</p>
+                      </Link>
+                      <Link href="/admin/anime-stats" className="slider-btn" onClick={onClose}>
+                        <FaChartBar className="w-5 h-5" />
+                        <p>Статистика аніме</p>
                       </Link>
                     </div>
                   </div>

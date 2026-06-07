@@ -8,6 +8,7 @@ import { AnimeFormValues } from "./useAnimeForm";
 import { StudioSearch } from "../../_components/StudioSearch";
 import { apiFetch } from "@/lib/api";
 import { toast } from "react-toastify";
+import { LeaveConfirmationModal } from "../../_components/LeaveConfirmationModal";
 
 interface AnimeStudioSelectorProps {
     animeId?: number;
@@ -145,6 +146,7 @@ export const AnimeStudioSelector: React.FC<AnimeStudioSelectorProps> = ({ animeI
                     </button>
                 </div>
             )}
+            <LeaveConfirmationModal isDirty={isDirty} />
         </div>
     );
 };

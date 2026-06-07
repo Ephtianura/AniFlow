@@ -8,6 +8,7 @@ import { GenreTile } from "./GenreTile";
 import { TagType, tagTypeLabels } from "@/core/enums/TagType";
 import { apiFetch } from "@/lib/api";
 import { toast } from "react-toastify";
+import { LeaveConfirmationModal } from "../../_components/LeaveConfirmationModal";
 
 interface AnimeGenresSelectorProps {
     genres: Genre[];
@@ -96,7 +97,7 @@ export const AnimeGenresSelector: React.FC<AnimeGenresSelectorProps> = ({ genres
     
     return (
         <div className="space-y-4">
-
+<LeaveConfirmationModal isDirty={isDirty} />
             <div className="flex items-center justify-between h-8 gap-2">
                 <h2 className="font-medium text-xl ">
                     <span className="hidden sm:block">Теги та жанри</span>

@@ -23,5 +23,6 @@ namespace AnimeApp.Core.Contracts
         Task<List<UserAnime>> GetAllUserStatus(int userId, MyListEnum? list);
         Task<List<UserAnimeStatsData>> GetStatsDataByUserIdAsync(int userId);
         Task<List<UserAnimeWithDetails>> GetAllUserStatusWithDetailsAsync(int userId, MyListEnum? status, bool? isFavorite);
+        Task<UserListsStatsDto> GetUserListsStatsAsync();
     }
 }

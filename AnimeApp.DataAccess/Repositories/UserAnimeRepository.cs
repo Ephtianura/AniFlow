@@ -103,6 +103,26 @@ namespace AnimeApp.DataAccess.Repositories
 
             await _dbContext.SaveChangesAsync();
         }
+
+        public async Task<UserListsStatsDto> GetUserListsStatsAsync()
+        {
+            var listGroupedData = await _dbContext.UserAnimes
+                .Where(ua => ua.MyList.HasValue)
+                .GroupBy(ua => ua.MyList!.Value)
+                .Select(g => new UserListTypeStatItem(g.Key, g.Count()))
+                .ToListAsync();
+
+            var totalFavorites = await _dbContext.UserAnimes.CountAsync(ua => ua.IsFavorite);
+            var totalRated = await _dbContext.UserAnimes.CountAsync(ua => ua.Rating != null);
+
+            return new UserListsStatsDto
+            {
+                TotalFavoritesCount = totalFavorites,
+                TotalRatedCount = totalRated,
+                ByListType = listGroupedData
+            };
+        }
+
         public async Task AddAsync(UserAnime userAnime)
         {
             await _dbContext.UserAnimes.AddAsync(userAnime);

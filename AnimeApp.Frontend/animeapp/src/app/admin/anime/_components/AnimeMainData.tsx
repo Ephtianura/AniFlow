@@ -14,6 +14,7 @@ import { AnimeDescriptionField } from "./AnimeDescriptionField";
 
 import { apiFetch } from "@/lib/api";
 import { toast } from "react-toastify";
+import { LeaveConfirmationModal } from "../../_components/LeaveConfirmationModal";
 
 interface AnimeMainDataProps {
     animeId?: number;
@@ -335,6 +336,7 @@ export const AnimeMainData: React.FC<AnimeMainDataProps> = ({ animeId, initialDa
                     onChange={isEditMode ? (val) => updateLocalField("description", val) : undefined}
                 />
             </div>
+            <LeaveConfirmationModal isDirty={isDirty} />
         </div>
     );
 };

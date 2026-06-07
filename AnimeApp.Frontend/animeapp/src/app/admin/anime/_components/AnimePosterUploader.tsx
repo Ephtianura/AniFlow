@@ -6,6 +6,7 @@ import { IoClose } from "react-icons/io5";
 import { TbFileUpload } from "react-icons/tb";
 import { apiFetch } from "@/lib/api";
 import { toast } from "react-toastify";
+import { LeaveConfirmationModal } from "../../_components/LeaveConfirmationModal";
 
 interface AnimePosterUploaderProps {
     animeId?: number | null;
@@ -172,6 +173,7 @@ export const AnimePosterUploader: React.FC<AnimePosterUploaderProps> = ({ animeI
                     : "bg-gray-50 border-gray-200"
             }`}
         >
+            <LeaveConfirmationModal isDirty={isDirty} />
             <h2 className="font-medium text-xl mb-2">Постер</h2>
 
             <div className="flex flex-col gap-4 items-center max-w-75  w-full">

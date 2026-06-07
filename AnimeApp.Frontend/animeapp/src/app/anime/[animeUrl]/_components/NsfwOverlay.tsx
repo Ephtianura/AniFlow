@@ -48,13 +48,13 @@ export default function NsfwOverlay({ onClose }: NsfwOverlayProps) {
             <div className="flex gap-6 justify-center h-9.5">
                 <button
                     onClick={() => router.back()}
-                    className="btn-white w-38 cursor-pointer text-primary-black select-none"
+                    className="btn-white w-38 text-primary-black font-medium"
                 >
                     Назад
                 </button>
                 <button
                     onClick={onClose}
-                    className="btn-purple w-38 text-white"
+                    className="btn-purple w-38 font-medium"
                 >
                     Мені є 18 років
                 </button>

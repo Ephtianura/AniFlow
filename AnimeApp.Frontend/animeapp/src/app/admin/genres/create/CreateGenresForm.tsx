@@ -10,6 +10,7 @@ import { useCreateGenreForm, CreateGenreValues } from "../../studios/_components
 import { TagType, tagTypeLabels } from "@/core/enums/TagType";
 import { FormProvider } from "react-hook-form";
 import GenreGroupList from "../_components/GenreGroupList";
+import { LeaveConfirmationModal } from "../../_components/LeaveConfirmationModal";
 
 interface Props {
     genres: Genre[];
@@ -17,11 +18,11 @@ interface Props {
 
 export default function CreateGenrePage({ genres }: Props) {
     const methods = useCreateGenreForm();
-    const { register, handleSubmit, setValue, watch, reset, formState: { isSubmitting } } = methods;
+    const { register, handleSubmit, setValue, watch, reset, formState: { isSubmitting, isDirty } } = methods;
+    const shouldBlock = isDirty && !isSubmitting;
 
     const router = useRouter();
     const currentType = watch("type");
-
     const onSubmit = async (data: CreateGenreValues) => {
         try {
             await apiFetch("/genres", {
@@ -93,6 +94,7 @@ export default function CreateGenrePage({ genres }: Props) {
                     genres={genres} title={"Існуючі елементи в базі:"}
                 />
             </div>
+            <LeaveConfirmationModal isDirty={shouldBlock} />
         </FormProvider>
     );
 }

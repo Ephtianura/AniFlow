@@ -39,6 +39,7 @@ namespace AnimeApp.API.Extensions
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserAnimeRepository, UserAnimeRepository>();
             services.AddScoped<IIdCatalogRepository, IdCatalogRepository>();
+            services.AddScoped<IDashboardRepository, DashboardRepository>();
 
             // DI Infrastructure
             services.AddScoped<IAuthService, AuthService>();

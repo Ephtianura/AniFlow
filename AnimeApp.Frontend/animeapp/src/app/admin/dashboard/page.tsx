@@ -36,10 +36,7 @@ export default function AdminDashboard() {
                 Кількість користувачів
                 Кількість активних користувачів
             </div>
-
-            <div>
-                DefaultCharts
-            </div> */}
+*/}
         </div>
     );
 }

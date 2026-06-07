@@ -31,7 +31,7 @@ export default function AnimeFilter() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const currentYear = new Date().getFullYear();
-  const defaultAired: [number, number] = [1990, currentYear];
+  const defaultAired: [number, number] = [1970, currentYear];
 
   const [genres, setGenres] = useState<Genre[]>([]);
 
@@ -118,14 +118,14 @@ export default function AnimeFilter() {
     if (!sliderRef.current) return;
 
     if (!sliderInstance.current) {
-      const totalYears = currentYear - 1990 + 1;
+      const totalYears = currentYear - 1970 + 1;
       const maxTicks = 5;
 
       sliderInstance.current = noUiSlider.create(sliderRef.current, {
         start: localAired,
         connect: true,
         step: 1,
-        range: { min: 1990, max: currentYear },
+        range: { min: 1970, max: currentYear },
         tooltips: true,
         format: {
           to: (v) => Math.round(v),

@@ -15,11 +15,9 @@ namespace AnimeApp.Api.Controllers
     [Route("api/anime")]
     public class AdminAnimeController(
         IAnimeCommandService animeCommandService,
-        IAnimeStatsService animeStatsService,
         IS3FileStorageService fileStorage) : ControllerBase
     {
         private readonly IAnimeCommandService _animeCommandService = animeCommandService;
-        private readonly IAnimeStatsService _animeStatsService = animeStatsService;
         private readonly IS3FileStorageService _fileStorage = fileStorage;
 
 
@@ -115,15 +113,6 @@ namespace AnimeApp.Api.Controllers
             await _animeCommandService.DeleteAsync(id);
             return NoContent();
         }
-
-        /// <summary> Перераховує рейтинг для всіх аніме. </summary>
-        [HttpPost("recalculate-ratings")]
-        public async Task<IActionResult> RecalculateRatings()
-        {
-            await _animeStatsService.RecalculateAnimeStats();
-            return Ok(new ApiResponse("Anime ratings successfully recalculated"));
-        }
-
 
     }
 }

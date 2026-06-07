@@ -13,6 +13,7 @@ import { getTitle } from "@/app/anime/[animeUrl]/_functions/getTitle";
 import { TitleLanguage, TitleType } from "@/core/enums/AnimeTitle";
 import CustomSelect from "@/components/CustomSelect";
 import { TitleLink } from "@/components/TitleLink";
+import { LeaveConfirmationModal } from "@/app/admin/_components/LeaveConfirmationModal";
 
 interface RelatedAnimeSelectorProps {
     animeId: number;
@@ -233,6 +234,7 @@ export const RelatedAnimeSelector: React.FC<RelatedAnimeSelectorProps> = ({ anim
                     У цього аніме ще немає налаштованих зв'язків. Скористайтеся пошуком вище.
                 </div>
             )}
+            <LeaveConfirmationModal isDirty={isDirty} />
         </div>
     );
 };

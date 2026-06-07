@@ -12,6 +12,7 @@ import { getKawaiiError, KawaiiErrorType } from "@/hooks/getKawaiiError";
 import { useStudioForm } from "./useStudioForm";
 import { useRouter } from "next/navigation";
 import { FormProvider } from "react-hook-form";
+import { LeaveConfirmationModal } from "../../_components/LeaveConfirmationModal";
 
 export default function CreateStudioForm() {
     const methods = useStudioForm();
@@ -21,6 +22,9 @@ export default function CreateStudioForm() {
     const router = useRouter();
 
     const formValues = watch();
+
+    const { isDirty } = methods.formState;
+    const shouldBlock = isDirty && !isSubmitting;
 
     const onSubmit = async (data: any) => {
         setIsSubmitting(true);
@@ -149,6 +153,7 @@ export default function CreateStudioForm() {
                     Створити студію
                 </PrimaryButton>
             </form>
+            <LeaveConfirmationModal isDirty={shouldBlock} />
         </FormProvider>
     );
 }

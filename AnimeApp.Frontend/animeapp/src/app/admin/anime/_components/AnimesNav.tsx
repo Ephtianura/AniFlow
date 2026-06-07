@@ -16,11 +16,11 @@ export function AnimesNav() {
     return (
         <div className="flex flex-wrap sm:flex-nowrap gap-4 mb-6 justify-center">
             <Link href="/admin/anime/create" className={linkClasses("/admin/anime/create")}>
-                Створити вручну
+                Створити
             </Link>
 
             <Link href="/admin/anime/update" className={linkClasses("/admin/anime/update")}>
-                Змінити
+                Редагувати
             </Link>
 
             <Link href="/admin/anime/delete" className={linkClasses("/admin/anime/delete")}>

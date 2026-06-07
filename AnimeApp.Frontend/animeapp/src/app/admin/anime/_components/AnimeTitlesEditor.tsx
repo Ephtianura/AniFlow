@@ -9,6 +9,7 @@ import CustomSelect from "@/components/CustomSelect";
 import { toast } from "react-toastify";
 import { AnimeTitle } from "@/core/types"; 
 import { apiFetch } from "@/lib/api";
+import { LeaveConfirmationModal } from "../../_components/LeaveConfirmationModal";
 
 interface AnimeTitlesEditorProps {
     animeId?: number;
@@ -99,6 +100,7 @@ export const AnimeTitlesEditor: React.FC<AnimeTitlesEditorProps> = ({ animeId, i
 
     return (
         <div className="flex-1 p-4 bg-white rounded-md border border-gray-200">
+            <LeaveConfirmationModal isDirty={isDirty} />
             <div className="flex justify-between items-center mb-3 h-8 gap-2">
                 <h2 className="font-medium text-xl line-clamp-1">Додати назви</h2>
 

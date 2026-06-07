@@ -2,7 +2,6 @@
 
 import { AnimeTitlesEditor } from "../_components/AnimeTitlesEditor";
 import { AnimePosterUploader } from "../_components/AnimePosterUploader";
-import { AnimeScreenshotsUploader } from "../update/[animeUrl]/AnimeScreenshotsUploader";
 import { AnimeGenresSelector } from "../_components/AnimeGenresSelector";
 import { AnimeStudioSelector } from "../_components/AnimeStudioSelector";
 import { AnimeMainData } from "../_components/AnimeMainData";
@@ -14,6 +13,7 @@ import { AnimeCreateResponse, Genre } from "@/core/types";
 import { useRouter } from "next/navigation";
 import { FormProvider } from "react-hook-form";
 import { getKawaiiError, KawaiiErrorType } from "@/hooks/getKawaiiError";
+import { LeaveConfirmationModal } from "../../_components/LeaveConfirmationModal";
 
 type Props = {
     genres: Genre[]
@@ -25,6 +25,9 @@ export default function CreateAnimeForms({ genres }: Props) {
     const methods = useAnimeForm();
 
     const router = useRouter()
+
+    const { isDirty, isSubmitting } = methods.formState;
+    const shouldBlock = isDirty && !isSubmitting;
 
     const onSubmit = async (data: AnimeFormValues) => {
         let animeId: number | null = null;
@@ -114,6 +117,7 @@ export default function CreateAnimeForms({ genres }: Props) {
 
     return (
         <FormProvider {...methods}>
+            <LeaveConfirmationModal isDirty={shouldBlock} />
             {/* Форма */}
             <form onSubmit={methods.handleSubmit(onSubmit)} className="flex flex-col gap-6">
                 <div className="flex flex-col items-center md:items-start md:flex-row justify-between gap-6">
@@ -152,9 +156,6 @@ export default function CreateAnimeForms({ genres }: Props) {
                 >
                     Створити аніме
                 </PrimaryButton>
-
-                {/* Виведення помилок */}
-                {/* <FormErrors errors={form.errors} /> */}
 
             </form>
         </FormProvider>

@@ -14,6 +14,7 @@ import { StudioPosterUploader } from "../../_components/StudioPosterUploader";
 import { StudioDescription } from "../../_components/StudioDescription";
 import { PrimaryButton } from "@/app/admin/_components/PrimaryButton";
 import { useRouter } from "next/navigation";
+import { LeaveConfirmationModal } from "@/app/admin/_components/LeaveConfirmationModal";
 
 type Props = {
     studio: Studio;
@@ -234,6 +235,7 @@ export default function UpdateStudio({ studio }: Props) {
                     </PrimaryButton>
                 </form>
             </FormProvider>
+            <LeaveConfirmationModal isDirty={isDirty} />
         </div>
     );
 }

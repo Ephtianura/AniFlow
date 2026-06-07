@@ -3,10 +3,15 @@ using AnimeApp.Core.Contracts;
 
 namespace AnimeApp.Application.Services.AnimeServices
 {
-    public class AnimeStatsService(IUserAnimeRepository userAnimeRepository) : IAnimeStatsService
+    public class AnimeStatsService(IUserAnimeRepository userAnimeRepository, IDashboardRepository dashboardRepository) : IAnimeStatsService
     {
         private readonly IUserAnimeRepository _userAnimeRepository = userAnimeRepository;
-        public async Task RecalculateAnimeStats() =>
-            await _userAnimeRepository.RecalculateAnimeRatings();
+        private readonly IDashboardRepository _dashboardRepository = dashboardRepository;
+
+        public Task RecalculateAnimeStats() => _userAnimeRepository.RecalculateAnimeRatings();
+
+        public Task<AdminDashboardStatsDto> GetDashboardAnimeStats() => _dashboardRepository.GetAdminDashboardStatsAsync();
+
+        public Task<UserListsStatsDto> GetUserListsStatsAsync() => _userAnimeRepository.GetUserListsStatsAsync();
     }
 }

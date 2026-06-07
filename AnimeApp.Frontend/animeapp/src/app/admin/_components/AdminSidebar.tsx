@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { RiMovie2AiLine } from "react-icons/ri";
 import { FaMasksTheater } from "react-icons/fa6";
-import { FaTheaterMasks } from "react-icons/fa";
+import { FaChartBar, FaTheaterMasks } from "react-icons/fa";
 import { DiRedis } from "react-icons/di";
 import { LuBuilding2 } from "react-icons/lu";
 import { FaUsers } from "react-icons/fa";
@@ -36,6 +36,7 @@ export default function AdminSidebar() {
             <p>Головна</p>
           </div>
         </Link>
+
 
         <Link href="/admin/anime/create">
           <div className={linkClasses([
@@ -70,6 +71,14 @@ export default function AdminSidebar() {
           </div>
         </Link>
 
+
+        <Link href="/admin/anime-stats">
+          <div className={linkClasses("/admin/anime-stats")}>
+            <FaChartBar className="w-5 h-5" />
+            <p>Статистика аніме</p>
+          </div>
+        </Link>
+        
         {/* <Link href="/admin/cache">
           <div className={linkClasses("/admin/cache")}>
             <DiRedis  className="w-6 h-6" />

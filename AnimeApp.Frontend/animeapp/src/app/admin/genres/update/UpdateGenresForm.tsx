@@ -10,6 +10,7 @@ import { useUpdateGenreForm, UpdateGenreValues } from "../../studios/_components
 import { TagType, tagTypeLabels } from "@/core/enums/TagType";
 import { FormProvider } from "react-hook-form";
 import GenreGroupList from "../_components/GenreGroupList";
+import { LeaveConfirmationModal } from "../../_components/LeaveConfirmationModal";
 
 interface Props {
     genres: Genre[];
@@ -182,6 +183,7 @@ export default function UpdateGenrePage({ genres }: Props) {
                 </div>
 
             </div>
+            <LeaveConfirmationModal isDirty={isDirty} />
         </FormProvider>
     );
 }
