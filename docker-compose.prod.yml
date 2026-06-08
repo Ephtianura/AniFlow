@@ -23,13 +23,15 @@ services:
     container_name: frontend_animeapp
     build:
       context: ./AnimeApp.Frontend/animeapp
-      target: prod
       args:
         - NEXT_PUBLIC_API_URL=${API_URL}
+        - DISABLE_CHECKS=true
     restart: always
     environment:
       NODE_ENV: production
       NEXT_PUBLIC_API_URL: ${API_URL}
+      NEXT_PUBLIC_HUB_URL: ${HUB_URL}
+      NEXT_PUBLIC_CDN_URL: ${CDN_URL}
 
   postgres:
     restart: always

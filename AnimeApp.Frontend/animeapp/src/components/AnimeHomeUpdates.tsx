@@ -6,11 +6,11 @@ import { format, isToday, isYesterday } from 'date-fns'
 import { uk } from 'date-fns/locale'
 
 type Props = {
-    updatesAnimes: PagedResult<Animes>
+    updatesAnimes: PagedResult<Animes> | null;
 }
 
 export default function AnimeHomeUpdates({ updatesAnimes }: Props) {
-
+    if (updatesAnimes == null|| updatesAnimes.items.length == 0) return null;
     return (
         <div className='grid sm:grid-cols-2 md:grid-cols-3 gap-2 max-h-215 overflow-auto'>
             {updatesAnimes.items.map((anime) => (

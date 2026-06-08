@@ -1,4 +1,5 @@
 "use client"
+
 import { Navigation } from "swiper/modules";
 import { MdNavigateBefore, MdNavigateNext } from 'react-icons/md';
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -9,9 +10,12 @@ import AnimeCard from "./AnimeCard";
 import { Animes, PagedResult } from "@/core/types";
 
 type Props = {
-    seasonAnimes: PagedResult<Animes>
+    seasonAnimes: PagedResult<Animes> | null;
 }
+
 export default function AnimeHomeSeason({ seasonAnimes }: Props) {
+    if (seasonAnimes == null || seasonAnimes.items.length == 0) return null;
+
     const [isBeginning, setIsBeginning] = useState(true);
     const [isEnd, setIsEnd] = useState(false);
     const [isSwiperReady, setIsSwiperReady] = useState(false);
