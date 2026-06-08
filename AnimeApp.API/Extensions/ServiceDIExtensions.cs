@@ -1,4 +1,5 @@
-﻿using AnimeApp.Application.Contracts.App;
+﻿using AnimeApp.Application.Contracts;
+using AnimeApp.Application.Contracts.App;
 using AnimeApp.Application.Contracts.Infra;
 using AnimeApp.Application.Services;
 using AnimeApp.Application.Services.AnimeServices;
@@ -30,6 +31,7 @@ namespace AnimeApp.API.Extensions
             services.AddScoped<IStudioService, StudioService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserAnimeService, UserAnimeService>();
+            services.AddScoped<IStatsService, StatsService>();
 
             // DI Repositories
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -39,7 +41,7 @@ namespace AnimeApp.API.Extensions
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserAnimeRepository, UserAnimeRepository>();
             services.AddScoped<IIdCatalogRepository, IdCatalogRepository>();
-            services.AddScoped<IDashboardRepository, DashboardRepository>();
+            services.AddScoped<IStatsRepository, StatsRepository>();
 
             // DI Infrastructure
             services.AddScoped<IAuthService, AuthService>();

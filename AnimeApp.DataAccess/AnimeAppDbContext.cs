@@ -14,6 +14,8 @@ namespace AnimeApp.DataAccess
         public DbSet<AnimeIdCatalog> AnimeIdCatalog => Set<AnimeIdCatalog>();
         public DbSet<AnimeOst> AnimeOsts => Set<AnimeOst>();
         public DbSet<AnimeVideo> AnimeVideos => Set<AnimeVideo>();
+        public DbSet<DailySystemStat> DailySystemStat => Set<DailySystemStat>();
+        public DbSet<AnimeDailyStats> AnimeDailyStats => Set<AnimeDailyStats>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

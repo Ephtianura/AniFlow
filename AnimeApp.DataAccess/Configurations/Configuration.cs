@@ -112,7 +112,7 @@ namespace AnimeApp.DataAccess.Configurations
 
             // Many - to - One: Music
             builder.HasMany(o => o.Music)
-            .WithOne(o => o.Anime) 
+            .WithOne(o => o.Anime)
             .HasForeignKey(o => o.AnimeId)
             .OnDelete(DeleteBehavior.Cascade);
 
@@ -304,4 +304,39 @@ namespace AnimeApp.DataAccess.Configurations
                 .OnDelete(DeleteBehavior.SetNull);
         }
     }
+
+    // ===================== DailySystemStat =====================
+    public class DailySystemStatConfiguration : IEntityTypeConfiguration<DailySystemStat>
+    {
+        public void Configure(EntityTypeBuilder<DailySystemStat> builder)
+        {
+            builder.ToTable("DailySystemStats");
+
+            builder.HasKey(x => x.Id);
+
+            builder.Property(x => x.Date)
+            .HasColumnType("date")
+            .IsRequired();
+
+            builder.HasIndex(x => x.Date)
+                .IsUnique();
+        }
+    }
+
+    // ===================== AnimeDailyStats =====================
+
+    public class AnimeDailyStatsConfiguration : IEntityTypeConfiguration<AnimeDailyStats>
+    {
+        public void Configure(EntityTypeBuilder<AnimeDailyStats> builder)
+        {
+            builder.ToTable("AnimeDailyStats");
+
+            builder.HasKey(e => new { e.Date, e.AnimeId, e.EpisodeNumber });
+
+            builder.Property(e => e.ViewsCount)
+                .IsRequired()
+                .HasDefaultValue(0);
+        }
+    }
+
 }

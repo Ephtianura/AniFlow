@@ -22,7 +22,7 @@ export const AnimePosterUploader: React.FC<AnimePosterUploaderProps> = ({ animeI
     const [savedUrl, setSavedUrl] = useState<string>("");
     const [filePreview, setFilePreview] = useState<string | null>(null);
     const [isUploading, setIsUploading] = useState(false);
-    const [isDragging, setIsDragging] = useState<boolean>(false); // Стейт для подсветки дропзоны
+    const [isDragging, setIsDragging] = useState<boolean>(false); 
 
     useEffect(() => {
         if (isEditMode && initialUrl) {
@@ -45,7 +45,6 @@ export const AnimePosterUploader: React.FC<AnimePosterUploaderProps> = ({ animeI
 
     const isDirty = isEditMode && (localFile !== null || localUrl.trim() !== savedUrl);
 
-    // Вынесли обработку файла в отдельную функцию
     const processPosterFile = (file: File) => {
         if (!file.type.startsWith("image/")) {
             toast.error("Будь ласка, завантажте файл зображення");
@@ -88,7 +87,6 @@ export const AnimePosterUploader: React.FC<AnimePosterUploaderProps> = ({ animeI
         if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
             const files = Array.from(e.dataTransfer.files);
             
-            // Если перетащили несколько, берём только первый, но предупреждаем
             if (files.length > 1) {
                 toast.warning("Постер може бути лише один. Вибрано перше зображення");
             }

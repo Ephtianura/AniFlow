@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace AnimeApp.Core.Contracts
 {
-    public class AdminDashboardStatsDto
+    public class AdminAnimeStatsDto
     {
         public int TotalAnimeCount { get; set; }
         public int TotalGenresCount { get; set; }

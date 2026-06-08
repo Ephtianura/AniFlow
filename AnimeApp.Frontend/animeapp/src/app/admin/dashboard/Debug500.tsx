@@ -13,8 +13,8 @@ export default function Debug500() {
         <div className="flex gap-2 items-center">
             <button
                 onClick={() => setBoom(true)}
-                className="px-4 py-2 w-30 rounded-lg bg-red-400 text-white font-semibold hover:bg-red-500 border-2 border-red-600
-                active:bg-red-800 cursor-pointer transition select-none"
+                className={`px-4 py-2 w-30 rounded-lg bg-red-300 text-white font-semibold hover:bg-red-400 border-2 border-red-400
+                active:bg-red-700 cursor-pointer transition select-none`}
             >
                 Throw 💥
             </button>

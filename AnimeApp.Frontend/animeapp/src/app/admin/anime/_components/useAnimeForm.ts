@@ -31,8 +31,8 @@ export const animeFormSchema = z.object({
   genresIds: z.array(z.number()),
 
   poster: z.object({
-    file: z.any().nullable(), // Для объектов File
-    url: z.string().nullable(), // Для строк-ссылок
+    file: z.any().nullable(), 
+    url: z.string().nullable(), 
   }),
   screenshots: z.array(z.string()).nullable(),
 

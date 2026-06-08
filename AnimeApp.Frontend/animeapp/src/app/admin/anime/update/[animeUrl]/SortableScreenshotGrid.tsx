@@ -106,7 +106,6 @@ function SortableItem({
         isDragging,
     } = useSortable({ id: item.id });
 
-    // Локальное состояние для показа плавного превью
     const [showPreview, setShowPreview] = useState(false);
     const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 

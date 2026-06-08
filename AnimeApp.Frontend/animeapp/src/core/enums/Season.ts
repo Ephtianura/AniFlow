@@ -4,7 +4,6 @@ export enum SeasonEnum {
   Summer = "Summer",
   Fall = "Fall",
 }
-// Переводы
 export const SeasonMap: Record<string, string> = {
   Winter: "Зима",
   Spring: "Весна",

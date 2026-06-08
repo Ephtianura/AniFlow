@@ -37,9 +37,9 @@ export default function ResetCacheButton() {
     };
 
     return (
-        <div className="max-w-md rounded-xl border border-red-300 bg-red-50 p-4 space-y-4 flex flex-col ">
+        <div className="max-w-md rounded-xl border border-hr-clr bg-gray-50 p-4 space-y-4 flex flex-col ">
             <div className="grow">
-                <h3 className="font-semibold text-red-700 flex gap-2 items-center">
+                <h3 className="font-semibold  flex gap-2 items-center">
                     <IoWarning className="text-amber-300 w-7 h-7" /> Очищення кешу
                 </h3>
 

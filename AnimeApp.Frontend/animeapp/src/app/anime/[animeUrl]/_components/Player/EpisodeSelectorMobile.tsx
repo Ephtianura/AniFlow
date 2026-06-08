@@ -1,7 +1,4 @@
 'use client';
-import CustomSelect from '@/components/CustomSelect';
-import clsx from 'clsx';
-import { useState, useRef, useEffect } from 'react';
 
 import { RiSkipLeftLine, RiSkipRightLine } from 'react-icons/ri';
 import PlayerEpisodeSelect from './PlayerEpisodeSelect';
@@ -28,7 +25,7 @@ export default function EpisodeSelectorMobile({
         const num = i + 1;
         return {
             value: num,
-            label: `${num} серія` // Если в твоем типе Option поле называется 'name' или 'label'
+            label: `${num} серія` 
         };
     });
 

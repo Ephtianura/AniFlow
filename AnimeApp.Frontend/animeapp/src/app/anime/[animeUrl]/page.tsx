@@ -126,7 +126,7 @@ export default async function AnimePage({ params, }: { params: { animeUrl: strin
 
                     {/* Плеєр */}
                     <div id="anime-player">
-                        <AnimePlayer titles={anime.titles} rating={anime.rating} players={players} />
+                        <AnimePlayer titles={anime.titles} rating={anime.rating} players={players} animeId={anime.id} />
                     </div>
 
                 </div>

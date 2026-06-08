@@ -9,14 +9,16 @@ import { AnimeRatingEnum } from "@/core/enums/AnimeRating";
 import TgShareButton from "./TgShareButton";
 import AdaptivePlayerSettings from "./AdaptivePlayerSettings";
 import EpisodeSelectorMobile from "./EpisodeSelectorMobile";
+import AnimeIframePlayer from "./AnimeIframePlayer";
 
 type Props = {
     titles: AnimeTitle[];
     rating?: AnimeRatingEnum | null;
     players: PlayerEpisodeSet[];
+    animeId: number;
 };
 
-export default function AnimePlayer({ titles, rating, players }: Props) {
+export default function AnimePlayer({ titles, rating, players, animeId }: Props) {
 
     if (!players?.length) return null;
     const hasAnyEpisodes = players.some(p =>
@@ -148,11 +150,7 @@ export default function AnimePlayer({ titles, rating, players }: Props) {
                     <div className="flex flex-col grow gap-2">
 
                         {/* iframe */}
-                        <iframe
-                            className="w-full aspect-video mb-2 rounded "
-                            src={iframeSrc}
-                            allow="autoplay *; fullscreen *">
-                        </iframe>
+                        <AnimeIframePlayer iframeSrc={iframeSrc!} animeId={animeId} episodeNumber={selectedEpisode} />
 
                         {/* Вибір серії */}
                         <>

@@ -120,41 +120,69 @@ export const AnimeMainData: React.FC<AnimeMainDataProps> = ({ animeId, initialDa
                 )}
             </div>
             <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {/* Дата виходу */}
                 <div>
                     <label>Дата виходу</label>
-                    <input
-                        type="date"
-                        value={isEditMode ? localData.airedOn : undefined}
-                        onChange={isEditMode ? (e) => updateLocalField("airedOn", e.target.value) : undefined}
-                        {...(!isEditMode ? register("airedOn") : {})}
-                        className="btn-primary"
-                    />
+                    {isEditMode ? (
+                        <input
+                            type="date"
+                            value={localData.airedOn || ""}
+                            onChange={(e) => updateLocalField("airedOn", e.target.value)}
+                            className="btn-primary"
+                        />
+                    ) : (
+                        <input
+                            type="date"
+                            {...register("airedOn")}
+                            className="btn-primary"
+                        />
+                    )}
                 </div>
 
+                {/* Дата реліза */}
                 <div>
                     <label>Дата реліза</label>
-                    <input
-                        type="date"
-                        value={isEditMode ? localData.releasedOn : undefined}
-                        onChange={isEditMode ? (e) => updateLocalField("releasedOn", e.target.value) : undefined}
-                        {...(!isEditMode ? register("releasedOn") : {})}
-                        className="btn-primary"
-                    />
+                    {isEditMode ? (
+                        <input
+                            type="date"
+                            value={localData.releasedOn || ""}
+                            onChange={(e) => updateLocalField("releasedOn", e.target.value)}
+                            className="btn-primary"
+                        />
+                    ) : (
+                        <input
+                            type="date"
+                            {...register("releasedOn")}
+                            className="btn-primary"
+                        />
+                    )}
                 </div>
 
+                {/* Оцінка */}
                 <div>
                     <label>Оцінка</label>
-                    <input
-                        type="number"
-                        step="0.1"
-                        value={isEditMode ? localData.score : undefined}
-                        onChange={isEditMode ? (e) => updateLocalField("score", e.target.value === "" ? 0 : Number(e.target.value)) : undefined}
-                        {...(!isEditMode ? register("score", { valueAsNumber: true }) : {})}
-                        className="btn-primary"
-                    />
-                    {!isEditMode && errors.score && <span className="text-red-500 text-xs">{errors.score.message}</span>}
+                    {isEditMode ? (
+                        <input
+                            type="number"
+                            step="0.1"
+                            value={localData.score}
+                            onChange={(e) => updateLocalField("score", e.target.value === "" ? 0 : Number(e.target.value))}
+                            className="btn-primary"
+                        />
+                    ) : (
+                        <>
+                            <input
+                                type="number"
+                                step="0.1"
+                                {...register("score", { valueAsNumber: true })}
+                                className="btn-primary"
+                            />
+                            {errors.score && <span className="text-red-500 text-xs">{errors.score.message}</span>}
+                        </>
+                    )}
                 </div>
 
+                {/* Тип */}
                 <div>
                     <label>Тип</label>
                     {isEditMode ? (
@@ -180,6 +208,7 @@ export const AnimeMainData: React.FC<AnimeMainDataProps> = ({ animeId, initialDa
                     )}
                 </div>
 
+                {/* Статус */}
                 <div>
                     <label>Статус</label>
                     {isEditMode ? (
@@ -205,6 +234,7 @@ export const AnimeMainData: React.FC<AnimeMainDataProps> = ({ animeId, initialDa
                     )}
                 </div>
 
+                {/* Rating MPAA */}
                 <div>
                     <label>Rating MPAA</label>
                     {isEditMode ? (
@@ -230,45 +260,70 @@ export const AnimeMainData: React.FC<AnimeMainDataProps> = ({ animeId, initialDa
                     )}
                 </div>
 
+                {/* Епізоди */}
                 <div>
                     <label>Епізоди</label>
-                    <input
-                        type="number"
-                        value={isEditMode ? (localData.episodes ?? "") : undefined}
-                        onChange={isEditMode ? (e) => updateLocalField("episodes", e.target.value === "" ? null : Number(e.target.value)) : undefined}
-                        {...(!isEditMode ? register("episodes", {
-                            setValueAs: (v) => v === null || v === undefined || String(v).trim() === "" ? null : Number(v)
-                        }) : {})}
-                        className="btn-primary"
-                    />
+                    {isEditMode ? (
+                        <input
+                            type="number"
+                            value={localData.episodes ?? ""}
+                            onChange={(e) => updateLocalField("episodes", e.target.value === "" ? null : Number(e.target.value))}
+                            className="btn-primary"
+                        />
+                    ) : (
+                        <input
+                            type="number"
+                            {...register("episodes", {
+                                setValueAs: (v) => v === null || v === undefined || String(v).trim() === "" ? null : Number(v)
+                            })}
+                            className="btn-primary"
+                        />
+                    )}
                 </div>
 
+                {/* Епізодів вийшло */}
                 <div>
                     <label>Епізодів вийшло</label>
-                    <input
-                        type="number"
-                        value={isEditMode ? (localData.episodesAired ?? "") : undefined}
-                        onChange={isEditMode ? (e) => updateLocalField("episodesAired", e.target.value === "" ? null : Number(e.target.value)) : undefined}
-                        {...(!isEditMode ? register("episodesAired", {
-                            setValueAs: (v) => v === null || v === undefined || String(v).trim() === "" ? null : Number(v)
-                        }) : {})}
-                        className="btn-primary"
-                    />
+                    {isEditMode ? (
+                        <input
+                            type="number"
+                            value={localData.episodesAired ?? ""}
+                            onChange={(e) => updateLocalField("episodesAired", e.target.value === "" ? null : Number(e.target.value))}
+                            className="btn-primary"
+                        />
+                    ) : (
+                        <input
+                            type="number"
+                            {...register("episodesAired", {
+                                setValueAs: (v) => v === null || v === undefined || String(v).trim() === "" ? null : Number(v)
+                            })}
+                            className="btn-primary"
+                        />
+                    )}
                 </div>
 
+                {/* Тривалість */}
                 <div>
                     <label>Тривалість</label>
-                    <input
-                        type="number"
-                        value={isEditMode ? (localData.duration ?? "") : undefined}
-                        onChange={isEditMode ? (e) => updateLocalField("duration", e.target.value === "" ? null : Number(e.target.value)) : undefined}
-                        {...(!isEditMode ? register("duration", {
-                            setValueAs: (v) => v === null || v === undefined || String(v).trim() === "" ? null : Number(v)
-                        }) : {})}
-                        className="btn-primary"
-                    />
+                    {isEditMode ? (
+                        <input
+                            type="number"
+                            value={localData.duration ?? ""}
+                            onChange={(e) => updateLocalField("duration", e.target.value === "" ? null : Number(e.target.value))}
+                            className="btn-primary"
+                        />
+                    ) : (
+                        <input
+                            type="number"
+                            {...register("duration", {
+                                setValueAs: (v) => v === null || v === undefined || String(v).trim() === "" ? null : Number(v)
+                            })}
+                            className="btn-primary"
+                        />
+                    )}
                 </div>
 
+                {/* Першоджерело */}
                 <div>
                     <label>Першоджерело</label>
                     {isEditMode ? (
@@ -294,12 +349,13 @@ export const AnimeMainData: React.FC<AnimeMainDataProps> = ({ animeId, initialDa
                     )}
                 </div>
 
+                {/* NSFW */}
                 <div className="flex flex-col">
                     <label>NSFW</label>
                     <div className="flex gap-2 items-center w-full my-auto">
                         {isEditMode ? (
                             <Checkbox
-                                checked={localData.nsfw}
+                                checked={!!localData.nsfw}
                                 onChange={(e, checked) => updateLocalField("nsfw", checked ?? e.target.checked)}
                                 color="secondary"
                                 className="w-5 h-5"
@@ -314,7 +370,7 @@ export const AnimeMainData: React.FC<AnimeMainDataProps> = ({ animeId, initialDa
                                 name="nsfw"
                                 render={({ field }) => (
                                     <Checkbox
-                                        checked={field.value}
+                                        checked={!!field.value}
                                         onChange={(e, checked) => field.onChange(checked ?? e.target.checked)}
                                         color="secondary"
                                         className="w-5 h-5"
@@ -329,7 +385,6 @@ export const AnimeMainData: React.FC<AnimeMainDataProps> = ({ animeId, initialDa
                         <span>Чи є це контент для дорослих?</span>
                     </div>
                 </div>
-
                 <AnimeDescriptionField
                     isEditMode={isEditMode}
                     value={isEditMode ? localData.description : undefined}
