@@ -1,8 +1,11 @@
 using AnimeApp.API.Extensions;
+using AnimeApp.API.Hubs;
+using AnimeApp.API.Middleware;
 using AnimeApp.API.Middleware.Exceptions;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.DataProtection;
 using Serilog;
+using StackExchange.Redis;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,7 +39,8 @@ builder.Services
         .AddCustomCors(configuration)   // Cors 
         .AddMessageBus(configuration)   // RabbitMQ
         .AddMoonApi(configuration)      // Moon Api
-        .AddKodikApi(configuration);     // Kodik Api;    
+        .AddKodikApi(configuration)     // Kodik Api; 
+        .AddSignalR();                  // SignalR
 
 
 
@@ -72,6 +76,17 @@ if (!app.Environment.IsDevelopment())
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Analytics
+app.UseMiddleware<AnalyticsMiddleware>();
+
+app.MapHub<OnlineHub>("/hubs/online");
+
 app.MapControllers();
+
+///!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+var redis = app.Services.GetRequiredService<IConnectionMultiplexer>();
+var db = redis.GetDatabase();
+await db.KeyDeleteAsync("metrics:online:active_users");
+await db.KeyDeleteAsync("metrics:online:active_guests");
 
 app.Run();

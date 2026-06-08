@@ -39,3 +39,41 @@ export interface UserListsStatsDto {
     totalRatedCount: number;
     byListType: UserListTypeStatItem[];
 }
+
+export interface ChartPointDto {
+  date: string; // "08.06"
+  value: number;
+}
+
+export interface StatBlockDto {
+  label: string;
+  countToday: number;
+  countWeek: number;
+  chartData: ChartPointDto[];
+}
+
+export interface RecentAnimeItemDto {
+  name: string;
+  url: string;
+  createdAt: string;
+}
+
+export interface DashboardPulseDto {
+  totalUsers: number;
+  totalAnime: number;
+  activeUsersNow: number;
+  peakOnlineToday: number;
+  avgOnlineToday: number;
+  currentRps: number;
+  playerViews: StatBlockDto;
+  visits: StatBlockDto;
+  registrations: StatBlockDto;
+  userInteractions: StatBlockDto;
+  recentAnime: RecentAnimeItemDto[];
+}
+export interface TopAnimeDto {
+  animeId: number;
+  title: string;
+  slug: string;
+  totalViews: number;
+}

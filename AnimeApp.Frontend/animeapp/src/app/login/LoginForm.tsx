@@ -67,9 +67,6 @@ export default function LoginForm() {
                         Немає акаунту?
                     </Link>
 
-                    {/* <Link href="/register" className="btn-primary text-gray-text-dark text-center ">
-                        Зареєструватись
-                    </Link> */}
                 </form>
             </WhiteCard>
 

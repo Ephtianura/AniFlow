@@ -116,7 +116,7 @@ export interface Animes {
   description?: string | null;
   genres: Genre[];
   studio?: Studio | null;
-  createdAt?: string | null;
+  createdAt: string;
   updatedAt?: string | null;
 }
 

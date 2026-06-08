@@ -20,7 +20,6 @@ interface RelatedAnimeSelectorProps {
     initialRelateds?: RelatedAnime[] | null;
 }
 
-// Интерфейс для локального стейта, хранящий полные данные для рендера карточек
 interface LocalRelatedItem {
     relatedAnimeId: number;
     relationKind: RelationKindEnum | "";
@@ -32,7 +31,6 @@ export const RelatedAnimeSelector: React.FC<RelatedAnimeSelectorProps> = ({ anim
     const [savedItems, setSavedItems] = useState<LocalRelatedItem[]>([]);
     const [isSaving, setIsSaving] = useState(false);
 
-    // Инициализация данных из пропсов
     useEffect(() => {
         if (initialRelateds && initialRelateds.length > 0) {
             const formatted = initialRelateds.map(r => ({
@@ -48,7 +46,6 @@ export const RelatedAnimeSelector: React.FC<RelatedAnimeSelectorProps> = ({ anim
         }
     }, [initialRelateds]);
 
-    // Быстрое сравнение для определения состояния IsDirty
     const checkIsDirty = () => {
         if (items.length !== savedItems.length) return true;
         return items.some((item, idx) => {
@@ -109,7 +106,6 @@ export const RelatedAnimeSelector: React.FC<RelatedAnimeSelectorProps> = ({ anim
 
         setIsSaving(true);
 
-        // Упаковываем массив в объект со свойством RelatedsAnimes, как требует обновленный C# рекорд
         const payload = {
             RelatedsAnimes: items.map(item => ({
                 RelatedAnimeId: item.relatedAnimeId,
@@ -118,7 +114,6 @@ export const RelatedAnimeSelector: React.FC<RelatedAnimeSelectorProps> = ({ anim
         };
 
         try {
-            // Обрати внимание на правильный URL (согласно твоему [HttpPut("{id}/related")])
             await apiFetch(`/anime/${animeId}/related`, {
                 method: "PUT",
                 body: JSON.stringify(payload),
@@ -170,7 +165,6 @@ export const RelatedAnimeSelector: React.FC<RelatedAnimeSelectorProps> = ({ anim
                                 key={`${item.relatedAnimeId}-${idx}`}
                                 className="flex gap-3 p-3 bg-gray-50 border border-gray-200 rounded-lg relative hover:shadow-sm transition-shadow duration-200"
                             >
-                                {/* Кнопка удаления в углу карточки */}
                                 <button
                                     type="button"
                                     onDoubleClick={() => handleRemoveItem(idx)}
@@ -213,7 +207,6 @@ export const RelatedAnimeSelector: React.FC<RelatedAnimeSelectorProps> = ({ anim
                                         </div>
                                     </div>
 
-                                    {/* Селектор типу зв'язку */}
                                     <div className="mt-2">
                                         <div className="mt-2">
                                             <CustomSelect

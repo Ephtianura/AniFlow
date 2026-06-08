@@ -15,7 +15,7 @@ namespace AnimeApp.Application.Validation.UserValidator
             RuleFor(u => u.Password)
                 .NotEmpty().WithMessage("Password is required")
                 .MinimumLength(8).WithMessage("Password must be at least 8 characters")
-                .Matches("^[a-zA-Z0-9]*$").WithMessage("Password must contain only Latin letters and digits");
+                .Matches(@"^[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':""\\|,.<>/?`~]*$").WithMessage("Password must contain only Latin letters and digits");
         }
     }
 }

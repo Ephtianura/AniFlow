@@ -16,7 +16,6 @@ import { AnimeStatusMap } from "@/core/enums/AnimeStatus";
 import { AnimeKindMap } from "@/core/enums/AnimeKind";
 import { useRouter } from "next/navigation";
 
-// Типы
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#A28FFF", "#FF6F91"];
 
 interface AnimeStatisticProps {
@@ -67,7 +66,7 @@ export default function AnimeStatistic({ animeStats, userListStats }: AnimeStati
                     <p className="text-sm opacity-80 font-medium">Всього тайтлів</p>
                     <p className="text-3xl font-black mt-1">{animeStats.totalAnimeCount}</p>
                 </div>
-                <div className="p-4 bg-linear-to-br   from-amber-400 to-orange-500 rounded-xl text-white shadow-md">
+                <div className="p-4 bg-linear-to-br from-amber-400 to-orange-500 rounded-xl text-white shadow-md">
                     <p className="text-sm opacity-80 font-medium">Глобальний рейтинг</p>
                     <p className="text-3xl font-black mt-1">★ {animeStats.globalAvgScore}</p>
                 </div>

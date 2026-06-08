@@ -39,8 +39,4 @@
     <ProjectReference Include="..\AnimeApp.Infrastructure\AnimeApp.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Helpers\" />
-  </ItemGroup>
-
 </Project>

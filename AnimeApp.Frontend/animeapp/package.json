@@ -17,6 +17,7 @@
     "@headlessui/react": "^2.2.10",
     "@hookform/resolvers": "^5.4.0",
     "@material/checkbox": "^14.0.0",
+    "@microsoft/signalr": "^10.0.0",
     "@mui/material": "^9.0.1",
     "@radix-ui/react-switch": "^1.2.6",
     "@radix-ui/themes": "^3.3.0",

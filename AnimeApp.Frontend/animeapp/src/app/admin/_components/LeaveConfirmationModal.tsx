@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useLeavePageBlocker } from '@/hooks/useLeavePageBlocker'; // импортируем твой хук
+import { useLeavePageBlocker } from '@/hooks/useLeavePageBlocker';
 
 interface BlockerProps {
   isDirty: boolean;

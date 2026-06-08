@@ -11,6 +11,8 @@ import { ToastContainer } from "react-toastify";
 import { ThemeProvider } from 'next-themes'
 import MobileFooter from "@/components/MobileFooter";
 import GlobalOstPlayer from "./anime/[animeUrl]/_components/GlobalPlayer/GlobalOstPlayer";
+import { SignalRProvider } from "@/components/SignalRContext";
+import VisitTracker from "@/components/VisitTracker";
 
 export const metadata: Metadata = {
   title: "AniFlow",
@@ -35,7 +37,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         {/* Page Content */}
         <main className="flex-1 px-3 mb-20 w-full max-w-7xl xl:max-w-[1600px] mt-21 mx-auto">
-          {children}
+          <SignalRProvider>
+            {children}
+          </SignalRProvider>
           {/* <ThemeProvider attribute="class"></ThemeProvider> */}
           <ToastContainer
             className="select-none"
@@ -51,12 +55,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             pauseOnHover
           />
 
-          <GlobalOstPlayer/>
+          <GlobalOstPlayer />
         </main>
         {/* Footer */}
         <Footer />
-        <div className="mb-16 md:mb-0"/>
+        <div className="mb-16 md:mb-0" />
         <MobileFooter />
+        <VisitTracker/>
       </body>
     </html >
   );

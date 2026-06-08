@@ -7,7 +7,7 @@ import { TitleLanguage, TitleType } from "@/core/enums/AnimeTitle";
 import { AnimeFormValues } from "./useAnimeForm";
 import CustomSelect from "@/components/CustomSelect";
 import { toast } from "react-toastify";
-import { AnimeTitle } from "@/core/types"; 
+import { AnimeTitle } from "@/core/types";
 import { apiFetch } from "@/lib/api";
 import { LeaveConfirmationModal } from "../../_components/LeaveConfirmationModal";
 
@@ -30,7 +30,7 @@ export const AnimeTitlesEditor: React.FC<AnimeTitlesEditorProps> = ({ animeId, i
     // 🟢 (EDIT MODE)
     // =========================================================================
     const [localTitles, setLocalTitles] = useState<LocalTitle[]>([]);
-    const [savedTitles, setSavedTitles] = useState<LocalTitle[]>([]); 
+    const [savedTitles, setSavedTitles] = useState<LocalTitle[]>([]);
     const [isSaving, setIsSaving] = useState(false);
 
     useEffect(() => {
@@ -95,8 +95,8 @@ export const AnimeTitlesEditor: React.FC<AnimeTitlesEditorProps> = ({ animeId, i
     });
 
     const renderFields = isEditMode
-        ? localTitles.map((t, i) => ({ id: t.id ?? i, ...t })) 
-        : fields; 
+        ? localTitles.map((t, i) => ({ id: t.id ?? i, ...t }))
+        : fields;
 
     return (
         <div className="flex-1 p-4 bg-white rounded-md border border-gray-200">
@@ -123,14 +123,22 @@ export const AnimeTitlesEditor: React.FC<AnimeTitlesEditorProps> = ({ animeId, i
                         className="grid grid-cols-[1fr_minmax(120px,140px)_minmax(160px,200px)_auto] gap-2 mb-2 items-center"
                     >
                         <div>
-                            <input
-                                type="text"
-                                placeholder="Назва аніме"
-                                className="btn-primary flex items-center justify-between w-full min-w-30"
-                                value={isEditMode ? localTitles[idx]?.value : undefined}
-                                onChange={isEditMode ? (e) => updateLocalField(idx, "value", e.target.value) : undefined}
-                                {...(!isEditMode && register ? register(`titles.${idx}.value` as const) : {})}
-                            />
+                            {isEditMode ? (
+                                <input
+                                    type="text"
+                                    placeholder="Назва аніме"
+                                    className="btn-primary flex items-center justify-between w-full min-w-30"
+                                    value={localTitles[idx]?.value || ""}
+                                    onChange={(e) => updateLocalField(idx, "value", e.target.value)}
+                                />
+                            ) : (
+                                <input
+                                    type="text"
+                                    placeholder="Назва аніме"
+                                    className="btn-primary flex items-center justify-between w-full min-w-30"
+                                    {...(register ? register(`titles.${idx}.value` as const) : {})}
+                                />
+                            )}
                         </div>
 
                         {isEditMode ? (

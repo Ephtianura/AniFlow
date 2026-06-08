@@ -26,7 +26,6 @@ export default function GenreGroupList({ genres, title, selectedGenreId, onSelec
 
     return (
         <div className="w-full">
-            {/* Показываем заголовок только если он передан */}
             {title && <p className="text-sm text-gray-500 font-medium">{title}</p>}
 
             <div className="space-y-4 mt-2">

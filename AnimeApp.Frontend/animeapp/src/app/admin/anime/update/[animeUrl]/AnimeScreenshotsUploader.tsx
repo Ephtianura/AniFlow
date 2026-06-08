@@ -275,7 +275,6 @@ export const AnimeScreenshotsUploader: React.FC<AnimeScreenshotsUploaderProps> =
                 </div>
             </div>
 
-            {/* Передаем стейт setItems напрямую, чтобы dnd-kit сам управлял сортировкой */}
             <SortableScreenshotGrid
                 items={items}
                 setItems={setItems}

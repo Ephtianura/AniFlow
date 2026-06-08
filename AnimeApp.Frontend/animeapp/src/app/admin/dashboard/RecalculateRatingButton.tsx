@@ -38,10 +38,10 @@ export default function RecalculateRatingButton() {
     };
 
     return (
-        <div className="max-w-md rounded-xl border border-purple-300 bg-purple-50 p-4 space-y-4 flex flex-col">
+        <div className="max-w-md rounded-xl border border-hr-clr bg-gray-50 p-4 space-y-4 flex flex-col">
             <div className="">
-                <h3 className="font-semibold text-purple-700 flex gap-2 items-center">
-                    <FaStar className="w-6 h-6" /> Перерахунок рейтингу
+                <h3 className="font-semibold  flex gap-2 items-center">
+                    <FaStar className="w-6 h-6 text-purple-700" /> Перерахунок рейтингу
                 </h3>
 
                 <p className="mt-1 text-sm text-gray-600">

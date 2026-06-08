@@ -128,6 +128,27 @@ namespace AnimeApp.DataAccess.Migrations
                     b.ToTable("Animes", (string)null);
                 });
 
+            modelBuilder.Entity("AnimeApp.Core.Models.AnimeDailyStats", b =>
+                {
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("AnimeId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("EpisodeNumber")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ViewsCount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0);
+
+                    b.HasKey("Date", "AnimeId", "EpisodeNumber");
+
+                    b.ToTable("AnimeDailyStats", (string)null);
+                });
+
             modelBuilder.Entity("AnimeApp.Core.Models.AnimeIdCatalog", b =>
                 {
                     b.Property<int>("MoonId")
@@ -252,6 +273,46 @@ namespace AnimeApp.DataAccess.Migrations
                     b.HasIndex("AnimeOstId");
 
                     b.ToTable("AnimeVideos", (string)null);
+                });
+
+            modelBuilder.Entity("AnimeApp.Core.Models.DailySystemStat", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AvgOnline")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("date");
+
+                    b.Property<int>("PeakOnline")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("PlayerViewsCount")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RegistrationsCount")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UniquesCount")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserInteractionsCount")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("VisitsCount")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Date")
+                        .IsUnique();
+
+                    b.ToTable("DailySystemStats", (string)null);
                 });
 
             modelBuilder.Entity("AnimeApp.Core.Models.Genre", b =>

@@ -7,7 +7,7 @@ import { register } from "@/hooks/register";
 import { toast } from "react-toastify";
 import { getKawaiiError, KawaiiErrorType } from "@/hooks/getKawaiiError";
 
-export default function RegisterForm() {
+export default function  RegisterForm() {
 
     const [form, setForm] = useState({
         nickname: "",
@@ -20,9 +20,9 @@ export default function RegisterForm() {
         try {
             await register(form);
             window.location.href = "/";
-        } catch (err) {
-            const message = Array.isArray(err)
-                ? err.find(Boolean)
+        } catch (err: any) {
+                const message = Array.isArray(err.messages)
+                ? err.messages.find(Boolean)
                 : null;
             toast.error(message ?? getKawaiiError(KawaiiErrorType.Server));
         }
@@ -61,7 +61,7 @@ export default function RegisterForm() {
                     <div>
                         <h3 className="text-gray-text-dark text-lg">Пароль</h3>
                         <input
-                            type="new-password"
+                            type="password"
                             placeholder="Пароль"
                             className="input mt-1 w-full h-11 btn-primary text-gray-text-dark font-medium text-lg shadow-inner "
                             value={form.password}
