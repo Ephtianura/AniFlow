@@ -180,7 +180,7 @@ input[type="range"]::-webkit-slider-thumb {
     @apply outline-none ring-2 ring-purple-500 ring-offset-2 rounded-sm;
   }
   .primary-link {
-    @apply hover:underline text-primary transition-colors duration-100;
+    @apply hover:underline hover:text-purple-700 text-primary transition-colors duration-100;
   }
 
   .slider-opener {

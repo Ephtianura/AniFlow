@@ -6,8 +6,11 @@ import WhiteCard from "@/components/WhiteCard";
 import { register } from "@/hooks/register";
 import { toast } from "react-toastify";
 import { getKawaiiError, KawaiiErrorType } from "@/hooks/getKawaiiError";
+import Checkbox from "@mui/material/Checkbox";
+import { purple } from "@mui/material/colors";
 
-export default function  RegisterForm() {
+export default function RegisterForm() {
+    const [isAgreed, setIsAgreed] = useState(false);
 
     const [form, setForm] = useState({
         nickname: "",
@@ -15,13 +18,14 @@ export default function  RegisterForm() {
         password: ""
     });
 
+
     const onSubmit = async (e: React.SubmitEvent) => {
         e.preventDefault();
         try {
             await register(form);
             window.location.href = "/";
         } catch (err: any) {
-                const message = Array.isArray(err.messages)
+            const message = Array.isArray(err.messages)
                 ? err.messages.find(Boolean)
                 : null;
             toast.error(message ?? getKawaiiError(KawaiiErrorType.Server));
@@ -69,18 +73,46 @@ export default function  RegisterForm() {
                         />
                     </div>
 
-                    <button className="btn-purple mx-auto rounded-sm mt-4 cursor-pointer text-white text-lg font-medium px-10 py-2">
+                    {/* Блок с чекбоксом и красивым текстом */}
+                    <div className="flex items-start gap-2 mt-3 px-1">
+                        <Checkbox
+                            id="terms-checkbox"
+                            checked={isAgreed}
+                            onChange={(e) => setIsAgreed(e.target.checked)}
+                            color="secondary"
+                            className="mt-0.5 h-4 w-4"
+                            sx={{
+                                color: purple[800],
+                                '&.Mui-checked': {
+                                    color: purple[800],
+                                },
+                                padding: 0, // Убираем дефолтные паддинги MUI для точного выравнивания
+                            }}
+                        />
+                        <label htmlFor="terms-checkbox" className="text-sm text-gray-text-dark select-none cursor-pointer leading-tight">
+                            Я погоджуюсь з{" "}
+                            <Link href="/terms" className="primary-link font-medium">
+                                Умовами використання
+                            </Link>
+                            {" та "}
+                            <Link href="/privacy" className="primary-link font-medium">
+                                Політикою конфіденційності
+                            </Link>
+                        </label>
+                    </div>
+
+                    {/* Кнопка регистрации с блокировкой */}
+                    <button
+                        disabled={!isAgreed}
+                        className="btn-purple mx-auto rounded-sm mt-4 text-white text-lg font-medium px-10 py-2 transition-all duration-200 
+                           disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-purple-none cursor-pointer"
+                    >
                         Зареєструватись
                     </button>
 
                     <Link href="/login" className="mt-3 text-sm text-center text-primary hover:underline transition">
                         Вже є акаунт?
                     </Link>
-
-                    {/* <Link href="/login" className="btn-primary text-gray-text-dark text-center ">
-                        Увійти
-                    </Link> */}
-
                 </form>
             </WhiteCard>
         </div>
