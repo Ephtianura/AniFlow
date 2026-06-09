@@ -3,15 +3,18 @@ using AnimeApp.Application.Contracts.App;
 using AnimeApp.Application.Dto.Requests.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace AnimeApp.API.Controllers
 {
     // ================= AUTH =================
     [ApiController]
     [Route("api/auth")]
-    public class AuthController(IAuthService authService) : ControllerBase
+    public class AuthController(IAuthService authService, IConfiguration config) : ControllerBase
     {
         private readonly IAuthService _authService = authService;
+
+        private readonly IConfiguration _config = config;
 
         /// <summary> Реєструє нового користувача. </summary>
         /// <remarks>
@@ -48,7 +51,8 @@ namespace AnimeApp.API.Controllers
         [HttpPost("logout")]
         public IActionResult Logout()
         {
-            // Опции должны совпадать с теми, что были при логине
+            var cookieDomain = _config["COOKIE_DOMAIN"];
+
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
@@ -57,6 +61,11 @@ namespace AnimeApp.API.Controllers
                 Expires = DateTimeOffset.UtcNow.AddDays(-1), 
                 Path = "/" 
             };
+
+            if (!string.IsNullOrEmpty(cookieDomain))
+            {
+                cookieOptions.Domain = cookieDomain;
+            }
 
             if (HttpContext.Request.Cookies.ContainsKey("cookies"))
             {
@@ -75,9 +84,27 @@ namespace AnimeApp.API.Controllers
         [Authorize(Policy = "ModeratorPolicy")]
         [HttpGet("TestEmployee")]
         public IActionResult TestEmployee() => Ok(new ApiResponse("Moderator endpoint works"));
-      
+
         /// <summary> Метод, що встановлює кукі у відповідь. </summary>
-        private void SetAuthCookie(string token) =>
-            HttpContext.Response.Cookies.Append("cookies", token);
+        private void SetAuthCookie(string token)
+        {
+            var cookieDomain = _config["COOKIE_DOMAIN"];
+
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Expires = DateTimeOffset.UtcNow.AddDays(7)
+            };
+
+            if (!string.IsNullOrEmpty(cookieDomain))
+            {
+                cookieOptions.Domain = cookieDomain;
+            }
+
+            HttpContext.Response.Cookies.Append("cookies", token, cookieOptions);
+        }
     }
 }
+ 

@@ -46,6 +46,7 @@ services:
     restart: always
 
   seq:
+    restart: always
     ports:
       - "5341:80"
 

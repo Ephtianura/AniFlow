@@ -16,7 +16,7 @@ export async function apiFetch<T>(
 
   const headers = new Headers(options.headers || {});
 
-  // 🔐 SSR cookies (если передали)
+  // 🔐 SSR cookies 
   if (options.cookieHeader) {
     headers.set("Cookie", options.cookieHeader);
   }
