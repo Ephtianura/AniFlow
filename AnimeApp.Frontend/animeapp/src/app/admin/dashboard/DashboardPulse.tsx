@@ -9,8 +9,8 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  BarChart, 
-  Bar,      
+  BarChart,
+  Bar,
   Cell
 } from 'recharts';
 import {
@@ -59,7 +59,7 @@ export default function DashboardPulse({ pulse, topAnime, newAnime }: DashboardP
     </div>
   );
 
-  const MetricChartCard = ({ block, icon: Icon, color }: { block: StatBlockDto, icon: any, color: string }) => {
+  const MetricChartCard = ({ id, block, icon: Icon, color }: { block: StatBlockDto, icon: any, color: string, id: string }) => {
     const MetricIcon = Icon;
 
     return (
@@ -83,9 +83,11 @@ export default function DashboardPulse({ pulse, topAnime, newAnime }: DashboardP
 
         <div className="w-full min-h-0">
           <ResponsiveContainer width="100%" height={160}>
-            <AreaChart data={block.chartData} margin={{ top: 5, right: 5, left: -25, bottom: 0 }}>
+            {/* Передаем id самому графику, чтобы Recharts не путал инстансы */}
+            <AreaChart id={`chart-${id}`} data={block.chartData} margin={{ top: 5, right: 5, left: -25, bottom: 0 }}>
               <defs>
-                <linearGradient id={`grad-${block.label}`} x1="0" y1="0" x2="0" y2="1">
+                {/* Используем переданный латинский id без пробелов */}
+                <linearGradient id={`grad-${id}`} x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor={color} stopOpacity={0.15} />
                   <stop offset="95%" stopColor={color} stopOpacity={0.01} />
                 </linearGradient>
@@ -109,7 +111,7 @@ export default function DashboardPulse({ pulse, topAnime, newAnime }: DashboardP
                 stroke={color}
                 strokeWidth={2.5}
                 fillOpacity={1}
-                fill={`url(#grad-${block.label})`}
+                fill={`url(#grad-${id})`}
                 name="Кількість"
               />
             </AreaChart>
@@ -118,7 +120,6 @@ export default function DashboardPulse({ pulse, topAnime, newAnime }: DashboardP
       </div>
     );
   };
-
   return (
     <div className="select-none flex flex-col gap-6">
 
@@ -176,10 +177,10 @@ export default function DashboardPulse({ pulse, topAnime, newAnime }: DashboardP
       <hr className='text-hr-clr' />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <MetricChartCard block={pulse.visits} icon={MousePointerClick} color="#3b82f6" />
-        <MetricChartCard block={pulse.playerViews} icon={Eye} color="#10b981" />
-        <MetricChartCard block={pulse.registrations} icon={UserPlus} color="#6366f1" />
-        <MetricChartCard block={pulse.userInteractions} icon={Flame} color="#f59e0b" />
+        <MetricChartCard id="visits" block={pulse.visits} icon={MousePointerClick} color="#3b82f6" />
+        <MetricChartCard id="playerViews" block={pulse.playerViews} icon={Eye} color="#10b981" />
+        <MetricChartCard id="registrations" block={pulse.registrations} icon={UserPlus} color="#6366f1" />
+        <MetricChartCard id="userInteractions" block={pulse.userInteractions} icon={Flame} color="#f59e0b" />
       </div>
 
       <hr className='text-hr-clr' />
@@ -200,7 +201,7 @@ export default function DashboardPulse({ pulse, topAnime, newAnime }: DashboardP
             >
               <div className='flex gap-2 items-center'>
                 <img
-                  src={anime.posterUrl ?? "NotFound.jpg"}
+                  src={anime.posterUrl || "NotFound.jpg"}
                   alt="poster"
                   className='w-15 acpect-5/7 object-cover shrink-0 rounded-lg'
                 />
@@ -242,7 +243,7 @@ export default function DashboardPulse({ pulse, topAnime, newAnime }: DashboardP
           <div>
             <h3 className="font-bold text-gray-800 uppercase tracking-wide flex items-center gap-2">
               <FaRankingStar className="text-primary" size={16} />
-              Топ аніме за переглядами 
+              Топ аніме за переглядами
             </h3>
             <p className="text-xs text-gray-400 mt-0.5">Найпопулярніші тайтли на основі переглядів</p>
           </div>

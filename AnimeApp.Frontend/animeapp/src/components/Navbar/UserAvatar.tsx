@@ -15,7 +15,7 @@ export default function UserAvatar({ me }: Props) {
                     {me.avatarUrl != null &&
                         <div className="w-8.5 aspect-square rounded-full flex items-center justify-center overflow-hidden shrink-0">
                             <img
-                                src={me.avatarUrl ?? "/NotFound.jpg"}
+                                src={me.avatarUrl || "/NotFound.jpg"}
                                 className="w-full h-full object-cover shrink-0"
                                 alt="Avatar"
                             />

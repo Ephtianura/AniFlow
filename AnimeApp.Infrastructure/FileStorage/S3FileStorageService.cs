@@ -46,28 +46,59 @@ namespace AnimeApp.Infrastructure.FileStorage
         {
             try
             {
-                // 1. Скачиваем сразу в массив байт (HttpClient сам выкачает поток в память)
-                byte[] imageBytes = await _httpClient.GetByteArrayAsync(url, ct);
+                using var request = new HttpRequestMessage(HttpMethod.Get, url);
 
-                // 2. ImageSharp умеет определять формат прямо из массива байт одной строчкой!
-                var format = Image.DetectFormat(imageBytes);
-                if (format == null)
+                // Маскуємося під звичайний браузер 
+                request.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
+                request.Headers.Add("Accept", "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8");
+
+                using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, ct);
+
+                if (response.StatusCode == System.Net.HttpStatusCode.Redirect ||
+                    response.StatusCode == System.Net.HttpStatusCode.MovedPermanently ||
+                    response.StatusCode == System.Net.HttpStatusCode.Found)
                 {
-                    _logger.LogWarning("Файл по сигнтуре не является валидным изображением: {Url}", url);
+                    var redirectUrl = response.Headers.Location?.ToString();
+
+                    if (!string.IsNullOrEmpty(redirectUrl))
+                    {
+                        // Якщо Kodik віддав посилання без протоколу "//cloud.solodcdn.com...", виправляємо його
+                        if (redirectUrl.StartsWith("//"))
+                        {
+                            redirectUrl = "https:" + redirectUrl;
+                        }
+
+                        _logger.LogInformation("Виявлено редирект для зображення. Переходимо на: {RedirectUrl}", redirectUrl);
+
+                        // Рекурсивно викликаємо цей же метод, але вже за новою адресою
+                        return await UploadImageFromUrlAsync(redirectUrl, folder, ct);
+                    }
+                }
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    _logger.LogWarning("Завантаження зображення завершилося помилкою HTTP {StatusCode} для URL: {Url}", response.StatusCode, url);
                     return null;
                 }
 
-                // 3. Достаем расширение и генерируем имя
+                byte[] imageBytes = await response.Content.ReadAsByteArrayAsync(ct);
+
+                var format = Image.DetectFormat(imageBytes);
+                if (format == null)
+                {
+                    _logger.LogWarning("Файл не є валідним зображенням: {Url}", url);
+                    return null;
+                }
+
                 var ext = format.FileExtensions.First();
                 var fileName = $"{Guid.NewGuid()}.{ext}";
 
-                // 4. Оборачиваем массив в легкий MemoryStream только для метода загрузки
                 using var uploadStream = new MemoryStream(imageBytes);
                 return await UploadFileAsync(uploadStream, fileName, folder);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Не удалось скачать картинку по URL: {Url}", url);
+                _logger.LogError(ex, "Не вдалося завантажити картинку по URL: {Url}", url);
                 return null;
             }
         }

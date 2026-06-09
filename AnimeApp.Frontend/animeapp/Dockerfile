@@ -22,15 +22,19 @@ CMD ["npm", "run", "dev"]
 # =========================
 FROM base AS build
 ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_HUB_URL  
+ARG NEXT_PUBLIC_CDN_URL
 ARG DISABLE_CHECKS
 
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_HUB_URL=$NEXT_PUBLIC_HUB_URL
+ENV NEXT_PUBLIC_CDN_URL=$NEXT_PUBLIC_CDN_URL
 ENV NODE_OPTIONS="--max-old-space-size=2048"
 ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN --mount=type=cache,target=/app/.next/cache \
     if [ "$DISABLE_CHECKS" = "true" ]; then \
-      echo "🚀 DISABLE_CHECKS=true! Вырубаем линтер и TS..."; \
+      echo "🚀 Вырубаем линтер и TS..."; \
       NEXT_DISABLE_ESLINT=1 NEXT_DISABLE_TYPESCRIPT=1 npm run build; \
     else \
       echo "🛡️ Честный билд со всеми проверками..."; \

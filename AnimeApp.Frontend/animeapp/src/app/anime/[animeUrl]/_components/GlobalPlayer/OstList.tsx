@@ -69,7 +69,7 @@ const OstList = React.memo(function OstList() {
                                         <div className="flex gap-4 items-center h-full">
                                             <div className="relative h-full">
                                                 <img
-                                                    src={animePoster ?? "/NotFound.jpg"} alt=""
+                                                    src={animePoster || "/NotFound.jpg"} alt=""
                                                     className="shrink-0 object-cover h-full aspect-5/7 min-w-12 select-none"
                                                 />
                                             </div>

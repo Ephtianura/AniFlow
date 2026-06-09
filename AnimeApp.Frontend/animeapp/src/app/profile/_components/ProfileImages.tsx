@@ -99,7 +99,7 @@ export default function ProfileImages({ avatarUrl: avaratInit, bannerUrl: banner
 
                         <div className="relative w-50 -mt-20 aspect-square rounded-full ring-4 ring-white shadow-[0_0_15px_rgba(0,0,0,0.3)] overflow-hidden">
                             <img
-                                src={avatarUrl ?? "/NotFound.jpg"}
+                                src={avatarUrl || "/NotFound.jpg"}
                                 alt="Аватар"
                                 className="w-full h-full object-cover"
                             />

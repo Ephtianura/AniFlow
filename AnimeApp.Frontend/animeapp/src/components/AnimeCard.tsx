@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { BiSolidStar } from "react-icons/bi";
 import AnimeCardPoster from "./AnimeCardPoster";
 import { AnimeKindEnum, AnimeKindMap } from "@/core/enums/AnimeKind";
 import { Genre } from "@/core/types";
@@ -27,6 +26,9 @@ interface AnimeCardProps {
 
 export default function AnimeCard(props: AnimeCardProps) {
     const { title, subTitle, rating, kind, year, genres, description, posterUrl, url, viewMode } = props;
+
+    const visibleListGenres = genres ? genres.slice(0, 10) : [];
+    const visibleGridGenres = genres ? genres.slice(0, 3) : [];
 
     // Small
     if (viewMode === "small") {
@@ -136,7 +138,7 @@ export default function AnimeCard(props: AnimeCardProps) {
                                 </>}
 
                                 {/* GENRES */}
-                                {genres.map((genre, index) => (
+                                {visibleGridGenres.map((genre, index) => (
                                     <span key={genre.id} className="hidden sm:inline-flex items-center gap-0">
                                         <Link
                                             href={{ pathname: "/animes", query: { GenresId: genre.id } }}
@@ -144,7 +146,7 @@ export default function AnimeCard(props: AnimeCardProps) {
                                         >
                                             {genre.nameUa}
                                         </Link>
-                                        {index < genres.length - 1 && <span className="text-gray-dark">,</span>}
+                                        {index < visibleGridGenres.length - 1 && <span className="text-gray-dark">,</span>}
                                     </span>
                                 ))}
 
@@ -197,7 +199,7 @@ export default function AnimeCard(props: AnimeCardProps) {
                         </>}
 
                         {/* GENRES */}
-                        {genres.map((genre, index) => (
+                        {visibleListGenres.map((genre, index) => (
                             <span key={genre.id} className="hidden sm:flex items-center gap-0 ">
                                 <Link
                                     href={{ pathname: "/animes", query: { GenresId: genre.id } }}
@@ -205,7 +207,7 @@ export default function AnimeCard(props: AnimeCardProps) {
                                 >
                                     {genre.nameUa}
                                 </Link>
-                                {index < genres.length - 1 && <span className="text-gray-dark">,</span>}
+                                {index < visibleListGenres.length - 1 && <span className="text-gray-dark">,</span>}
                             </span>
                         ))}
 

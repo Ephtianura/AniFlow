@@ -31,7 +31,6 @@ namespace AnimeApp.API.Extensions
                 client.MaxResponseContentBufferSize = 10 * 1024 * 1024;
             });
 
-            // 2. Регистрируем сам сервис
             services.AddSingleton<IS3FileStorageService>(sp =>
             {
                 var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
