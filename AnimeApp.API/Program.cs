@@ -46,6 +46,8 @@ builder.Services
 
 var app = builder.Build();
 
+await app.Services.ApplyMigrationsAsync();
+
 // Serilog
 app.UseSerilogRequestLogging();
 
