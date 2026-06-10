@@ -61,7 +61,7 @@ export default function ProfileImages({ avatarUrl: avaratInit, bannerUrl: banner
         <>
             {/* Баннер */}
             <div className="relative bg-white h-100 -m-4 select-none">
-                <img src={bannerUrl ?? "/NotFound.jpg"} alt="" className=" object-cover h-full w-full" />
+                    <img src={bannerUrl ?? "/NotFoundBannerPurple.webp"} alt="" className="object-cover h-full w-full select-none pointer-events-none" />
 
                 {onEdit && (<>
                     <button
@@ -99,9 +99,9 @@ export default function ProfileImages({ avatarUrl: avaratInit, bannerUrl: banner
 
                         <div className="relative w-50 -mt-20 aspect-square rounded-full ring-4 ring-white shadow-[0_0_15px_rgba(0,0,0,0.3)] overflow-hidden">
                             <img
-                                src={avatarUrl || "/NotFound.jpg"}
+                                src={avatarUrl || "/NotFoundPurpleSquare.webp"}
                                 alt="Аватар"
-                                className="w-full h-full object-cover"
+                                className="w-full h-full object-cover select-none pointer-events-none"
                             />
                         </div>
 

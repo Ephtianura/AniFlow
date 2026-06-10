@@ -40,7 +40,7 @@ export default function AnimeDropDown({ animes, onClose }: Props) {
                         >
                             {/* Картинка */}
                             <img
-                                src={anime.posterUrl || "/NotFound.jpg"}
+                                src={anime.posterUrl || "/NotFoundPurple.webp"}
                                 alt={ua || romaji}
                                 className="w-14 aspect-5/7 object-cover shrink-0 rounded-xs"
                             />

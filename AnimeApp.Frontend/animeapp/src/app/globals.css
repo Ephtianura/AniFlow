@@ -124,7 +124,7 @@ input[type="range"]::-webkit-slider-thumb {
   .btn-white,
   .btn-slate {
     @apply px-3 py-1.5 rounded-sm transition cursor-pointer border border-transparent select-none
-    text-center inline-flex items-center justify-center gap-2 text-sm ;
+    text-center inline-flex items-center justify-center gap-2 text-sm;
   }
 
   .btn-primary {
@@ -255,5 +255,13 @@ input[type="range"]::-webkit-slider-thumb {
   img {
     @apply select-none;
     /* -webkit-user-drag: none; */
+  }
+}
+
+@layer base {
+  button:not(:disabled) {
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
   }
 }

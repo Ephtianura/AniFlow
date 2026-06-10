@@ -1,4 +1,5 @@
 ﻿using AnimeApp.Core.Contracts;
+using AnimeApp.Core.Dto;
 using AnimeApp.Core.Enums;
 using AnimeApp.Core.Models;
 using Microsoft.EntityFrameworkCore;
@@ -120,6 +121,56 @@ namespace AnimeApp.DataAccess.Repositories
                 TotalFavoritesCount = totalFavorites,
                 TotalRatedCount = totalRated,
                 ByListType = listGroupedData
+            };
+        }
+
+        public async Task<UserRawResponse?> GetUsersProfileById(int userId)
+        {
+            var userBase = await _dbContext.Users
+                .Where(u => u.Id == userId)
+                .Select(u => new { u.Id, u.Nickname, u.AvatarFileName, u.BannerFileName, u.DateOfRegistration })
+                .FirstOrDefaultAsync();
+
+            if (userBase == null) return null;
+
+            var rawAnimeData = await _dbContext.UserAnimes
+                .Where(ua => ua.UserId == userId)
+                .Join(_dbContext.Animes,
+                    ua => ua.AnimeId,
+                    a => a.Id,
+                    (ua, a) => new
+                    {
+                        ua.MyList,
+                        ua.Rating,
+                        Episodes = a.Episodes ?? 0,
+                        Duration = a.Duration ?? 0
+                    })
+                .ToListAsync(); 
+
+            var completedOrRewatching = rawAnimeData
+                .Where(x => x.MyList == MyListEnum.Completed || x.MyList == MyListEnum.Rewatching)
+                .ToList();
+
+            var totalEpisodes = completedOrRewatching.Sum(x => x.Episodes);
+            var timeSpentMinutes = completedOrRewatching.Sum(x => x.Episodes * x.Duration);
+
+            var ratings = rawAnimeData
+                .Where(x => x.Rating != null)
+                .Select(x => (double)x.Rating!.Value)
+                .ToList();
+
+            var averageScore = ratings.Any() ? Math.Round(ratings.Average(), 1) : 0.0;
+
+            return new UserRawResponse
+            {
+                Id = userBase.Id,
+                Nickname = userBase.Nickname,
+                AvatarFileName = userBase.AvatarFileName,
+                BannerFileName = userBase.BannerFileName,
+                DateOfRegistration = userBase.DateOfRegistration,
+                TotalEpisodes = totalEpisodes,
+                AverageScore = averageScore,
+                TimeSpentMinutes = timeSpentMinutes
             };
         }
 

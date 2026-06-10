@@ -86,7 +86,7 @@ export const AdminAnimeSearch: React.FC<AdminAnimeSearchProps> = ({
                         const content = (
                             <>
                                 <img
-                                    src={anime.posterUrl || "/NotFound.jpg"}
+                                    src={anime.posterUrl || "/NotFoundPurple.webp"}
                                     className="w-15 aspect-5/7 object-cover rounded shrink-0"
                                     alt="poster"
                                 />

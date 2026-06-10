@@ -41,7 +41,7 @@ export default function PosterViewer({ posterUrl}: PosterViewerProps) {
             <div className="relative cursor-pointer w-full sm:w-62.5 xl:w-75 aspect-5/7 shrink-0 select-none" >
                 <div onClick={() => setOpen(true)}>
                     <img
-                        src={posterUrl || "/NotFound.jpg"}
+                        src={posterUrl || "/NotFoundPurple.webp"}
                         alt="poster"
                         className="w-full h-full aspect-5/7 object-cover rounded"
                         
@@ -73,7 +73,7 @@ export default function PosterViewer({ posterUrl}: PosterViewerProps) {
                     </div>
 
                     <img
-                        src={posterUrl || "/NotFound.jpg"}
+                        src={posterUrl || "/NotFoundPurple.webp"}
                         alt="poster"
                         className="max-h-[90vh] max-w-[90vw] object-contain rounded"
                     />

@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace AnimeApp.API.Controllers
 {
     // ================= USER =================
-    [Authorize(Policy = "UserPolicy")]
     [ApiController]
     [Route("api/user")]
     public class UserController(IUserService userService, IMapper mapper) : ControllerBase
@@ -18,6 +17,7 @@ namespace AnimeApp.API.Controllers
 
         /// <summary>Повертає коротку інформацію про себе</summary>
         [HttpGet("me")]
+        [Authorize(Policy = "UserPolicy")]
         public async Task<IActionResult> GetMe()
         {
             var userId = Helper.GetUserIdOrThrow(User);
@@ -27,6 +27,7 @@ namespace AnimeApp.API.Controllers
 
         /// <summary>Оновлює профіль</summary>
         [HttpPatch("me")]
+        [Authorize(Policy = "UserPolicy")]
         public async Task<IActionResult> Update([FromBody] UserUpdateRequest request)
         {
             var userId = Helper.GetUserIdOrThrow(User);
@@ -37,6 +38,7 @@ namespace AnimeApp.API.Controllers
         /// <summary>Оновлює аватар</summary>
         /// <returns>Урл на поточні аватар та постер</returns>
         [HttpPatch("me/files")]
+        [Authorize(Policy = "UserPolicy")]
         public async Task<IActionResult> UpdateFiles([FromForm] UserUpdateFilesRequest request)
         {
             var userId = Helper.GetUserIdOrThrow(User);
@@ -44,13 +46,5 @@ namespace AnimeApp.API.Controllers
             return Ok(res);
         }
 
-        /// <summary>Повертає користувача по ID</summary>
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetUserById(int id)
-        {
-            var user = await _userService.GetByIdAsync(id);
-            var response = _mapper.Map<GetUserMeResponse>(user);
-            return Ok(response);
-        }
     }
 }

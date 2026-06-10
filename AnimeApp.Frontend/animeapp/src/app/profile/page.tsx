@@ -5,6 +5,8 @@ import { getProfile } from "./_functions/getProfile";
 import { formatWatchTime } from "./_functions/formatWatchTime";
 import { formatRegisterDate } from "./_functions/formatRegisterDate";
 import { MyListEnum } from "@/core/enums/MyList";
+import { UserStatsRow } from "./_components/UserStatsRow";
+import ShareProfileButton from "./_components/ShareProfileButton";
 
 export const metadata = {
     title: "Профіль | AniFlow",
@@ -18,7 +20,7 @@ export default async function ProfileHome() {
     const watchTime = formatWatchTime(profile.timeSpent);
 
     return (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 relative">
 
             <ProfileImages
                 avatarUrl={profile.avatarUrl}
@@ -26,7 +28,9 @@ export default async function ProfileHome() {
                 nickname={profile.nickname}
                 formattedRegistrationDate={formattedRegistrationDate}
             />
-
+            <div className="absolute top-2 right-2">
+                <ShareProfileButton userId={profile.id} />
+            </div>
             {/* Статистика */}
             <div className="flex flex-col text-primary-black">
                 <h1 className="text-[1.875rem] font-medium mb-4">Статистика</h1>
@@ -35,16 +39,10 @@ export default async function ProfileHome() {
                     <h1 className="text-xl font-medium -mb-4">Аніме</h1>
 
                     {/* Час / бал */}
-                    <div className="flex justify-between text-md">
-                        <div>
-                            <span className="text-gray-dark">Час за переглядом: </span>
-                            <span className="text-primary-black">{watchTime}</span>
-                        </div>
-                        <div>
-                            <span className="text-gray-dark">Середній бал: </span>
-                            <span className="text-primary-black">{profile.averageScore.toFixed(1)}</span>
-                        </div>
-                    </div>
+                    <UserStatsRow
+                        watchTime={watchTime}
+                        averageScore={profile.averageScore}
+                    />
 
                     {/* Графік */}
                     <StatusBarChart

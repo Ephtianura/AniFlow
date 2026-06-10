@@ -29,7 +29,6 @@ namespace AnimeApp.Application.Services
                 user.Id,
                 user.Nickname,
                 avatarUrl,
-                user.Email,
                 user.Role
             );
         }

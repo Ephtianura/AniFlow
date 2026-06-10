@@ -1,4 +1,5 @@
-﻿using AnimeApp.Core.Enums;
+﻿using AnimeApp.Core.Dto;
+using AnimeApp.Core.Enums;
 using AnimeApp.Core.Models;
 
 namespace AnimeApp.Core.Contracts
@@ -24,5 +25,6 @@ namespace AnimeApp.Core.Contracts
         Task<List<UserAnimeStatsData>> GetStatsDataByUserIdAsync(int userId);
         Task<List<UserAnimeWithDetails>> GetAllUserStatusWithDetailsAsync(int userId, MyListEnum? status, bool? isFavorite);
         Task<UserListsStatsDto> GetUserListsStatsAsync();
+        Task<UserRawResponse?> GetUsersProfileById(int userId);
     }
 }

@@ -6,7 +6,6 @@ namespace AnimeApp.Application.Dto.Responses.User
       int Id,
       string Nickname,
       string? AvatarUrl,
-      string Email,
       UserRole Role
   );
 }

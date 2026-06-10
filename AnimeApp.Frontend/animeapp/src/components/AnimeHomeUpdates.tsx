@@ -15,7 +15,7 @@ export default function AnimeHomeUpdates({ updatesAnimes }: Props) {
         <div className='grid sm:grid-cols-2 md:grid-cols-3 gap-2 max-h-215 overflow-auto'>
             {updatesAnimes.items.map((anime) => (
                 <Link key={anime.id} href={`/anime/${anime.url}`} className='border border-hr-clr bg-[#F5F5F5] rounded-lg p-1.5 flex gap-2'>
-                    <img src={anime.posterUrl || "/NotFound.jpg"} alt="" className='aspect-5/7 object-cover shrink-0 w-12.5 rounded-lg' />
+                    <img src={anime.posterUrl || "/NotFoundPurple.webp"} alt="" className='aspect-5/7 object-cover shrink-0 w-12.5 rounded-lg' />
                     <div className='flex flex-col gap '>
                         <p className="line-clamp-2">
                             {getTitle(anime.titles, TitleLanguage.Ukrainian, TitleType.Official) ||

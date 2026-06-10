@@ -74,7 +74,7 @@ export default function DeleteStudio() {
 
                     <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
                         <img
-                            src={selectedStudio.posterUrl || "/NotFound.jpg"}
+                            src={selectedStudio.posterUrl || "/NotFoundPurple.webp"}
                             alt="poster"
                             className="w-full h-auto max-h-60  max-w-75 object-contain rounded-lg shadow-inner shadow-2xl-inner shrink-0"
                         />

@@ -19,8 +19,4 @@
     <ProjectReference Include="..\AnimeApp.Core\AnimeApp.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Dto\" />
-  </ItemGroup>
-
 </Project>

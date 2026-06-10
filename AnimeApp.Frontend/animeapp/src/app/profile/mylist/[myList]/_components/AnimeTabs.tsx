@@ -40,15 +40,16 @@ interface AnimeTabsProps {
         [MyListEnum.Rewatching]: number;
         [MyListEnum.Dropped]: number;
     };
+    baseUrl: string | null;
 }
 
-export default function AnimeTabs({ counts }: AnimeTabsProps) {
+export default function AnimeTabs({ counts, baseUrl }: AnimeTabsProps) {
     const pathname = usePathname();
     const currentType =
         pathname.split("/").pop() as TabType || MyListEnum.Watching;
 
     const createHref = (value: TabType) => {
-        return `/profile/mylist/${value}`;
+        return `${baseUrl}/${value}`;
     };
 
     const [isBeginning, setIsBeginning] = useState(true);

@@ -177,7 +177,7 @@ export const RelatedAnimeSelector: React.FC<RelatedAnimeSelectorProps> = ({ anim
                                 {/* Постер */}
                                 <div className="w-20 h-28 aspect-5/7 rounded shadow-sm bg-gray-200">
                                     <img
-                                        src={item.animeData.posterUrl || "/NotFound.jpg"}
+                                        src={item.animeData.posterUrl || "/NotFoundPurple.webp"}
                                         className="w-full h-full object-cover shrink-0 select-none"
                                         alt="Poster"
                                     />

@@ -1,14 +1,16 @@
-﻿using AnimeApp.Application.Contracts.App;
+﻿using AnimeApp.API.Dto;
+using AnimeApp.Application.Contracts.App;
 using AnimeApp.Application.Dto.Requests.User;
 using AnimeApp.Application.Dto.Responses.User;
+using AnimeApp.Application.Services;
 using AnimeApp.Core.Enums;
+using AnimeApp.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AnimeApp.API.Controllers
 {
     // ================= USER ANIME =================
-    [Authorize(Policy = "UserPolicy")]
     [ApiController]
     [Route("api/user/me")]
     public class UserAnimeController(IUserAnimeService userAnimeService) : ControllerBase
@@ -17,6 +19,7 @@ namespace AnimeApp.API.Controllers
 
         /// <summary>Повертає повну інформацію про свій профіль разом зі сводкою про переглянуті аніме</summary>
         [HttpGet("profile")]
+        [Authorize(Policy = "UserPolicy")]
         public async Task<IActionResult> GetProfile()
         {
             var userId = Helper.GetUserIdOrThrow(User);
@@ -26,6 +29,7 @@ namespace AnimeApp.API.Controllers
 
         /// <summary>Повертає список всіх аніме, які оцінено/додано до списку. Разом з підрахунком загальної кількості</summary>
         [HttpGet("animes")]
+        [Authorize(Policy = "UserPolicy")]
         public async Task<IActionResult> GetAnimeList(MyListEnum? myList, bool? isFavorite = null)
         {
             var userId = Helper.GetUserIdOrThrow(User);
@@ -40,6 +44,7 @@ namespace AnimeApp.API.Controllers
         /// Викликається, щоб побачити до якого списку додав користувач аніме та як оцінив.
         /// </remarks>
         [HttpGet("animes/{animeId}")]
+        [Authorize(Policy = "UserPolicy")]
         public async Task<IActionResult> GetUserAnimeStatus(int animeId)
         {
             var userId = Helper.GetUserIdOrThrow(User);
@@ -49,6 +54,7 @@ namespace AnimeApp.API.Controllers
 
         /// <summary> Оцінює аніме або додає до власного списку </summary>
         [HttpPatch("{animeId}")]
+        [Authorize(Policy = "UserPolicy")]
         public async Task<IActionResult> UpdateUserAnime(int animeId, [FromBody] UpdateUserAnimeRequest request)
         {
             var userId = Helper.GetUserIdOrThrow(User);
@@ -72,6 +78,7 @@ namespace AnimeApp.API.Controllers
         /// Якщо всі значення false — запит не має ефекту.
         /// </remarks>
         [HttpDelete("{animeId}")]
+        [Authorize(Policy = "UserPolicy")]
         public async Task<IActionResult> DeleteAnimeData(int animeId, [FromBody] DeleteStatusTargets target)
         {
             var userId = Helper.GetUserIdOrThrow(User);
@@ -79,6 +86,22 @@ namespace AnimeApp.API.Controllers
             await _userAnimeService.RemoveUserStatusAsync(userId, animeId, target);
 
             return NoContent();
+        }
+
+
+        /// <summary>Повертає користувача по ID</summary>
+        [HttpGet("/api/user/{id}")]
+        public async Task<IActionResult> GetUsersProfileById(int id)
+        {
+            var user = await _userAnimeService.GetUsersProfileById(id);
+            return Ok(user);
+        }
+
+        [HttpGet("/api/user/{id}/animes")]
+        public async Task<IActionResult> GetUserAnimeList(int id, [FromQuery] ListRequest request)
+        {
+            var userAnimeList = await _userAnimeService.GetUserAnimesAsync(id, request.myList, request.isFavorite);
+            return Ok(userAnimeList);
         }
     }
 }

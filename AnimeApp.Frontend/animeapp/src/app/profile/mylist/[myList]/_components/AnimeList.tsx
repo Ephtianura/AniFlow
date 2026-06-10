@@ -4,16 +4,17 @@ import { SubTitle } from "@/components/SubTitle";
 import { TitleLink } from "@/components/TitleLink";
 import { TitleLanguage, TitleType } from "@/core/enums/AnimeTitle";
 import { UserAnimeList } from "@/core/types";
-import clsx from "clsx";
 import Link from "next/link";
 import { FaHeart } from "react-icons/fa";
 
 type Props = {
     userAnimeList?: UserAnimeList | null;
+    baseUrl: string | null;
+    isMyProfile: boolean;
 }
 
 
-export default function AnimeList({ userAnimeList: animeList }: Props) {
+export default function AnimeList({ userAnimeList: animeList, baseUrl, isMyProfile }: Props) {
     if (!animeList || animeList.animes.length <= 0)
         return (
             <p className="text-[#525353]">
@@ -35,8 +36,7 @@ export default function AnimeList({ userAnimeList: animeList }: Props) {
                             </span>
 
                             <Link className="w-25 aspect-5/7" href={`/anime/${anime.url}`}>
-                                <img src={anime.posterUrl || "/NotFound.jpg"} alt="123" className="w-full h-full aspect-5/7 shrink-0 object-cover rounded-lg" />
-
+                                <img src={anime.posterUrl || "/NotFoundPurple.webp"} alt="123" className="w-full h-full aspect-5/7 shrink-0 object-cover rounded-lg" />
                             </Link>
                         </div>
                         <div className="flex flex-col gap-1">
@@ -51,13 +51,21 @@ export default function AnimeList({ userAnimeList: animeList }: Props) {
 
                             {anime.myRating && (
                                 <p className="text-[#8B8C8C] text-sm -mt-1">
-                                    Моя оцінка
+                                    {isMyProfile ? (
+                                        <span>
+                                            Моя оцінка
+                                        </span>
+                                    ) : (
+                                        <span>
+                                            Оцінка
+                                        </span>
+                                    )}
                                     <span className="text-primary text-xl"> {anime.myRating}</span>
                                 </p>
                             )}
 
                             {anime.isFavorite && (
-                                <Link href={"/profile/mylist/Favorites"} className="text-primary hover:underline text-sm flex items-center gap-2">
+                                <Link href={`${baseUrl}/Favorites`} className="text-primary hover:underline text-sm flex items-center gap-2">
                                     <span>Улюблене</span>
                                     <FaHeart />
                                 </Link>

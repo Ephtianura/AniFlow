@@ -6,8 +6,10 @@ using AnimeApp.Application.Dto.Responses.Anime;
 using AnimeApp.Application.Dto.Responses.User;
 using AnimeApp.Application.Exceptions;
 using AnimeApp.Core.Contracts;
+using AnimeApp.Core.Dto;
 using AnimeApp.Core.Enums;
 using AnimeApp.Core.Models;
+using static MassTransit.ValidationResultExtensions;
 
 namespace AnimeApp.Application.Services
 {
@@ -213,6 +215,32 @@ namespace AnimeApp.Application.Services
                 userAnime.IsFavorite
             );
         }
+        public async Task<UserResponse> GetUsersProfileById(int userId)
+        {
+            var user = await _userAnimesRepo.GetUsersProfileById(userId)
+                ?? throw new NotFoundException("UserProfile");
+
+            string? avatarUrl = null;
+            string? bannerUrl = null;
+            if (user.AvatarFileName != null)
+                avatarUrl = _fileStorage.GetUrl(user.AvatarFileName);
+            if (user.BannerFileName != null)
+                bannerUrl = _fileStorage.GetUrl(user.BannerFileName);
+
+
+            return new(
+                user.Id,
+                user.Nickname,
+                avatarUrl,
+                bannerUrl,
+                user.DateOfRegistration,
+                user.TotalEpisodes,
+                user.AverageScore,
+                TimeSpan.FromMinutes(user.TimeSpentMinutes)
+            );
+        }
+
+
 
         // =================== private methods ===================
 
@@ -248,5 +276,6 @@ namespace AnimeApp.Application.Services
 
             return (favorites, watching, completed, planned, dropped, rewatching, totalAnime);
         }
+
     }
 }

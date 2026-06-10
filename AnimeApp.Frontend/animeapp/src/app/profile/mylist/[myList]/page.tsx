@@ -7,6 +7,7 @@ import ProfileImages from "../../_components/ProfileImages";
 import { getProfile } from "../../_functions/getProfile";
 import { formatRegisterDate } from "../../_functions/formatRegisterDate";
 import { formatWatchTime } from "../../_functions/formatWatchTime";
+import ShareProfileButton from "../../_components/ShareProfileButton";
 
 export const metadata = {
     title: "Список аніме | AniFlow",
@@ -52,21 +53,24 @@ export default async function MyListPage({ params, }: MyListPageProps) {
     };
 
     return (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 relative">
             <ProfileImages
                 avatarUrl={profile.avatarUrl}
                 bannerUrl={profile.bannerUrl}
                 nickname={profile.nickname}
                 formattedRegistrationDate={formattedRegistrationDate}
             />
+            <div className="absolute top-2 right-2">
+                <ShareProfileButton userId={profile.id} />
+            </div>
             <h2 className="text-[1.875rem] font-medium">Список аніме</h2>
 
             <div className="flex flex-col gap-4">
 
-                <AnimeTabs counts={counts} />
+                <AnimeTabs counts={counts} baseUrl={"/profile/mylist"} />
                 {/* Пошук в майбутньому */}
 
-                <AnimeList userAnimeList={data} />
+                <AnimeList userAnimeList={data} baseUrl={"/profile/mylist"} isMyProfile={true} />
 
             </div>
         </div>

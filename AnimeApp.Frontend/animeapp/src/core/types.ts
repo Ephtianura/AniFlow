@@ -1,3 +1,4 @@
+import { number } from "zod";
 import { AnimeKindEnum } from "./enums/AnimeKind";
 import { AnimeRatingEnum } from "./enums/AnimeRating";
 import { AnimeSource } from "./enums/AnimeSource";
@@ -228,4 +229,17 @@ export interface AnimeCreateResponse {
   id: number;
   url: string;
   titles: AnimeTitle[];
+}
+
+
+export interface User {
+  id: number;
+  nickname: string;
+  avatarUrl: string | null;
+  bannerUrl: string | null;
+  dateOfRegistration: string;
+
+  totalEpisodes: number,
+  averageScore: number,
+  timeSpent: string
 }

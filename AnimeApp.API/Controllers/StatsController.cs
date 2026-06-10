@@ -130,7 +130,7 @@ namespace AnimeApp.Api.Controllers
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost("track-view")]
-        public async Task<IActionResult> TrackView([FromBody] TrackViewDto request)
+        public async Task<IActionResult> TrackView([FromBody] TrackViewRequest request)
         {
             var today = DateTime.UtcNow.ToString("yyyy-MM-dd");
             string visitorId = UserIdentificationService.GetUniqueVisitorId(HttpContext);
