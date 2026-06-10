@@ -14,6 +14,7 @@ namespace AnimeApp.Core.Models
             ChangePassword(passwordHash);
             Role = UserRole.User;
             DateOfRegistration = DateTime.UtcNow;
+            LastOnline = DateTime.UtcNow;
         }
 
         public int Id { get; private set; }
@@ -25,6 +26,7 @@ namespace AnimeApp.Core.Models
         public string? AvatarFileName { get; private set; }
         public string? BannerFileName { get; private set; }
         public DateTime DateOfRegistration { get; private set; }
+        public DateTime LastOnline { get; private set; }
 
         public ICollection<UserAnime> UserAnimes { get; private set; } = [];
 
@@ -68,5 +70,10 @@ namespace AnimeApp.Core.Models
         }
         public void ChangeAvatarFileName(string? avatarFileName) => AvatarFileName = avatarFileName;
         public void ChangeBannerFileName(string? bannerFileName) => BannerFileName = bannerFileName;
+        public void ChangeLastOnline(DateTime lastOnline)
+        {
+            if (lastOnline > DateOfRegistration && lastOnline > LastOnline)
+                LastOnline = lastOnline;
+        }
     }
 }

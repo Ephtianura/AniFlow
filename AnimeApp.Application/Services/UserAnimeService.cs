@@ -6,10 +6,9 @@ using AnimeApp.Application.Dto.Responses.Anime;
 using AnimeApp.Application.Dto.Responses.User;
 using AnimeApp.Application.Exceptions;
 using AnimeApp.Core.Contracts;
-using AnimeApp.Core.Dto;
 using AnimeApp.Core.Enums;
 using AnimeApp.Core.Models;
-using static MassTransit.ValidationResultExtensions;
+using StackExchange.Redis;
 
 namespace AnimeApp.Application.Services
 {
@@ -17,12 +16,14 @@ namespace AnimeApp.Application.Services
         IUserRepository users,
         IUserAnimeRepository usersAnimes,
         IUnitOfWork unitOfWork,
-        IS3FileStorageService fileStorage) : IUserAnimeService
+        IS3FileStorageService fileStorage,
+        IConnectionMultiplexer redisConnection) : IUserAnimeService
     {
         private readonly IUserRepository _usersRepo = users;
         private readonly IUserAnimeRepository _userAnimesRepo = usersAnimes;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IS3FileStorageService _fileStorage = fileStorage;
+        private readonly IDatabase _redis = redisConnection.GetDatabase();
 
 
         /// <summary>Повертає всю інформацію про профіль </summary>
@@ -64,6 +65,8 @@ namespace AnimeApp.Application.Services
             if (!string.IsNullOrWhiteSpace(user.BannerFileName))
                 bannerUrl = _fileStorage.GetUrl(user.BannerFileName);
 
+            bool isOnline = await _redis.HashExistsAsync("metrics:online:active_users", $"user_{userId}");
+
             return new UserProfileResponse
             {
                 // Базова інфа
@@ -74,6 +77,7 @@ namespace AnimeApp.Application.Services
                 Email = user.Email,
                 DateOfRegistration = user.DateOfRegistration,
 
+                IsOnline = isOnline,
                 // Красиві циферки ~
                 Favorites = Favorites,
                 Watching = Watching,
@@ -227,12 +231,23 @@ namespace AnimeApp.Application.Services
             if (user.BannerFileName != null)
                 bannerUrl = _fileStorage.GetUrl(user.BannerFileName);
 
+            bool isOnline = await _redis.HashExistsAsync("metrics:online:active_users", $"user_{userId}");
+
+            string? lastOnline = user.LastOnline.ToString("o");
+
+            if (isOnline)
+            {
+                isOnline = true;
+                lastOnline = DateTime.UtcNow.ToString("o");
+            }
 
             return new(
                 user.Id,
                 user.Nickname,
                 avatarUrl,
                 bannerUrl,
+                isOnline,
+                lastOnline,
                 user.DateOfRegistration,
                 user.TotalEpisodes,
                 user.AverageScore,

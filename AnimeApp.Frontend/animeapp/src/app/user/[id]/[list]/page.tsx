@@ -59,7 +59,9 @@ export default async function UserPage({ params }: Props) {
                         avatarUrl={user.avatarUrl}
                         bannerUrl={user.bannerUrl}
                         nickname={user.nickname}
-                        formattedRegistrationDate={formattedRegistrationDate}
+                        formattedRegistrationDate={formattedRegistrationDate} 
+                        isOnline={user.isOnline} 
+                        lastOnline={user.lastOnline}                        
                     />
                     <div className="absolute top-2 right-2">
                         <ShareProfileButton userId={user.id} />

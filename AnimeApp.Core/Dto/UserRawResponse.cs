@@ -7,6 +7,7 @@
         public string? AvatarFileName { get; set; }
         public string? BannerFileName { get; set; }
 
+        public DateTime LastOnline { get; set; }
         public DateTime DateOfRegistration { get; set; }
         public int TotalEpisodes { get; set; }
         public double AverageScore { get; set; }
@@ -19,6 +20,7 @@
             string nickname,
             string? avatarFileName,
             string? bannerFileName,
+            DateTime lastOnline,
             DateTime dateOfRegistration,
             int totalEpisodes,
             double averageScore,
@@ -28,6 +30,7 @@
             Nickname = nickname;
             AvatarFileName = avatarFileName;
             BannerFileName = bannerFileName;
+            LastOnline = lastOnline;
             DateOfRegistration = dateOfRegistration;
             TotalEpisodes = totalEpisodes;
             AverageScore = averageScore;

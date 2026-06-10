@@ -201,7 +201,7 @@ export default function DashboardPulse({ pulse, topAnime, newAnime }: DashboardP
             >
               <div className='flex gap-2 items-center'>
                 <img
-                  src={anime.posterUrl || "NotFoundPurple.webp"}
+                  src={anime.posterUrl || "/NotFoundPurple.webp"}
                   alt="poster"
                   className='w-15 acpect-5/7 object-cover shrink-0 rounded-lg'
                 />

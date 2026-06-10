@@ -5,6 +5,7 @@ import clsx from "clsx";
 import { useRef, useState } from "react";
 import { FaCamera } from "react-icons/fa";
 import { toast } from "react-toastify";
+import { formatLastOnlineDate } from "../_functions/formatLastOnlineDate";
 
 type Props = {
     avatarUrl?: string | null;
@@ -12,6 +13,8 @@ type Props = {
     nickname: string;
     formattedRegistrationDate?: string;
     onEdit?: boolean;
+    isOnline: boolean;
+    lastOnline: string | null;
 }
 
 interface UserUpdateFilesResponse {
@@ -19,12 +22,18 @@ interface UserUpdateFilesResponse {
     bannerUrl?: string | null,
 }
 
-export default function ProfileImages({ avatarUrl: avaratInit, bannerUrl: bannerInit, nickname, formattedRegistrationDate, onEdit = false }: Props) {
+export default function ProfileImages({
+    avatarUrl: avaratInit,
+    bannerUrl: bannerInit, nickname, formattedRegistrationDate,
+    isOnline, lastOnline: lastOnlineRaw,
+    onEdit = false }: Props) {
+
+    console.log(`Online ${isOnline} ${lastOnlineRaw}`)
     const avatarFileInputRef = useRef<HTMLInputElement | null>(null);
     const bannerFileInputRef = useRef<HTMLInputElement | null>(null);
     const [avatarUrl, setAvatarUrl] = useState(avaratInit)
     const [bannerUrl, setBannerUrl] = useState(bannerInit)
-
+    const lastOnline = formatLastOnlineDate(lastOnlineRaw)
     const handleAvatarChange = async (file: File) => {
         const formData = new FormData();
         formData.append("Avatar", file);
@@ -61,7 +70,7 @@ export default function ProfileImages({ avatarUrl: avaratInit, bannerUrl: banner
         <>
             {/* Баннер */}
             <div className="relative bg-white h-100 -m-4 select-none">
-                    <img src={bannerUrl ?? "/NotFoundBannerPurple.webp"} alt="" className="object-cover h-full w-full select-none pointer-events-none" />
+                <img src={bannerUrl ?? "/NotFoundBannerPurple.webp"} alt="" className="object-cover h-full w-full select-none pointer-events-none" />
 
                 {onEdit && (<>
                     <button
@@ -91,7 +100,7 @@ export default function ProfileImages({ avatarUrl: avaratInit, bannerUrl: banner
                 </>)}
             </div>
 
-            <div className="flex flex-col items-center lg:flex-row lg:gap-6">
+            <div className="flex flex-col items-center md:flex-row md:gap-6">
 
                 {/* Аватар */}
                 <div className="flex flex-col gap-2">
@@ -132,21 +141,34 @@ export default function ProfileImages({ avatarUrl: avaratInit, bannerUrl: banner
                                 }}
                             />
                         </>)}
-
-
                     </div>
 
-                    {/* Внутрь поместить ^^ */}
 
                 </div>
 
                 {/* Інформація */}
-                <div className="flex flex-col w-full items-center lg:items-start">
+                <div className="flex flex-col w-full items-center md:items-start">
 
                     <div className="flex flex-col gap-2 py-2">
-                        <p className="text-4xl font-normal">
-                            {nickname}
-                        </p>
+                        <div className="flex flex-col md:flex-row items-center md:gap-3">
+                            <p className="text-4xl font-normal">{nickname}</p>
+
+                            <div
+                                className={`flex mt-2 items-center gap-2 px-3 py-1 rounded-full text-sm font-mediumtransition-all
+                                ${isOnline ? 'bg-green-500/10 text-green-600' : 'bg-gray-500/10 text-gray-500'}`}
+                            >
+                                <span
+                                    className={`h-2 w-2 rounded-full
+                                    ${isOnline ? 'bg-green-500' : 'bg-gray-400'} animate-pulse`}
+                                />
+                                <span>{isOnline ? 'Онлайн' : 'Офлайн'}</span>
+                            </div>
+                            {lastOnline && !isOnline && (
+                                <span className="text-sm mt-2">Був(-ла) онлайн {lastOnline.text}</span>
+                            )}
+                        </div>
+
+
                         <p className="text-sm font-normal text-gray-text">
                             на сайті з {formattedRegistrationDate}
                         </p>

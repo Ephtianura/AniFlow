@@ -59,6 +59,8 @@ export default async function MyListPage({ params, }: MyListPageProps) {
                 bannerUrl={profile.bannerUrl}
                 nickname={profile.nickname}
                 formattedRegistrationDate={formattedRegistrationDate}
+                isOnline={true}
+                lastOnline={null}
             />
             <div className="absolute top-2 right-2">
                 <ShareProfileButton userId={profile.id} />

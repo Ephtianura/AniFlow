@@ -21,9 +21,11 @@ export default async function ProfileEdit() {
                 nickname={profile.nickname}
                 formattedRegistrationDate={formattedRegistrationDate}
                 onEdit={true}
+                isOnline={true}
+                lastOnline={null}
             />
             <h1 className="text-[1.875rem] font-medium mb-4">Налаштування</h1>
-           
+
             <EditForm profile={profile} />
         </div>
     );

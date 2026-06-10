@@ -8,6 +8,7 @@
         public string? BannerUrl { get; set; }
         public string Email { get; set; } = null!;
         public DateTime DateOfRegistration { get; set; }
+        public bool IsOnline { get; set; }
 
         // Статистика
         public int Favorites { get; set; } // Загальна кількість улюблених аніме

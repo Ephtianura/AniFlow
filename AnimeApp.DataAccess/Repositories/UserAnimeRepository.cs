@@ -128,7 +128,7 @@ namespace AnimeApp.DataAccess.Repositories
         {
             var userBase = await _dbContext.Users
                 .Where(u => u.Id == userId)
-                .Select(u => new { u.Id, u.Nickname, u.AvatarFileName, u.BannerFileName, u.DateOfRegistration })
+                .Select(u => new { u.Id, u.Nickname, u.AvatarFileName, u.BannerFileName, u.DateOfRegistration, u.LastOnline })
                 .FirstOrDefaultAsync();
 
             if (userBase == null) return null;
@@ -167,6 +167,7 @@ namespace AnimeApp.DataAccess.Repositories
                 Nickname = userBase.Nickname,
                 AvatarFileName = userBase.AvatarFileName,
                 BannerFileName = userBase.BannerFileName,
+                LastOnline = userBase.LastOnline,
                 DateOfRegistration = userBase.DateOfRegistration,
                 TotalEpisodes = totalEpisodes,
                 AverageScore = averageScore,

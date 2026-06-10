@@ -6,6 +6,9 @@
          string? AvatarUrl,
          string? BannerUrl,
 
+         bool IsOnline,
+         string? LastOnline,
+
          DateTime DateOfRegistration,
          int TotalEpisodes,
          double AverageScore,

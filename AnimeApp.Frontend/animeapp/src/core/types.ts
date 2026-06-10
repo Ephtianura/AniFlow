@@ -182,6 +182,9 @@ export interface UserProfile {
   email: string;
   dateOfRegistration: string;
 
+  isOnline: boolean;
+  lastOnline: string | null;
+
   favorites: number;
   watching: number;
   completed: number;
@@ -231,7 +234,6 @@ export interface AnimeCreateResponse {
   titles: AnimeTitle[];
 }
 
-
 export interface User {
   id: number;
   nickname: string;
@@ -239,7 +241,10 @@ export interface User {
   bannerUrl: string | null;
   dateOfRegistration: string;
 
-  totalEpisodes: number,
-  averageScore: number,
-  timeSpent: string
+  isOnline: boolean;
+  lastOnline: string | null;
+
+  totalEpisodes: number;
+  averageScore: number;
+  timeSpent: string;
 }
