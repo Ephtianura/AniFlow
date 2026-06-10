@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { apiFetch } from "@/lib/api";
 import { UserProfile } from "@/core/types";
 import { toast } from "react-toastify";

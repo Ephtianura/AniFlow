@@ -16,6 +16,8 @@ namespace AnimeApp.DataAccess
         public DbSet<AnimeVideo> AnimeVideos => Set<AnimeVideo>();
         public DbSet<DailySystemStat> DailySystemStat => Set<DailySystemStat>();
         public DbSet<AnimeDailyStats> AnimeDailyStats => Set<AnimeDailyStats>();
+        public DbSet<UserFriend> UserFriends => Set<UserFriend>();
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

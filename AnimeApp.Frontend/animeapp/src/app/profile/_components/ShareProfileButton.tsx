@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { FiShare2 } from 'react-icons/fi';
 
 type Props = {
-    userId: number;
+    userId: number | string;
 };
 
 export default function ShareProfileButton({ userId }: Props) {

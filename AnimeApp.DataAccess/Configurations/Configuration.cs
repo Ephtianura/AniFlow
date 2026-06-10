@@ -44,6 +44,26 @@ namespace AnimeApp.DataAccess.Configurations
 
         }
     }
+    // ===================== USER FRIENDS =====================
+    public class UserFriendsConfiguration : IEntityTypeConfiguration<UserFriend>
+    {
+        public void Configure(EntityTypeBuilder<UserFriend> builder)
+        {
+            builder.ToTable("UserFriends");
+
+            builder.HasKey(uf => new { uf.SenderId, uf.ReceiverId });
+
+            builder.HasOne(uf => uf.Sender)
+             .WithMany()
+             .HasForeignKey(uf => uf.SenderId)
+             .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(uf => uf.Receiver)
+                .WithMany()
+                .HasForeignKey(uf => uf.ReceiverId)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
+    }
 
     // ===================== USER ANIME =====================
     public class UserAnimeConfiguration : IEntityTypeConfiguration<UserAnime>
@@ -324,7 +344,6 @@ namespace AnimeApp.DataAccess.Configurations
     }
 
     // ===================== AnimeDailyStats =====================
-
     public class AnimeDailyStatsConfiguration : IEntityTypeConfiguration<AnimeDailyStats>
     {
         public void Configure(EntityTypeBuilder<AnimeDailyStats> builder)

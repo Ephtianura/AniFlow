@@ -9,6 +9,9 @@ namespace AnimeApp.DataAccess.Repositories
     {
         private readonly AnimeAppDbContext _dbContext = db;
 
+        public Task<bool> ExistsAsync(int userId)
+             => _dbContext.Users.AnyAsync(u => u.Id == userId);
+
         public async Task<User?> GetByIdAsync(int id) =>
             await _dbContext.Users.FindAsync(id);
 

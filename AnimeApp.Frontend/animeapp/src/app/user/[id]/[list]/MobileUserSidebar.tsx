@@ -5,11 +5,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { IoCloseSharp } from "react-icons/io5";
 import { HiMenuAlt3 } from "react-icons/hi";
 import Link from "next/link";
-import { LuLibraryBig, LuSettings } from "react-icons/lu";
-import { MdSpeakerNotes } from "react-icons/md";
+import { LuLibraryBig} from "react-icons/lu";
 import { FaUserFriends } from "react-icons/fa";
-
-export default function MobileProfileSidebar() {
+type Prop = {
+  userId: number | string;
+}
+export default function MobileUserSidebar({ userId }: Prop) {
   const [isOpen, setIsOpen] = useState(false);
   const onClose = () => setIsOpen(prev => !prev)
   return (
@@ -59,21 +60,13 @@ export default function MobileProfileSidebar() {
                     <hr className="text-hr-clr opacity-30 my-1" />
                     <div className="flex flex-col gap-1 text-[1.25rem]">
 
-                      <Link href={"/profile"} onClick={onClose} className="slider-btn">
+                      <Link href={`/user/${userId}`} onClick={onClose} className="slider-btn">
                         <LuLibraryBig />
-                        Моя сторінка
+                        Сторінка користувача
                       </Link>
-                      <Link href={"/profile/mylist/Watching"} onClick={onClose} className="slider-btn">
-                        <MdSpeakerNotes />
-                        Мій список
-                      </Link>
-                      <Link href={"/profile/friends"} onClick={onClose} className="slider-btn">
-                        <FaUserFriends  />
+                      <Link href={`/user/${userId}/friends`} onClick={onClose} className="slider-btn">
+                        <FaUserFriends />
                         Друзі
-                      </Link>
-                      <Link href={"/profile/edit"} onClick={onClose} className="slider-btn">
-                        <LuSettings />
-                        Налаштування
                       </Link>
                     </div>
                   </div>

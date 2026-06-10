@@ -1,4 +1,6 @@
-﻿namespace AnimeApp.Application.Dto.Responses.User
+﻿using AnimeApp.Core.Enums;
+
+namespace AnimeApp.Application.Dto.Responses.User
 {
     public record UserResponse(
          int Id,
@@ -13,5 +15,7 @@
          int TotalEpisodes,
          double AverageScore,
          TimeSpan TimeSpent
+,
+         FriendshipStatus? FriendshipStatus
      );
 }

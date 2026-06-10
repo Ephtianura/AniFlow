@@ -12,6 +12,7 @@
                     x.SetKebabCaseEndpointNameFormatter();
 
                     x.AddConsumers(typeof(ParseNewAnimeConsumer).Assembly);
+                    x.AddConsumers(typeof(UpdateAnimeConsumer).Assembly);
 
                     x.UsingRabbitMq((context, cfg) =>
                     {
@@ -32,6 +33,19 @@
                             e.SetQuorumQueue();
 
                             e.ConfigureConsumer<ParseNewAnimeConsumer>(context);
+                        });
+
+                        cfg.ReceiveEndpoint("update-new-anime", e =>
+                        {
+                            e.ConcurrentMessageLimit = 5;
+                            e.PrefetchCount = 5;
+
+                            e.UseMessageRetry(r =>
+                                r.Interval(1, TimeSpan.FromSeconds(5)));
+
+                            e.SetQuorumQueue();
+
+                            e.ConfigureConsumer<UpdateAnimeConsumer>(context);
                         });
 
                     });

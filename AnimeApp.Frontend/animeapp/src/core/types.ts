@@ -11,6 +11,7 @@ import { SeasonEnum } from "./enums/Season";
 import { TagType } from "./enums/TagType";
 import { UserRole } from "./enums/UserRole";
 import { VideoKind } from "./enums/VideoKind";
+import { FriendshipStatus } from "./enums/FriendshipStatus";
 
 export interface AnimeTitle {
   id: number;
@@ -247,4 +248,21 @@ export interface User {
   totalEpisodes: number;
   averageScore: number;
   timeSpent: string;
+  friendshipStatus: FriendshipStatus | null;
+}
+
+export interface FriendResponse {
+  userId: number;
+  nickname: string;
+  avatarUrl: string | null;
+  bannerUrl: string | null;
+  acceptedAt: string | null; 
+  isOnline: boolean;
+}
+export interface PendingRequestResponse {
+  userId: number;
+  nickname: string;
+  avatarFileName: string | null;
+  createdAt: string; 
+  isOnline: boolean;
 }

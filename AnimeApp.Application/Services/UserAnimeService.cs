@@ -219,9 +219,9 @@ namespace AnimeApp.Application.Services
                 userAnime.IsFavorite
             );
         }
-        public async Task<UserResponse> GetUsersProfileById(int userId)
+        public async Task<UserResponse> GetUsersProfileById(int userId, int? currentUserId)
         {
-            var user = await _userAnimesRepo.GetUsersProfileById(userId)
+            var user = await _userAnimesRepo.GetUsersProfileById(userId, currentUserId)
                 ?? throw new NotFoundException("UserProfile");
 
             string? avatarUrl = null;
@@ -251,7 +251,8 @@ namespace AnimeApp.Application.Services
                 user.DateOfRegistration,
                 user.TotalEpisodes,
                 user.AverageScore,
-                TimeSpan.FromMinutes(user.TimeSpentMinutes)
+                TimeSpan.FromMinutes(user.TimeSpentMinutes),
+                user.FriendshipStatus
             );
         }
 

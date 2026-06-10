@@ -1,4 +1,6 @@
-﻿namespace AnimeApp.Core.Dto
+﻿using AnimeApp.Core.Enums;
+
+namespace AnimeApp.Core.Dto
 {
     public class UserRawResponse
     {
@@ -12,6 +14,7 @@
         public int TotalEpisodes { get; set; }
         public double AverageScore { get; set; }
         public double TimeSpentMinutes { get; set; }
+        public FriendshipStatus? FriendshipStatus { get; set; }
 
         public UserRawResponse() { }
 
@@ -24,7 +27,8 @@
             DateTime dateOfRegistration,
             int totalEpisodes,
             double averageScore,
-            int timeSpentMinutes)
+            int timeSpentMinutes,
+            FriendshipStatus? friendshipStatus)
         {
             Id = id;
             Nickname = nickname;
@@ -35,6 +39,7 @@
             TotalEpisodes = totalEpisodes;
             AverageScore = averageScore;
             TimeSpentMinutes = timeSpentMinutes;
+            FriendshipStatus = friendshipStatus;
         }
     }
 }

@@ -6,7 +6,6 @@ import { formatWatchTime } from "./_functions/formatWatchTime";
 import { formatRegisterDate } from "./_functions/formatRegisterDate";
 import { MyListEnum } from "@/core/enums/MyList";
 import { UserStatsRow } from "./_components/UserStatsRow";
-import ShareProfileButton from "./_components/ShareProfileButton";
 
 export const metadata = {
     title: "Профіль | AniFlow",
@@ -23,16 +22,15 @@ export default async function ProfileHome() {
         <div className="flex flex-col gap-2 relative">
 
             <ProfileImages
+                userId={profile.id}
                 avatarUrl={profile.avatarUrl}
                 bannerUrl={profile.bannerUrl}
                 nickname={profile.nickname}
                 formattedRegistrationDate={formattedRegistrationDate}
                 isOnline={true}
                 lastOnline={null}
+                showShareButton={true}
             />
-            <div className="absolute top-2 right-2">
-                <ShareProfileButton userId={profile.id} />
-            </div>
             {/* Статистика */}
             <div className="flex flex-col text-primary-black">
                 <h1 className="text-[1.875rem] font-medium mb-4">Статистика</h1>

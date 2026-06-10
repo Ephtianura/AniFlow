@@ -88,20 +88,21 @@ namespace AnimeApp.API.Controllers
             return NoContent();
         }
 
-
-        /// <summary>Повертає користувача по ID</summary>
-        [HttpGet("/api/user/{id}")]
-        public async Task<IActionResult> GetUsersProfileById(int id)
-        {
-            var user = await _userAnimeService.GetUsersProfileById(id);
-            return Ok(user);
-        }
-
         [HttpGet("/api/user/{id}/animes")]
         public async Task<IActionResult> GetUserAnimeList(int id, [FromQuery] ListRequest request)
         {
             var userAnimeList = await _userAnimeService.GetUserAnimesAsync(id, request.myList, request.isFavorite);
             return Ok(userAnimeList);
+        }
+
+
+        /// <summary>Повертає користувача по ID</summary>
+        [HttpGet("/api/user/{id}")]
+        public async Task<IActionResult> GetUsersProfileById(int id)
+        {
+            var currentUserId = Helper.GetUserIdOrNull(User);
+            var user = await _userAnimeService.GetUsersProfileById(id, currentUserId);
+            return Ok(user);
         }
     }
 }

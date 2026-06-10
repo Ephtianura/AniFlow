@@ -124,7 +124,7 @@ namespace AnimeApp.DataAccess.Repositories
             };
         }
 
-        public async Task<UserRawResponse?> GetUsersProfileById(int userId)
+        public async Task<UserRawResponse?> GetUsersProfileById(int userId, int? currentUserId)
         {
             var userBase = await _dbContext.Users
                 .Where(u => u.Id == userId)
@@ -132,6 +132,41 @@ namespace AnimeApp.DataAccess.Repositories
                 .FirstOrDefaultAsync();
 
             if (userBase == null) return null;
+
+            FriendshipStatus? friendshipStatus = null;
+
+            if (currentUserId.HasValue && currentUserId.Value > 0)
+            {
+                friendshipStatus = FriendshipStatus.None;
+
+                if (currentUserId.Value == userId)
+                {
+                    friendshipStatus = FriendshipStatus.Me; // Это я сам
+                }
+                else
+                {
+                    var link = await _dbContext.UserFriends
+                        .FirstOrDefaultAsync(uf =>
+                            (uf.SenderId == currentUserId.Value && uf.ReceiverId == userId) ||
+                            (uf.SenderId == userId && uf.ReceiverId == currentUserId.Value));
+
+                    if (link != null)
+                    {
+                        if (link.Status == FriendStatus.Accepted)
+                        {
+                            friendshipStatus = FriendshipStatus.Friends; // Мы друзья
+                        }
+                        else if (link.SenderId == currentUserId.Value)
+                        {
+                            friendshipStatus = FriendshipStatus.PendingFromMe; // Я отправил заявку
+                        }
+                        else
+                        {
+                            friendshipStatus = FriendshipStatus.PendingToMe; // Он мне отправил заявку
+                        }
+                    }
+                }
+            }
 
             var rawAnimeData = await _dbContext.UserAnimes
                 .Where(ua => ua.UserId == userId)
@@ -145,7 +180,7 @@ namespace AnimeApp.DataAccess.Repositories
                         Episodes = a.Episodes ?? 0,
                         Duration = a.Duration ?? 0
                     })
-                .ToListAsync(); 
+                .ToListAsync();
 
             var completedOrRewatching = rawAnimeData
                 .Where(x => x.MyList == MyListEnum.Completed || x.MyList == MyListEnum.Rewatching)
@@ -171,7 +206,8 @@ namespace AnimeApp.DataAccess.Repositories
                 DateOfRegistration = userBase.DateOfRegistration,
                 TotalEpisodes = totalEpisodes,
                 AverageScore = averageScore,
-                TimeSpentMinutes = timeSpentMinutes
+                TimeSpentMinutes = timeSpentMinutes,
+                FriendshipStatus = friendshipStatus
             };
         }
 

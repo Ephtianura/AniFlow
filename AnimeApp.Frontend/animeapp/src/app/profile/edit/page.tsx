@@ -16,6 +16,7 @@ export default async function ProfileEdit() {
     return (
         <div className="flex flex-col gap-2">
             <ProfileImages
+                userId={profile.id}
                 avatarUrl={profile.avatarUrl}
                 bannerUrl={profile.bannerUrl}
                 nickname={profile.nickname}
@@ -23,6 +24,7 @@ export default async function ProfileEdit() {
                 onEdit={true}
                 isOnline={true}
                 lastOnline={null}
+                showShareButton={false}
             />
             <h1 className="text-[1.875rem] font-medium mb-4">Налаштування</h1>
 

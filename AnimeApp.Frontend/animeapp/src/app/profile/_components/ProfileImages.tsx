@@ -6,8 +6,12 @@ import { useRef, useState } from "react";
 import { FaCamera } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { formatLastOnlineDate } from "../_functions/formatLastOnlineDate";
+import { User } from "@/core/types";
+import { FriendButton } from "./FriendButton";
+import ShareProfileButton from "./ShareProfileButton";
 
 type Props = {
+    userId: string | number;
     avatarUrl?: string | null;
     bannerUrl?: string | null;
     nickname: string;
@@ -15,6 +19,8 @@ type Props = {
     onEdit?: boolean;
     isOnline: boolean;
     lastOnline: string | null;
+    user?: User;
+    showShareButton?: boolean;
 }
 
 interface UserUpdateFilesResponse {
@@ -23,12 +29,14 @@ interface UserUpdateFilesResponse {
 }
 
 export default function ProfileImages({
+    userId,
     avatarUrl: avaratInit,
     bannerUrl: bannerInit, nickname, formattedRegistrationDate,
     isOnline, lastOnline: lastOnlineRaw,
-    onEdit = false }: Props) {
+    onEdit = false,
+    user,
+    showShareButton }: Props) {
 
-    console.log(`Online ${isOnline} ${lastOnlineRaw}`)
     const avatarFileInputRef = useRef<HTMLInputElement | null>(null);
     const bannerFileInputRef = useRef<HTMLInputElement | null>(null);
     const [avatarUrl, setAvatarUrl] = useState(avaratInit)
@@ -77,12 +85,12 @@ export default function ProfileImages({
                         type="button"
                         onClick={() => bannerFileInputRef.current?.click()}
                         className={clsx(
-                            "cursor-pointer flex items-center gap-2 absolute right-4 bottom-4 px-3 py-1.5",
-                            "text-primary-black bg-gray-100 ring-1 ring-gray-300 rounded-lg",
-                            "hover:bg-gray-200 hover:ring-[#CDCFD1] transition duration-200 active:scale-95"
+                            "cursor-pointer flex items-center gap-2 absolute left-4 top-4 sm:left-auto sm:top-auto sm:right-4 sm:bottom-4 px-3 py-1.5",
+                            "text-primary-black bg-gray-100/50 backdrop-blur-[1px]  ring-1 ring-gray-300 rounded-lg",
+                            "hover:bg-gray-100/80 active:bg-gray-100/80 hover:ring-[#CDCFD1] transition duration-200 active:scale-95"
                         )}
                     >
-                        <div className="w-5 aspect-square p-0 flex items-center justify-center">
+                        <div className="w-5 aspect-square p-0 flex items-center justify-center ">
                             <FaCamera className="w-full h-full " />
                         </div>
                         <span>Обкладинка</span>
@@ -97,7 +105,20 @@ export default function ProfileImages({
                             if (e.target.files?.[0]) handleBannerChange(e.target.files[0]);
                         }}
                     />
+
                 </>)}
+
+                {showShareButton && (
+                    <div className="absolute top-4 right-4">
+                        <ShareProfileButton userId={userId} />
+                    </div>
+                )}
+
+                {user && (
+                    <div className="hidden sm:block absolute bottom-4 right-4">
+                        <FriendButton user={user} />
+                    </div>
+                )}
             </div>
 
             <div className="flex flex-col items-center md:flex-row md:gap-6">
@@ -154,7 +175,7 @@ export default function ProfileImages({
                             <p className="text-4xl font-normal">{nickname}</p>
 
                             <div
-                                className={`flex mt-2 items-center gap-2 px-3 py-1 rounded-full text-sm font-mediumtransition-all
+                                className={`flex mt-2 items-center gap-2 px-3 py-1 rounded-full text-sm font-medium transition-all
                                 ${isOnline ? 'bg-green-500/10 text-green-600' : 'bg-gray-500/10 text-gray-500'}`}
                             >
                                 <span
@@ -172,6 +193,12 @@ export default function ProfileImages({
                         <p className="text-sm font-normal text-gray-text">
                             на сайті з {formattedRegistrationDate}
                         </p>
+
+                        {user && (
+                            <div className="sm:hidden flex justify-center -mt-3">
+                                <FriendButton user={user} />
+                            </div>
+                        )}
                     </div>
 
                     <hr className="text-hr-clr w-full" />

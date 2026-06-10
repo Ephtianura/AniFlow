@@ -68,7 +68,7 @@ export default async function Navbar() {
       {/* Мобільна версія */}
       <div className="md:hidden flex relative items-center justify-between w-full px-3 py-2 h-15">
 
-        <div className="flex-">
+        <div className="">
           <UserAvatar me={me} />
         </div>
 

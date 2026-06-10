@@ -11,5 +11,6 @@ namespace AnimeApp.Core.Contracts
         Task<User?> GetByIdAsync(int id);
         Task<PagedResult<User>> GetFilteredAsync(UserFilter filter);
         Task UpdateAsync(User user);
+        Task<bool> ExistsAsync(int userId);
     }
 }

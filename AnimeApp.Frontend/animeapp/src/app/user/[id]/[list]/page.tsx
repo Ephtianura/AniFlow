@@ -9,7 +9,6 @@ import { getUserAnimeListByUserId } from "./getUserAnimeListByUserId";
 import { MyListParam } from "@/app/profile/mylist/[myList]/page";
 import { UserStatsRow } from "@/app/profile/_components/UserStatsRow";
 import { formatWatchTime } from "@/app/profile/_functions/formatWatchTime";
-import ShareProfileButton from "@/app/profile/_components/ShareProfileButton";
 
 interface Props {
     params: Promise<{
@@ -56,16 +55,17 @@ export default async function UserPage({ params }: Props) {
             <WhiteCard>
                 <div className="flex flex-col gap-2 relative">
                     <ProfileImages
+                        userId={user.id}
                         avatarUrl={user.avatarUrl}
                         bannerUrl={user.bannerUrl}
                         nickname={user.nickname}
-                        formattedRegistrationDate={formattedRegistrationDate} 
-                        isOnline={user.isOnline} 
-                        lastOnline={user.lastOnline}                        
+                        formattedRegistrationDate={formattedRegistrationDate}
+                        isOnline={user.isOnline}
+                        lastOnline={user.lastOnline}
+                        user={user}
+                        showShareButton={true}
                     />
-                    <div className="absolute top-2 right-2">
-                        <ShareProfileButton userId={user.id} />
-                    </div>
+
 
                     <h1 className="text-xl font-medium -mb-2">Аніме</h1>
                     <UserStatsRow
@@ -88,3 +88,11 @@ export default async function UserPage({ params }: Props) {
     );
 }
 
+// type Props = {
+//     user: User;
+//     onAdd: () => void;
+//     onAccept: () => void;
+//     onRemove: () => void;
+// }
+
+// export default function FriendButton({ user }: Props) {

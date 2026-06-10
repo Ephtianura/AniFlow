@@ -2,17 +2,13 @@ import { MyListEnum } from "@/core/enums/MyList";
 import AnimeTabs from "./_components/AnimeTabs";
 import { getUserAnimeList } from "./_functions/getUserAnimeList";
 import AnimeList from "./_components/AnimeList";
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import ProfileImages from "../../_components/ProfileImages";
 import { getProfile } from "../../_functions/getProfile";
 import { formatRegisterDate } from "../../_functions/formatRegisterDate";
-import { formatWatchTime } from "../../_functions/formatWatchTime";
-import ShareProfileButton from "../../_components/ShareProfileButton";
 
 export const metadata = {
-    title: "Список аніме | AniFlow",
-    description:
-        "",
+    title: "Список аніме | AniFlow"
 };
 
 export type MyListParam = MyListEnum | "Favorites";
@@ -55,16 +51,15 @@ export default async function MyListPage({ params, }: MyListPageProps) {
     return (
         <div className="flex flex-col gap-2 relative">
             <ProfileImages
+                userId={profile.id}
                 avatarUrl={profile.avatarUrl}
                 bannerUrl={profile.bannerUrl}
                 nickname={profile.nickname}
                 formattedRegistrationDate={formattedRegistrationDate}
                 isOnline={true}
                 lastOnline={null}
+                showShareButton={true}
             />
-            <div className="absolute top-2 right-2">
-                <ShareProfileButton userId={profile.id} />
-            </div>
             <h2 className="text-[1.875rem] font-medium">Список аніме</h2>
 
             <div className="flex flex-col gap-4">
