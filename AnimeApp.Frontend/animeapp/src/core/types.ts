@@ -202,6 +202,7 @@ export interface UserMeResponse {
   nickname: string;
   avatarUrl: string | null;
   role: UserRole;
+  unreadNotificationsCount: number;
 }
 
 export interface UserAnimeList {

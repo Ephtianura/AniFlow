@@ -3,6 +3,12 @@ using AnimeApp.DataAccess;
 using Microsoft.AspNetCore.SignalR;
 using StackExchange.Redis;
 
+//public interface ISystemClient
+//{
+//    Task OnNotificationReceived(NotificationDto notification);
+//    Task OnUnreadNotificationsCountChanged(int count);
+//}
+
 namespace AnimeApp.API.Hubs
 {
     public class OnlineHub(

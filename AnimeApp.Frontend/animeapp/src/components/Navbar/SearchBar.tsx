@@ -55,9 +55,9 @@ export default function SearchBar() {
             {/* Кнопка пошуку */}
             <button
                 onClick={() => setOpen(o => !o)}
-                className="flex items-center lg:px-3 lg:py-2 cursor-pointer group"
+                className="cursor-pointer group"
             >
-                <div className="lg:border-x lg:px-4 border-gray-text-light">
+                <div className="lg:px-4">
                     <MdOutlineSearch className={clsx(
                         "w-8 h-8 lg:w-6 lg:h-7 ",
                         "hover:text-btn-hover-dark transition group-active:scale-95 duration-200")} />

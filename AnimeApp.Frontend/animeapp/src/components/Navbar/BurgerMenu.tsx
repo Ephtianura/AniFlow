@@ -12,6 +12,7 @@ import { FiHome } from "react-icons/fi";
 import { LuLibraryBig } from "react-icons/lu";
 import { motion, AnimatePresence } from "framer-motion";
 import { createPortal } from 'react-dom';
+import { RiNotificationFill } from "react-icons/ri";
 
 type Props = {
     me: UserMeResponse | null;
@@ -67,7 +68,7 @@ export default function BurgerMenu({ me, onClose }: Props) {
                 <div className="bg-bg-dark flex flex-col h-full border-r-3 border-primary ">
                     <div className="flex items-center justify-center relative p-4 text-white">
                         <Link href={"/"} className="text-2xl">AniFlow</Link>
-                       
+
                         <button className="absolute right-2 text-xl p-2 active:scale-95 transition" onClick={onClose}>
                             <IoCloseSharp className="w-8 h-8" />
                         </button>
@@ -75,10 +76,14 @@ export default function BurgerMenu({ me, onClose }: Props) {
                     <div className="p-4 flex flex-col gap-3 text-[1.25rem] text-[#dee2e6]">
                         <div className="flex flex-col gap-2">
                             {me && (<>
-                                <Link href={"/profile"} onClick={onClose}className="slider-btn">
+                                <Link href={"/profile"} onClick={onClose} className="slider-btn">
                                     <LuLibraryBig />
                                     Профіль
                                 </Link>
+                                {/* <Link href={"/profile/edit"} onClick={onClose} className="slider-btn">
+                                    <RiNotificationFill />
+                                    Сповіщення
+                                </Link> */}
                                 <Link href={"/profile/edit"} onClick={onClose} className="slider-btn">
                                     <LuSettings />
                                     Налаштування

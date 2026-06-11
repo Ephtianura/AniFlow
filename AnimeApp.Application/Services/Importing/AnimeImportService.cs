@@ -111,8 +111,13 @@ namespace AnimeApp.Application.Services.Importing
                 anime.UpdateStatus(status);
             }
 
-            await _catalogRep.MarkUpdated(context.MoonId, context.DatePublished);
+            var utcDatePublished = context.DatePublished.Kind == DateTimeKind.Utc
+                ? context.DatePublished
+                : DateTime.SpecifyKind(context.DatePublished, DateTimeKind.Utc);
+
+            await _catalogRep.MarkUpdated(context.MoonId, utcDatePublished);
             await _animeRep.UpdateAsync(anime);
+            await _unitOfWork.SaveChangesAsync();
             _logger.LogInformation(LogEvents.AnimeUpdated, "Оновлення аніме успішно завершено. MoonId: {MoonId}", context.MoonId);
         }
 

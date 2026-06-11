@@ -2,10 +2,11 @@
 
 namespace AnimeApp.Application.Dto.Responses.User
 {
-    public record GetUserMeResponse(
+    public record UserMeResponse(
       int Id,
       string Nickname,
       string? AvatarUrl,
-      UserRole Role
-  );
+      UserRole Role,
+     int UnreadNotificationsCount
+    );
 }

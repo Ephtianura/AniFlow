@@ -19,10 +19,10 @@ export default function AnimeIframePlayer({ iframeSrc, animeId, episodeNumber }:
 
   useEffect(() => {
     const sendTrackView = async () => {
-      if (hasTracked) return; 
-      
+      if (hasTracked) return;
+
       try {
-        setHasTracked(true); 
+        setHasTracked(true);
         await apiFetch("/track-view", {
           method: "POST",
           body: JSON.stringify({ animeId, episodeNumber })
@@ -51,12 +51,12 @@ export default function AnimeIframePlayer({ iframeSrc, animeId, episodeNumber }:
       if (hasTracked || !iframeRef.current?.contentWindow) return;
 
       iframeRef.current.contentWindow.postMessage(
-        JSON.stringify({ key: "is_started", action: "get" }), 
+        JSON.stringify({ key: "is_started", action: "get" }),
         "*"
       );
-      
+
       iframeRef.current.contentWindow.postMessage(
-        JSON.stringify({ key: "is_playing", action: "get" }), 
+        JSON.stringify({ key: "is_playing", action: "get" }),
         "*"
       );
     }, 1000);
@@ -69,6 +69,7 @@ export default function AnimeIframePlayer({ iframeSrc, animeId, episodeNumber }:
 
   return (
     <iframe
+      key={iframeSrc}
       ref={iframeRef}
       className="w-full aspect-video mb-2 rounded border-0"
       src={iframeSrc}

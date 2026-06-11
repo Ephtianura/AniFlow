@@ -50,6 +50,7 @@ export function FriendButton({ user }: ProfileButtonsProps) {
             });
             setIsMenuOpen(false);
             router.refresh();
+            router.push(window.location.pathname);
         } catch (err: any) {
             const message = Array.isArray(err?.messages) ? err.messages.find(Boolean) : null;
             toast.error(message ?? 'Помилка при видаленні зв\'язку');
@@ -107,7 +108,7 @@ export function FriendButton({ user }: ProfileButtonsProps) {
                     </button>
 
                     {isMenuOpen && (
-                        <div className="absolute top-full left-0 mt-2 min-w-full flex flex-col gap-1 shadow-lg overflow-hidden z-20">
+                        <div className="absolute top-full left-0 mt-2 min-w-full flex flex-col gap-1  overflow-hidden z-20 ">
                             <button onClick={handleAcceptFriendship} className="btn-white rounded-lg hover:bg-green-50 w-full ring-0" >
                                 Прийняти
                             </button>

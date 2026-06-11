@@ -17,6 +17,14 @@ interface Props {
     }>;
 }
 
+export async function generateMetadata({ params }: Props) {
+    const { id } = await params;
+    const user = await getUserPage(id)
+    return {
+        title: `${user.nickname} | AniFlow`
+    };
+}
+
 export default async function UserPage({ params }: Props) {
     const { id, list } = await params;
 

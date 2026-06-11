@@ -246,7 +246,7 @@ namespace AnimeApp.Core.Models
         }
         public void UpdateYear(int year)
         {
-            if (year < 1900 || year > DateTime.Now.Year + 10)
+            if (year < 1900 || year > DateTime.UtcNow.Year + 10)
                 throw new ArgumentOutOfRangeException(nameof(year), "Year seems invalid.");
             Year = year;
         }

@@ -21,7 +21,7 @@ namespace AnimeApp.API.Controllers
         public async Task<IActionResult> GetMe()
         {
             var userId = Helper.GetUserIdOrThrow(User);
-            var user = await _userService.GetByIdAsync(userId);
+            var user = await _userService.GetMeAsync(userId);
             return Ok(user);
         }
 

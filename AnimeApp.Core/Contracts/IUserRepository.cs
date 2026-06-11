@@ -1,4 +1,5 @@
-﻿using AnimeApp.Core.Filters;
+﻿using AnimeApp.Core.Dto;
+using AnimeApp.Core.Filters;
 using AnimeApp.Core.Models;
 
 namespace AnimeApp.Core.Contracts
@@ -12,5 +13,6 @@ namespace AnimeApp.Core.Contracts
         Task<PagedResult<User>> GetFilteredAsync(UserFilter filter);
         Task UpdateAsync(User user);
         Task<bool> ExistsAsync(int userId);
+        Task<UserMeRawResponse?> GetMeAsync(int userId);
     }
 }

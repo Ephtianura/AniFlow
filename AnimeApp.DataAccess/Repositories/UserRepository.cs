@@ -1,4 +1,6 @@
 ﻿using AnimeApp.Core.Contracts;
+using AnimeApp.Core.Dto;
+using AnimeApp.Core.Enums;
 using AnimeApp.Core.Filters;
 using AnimeApp.Core.Models;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +20,23 @@ namespace AnimeApp.DataAccess.Repositories
         public async Task<User?> GetByEmailAsync(string email) => 
             await _dbContext.Users
                 .FirstOrDefaultAsync(u => u.Email == email.ToLower());
+
+        public async Task<UserMeRawResponse?> GetMeAsync(int userId)
+        {
+            return await _dbContext.Users
+                .Where(u => u.Id == userId)
+                .Select(u => new UserMeRawResponse
+                {
+                    Id = u.Id,
+                    Nickname = u.Nickname,
+                    AvatarFileName = u.AvatarFileName,
+                    Role = u.Role,
+
+                    UnreadNotificationsCount = _dbContext.UserFriends
+                        .Count(uf => uf.ReceiverId == userId && uf.Status == FriendStatus.Pending)
+                })
+                .FirstOrDefaultAsync();
+        }
 
         public async Task<PagedResult<User>> GetFilteredAsync(UserFilter filter)
         {

@@ -7,6 +7,10 @@ import { getMe } from "../../hooks/getMe";
 import BurgerMenuButton from "./BurgerMenuButton";
 import Logo from "../Logo";
 import RandomAnimeButton from "./RandomAnimeButton";
+import { MdOutlineSearch } from "react-icons/md";
+import clsx from "clsx";
+import { RiNotificationFill } from "react-icons/ri";
+import NotificationsButton from "./NotificationsButton";
 
 
 export default async function Navbar() {
@@ -42,7 +46,7 @@ export default async function Navbar() {
             {/* <Link href="/characters" className="nav-button"> Персонажі </Link> */}
 
             {/* Випадкове аніме */}
-           <RandomAnimeButton/>
+            <RandomAnimeButton />
 
             {/* Адмін-панель */}
             <AdminButton me={me} />
@@ -56,8 +60,19 @@ export default async function Navbar() {
           {/* Ім'я */}
           <UserAvatar me={me} />
 
-          {/* Пошук */}
-          <SearchBar />
+          <div className="flex items-center lg:px-3 lg:py-2 ">
+            <div className="lg:border-l border-gray-text-light ">
+              <NotificationsButton
+                unreadCount={me?.unreadNotificationsCount ?? 0}
+              />
+            </div>
+
+            <div className="lg:border-x border-gray-text-light">
+              {/* Пошук */}
+              <SearchBar />
+            </div>
+          </div>
+
 
           {/* Вийти / Увійти */}
           <LoginButtons me={me} />

@@ -17,6 +17,30 @@ export default function GlobalOstPlayer() {
     useLockBodyOverflow(store.isOpen, store.isMini);
 
     useEffect(() => {
+        const handlePopState = () => {
+            if (window.location.hash !== "#player" && !store.isMini) {
+                store.setIsMini(true);
+            }
+        };
+        window.addEventListener("popstate", handlePopState);
+        return () => window.removeEventListener("popstate", handlePopState);
+    }, [store.isMini, store.setIsMini]);
+
+    useEffect(() => {
+        if (!store.currentTrack) return;
+
+        if (!store.isMini) {
+            if (window.location.hash !== "#player") {
+                window.history.pushState({ player: "open" }, "", "#player");
+            }
+        } else {
+            if (window.location.hash === "#player") {
+                window.history.back();
+            }
+        }
+    }, [store.isMini, store.currentTrack]);
+
+    useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.key === 'Escape' && !store.isMini) store.setIsMini(true);
         };

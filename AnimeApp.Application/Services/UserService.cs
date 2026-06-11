@@ -18,20 +18,42 @@ namespace AnimeApp.Application.Services
         private readonly IS3FileStorageService _fileStorage = fileStorage;
 
         /// <summary> Повертає користувача по ID </summary>
-        public async Task<GetUserMeResponse> GetByIdAsync(int userId)
+        public async Task<UserMeResponse> GetByIdAsync(int userId)
         {
             var user = await GetUserByIdAsync(userId);
             string? avatarUrl = null;
             if (user.AvatarFileName != null)
                 avatarUrl = _fileStorage.GetUrl(user.AvatarFileName);
 
-            return new GetUserMeResponse(
+            return new UserMeResponse(
                 user.Id,
                 user.Nickname,
                 avatarUrl,
-                user.Role
+                user.Role,
+                0
             );
         }
+
+        public async Task<UserMeResponse> GetMeAsync(int userId)
+        {
+            var user = await _usersRepository.GetMeAsync(userId) 
+                ?? throw new NotFoundException("User", userId);
+
+            string? avatarUrl = null;
+            if (user.AvatarFileName != null)
+                avatarUrl = _fileStorage.GetUrl(user.AvatarFileName);
+
+            return new UserMeResponse(
+                user.Id,
+                user.Nickname,
+                avatarUrl,
+                user.Role,
+                user.UnreadNotificationsCount
+
+            );
+        }
+
+        
 
         /// <summary> Повертає користувачів за фільтрами </summary>
         public async Task<PagedResult<User>> GetFilteredAsync(UserFilter filter) => await _usersRepository.GetFilteredAsync(filter);

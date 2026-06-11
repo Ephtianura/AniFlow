@@ -12,7 +12,7 @@ namespace AnimeApp.Application.Mapping
         public UserProfile()
         {
             CreateMap<UserProfileResponse, UserProfileUrlsResponse>().ReverseMap();
-            CreateMap<User, GetUserMeResponse>().ReverseMap();
+            CreateMap<User, UserMeResponse>().ReverseMap();
 
             CreateMap<PagedResult<User>, PagedResultResponse<GetUserAdminResponse>>()
                 .ConvertUsing(new PagedResultConverter<User, GetUserAdminResponse>());
