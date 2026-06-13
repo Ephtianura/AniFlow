@@ -37,12 +37,14 @@ namespace AnimeApp.DataAccess.Repositories
         public async Task<List<FriendRawDto>> GetFriendsListAsync(int userId)
         {
             return await _dbContext.UserFriends
-                .Where(uf => (uf.SenderId == userId || uf.ReceiverId == userId) && uf.Status == FriendStatus.Accepted)
+                .Where(uf => (uf.SenderId == userId || uf.ReceiverId == userId)
+                             && uf.Status == FriendStatus.Accepted)
                 .Select(uf => new
                 {
                     FriendUser = uf.SenderId == userId ? uf.Receiver : uf.Sender,
                     uf.AcceptedAt
                 })
+                .OrderByDescending(x => x.AcceptedAt)
                 .Select(f => new FriendRawDto(
                     f.FriendUser.Id,
                     f.FriendUser.Nickname,
@@ -52,7 +54,6 @@ namespace AnimeApp.DataAccess.Repositories
                 ))
                 .ToListAsync();
         }
-
         public async Task AddAsync(UserFriend userFriend) => 
             await _dbContext.UserFriends.AddAsync(userFriend);
         public void Update(UserFriend userFriend) => 

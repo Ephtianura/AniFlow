@@ -223,11 +223,13 @@ namespace AnimeApp.Infrastructure.ExternalApi.MoonAPI
                     ?? throw new ExternalApiEmptyResponseException("Moon API returned empty response");
 
                 return response.Episodes
-                    .ConvertAll(x => new EpisodeRecent(
+                    .Where(x => x.Anime != null) 
+                    .Select(x => new EpisodeRecent(
                         DatePublished: x.DatePublished,
                         MoonId: x.Anime.MoonId,
                         MalId: x.Anime.MalId
-                    ));
+                    ))
+                    .ToList();
             });
         }
 

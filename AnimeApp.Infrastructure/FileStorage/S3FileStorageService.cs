@@ -42,8 +42,13 @@ namespace AnimeApp.Infrastructure.FileStorage
         }
 
 
-        public async Task<string?> UploadImageFromUrlAsync(string url, string folder, CancellationToken ct = default)
+        public async Task<string?> UploadImageFromUrlAsync(string url, string folder, CancellationToken ct = default, int maxRedirects = 3)
         {
+            if (maxRedirects <= 0)
+            {
+                _logger.LogWarning("Перевищено ліміт редіректів для URL: {Url}", url);
+                return null;
+            }
             try
             {
                 using var request = new HttpRequestMessage(HttpMethod.Get, url);
@@ -68,10 +73,10 @@ namespace AnimeApp.Infrastructure.FileStorage
                             redirectUrl = "https:" + redirectUrl;
                         }
 
-                        _logger.LogInformation("Виявлено редирект для зображення. Переходимо на: {RedirectUrl}", redirectUrl);
+                        _logger.LogInformation("Виявлено редірект для зображення. Переходимо на: {RedirectUrl}", redirectUrl);
 
                         // Рекурсивно викликаємо цей же метод, але вже за новою адресою
-                        return await UploadImageFromUrlAsync(redirectUrl, folder, ct);
+                        return await UploadImageFromUrlAsync(redirectUrl, folder, ct, maxRedirects - 1);
                     }
                 }
 
@@ -105,7 +110,20 @@ namespace AnimeApp.Infrastructure.FileStorage
 
         public async Task<List<string>> UploadImagesFromUrlsAsync(IEnumerable<string> urls, string folder)
         {
-            var tasks = urls.Select(url => UploadImageFromUrlAsync(url, folder));
+            using var semaphore = new SemaphoreSlim(5);
+
+            var tasks = urls.Select(async url =>
+            {
+                await semaphore.WaitAsync();
+                try
+                {
+                    return await UploadImageFromUrlAsync(url, folder);
+                }
+                finally
+                {
+                    semaphore.Release();
+                }
+            });
 
             var results = await Task.WhenAll(tasks);
 

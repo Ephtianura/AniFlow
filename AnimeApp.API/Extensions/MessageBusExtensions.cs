@@ -38,7 +38,7 @@
                         cfg.ReceiveEndpoint("update-new-anime", e =>
                         {
                             e.ConcurrentMessageLimit = 5;
-                            e.PrefetchCount = 5;
+                            e.PrefetchCount = 1;
 
                             e.UseMessageRetry(r =>
                                 r.Interval(1, TimeSpan.FromSeconds(5)));

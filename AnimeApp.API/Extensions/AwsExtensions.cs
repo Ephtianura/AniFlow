@@ -29,6 +29,7 @@ namespace AnimeApp.API.Extensions
             {
                 client.DefaultRequestHeaders.Add("User-Agent", "AniFlow/1.0");
                 client.MaxResponseContentBufferSize = 10 * 1024 * 1024;
+                client.Timeout = TimeSpan.FromSeconds(15);
             });
 
             services.AddSingleton<IS3FileStorageService>(sp =>
