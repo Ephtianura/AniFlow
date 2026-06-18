@@ -50,9 +50,9 @@ services:
   seq:
     restart: always
     ports:
-      - "5341:80"
+      - "127.0.0.1:5341:80"
 
 networks:
   default:
-    name: npm_default
+    name: aniflow-network
     external: true

@@ -144,7 +144,7 @@ export default function AnimePlayer({ titles, rating, players, animeId }: Props)
                 </div>
 
                 {/* Плеєр, серії, озвучка  */}
-                <div className="lg:flex gap-4 select-none ">
+                <div className="lg:flex gap-4 select-none">
 
                     {/* Плеєр та серії */}
                     <div className="flex flex-col grow gap-2">
@@ -154,7 +154,7 @@ export default function AnimePlayer({ titles, rating, players, animeId }: Props)
 
                         {/* Вибір серії */}
                         <>
-                            <div className="hidden lg:block">
+                            <div className="hidden lg:block ">
                                 <EpisodeSelectorDesktop
                                     totalEpisodes={totalEpisodes}
                                     currentEpisode={selectedEpisode}

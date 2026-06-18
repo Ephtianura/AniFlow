@@ -4,6 +4,7 @@ using AnimeApp.Application.Dto.External;
 using AnimeApp.Application.Dto.Responses.Anime;
 using AnimeApp.Application.Exceptions;
 using AnimeApp.Core.Contracts;
+using AnimeApp.Core.Enums;
 using AnimeApp.Core.Filters;
 using AnimeApp.Core.Models;
 using AutoMapper;
@@ -30,9 +31,20 @@ namespace AnimeApp.Application.Services.AnimeServices
 
             var anime = await GetFullAnimeOrThrowAsync(animeId);
 
+
             anime.Promos = anime.Promos.Where(p => p.AnimeOstId == null).ToList();
 
             var response = _mapper.Map<AnimeResponse>(anime);
+
+
+            response.Relateds = response.Relateds?
+                  .OrderBy(r => r.RelationKind switch
+                  {
+                      RelationKindEnum.Prequel => 0,
+                      RelationKindEnum.Sequel => 1,
+                      _ => 2
+                  })
+                  .ToList();
 
             response.PosterUrl = GetPosterUrl(anime.PosterFileName);
             response.ScreenshotsUrls = GetScreenshotsUrls(anime.ScreenshotsFileName);

@@ -21,7 +21,6 @@ interface Props {
 export async function generateMetadata({ params }: Props) {
     const { id } = await params;
     const user = await getUserPage(id)
-    console.log(id)
     return {
         title: `Друзі ${user.nickname} | AniFlow`
     };

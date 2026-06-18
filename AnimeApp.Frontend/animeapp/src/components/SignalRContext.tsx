@@ -31,7 +31,7 @@ export function SignalRProvider({ children }: { children: React.ReactNode }) {
         if (typeof window !== "undefined" && !document.cookie.includes("guest_session_id=")) {
             const uuid = crypto.randomUUID();
             document.cookie = `guest_session_id=${uuid}; path=/; SameSite=Lax; Secure`;
-            console.log("Generated fresh guest session identifier:", uuid);
+            // console.log("Generated fresh guest session identifier:", uuid);
         }
 
         const HUB_URL = process.env.NEXT_PUBLIC_HUB_URL!;
@@ -54,7 +54,7 @@ export function SignalRProvider({ children }: { children: React.ReactNode }) {
         });
 
         conn.onreconnected((connectionId) => {
-            console.log(`[SignalR] Connection re-established. ID: ${connectionId}`);
+            // console.log(`[SignalR] Connection re-established. ID: ${connectionId}`);
         });
 
         conn.start()
@@ -74,7 +74,7 @@ export function SignalRProvider({ children }: { children: React.ReactNode }) {
             // Безопасно останавливаем соединение при размонтировании компонента
             if (conn) {
                 conn.stop()
-                    .then(() => console.log("SignalR Global Connection Stopped"))
+                    // .then(() => console.log("SignalR Global Connection Stopped"))
                     .catch(e => console.log("SignalR Stop Error:", e));
             }
         }

@@ -49,8 +49,8 @@ export default function AdaptivePlayerSettings({ option, isMobileOpen, onClose }
                                             <IoCloseSharp className="w-8 h-8" />
                                         </button>
                                     </div>
-                                    <div className="p-4">
-                                        <div className="flex flex-col gap-1 text-[1.25rem]">
+                                  <div className="p-4 flex flex-col grow min-h-0">
+                                        <div className="flex flex-col gap-1 text-[1.25rem] grow h-full">
                                             <PlayerSettings {...option} />
                                         </div>
                                     </div>

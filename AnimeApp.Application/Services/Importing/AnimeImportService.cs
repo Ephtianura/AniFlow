@@ -1,4 +1,4 @@
-﻿using AnimeApp.Application.Contracts.App;
+﻿    using AnimeApp.Application.Contracts.App;
 using AnimeApp.Application.Contracts.Commands;
 using AnimeApp.Application.Contracts.Infra;
 using AnimeApp.Application.Exceptions;

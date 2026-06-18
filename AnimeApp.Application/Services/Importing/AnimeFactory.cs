@@ -87,6 +87,12 @@ namespace AnimeApp.Application.Services.Importing
             {
                 throw new InvalidOperationException("Не вдалося створити аніме через внутрішню помилку.", ex);
             }
+            catch (Exception)
+            {
+                throw;
+            }
+
+
         }
 
 

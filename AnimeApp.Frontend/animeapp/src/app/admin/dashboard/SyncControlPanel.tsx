@@ -53,7 +53,7 @@ export default function SyncControlPanel() {
                     </div>
                     <button
                         disabled={loadingAction !== null}
-                        onClick={() => handleAction('dump', 'anime/ids/seed', 'POST')}
+                        onClick={() => handleAction('dump', 'ids/seed', 'POST')}
                         className="btn-white w-full flex items-center justify-center gap-2 text-sm"
                     >
                         Заповнити каталог ID
@@ -70,7 +70,7 @@ export default function SyncControlPanel() {
                     </div>
                     <button
                         disabled={loadingAction !== null}
-                        onClick={() => handleAction('seed', '/anime/seed', 'POST')}
+                        onClick={() => handleAction('seed', 'anime/seed', 'POST')}
                         className="btn-white w-full flex items-center justify-center gap-2 text-sm"
                     >
                        Запустити повний імпорт
@@ -113,7 +113,7 @@ export default function SyncControlPanel() {
                         <button
                             disabled={loadingAction !== null || !importId}
                             onClick={() => {
-                                handleAction('single-parse', `anime/anime/${importId}`, 'POST');
+                                handleAction('single-parse', `anime/${importId}`, 'POST');
                                 setImportId('');
                             }}
                             className="btn-white flex-1 text-sm"
@@ -142,7 +142,7 @@ export default function SyncControlPanel() {
                         <button
                             disabled={loadingAction !== null || !updateId}
                             onClick={() => {
-                                handleAction('patch-tech', `anime/anime/${updateId}`, 'PATCH');
+                                handleAction('patch-tech', `anime/${updateId}`, 'PATCH');
                                 setUpdateId('');
                             }}
                             className="btn-white flex-1 text-sm"

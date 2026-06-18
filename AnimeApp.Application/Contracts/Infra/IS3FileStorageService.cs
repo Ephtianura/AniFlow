@@ -11,10 +11,10 @@ namespace AnimeApp.Application.Contracts.Infra
         /// <summary> Завантажує паралельно файли в S3 по urls </summary>
         /// <returns> Назви файлів у S3 </returns>
         Task<List<string>> UploadImagesFromUrlsAsync(IEnumerable<string> urls, string folder);
-        
+
         /// <summary> Завантажує файл в S3 по url </summary>
         /// <returns> Назва файлів у S3 </returns>
-        Task<string?> UploadImageFromUrlAsync(string url, string folder, CancellationToken ct = default);
+        Task<string?> UploadImageFromUrlAsync(string url, string folder, CancellationToken ct = default, int maxRedirects = 3);
 
         /// <summary> Видаляє файли в S3 по відносних шляхах файлів</summary>
         /// <returns> Кількість успішно видалених файлів та помилок </returns>

@@ -16,7 +16,7 @@ export default function OnlineTracker() {
         .build();
 
         connection.start()
-            .then(() => console.log("SignalR Connected (Online Tracking Active)"))
+            // .then(() => console.log("SignalR Connected (Online Tracking Active)"))
             .catch(err => console.error("SignalR Connection Error: ", err))
 
         return () => {

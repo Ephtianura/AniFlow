@@ -61,11 +61,15 @@ export default async function Navbar() {
           <UserAvatar me={me} />
 
           <div className="flex items-center lg:px-3 lg:py-2 ">
-            <div className="lg:border-l border-gray-text-light ">
-              <NotificationsButton
-                unreadCount={me?.unreadNotificationsCount ?? 0}
-              />
-            </div>
+
+            {me && (
+              <div className="lg:border-l border-gray-text-light ">
+                <NotificationsButton
+                  unreadCount={me?.unreadNotificationsCount ?? 0}
+                />
+              </div>
+            )}
+
 
             <div className="lg:border-x border-gray-text-light">
               {/* Пошук */}

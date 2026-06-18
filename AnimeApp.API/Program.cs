@@ -85,7 +85,7 @@ app.MapHub<OnlineHub>("/hubs/online");
 
 app.MapControllers();
 
-///!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// Очищення онлайну !!!!!!!!!!!!!!!!!!!!!!!!!!
 var redis = app.Services.GetRequiredService<IConnectionMultiplexer>();
 var db = redis.GetDatabase();
 await db.KeyDeleteAsync("metrics:online:active_users");

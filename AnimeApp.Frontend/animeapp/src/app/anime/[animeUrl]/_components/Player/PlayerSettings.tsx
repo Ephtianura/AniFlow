@@ -67,18 +67,18 @@ export default function PlayerSettings({
     }, [currentOptions, activeTab]);
 
     return (
-        <div>
+        <div className="flex flex-col h-full min-h-0">
+
             {/* Tabs */}
-            <div className="flex border-b border-gray-700 w-full mb-4">
+            <div className="flex border-b border-gray-700 w-full mb-4 shrink-0">
                 {['voice', 'player'].map((tab) => (
                     <button
                         key={tab}
-                        onClick={() => setActiveTab(tab as any)} // !!!!!!!!
-                        className={`cursor-pointer px-4 py-2 text-xl transition-all duration-200 border-b -mb-px capitalize ${
-                            activeTab === tab
+                        onClick={() => setActiveTab(tab as any)}
+                        className={`cursor-pointer px-4 py-2 text-xl transition-all duration-200 border-b -mb-px capitalize ${activeTab === tab
                                 ? 'border-primary-text text-primary-text'
                                 : 'border-transparent text-gray-400 hover:text-white'
-                        }`}
+                            }`}
                     >
                         {tab === 'voice' ? 'Озвучка' : 'Плеєр'}
                     </button>
@@ -86,31 +86,33 @@ export default function PlayerSettings({
             </div>
 
             {/* List */}
-            <div className="flex flex-col gap-2 text-lg">
+            <div className="relative grow overflow-hidden overflow-y-auto transparent-scroll min-h-0 pr-1">
 
-                {renderedOptions.map((opt) => {
-                    const isSub = activeTab === 'voice' && isSubtitlesVoice(opt);
+                <div className="absolute top-0 left-0 w-full flex flex-col gap-2 text-lg">
+                    {renderedOptions.map((opt) => {
+                        const isSub = activeTab === 'voice' && isSubtitlesVoice(opt);
 
-                    return (
-                        <button
-                            key={opt.id}
-                            onClick={() => handleSelect(opt.id)}
-                            className={`text-left px-4 py-2 rounded-lg transition-colors cursor-pointer ${
-                                currentSelected === opt.id
-                                    ? 'bg-[#393a39] text-primary-text'
-                                    : 'text-gray-300 hover:text-white hover:bg-white/5 active:bg-[#393a39]'
-                            }`}
-                        >
-                            <div className="flex items-center  justify-between">
-                                {opt.name}
+                        return (
+                            <button
+                                key={opt.id}
+                                onClick={() => handleSelect(opt.id)}
+                                className={`text-left px-4 py-2 rounded-lg transition-colors cursor-pointer shrink-0 ${currentSelected === opt.id
+                                        ? 'bg-[#393a39] text-primary-text'
+                                        : 'text-gray-300 hover:text-white hover:bg-white/5 active:bg-[#393a39]'
+                                    }`}
+                            >
+                                <div className="flex items-center justify-between">
+                                    {opt.name}
 
-                                {activeTab === 'voice' && isSub && (
-                                    <MdOutlineSubtitles className="text-[#545555] w-6 h-6" />
-                                )}
-                            </div>
-                        </button>
-                    );
-                })}
+                                    {activeTab === 'voice' && isSub && (
+                                        <MdOutlineSubtitles className="text-[#545555] w-6 h-6" />
+                                    )}
+                                </div>
+                            </button>
+                        );
+                    })}
+                </div>
+
             </div>
         </div>
     );
