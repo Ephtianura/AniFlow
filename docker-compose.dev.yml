@@ -24,7 +24,7 @@ services:
     container_name: frontend_animeapp
     build:
       context: ./AnimeApp.Frontend/animeapp
-      target: dev
+      target: prod
     ports:
       - "3000:3000"
     environment:

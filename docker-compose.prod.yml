@@ -2,9 +2,7 @@ services:
   # API
   api:
     container_name: api_animeapp
-    build:
-      context: .
-      dockerfile: AnimeApp.API/Dockerfile
+    image: ${DOCKER_USERNAME_ENV}/api_animeapp:latest
     restart: always
     environment:
       ASPNETCORE_ENVIRONMENT: Production
@@ -21,13 +19,7 @@ services:
   # Frontend
   frontend:
     container_name: frontend_animeapp
-    build:
-      context: ./AnimeApp.Frontend/animeapp
-      args:
-        - NEXT_PUBLIC_API_URL=${API_URL}
-        - NEXT_PUBLIC_HUB_URL=${HUB_URL} 
-        - NEXT_PUBLIC_CDN_URL=${CDN_URL}
-        - DISABLE_CHECKS=true
+    image: ${DOCKER_USERNAME_ENV}/frontend_animeapp:latest
     restart: always
     environment:
       NODE_ENV: production
