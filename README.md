@@ -1,7 +1,6 @@
 <div align="center">
 
-  <!-- <img src="https://github.com/Ephtianura/AniFlow/releases/download/v1.12.0/banner.webp" alt="AniFlow Banner" width="100%" style="border-radius: 8px;" /> -->
-<video src="https://github.com/Ephtianura/AniFlow/releases/download/v1.12.0/aniFlow-banner.mp4" autoplay muted playsinline style="border-radius: 8px; border: 1px solid #30363d; width: 100%; height: 100%;" ></video>
+<img width="1080" height="540" alt="aniflow-banner" src="https://github.com/user-attachments/assets/579bbc32-8462-477f-af13-26ddaa5c43b4" />
 
 # 🌸 AniFlow – Агрегатор Українського Аніме Контенту
 
@@ -19,7 +18,7 @@ aniflow.xyz
 
 <details open>
 
-<summary><span style="font-size: 1.25em; font-weight: bold;">Зміст</span></summary>
+<summary><h3>Зміст</h3></summary>
 
 ---
 
@@ -42,7 +41,7 @@ aniflow.xyz
 </details>
 
 <details open>
-<summary><span id="tech-stack" style="font-size: 1.5em; font-weight: bold;">🛠️ Технологічний Стек</span></summary>
+<summary><h2 id="tech-stack">🛠️ Технологічний Стек</h2></summary>
 
 ---
 
@@ -83,99 +82,129 @@ aniflow.xyz
 </details>
 
 <details open>
-<summary><span id="gallery" style="font-size: 1.5em; font-weight: bold;">📸 Галерея</span></summary>
+<summary><h2 id="gallery">📸 Галерея</h2></summary>
 
 ---
 
-> 💡 **Підказка:** Натисніть на демонстрацію, щоб відкрити її в повному обсязі в новій вкладці.
-
 <details open>
-<summary><span  style="font-size: 1.2em; font-weight: bold;">🌸 Основний інтерфейс</span></summary>
+<summary><h3>🌸 Основний інтерфейс</h3></summary>
 
 #### 🏠 Головна сторінка
 
-<a href="https://github.com/Ephtianura/AniFlow/releases/download/v1.12.0/home-page-details.webp" target="_blank" rel="noopener noreferrer">
- <video src="https://github.com/Ephtianura/AniFlow/releases/download/v1.12.0/home-page.mp4" width="100%" autoplay muted playsinline loop style="border-radius: 8px; border: 1px solid #30363d;"></video>
-</a>
+https://github.com/user-attachments/assets/49d416ee-91c3-45b9-9a3c-786c3dbf2e45
+
+<p align="center">
+  <a href=".github/assets/readme/home-page-details.webp" target="_blank" rel="noopener noreferrer">
+    Дивитися в повному обсязі
+  </a>
+</p>
 
 <p align="center"><small><i>Динамічна інтеграція актуальних тайтлів поточного сезону, навігація та інтерактивні блоки.</i></small></p>
 
 #### 📂 Каталог
 
-<a href="https://github.com/Ephtianura/AniFlow/releases/download/v1.12.0/catalog-page-details.webp" target="_blank" rel="noopener noreferrer">
-<video src="https://github.com/Ephtianura/AniFlow/releases/download/v1.12.0/catalog-page.mp4" width="100%" autoplay muted playsinline loop style="border-radius: 8px; border: 1px solid #30363d;"></video>
-</a>
+https://github.com/user-attachments/assets/691f3aed-e1f5-4c09-a9d2-8c033bd80c3b
+
+
+<p align="center">
+  <a href=".github/assets/readme/catalog-page-details.webp" target="_blank" rel="noopener noreferrer">
+    Дивитися в повному обсязі
+  </a>
+</p>
 <p align="center"><small><i>Розширена фільтрація, сортування, перемикання режимів та тест швидкості завантаження.</i></small></p>
 
 #### 📺 Сторінка Тайтлу
 
-<a href="https://github.com/Ephtianura/AniFlow/releases/download/v1.12.0/anime-page-details.webp" target="_blank" rel="noopener noreferrer">
-<video src="https://github.com/Ephtianura/AniFlow/releases/download/v1.12.0/anime-page.mp4" width="100%" autoplay muted playsinline loop style="border-radius: 8px; border: 1px solid #30363d;"></video>
-</a>
+https://github.com/user-attachments/assets/659239de-cf9d-44a4-a641-1d45ef1777d6
+
+<p align="center">
+  <a href=".github/assets/readme/anime-page-details.webp" target="_blank" rel="noopener noreferrer">
+    Дивитися в повному обсязі
+  </a>
+</p>
 <p align="center"><small><i>Повна інформація про аніме, плеєр із вибором озвучок, пов'язані релізи та інтеграція медіа.</i></small></p>
 
 #### 🎵 Кастомний Музичний Плеєр
 
-<a href="https://github.com/Ephtianura/AniFlow/releases/download/v1.12.0/ost-player-page.webp" target="_blank" rel="noopener noreferrer">
-<video src="https://github.com/Ephtianura/AniFlow/releases/download/v1.12.0/ost-player-page.mp4" width="100%" autoplay muted playsinline loop style="border-radius: 8px; border: 1px solid #30363d;"></video>
-</a>
+https://github.com/user-attachments/assets/85f68f22-479b-45f6-9163-8e4cdf0d95ee
+
+<p align="center">
+  <a href=".github/assets/readme/ost-player-page.webp" target="_blank" rel="noopener noreferrer">
+    Дивитися в повному обсязі
+  </a>
+</p>
 <p align="center"><small><i>Унікальний OST-плеєр, що продовжує відтворення треків під час переходів між сторінками.</i></small></p>
 
 </details>
 
 <details open>
 
-<summary><span  style="font-size: 1.2em; font-weight: bold;">👥 Особистий кабінет</span></summary>
+<summary><h3>👥 Особистий кабінет</h3></summary>
 
 #### 📚 Профіль та списки
 
-<a href="https://github.com/Ephtianura/AniFlow/releases/download/v1.12.0/profile-page.webp" target="_blank" rel="noopener noreferrer">
-<video src="https://github.com/Ephtianura/AniFlow/releases/download/v1.12.0/profile-page.mp4" width="100%" autoplay muted playsinline loop style="border-radius: 8px; border: 1px solid #30363d;"></video>
-</a>
+https://github.com/user-attachments/assets/5ce19429-473c-4208-9bb9-0754bbbb1da8
+
+<p align="center">
+  <a href=".github/assets/readme/profile-page.webp" target="_blank" rel="noopener noreferrer">
+    Дивитися в повному обсязі
+  </a>
+</p>
 
 <p align="center"><small><i>Кастомізація профілю, детальна статистика та списки.</i></small></p>
 
 #### 🤝 Система друзів
 
-<a href="https://github.com/Ephtianura/AniFlow/releases/download/v1.12.0/friends-page.webp" target="_blank" rel="noopener noreferrer">
-<video src="https://github.com/Ephtianura/AniFlow/releases/download/v1.12.0/friends-page.mp4" width="100%" autoplay muted playsinline loop style="border-radius: 8px; border: 1px solid #30363d;"></video>
-</a>
+https://github.com/user-attachments/assets/16f6aad9-4170-4372-87db-65047e016f92
+
+<p align="center">
+  <a href=".github/assets/readme/friends-page.webp" target="_blank" rel="noopener noreferrer">
+    Дивитися в повному обсязі
+  </a>
+</p>
 <p align="center"><small><i>Відображення активності та друзів.</i></small></p>
 
 </details>
 
 <details open>
-<summary><span  style="font-size: 1.2em; font-weight: bold;">👑 Панель адміністратора</span></summary>
+<summary><h3>👑 Панель адміністратора</h3></summary>
 
 #### 📈 Дашборд та метрики
 
-<a href="https://github.com/Ephtianura/AniFlow/releases/download/v1.12.0/dashboard-page-details.webp" target="_blank" rel="noopener noreferrer">
-<video src="https://github.com/Ephtianura/AniFlow/releases/download/v1.12.0/dashboard-page.mp4" width="100%" autoplay muted playsinline loop style="border-radius: 8px; border: 1px solid #30363d;"></video>
-</a>
+https://github.com/user-attachments/assets/316aaa94-b12f-4391-95f8-ea211b1e9f9c
+
+<p align="center">
+  <a href=".github/assets/readme/dashboard-page-details.webp" target="_blank" rel="noopener noreferrer">
+    Дивитися в повному обсязі
+  </a>
+</p>
 <p align="center"><small><i>Кастомна адмінка з бізнес-метриками та панелью синхронізації.</i></small></p>
 
 #### 🛠️ Керування контентом
 
-<a href="https://github.com/Ephtianura/AniFlow/releases/download/v1.12.0/anime-edit-page-details.webp" target="_blank" rel="noopener noreferrer">
-  <video src="https://github.com/Ephtianura/AniFlow/releases/download/v1.12.0/anime-edit-page.mp4" width="100%" autoplay muted playsinline loop style="border-radius: 8px; border: 1px solid #30363d;"></video>
-</a>
+https://github.com/user-attachments/assets/b308c10f-e49e-4135-90fd-ea9c906cc086
+
+<p align="center">
+  <a href=".github/assets/readme/anime-edit-page-details.webp" target="_blank" rel="noopener noreferrer">
+    Дивитися в повному обсязі
+  </a>
+</p>
 <p align="center"><small><i>Інструменти модерації: контроль над сутностями аніме, жанрами, студіями разом із синхронізацією зв'язків.</i></small></p>
 
 </details>
 
 <details open>
-<summary><span  style="font-size: 1.2em; font-weight: bold;">📱 Мобільна адаптація</span></summary>
-<br/>
-<a href="https://github.com/Ephtianura/AniFlow/releases/download/v1.12.0/mobile.mp4" target="_blank" rel="noopener noreferrer">
- <video src="https://github.com/Ephtianura/AniFlow/releases/download/v1.12.0/mobile.mp4" width="35%" autoplay muted playsinline loop style="border-radius: 8px; border: 1px solid #30363d;"></video>
-</a>
+<summary><h3>📱 Мобільна адаптація</h3></summary>
+
+https://github.com/user-attachments/assets/1b702639-e5fe-44c7-a602-ab40294de60a
+
 <p align="center"><small><i>Коротка демонстрація повноцінного мобільного інтерфейсу.</i></small></p>
 
 </details>
 </details>
 
 <details open>
-<summary><span id="features" style="font-size: 1.5em; font-weight: bold;">⭐ Основні можливості</span></summary>
+<summary><h2 id="features">⭐ Основні можливості</h2></summary>
 
 ---
 
@@ -209,7 +238,7 @@ aniflow.xyz
 
 <details open>
 
-<summary><span id="architecture" style="font-size: 1.5em; font-weight: bold;">📖 Про архітектуру проєкту</span></summary>
+<summary><h2 id="architecture">📖 Про архітектуру проєкту</h2></summary>
 
 ---
 
@@ -311,7 +340,7 @@ RabbitMQ відповідає за парсинг та оновлення баз
 </details>
 
 <details open>
-<summary><span id="whats-new" style="font-size: 1.5em; font-weight: bold;">✨ Що нового?</span></summary>
+<summary><h2 id="whats-new">✨ Що нового?</h2></summary>
 
 ---
 
@@ -336,7 +365,7 @@ RabbitMQ відповідає за парсинг та оновлення баз
 </details>
 
 <details open>
-<summary><span id="feedback" style="font-size: 1.5em; font-weight: bold;">💬 Фідбек користувачів</span></summary>
+<summary><h2 id="feedback">💬 Фідбек користувачів</h2></summary>
 
 ---
 
@@ -373,7 +402,7 @@ RabbitMQ відповідає за парсинг та оновлення баз
 
 Повна статистика оцінювання дизайну, швидкості та юзабіліті кожним учасником.
 
-![Оцінки користувачів](https://github.com/Ephtianura/AniFlow/releases/download/v1.12.0/ratings.webp)
+![Оцінки користувачів](.github/assets/readme/ratings.webp)
 
 </details>
 
@@ -382,7 +411,7 @@ RabbitMQ відповідає за парсинг та оновлення баз
 
 Що користувачам найбільше сподобалося, а також їхні пропозиції щодо покращення платформи.
 
-![Відгуки користувачів](https://github.com/Ephtianura/AniFlow/releases/download/v1.12.0/user-reviews.webp)
+![Відгуки користувачів](.github/assets/readme/user-reviews.webp)
 
 </details>
 
@@ -391,13 +420,13 @@ RabbitMQ відповідає за парсинг та оновлення баз
 
 Журнал виявлених проблем, їхньої пріоритетності та виконаних дій для усунення.
 
-![Аналіз проблем](https://github.com/Ephtianura/AniFlow/releases/download/v1.12.0/error-analysis.webp)
+![Аналіз проблем](.github/assets/readme/error-analysis.webp)
 
 </details>
 
 </details>
 <details open>
-<summary><span id="roadmap" style="font-size: 1.5em; font-weight: bold;">🗺️ Плани на розвиток</span></summary>
+<summary><h2 id="roadmap">🗺️ Плани на розвиток</h2></summary>
 
 ---
 
@@ -421,7 +450,7 @@ _Я, звичайно-ж, повністю поділяв ці погляди щ
 </details>
 
 <!-- <details open>
-<summary><span id="api-documentation" style="font-size: 1.5em; font-weight: bold;">📚 Документація API</span></summary>
+<summary><h2 id="api-documentation">📚 Документація API</h2></summary>
 
 ---
 
@@ -434,7 +463,7 @@ _Я, звичайно-ж, повністю поділяв ці погляди щ
 </details> -->
 
 <details open>
-<summary><span id="getting-started" style="font-size: 1.5em; font-weight: bold;">🚀 Інструкція з запуску</span></summary>
+<summary><h2 id="getting-started">🚀 Інструкція з запуску</h2></summary>
 
 ---
 
@@ -458,7 +487,7 @@ _Я, звичайно-ж, повністю поділяв ці погляди щ
    ```
 
 2. **Налаштуйте змінні середовища:** Створіть файл конфігурації `.env` у корені проєкту на основі прикладу `env.example`.
-   _(Якщо ви хочете запустити проєкт із налаштуваннями за замовчуванням без створення окремого файлу, ви можете просто замінити ім'я файлу в команді нижче на `env.example`)_.
+   _(Або просто перейменуйте)_.
 
 3. **Запустіть Docker-контейнери:** Виконайте наступну команду в консолі для підняття всіх сервісів:
 
@@ -468,20 +497,20 @@ _Я, звичайно-ж, повністю поділяв ці погляди щ
 
 4. **Готово:** Через деякий час, необхідний для ініціалізації баз даних та збирання додатків, вебсайт стане доступним у вашому браузері за адресою: <a href="http://localhost:3000" target="_blank" rel="noopener noreferrer">http://localhost:3000</a>.
 
-ℹ️ _Зі списками та призначенням усіх інших портів інфраструктурних сервісів ви можете детально ознайомитися безпосередньо у файлі `docker-compose.dev.yml`.
+ℹ️ _Зі списками та призначенням усіх інших портів інфраструктурних сервісів ви можете детально ознайомитися безпосередньо у файлі
 <a href="./docker-compose.dev.yml" target="_blank" rel="noopener noreferrer">`docker-compose.dev.yml`</a>_
 
 </details>
 
 <!-- <details open>
-<summary><span id="developer-guide" style="font-size: 1.5em; font-weight: bold;">🔧 Інструкція для розробників</span></summary>
+<summary><h2 id="developer-guide">🔧 Інструкція для розробників</h2></summary>
 
 ---
 
 </details> -->
 
 <details open>
-<summary><span id="license" style="font-size: 1.5em; font-weight: bold;">📜 Ліцензія</span></summary>
+<summary><h2 id="license">📜 Ліцензія</h2></summary>
 
 ---
 
@@ -494,7 +523,7 @@ _Я, звичайно-ж, повністю поділяв ці погляди щ
 </details>
 
 <details open>
-<summary><span id="contacts" style="font-size: 1.5em; font-weight: bold;">📩 Зв'язатися</span></summary>
+<summary><h2 id="contacts">📩 Зв'язатися</h2></summary>
 
 ---
 
