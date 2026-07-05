@@ -110,7 +110,7 @@ namespace AnimeApp.Infrastructure.FileStorage
 
         public async Task<List<string>> UploadImagesFromUrlsAsync(IEnumerable<string> urls, string folder)
         {
-            using var semaphore = new SemaphoreSlim(5);
+            var semaphore = new SemaphoreSlim(5);
 
             var tasks = urls.Select(async url =>
             {
@@ -123,14 +123,21 @@ namespace AnimeApp.Infrastructure.FileStorage
                 {
                     semaphore.Release();
                 }
-            });
+            }).ToList();
 
-            var results = await Task.WhenAll(tasks);
+            try
+            {
+                var results = await Task.WhenAll(tasks);
 
-            return results
-                .Where(x => x is not null)
-                .Cast<string>()
-                .ToList();
+                return results
+                    .Where(x => x is not null)
+                    .Cast<string>()
+                    .ToList();
+            }
+            finally
+            {
+                semaphore.Dispose();
+            }
         }
 
         public async Task<S3DeleteResult> DeleteFilesAsync(IEnumerable<string> keys)

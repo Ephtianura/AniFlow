@@ -3,55 +3,43 @@
 
     namespace AnimeApp.API.Extensions
     {
-        public static class MessageBusExtensions
+    public static class MessageBusExtensions
+    {
+        public static IServiceCollection AddMessageBus(this IServiceCollection services, IConfiguration configuration)
         {
-            public static IServiceCollection AddMessageBus(this IServiceCollection services, IConfiguration configuration)
+            services.AddMassTransit(x =>
             {
-                services.AddMassTransit(x =>
-                {
-                    x.SetKebabCaseEndpointNameFormatter();
+                x.SetKebabCaseEndpointNameFormatter();
 
-                    x.AddConsumers(typeof(ParseNewAnimeConsumer).Assembly);
-                    x.AddConsumers(typeof(UpdateAnimeConsumer).Assembly);
-
-                    x.UsingRabbitMq((context, cfg) =>
+                x.AddConsumer<ParseNewAnimeConsumer>()
+                    .Endpoint(e =>
                     {
-                        cfg.Host(configuration["RabbitMQ:Host"], "/", h =>
-                        {
-                            h.Username(configuration["RabbitMQ:Username"]!);
-                            h.Password(configuration["RabbitMQ:Password"]!);
-                        });
-
-                        cfg.ReceiveEndpoint("parse-new-anime", e =>
-                        {
-                            e.ConcurrentMessageLimit = 5;
-                            e.PrefetchCount = 5;
-
-                            e.UseMessageRetry(r =>
-                                r.Interval(1, TimeSpan.FromSeconds(5)));
-
-                            e.SetQuorumQueue();
-
-                            e.ConfigureConsumer<ParseNewAnimeConsumer>(context);
-                        });
-
-                        cfg.ReceiveEndpoint("update-new-anime", e =>
-                        {
-                            e.ConcurrentMessageLimit = 5;
-                            e.PrefetchCount = 1;
-
-                            e.UseMessageRetry(r =>
-                                r.Interval(1, TimeSpan.FromSeconds(5)));
-
-                            e.SetQuorumQueue();
-
-                            e.ConfigureConsumer<UpdateAnimeConsumer>(context);
-                        });
-
+                        e.ConcurrentMessageLimit = 5;
+                        e.PrefetchCount = 5;
                     });
-                });
 
-                return services;
-            }
+                x.AddConsumer<UpdateAnimeConsumer>()
+                    .Endpoint(e =>
+                    {
+                        e.ConcurrentMessageLimit = 5;
+                        e.PrefetchCount = 1;
+                    });
+
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    cfg.Host(configuration["RabbitMQ:Host"], "/", h =>
+                    {
+                        h.Username(configuration["RabbitMQ:Username"]!);
+                        h.Password(configuration["RabbitMQ:Password"]!);
+                    });
+
+                    cfg.UseMessageRetry(r => r.Interval(1, TimeSpan.FromSeconds(5)));
+
+                    cfg.ConfigureEndpoints(context);
+                });
+            });
+
+            return services;
         }
     }
+}

@@ -1,8 +1,5 @@
 ﻿using AnimeApp.Application.Contracts.App;
-using AnimeApp.Application.Contracts.Infra;
-using AnimeApp.Infrastructure.ExternalApi.MoonAPI;
 using AnimeApp.Infrastructure.RedisCache;
-using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
 
 namespace AnimeApp.API.Extensions

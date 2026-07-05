@@ -4,9 +4,7 @@ using AnimeApp.Application.Dto.External;
 using AnimeApp.Application.Helpers;
 using AnimeApp.Core.Enums;
 using AnimeApp.Core.Models;
-using MassTransit;
 using Microsoft.Extensions.Logging;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AnimeApp.Application.Services.Importing
 {

@@ -38,6 +38,8 @@ services:
 
   rabbitmq:
     restart: always
+    ports:
+      - "127.0.0.1:15672:15672"
 
   seq:
     restart: always

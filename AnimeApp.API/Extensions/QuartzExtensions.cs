@@ -22,7 +22,7 @@ namespace AnimeApp.API.Extensions
                 q.AddTrigger(opts => opts
                     .ForJob(syncJobKey)
                     .WithIdentity("CheckAnimeUpdatesTrigger")
-                    .WithSchedule(CronScheduleBuilder.CronSchedule("0 15 * ? * *")) // Раз на годину о nn:15
+                    .WithSchedule(CronScheduleBuilder.CronSchedule("0 15 0/12 ? * *")) // Раз на 12 годин о nn:15
                 );
 
                 var flushGlobalJobKey = new JobKey("FlushMetricsJob");
