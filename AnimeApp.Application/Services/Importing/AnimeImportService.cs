@@ -42,6 +42,18 @@ namespace AnimeApp.Application.Services.Importing
                 var raw = await _moonApi.GetFullAnimeInfo(request.MoonId);
                 _logger.LogInformation(LogEvents.MoonApiDataReceived, "Отримана інформація з MoonAPI. MoonId: {MoonId}", request.MoonId);
 
+                if (string.IsNullOrWhiteSpace(raw?.Slug) &&
+                    string.IsNullOrWhiteSpace(raw?.TitleJa) &&
+                    string.IsNullOrWhiteSpace(raw?.TitleEn))
+                {
+                    _logger.LogWarning(
+                        LogEvents.MoonApiDataInvalid,
+                        "MoonAPI повернув пусті дані. Відсутня оригінальна назва. MoonId: {MoonId}",
+                        request.MoonId);
+
+                    return;
+                }
+
                 var isExist = await CheckExist(raw.MalId, sw);
                 if (isExist) return;
 

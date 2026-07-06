@@ -38,6 +38,12 @@ namespace AnimeApp.Application.Services.Importing
                 if (!string.IsNullOrWhiteSpace(raw.PosterUrl))
                     poster = await _fileStorage.UploadImageFromUrlAsync(raw.PosterUrl, StoragePaths.AnimePosters);
 
+                var description = raw.DescriptionUa ?? raw.DescriptionEn;
+
+                description = description?.Length > 2000
+                    ? description.Substring(0, 1997) + "..."
+                    : description;
+
                 var createParams = new CreateAnimeParams()
                 {
                     Titles = titles,
@@ -47,7 +53,7 @@ namespace AnimeApp.Application.Services.Importing
                     Status = AniBuilder.MapStatus(raw.Status),
                     Rating = AniBuilder.MapRating(raw.Rating),
 
-                    Description = raw.DescriptionUa ?? raw.DescriptionEn,
+                    Description = description,
                     PosterFileName = poster,
 
                     Genres = genres,
@@ -78,7 +84,9 @@ namespace AnimeApp.Application.Services.Importing
                 anime.ExternalLinks = raw.External;
 
                 await ImportScreenshots(anime, raw.MalId);
+
                 return anime;
+
             }
 
             catch (ArgumentException ex)

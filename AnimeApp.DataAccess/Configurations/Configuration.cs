@@ -30,7 +30,7 @@ namespace AnimeApp.DataAccess.Configurations
                 .HasConversion<int>();
 
             builder.Property(u => u.AvatarFileName)
-                .HasMaxLength(200)
+                .HasMaxLength(512)
                 .IsRequired(false);
 
             builder.Property(u => u.DateOfRegistration)
@@ -114,15 +114,14 @@ namespace AnimeApp.DataAccess.Configurations
 
             builder.Property(a => a.Url)
                 .IsRequired()
-                .HasMaxLength(200);
+                .HasMaxLength(512);
 
             builder.HasIndex(x => x.Url).IsUnique();
 
-            builder.Property(a => a.Description)
-                .HasMaxLength(2000);
+            builder.Property(a => a.Description);
 
             builder.Property(a => a.PosterFileName)
-                .HasMaxLength(200);
+                .HasMaxLength(512);
 
             builder.Property(s => s.Score)
                 .HasPrecision(3, 1); // 0.0 - 10.0
@@ -167,7 +166,7 @@ namespace AnimeApp.DataAccess.Configurations
                 t.ToTable("AnimeTitles");
                 t.WithOwner().HasForeignKey("AnimeId");
                 t.HasKey("Id");
-                t.Property(tt => tt.Value).IsRequired().HasMaxLength(200);
+                t.Property(tt => tt.Value).IsRequired().HasMaxLength(512);
                 t.Property(tt => tt.Language).IsRequired();
                 t.Property(tt => tt.Type).IsRequired();
             });
@@ -236,14 +235,13 @@ namespace AnimeApp.DataAccess.Configurations
             .IsRequired()
             .HasMaxLength(255);
 
-            builder.Property(x => x.Description)
-                .HasMaxLength(2000);
+            builder.Property(x => x.Description);
 
             builder.Property(x => x.Author)
                 .HasMaxLength(255);
 
             builder.Property(x => x.SpotifyUrl)
-                .HasMaxLength(500);
+                .HasMaxLength(1024);
 
             builder.Property(x => x.Type)
                 .HasConversion<string>();
@@ -311,11 +309,10 @@ namespace AnimeApp.DataAccess.Configurations
                 .IsRequired()
                 .HasMaxLength(150);
 
-            builder.Property(s => s.Description)
-                .HasMaxLength(2000);
+            builder.Property(s => s.Description);
 
             builder.Property(s => s.PosterFileName)
-                .HasMaxLength(200);
+                .HasMaxLength(512);
 
             // One-to-Many: Anime
             builder.HasMany(s => s.Animes)

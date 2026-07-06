@@ -5,6 +5,7 @@ using AnimeApp.Core.Enums;
 using AnimeApp.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -13,9 +14,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AnimeApp.DataAccess.Migrations
 {
     [DbContext(typeof(AnimeAppDbContext))]
-    partial class AnimeAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260706023656_change-posters-max-length-limits")]
+    partial class changepostersmaxlengthlimits
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -521,8 +524,8 @@ namespace AnimeApp.DataAccess.Migrations
 
                             b1.Property<string>("Value")
                                 .IsRequired()
-                                .HasMaxLength(512)
-                                .HasColumnType("character varying(512)");
+                                .HasMaxLength(200)
+                                .HasColumnType("character varying(200)");
 
                             b1.HasKey("Id");
 

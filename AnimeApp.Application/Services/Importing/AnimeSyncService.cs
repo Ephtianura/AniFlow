@@ -51,7 +51,7 @@ namespace AnimeApp.Application.Services.Importing
             await _catalogRep.AddRangeAsync(idCatalog);
             res.Created = idCatalog.Count;
             await _unitOfWork.SaveChangesAsync();
-            _logger.LogInformation(LogEvents.CatalogDumpCompleted, "Дамп каталогу айді завершений за {ElapsedMs}ms. Результат: @{Res}", sw.ElapsedMilliseconds, res);
+            _logger.LogInformation(LogEvents.CatalogDumpCompleted, "Дамп каталогу айді завершений за {ElapsedMs}ms. Створено нових: {Created}", sw.ElapsedMilliseconds, res.Created);
             return res;
         }
 

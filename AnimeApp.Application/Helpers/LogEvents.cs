@@ -45,6 +45,11 @@ namespace AnimeApp.Application.Helpers
         public static readonly EventId MoonApiDataReceived =
             new(1200, nameof(MoonApiDataReceived));
 
+        public static readonly EventId MoonApiDataInvalid =
+          new(1201, nameof(MoonApiDataInvalid));
+
+
+
         public static readonly EventId KodikApiDataReceived =
             new(1250, nameof(KodikApiDataReceived));
 
@@ -90,5 +95,6 @@ namespace AnimeApp.Application.Helpers
 
         public static readonly EventId StudioUpdated =
             new(1402, nameof(StudioUpdated));
+
     }
 }
