@@ -73,7 +73,7 @@ app.UseCookiePolicy(new CookiePolicyOptions
 app.UseMiddleware<ExceptionMiddleware>();
 
 if (!app.Environment.IsDevelopment())
-    app.UseHttpsRedirection();
+    app.UseForwardedHeaders();
 
 app.UseAuthentication();
 app.UseAuthorization();

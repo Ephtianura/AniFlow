@@ -56,6 +56,9 @@ namespace AnimeApp.Application.Helpers
         public static readonly EventId KodikScreenshotsLoaded =
             new(1251, nameof(KodikScreenshotsLoaded));
 
+        public static readonly EventId KodikScreenshotsReceived =
+            new(1252, nameof(KodikScreenshotsReceived));
+
         public static readonly EventId KodikScreenshotsFailed =
             new(1252, nameof(KodikScreenshotsFailed));
 

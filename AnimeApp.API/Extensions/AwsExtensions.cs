@@ -14,7 +14,11 @@ namespace AnimeApp.API.Extensions
                 var s3Config = new AmazonS3Config
                 {
                     ServiceURL = config["AWS:ServiceURL"],
-                    ForcePathStyle = true
+                    ForcePathStyle = true,
+
+                    RetryMode = RequestRetryMode.Standard,
+                    MaxErrorRetry = 2,
+                    Timeout = TimeSpan.FromSeconds(5)
                 };
 
                 var credentials = new BasicAWSCredentials(
@@ -27,10 +31,14 @@ namespace AnimeApp.API.Extensions
 
             services.AddHttpClient("S3StorageClient", client =>
             {
-                client.DefaultRequestHeaders.Add("User-Agent", "AniFlow/1.0");
+                client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
                 client.MaxResponseContentBufferSize = 10 * 1024 * 1024;
-                client.Timeout = TimeSpan.FromSeconds(15);
-            });
+                client.Timeout = TimeSpan.FromSeconds(30);
+            })
+             .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
+             {
+                 AllowAutoRedirect = false 
+             });
 
             services.AddSingleton<IS3FileStorageService>(sp =>
             {

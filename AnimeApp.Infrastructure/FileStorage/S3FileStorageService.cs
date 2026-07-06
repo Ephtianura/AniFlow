@@ -5,7 +5,6 @@ using AnimeApp.Application.Dto.External;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats;
 
 namespace AnimeApp.Infrastructure.FileStorage
 {
@@ -22,8 +21,9 @@ namespace AnimeApp.Infrastructure.FileStorage
         private readonly string _bucketName = bucketName;
         private readonly string _baseUrl = config["Minio:PublicUrl"]!.TrimEnd('/');
 
+        private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(5);
 
-        public async Task<string> UploadFileAsync(Stream fileStream, string fileName, string folder)
+        public async Task<string> UploadFileAsync(Stream fileStream, string fileName, string folder, CancellationToken ct = default)
         {
             var key = $"{folder}/{Guid.NewGuid()}_{fileName}";
 
@@ -36,108 +36,112 @@ namespace AnimeApp.Infrastructure.FileStorage
             };
 
             var transferUtility = new TransferUtility(_s3Client);
-            await transferUtility.UploadAsync(uploadRequest);
+            await transferUtility.UploadAsync(uploadRequest, ct);
 
             return key;
         }
 
 
-        public async Task<string?> UploadImageFromUrlAsync(string url, string folder, CancellationToken ct = default, int maxRedirects = 3)
+        public async Task<string?> UploadImageFromUrlAsync(string currentUrl, string folder, CancellationToken ct = default)
         {
-            if (maxRedirects <= 0)
-            {
-                _logger.LogWarning("Перевищено ліміт редіректів для URL: {Url}", url);
-                return null;
-            }
+            using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+            cts.CancelAfter(TimeSpan.FromSeconds(5));
+
             try
             {
-                using var request = new HttpRequestMessage(HttpMethod.Get, url);
+                int maxRedirects = 5;
+                HttpResponseMessage? response = null;
 
-                // Маскуємося під звичайний браузер 
-                request.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
-                request.Headers.Add("Accept", "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8");
-
-                using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, ct);
-
-                if (response.StatusCode == System.Net.HttpStatusCode.Redirect ||
-                    response.StatusCode == System.Net.HttpStatusCode.MovedPermanently ||
-                    response.StatusCode == System.Net.HttpStatusCode.Found)
+                while (maxRedirects-- > 0)
                 {
-                    var redirectUrl = response.Headers.Location?.ToString();
+                    if (currentUrl.StartsWith("//")) currentUrl = "https:" + currentUrl;
 
-                    if (!string.IsNullOrEmpty(redirectUrl))
+                    var request = new HttpRequestMessage(HttpMethod.Get, currentUrl);
+                    request.Headers.Add("Accept", "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8");
+
+                    response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cts.Token);
+
+                    // Якщо це редирект (301, 302, 307, 308) — переписуємо URL і йдемо на наступне коло
+                    if (response.StatusCode == System.Net.HttpStatusCode.Redirect ||
+                        response.StatusCode == System.Net.HttpStatusCode.MovedPermanently ||
+                        response.StatusCode == System.Net.HttpStatusCode.Found ||
+                        response.StatusCode == System.Net.HttpStatusCode.SeeOther)
                     {
-                        // Якщо Kodik віддав посилання без протоколу "//cloud.solodcdn.com...", виправляємо його
-                        if (redirectUrl.StartsWith("//"))
-                        {
-                            redirectUrl = "https:" + redirectUrl;
-                        }
+                        var location = response.Headers.Location?.ToString();
+                        if (string.IsNullOrEmpty(location)) return null;
 
-                        _logger.LogInformation("Виявлено редірект для зображення. Переходимо на: {RedirectUrl}", redirectUrl);
-
-                        // Рекурсивно викликаємо цей же метод, але вже за новою адресою
-                        return await UploadImageFromUrlAsync(redirectUrl, folder, ct, maxRedirects - 1);
+                        currentUrl = location;
+                        response.Dispose(); // Звільняємо ресурси старого запиту перед наступним кроком
+                        continue;
                     }
+
+                    // Якщо це не редирект — виходимо з циклу обробляти результат
+                    break;
                 }
 
-                if (!response.IsSuccessStatusCode)
+                // Перевіряємо фінальну відповідь (тут вже має бути 200 OK)
+                if (response == null || !response.IsSuccessStatusCode) return null;
+
+                // Читаємо і заливаємо в S3
+                using (response)
                 {
-                    _logger.LogWarning("Завантаження зображення завершилося помилкою HTTP {StatusCode} для URL: {Url}", response.StatusCode, url);
-                    return null;
+                    using var responseStream = await response.Content.ReadAsStreamAsync(cts.Token);
+                    using var ms = new MemoryStream();
+                    await responseStream.CopyToAsync(ms, cts.Token);
+
+                    byte[] imageBytes = ms.ToArray();
+                    if (imageBytes.Length == 0) return null;
+
+                    var format = Image.DetectFormat(imageBytes);
+                    if (format == null)
+                    {
+                        _logger.LogWarning("Файл не є валідним зображенням: {Url}", currentUrl);
+                        return null;
+                    }
+
+                    var fileName = $"{Guid.NewGuid()}.{format.FileExtensions.First()}";
+                    ms.Position = 0;
+
+                    return await UploadFileAsync(ms, fileName, folder, cts.Token);
                 }
-
-                byte[] imageBytes = await response.Content.ReadAsByteArrayAsync(ct);
-
-                var format = Image.DetectFormat(imageBytes);
-                if (format == null)
-                {
-                    _logger.LogWarning("Файл не є валідним зображенням: {Url}", url);
-                    return null;
-                }
-
-                var ext = format.FileExtensions.First();
-                var fileName = $"{Guid.NewGuid()}.{ext}";
-
-                using var uploadStream = new MemoryStream(imageBytes);
-                return await UploadFileAsync(uploadStream, fileName, folder);
+            }
+            catch (OperationCanceledException) when (!ct.IsCancellationRequested)
+            {
+                _logger.LogWarning("Таймаут 15с по картинці: {Url}", currentUrl);
+                return null;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Не вдалося завантажити картинку по URL: {Url}", url);
+                var innerMessage = ex.InnerException?.Message ?? "None";
+                _logger.LogError(ex, "Не вдалося завантажити картинку по URL: {Url}. Inner error: {Inner}", currentUrl, innerMessage);
                 return null;
             }
         }
 
-        public async Task<List<string>> UploadImagesFromUrlsAsync(IEnumerable<string> urls, string folder)
+        public async Task<List<string>> UploadImagesFromUrlsAsync(IEnumerable<string> urls, string folder, CancellationToken ct = default)
         {
-            var semaphore = new SemaphoreSlim(5);
+            var urlList = urls.Distinct().ToList(); 
+            var results = new List<string>();
 
-            var tasks = urls.Select(async url =>
+            const int batchSize = 10;
+
+            for (int i = 0; i < urlList.Count; i += batchSize)
             {
-                await semaphore.WaitAsync();
-                try
+                var batch = urlList.Skip(i).Take(batchSize);
+
+                var batchTasks = batch.Select(url => UploadImageFromUrlAsync(url, folder, ct));
+
+                var batchResults = await Task.WhenAll(batchTasks);
+
+                foreach (var res in batchResults)
                 {
-                    return await UploadImageFromUrlAsync(url, folder);
+                    if (res is not null) results.Add(res);
                 }
-                finally
-                {
-                    semaphore.Release();
-                }
-            }).ToList();
 
-            try
-            {
-                var results = await Task.WhenAll(tasks);
+                await Task.Delay(300, ct);
+            }
 
-                return results
-                    .Where(x => x is not null)
-                    .Cast<string>()
-                    .ToList();
-            }
-            finally
-            {
-                semaphore.Dispose();
-            }
+            return results;
         }
 
         public async Task<S3DeleteResult> DeleteFilesAsync(IEnumerable<string> keys)

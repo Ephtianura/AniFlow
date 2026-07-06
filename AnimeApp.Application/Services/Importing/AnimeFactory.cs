@@ -101,21 +101,26 @@ namespace AnimeApp.Application.Services.Importing
 
         }
 
-
         private async Task ImportScreenshots(Anime anime, int malId)
         {
             try
             {
                 var kodikResponse = await _kodikApi.GetScreenshots(malId);
 
-                var screenshots = await _fileStorage.UploadImagesFromUrlsAsync(kodikResponse.Screenshots, StoragePaths.AnimeScreenshots); // Надо константу
+                _logger.LogInformation(LogEvents.KodikScreenshotsReceived, "Отримані скріншоти з Kokik для аніме {AnimeName}. Починаємо завантажувати в S3... Кількість скріншотів: {Screenshots}", 
+                    anime.Titles.FirstOrDefault(), kodikResponse.Screenshots.Count);
+
+                var screenshots = await _fileStorage.UploadImagesFromUrlsAsync(kodikResponse.Screenshots, StoragePaths.AnimeScreenshots);
+
                 anime.UpdateScreenshotsFileName(screenshots);
                 anime.KodikId = kodikResponse.KodikId;
-                _logger.LogInformation(LogEvents.KodikScreenshotsLoaded,"Скріншоти для аніме {AnimeName} успішно створені! Кількість скріншотів: {Screenshots}", anime.Titles.FirstOrDefault(), screenshots.Count);
+                _logger.LogInformation(LogEvents.KodikScreenshotsLoaded,"Скріншоти для аніме {AnimeName} успішно створені! Кількість скріншотів: {Screenshots}", 
+                    anime.Titles.FirstOrDefault(), screenshots.Count);
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(LogEvents.KodikScreenshotsFailed, ex, "Не вдалося завантажити скріншоти з KodikAPI для аніме {AnimeName}, Id: {AnimeId}, MalId: {MalId}", anime.Titles.FirstOrDefault(), anime.Id, malId);
+                _logger.LogWarning(LogEvents.KodikScreenshotsFailed, ex, "Не вдалося завантажити скріншоти з KodikAPI для аніме {AnimeName}, Id: {AnimeId}, MalId: {MalId}", 
+                    anime.Titles.FirstOrDefault(), anime.Id, malId);
                 return;
             }
         }
