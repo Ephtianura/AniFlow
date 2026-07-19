@@ -25,17 +25,6 @@ services:
         "allkeys-lru",
       ]
 
-  # S3
-  minio:
-    image: minio/minio
-    container_name: minio_animeapp
-    environment:
-      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
-      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
-    command: server /data --console-address ":9001"
-    volumes:
-      - minio_data:/data
-
   # RabbitMQ
   rabbitmq:
     image: rabbitmq:4-management
@@ -59,7 +48,6 @@ services:
 
 volumes:
   postgres_data:
-  minio_data:
   aniflow_rabbitmq_data:
   aniflow_seq_data:
   keys:

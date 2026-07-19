@@ -14,12 +14,17 @@ namespace AnimeApp.API.Extensions
                 var s3Config = new AmazonS3Config
                 {
                     ServiceURL = config["AWS:ServiceURL"],
-                    ForcePathStyle = true,
+                    ForcePathStyle = config.GetValue<bool>("AWS:ForcePathStyle", true),
 
                     RetryMode = RequestRetryMode.Standard,
                     MaxErrorRetry = 2,
                     Timeout = TimeSpan.FromSeconds(5)
                 };
+
+                if (!string.IsNullOrEmpty(config["AWS:Region"]))
+                {
+                    s3Config.AuthenticationRegion = config["AWS:Region"];
+                }
 
                 var credentials = new BasicAWSCredentials(
                     config["AWS:AccessKey"],

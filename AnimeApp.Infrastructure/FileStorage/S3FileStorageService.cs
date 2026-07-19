@@ -19,7 +19,7 @@ namespace AnimeApp.Infrastructure.FileStorage
         private readonly IAmazonS3 _s3Client = s3Client;
         private ILogger<S3FileStorageService> _logger = logger;
         private readonly string _bucketName = bucketName;
-        private readonly string _baseUrl = config["Minio:PublicUrl"]!.TrimEnd('/');
+        private readonly string _baseUrl = config["AWS:PublicUrl"]!.TrimEnd('/');
 
         public async Task<string> UploadFileAsync(Stream fileStream, string fileName, string folder, CancellationToken ct = default)
         {
@@ -29,8 +29,7 @@ namespace AnimeApp.Infrastructure.FileStorage
             {
                 InputStream = fileStream,
                 Key = key,
-                BucketName = _bucketName,
-                CannedACL = S3CannedACL.PublicRead
+                BucketName = _bucketName
             };
 
             var transferUtility = new TransferUtility(_s3Client);
@@ -185,7 +184,7 @@ namespace AnimeApp.Infrastructure.FileStorage
         public string GetUrl(string key)
         {
             key = key.TrimStart('/');
-            return $"{_baseUrl}/{_bucketName}/{key}";
+            return $"{_baseUrl}/{key}";
         }
     }
 }
