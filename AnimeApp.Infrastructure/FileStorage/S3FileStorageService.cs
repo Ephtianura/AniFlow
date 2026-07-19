@@ -21,8 +21,6 @@ namespace AnimeApp.Infrastructure.FileStorage
         private readonly string _bucketName = bucketName;
         private readonly string _baseUrl = config["Minio:PublicUrl"]!.TrimEnd('/');
 
-        private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(5);
-
         public async Task<string> UploadFileAsync(Stream fileStream, string fileName, string folder, CancellationToken ct = default)
         {
             var key = $"{folder}/{Guid.NewGuid()}_{fileName}";

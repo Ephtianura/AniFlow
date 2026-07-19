@@ -1,4 +1,4 @@
-﻿using AnimeApp.API.Dto;
+﻿using AnimeApp.API.Extensions.Dto;
 using AnimeApp.Application.Contracts.App;
 using AnimeApp.Application.Dto.Requests.User;
 using AnimeApp.Application.Dto.Responses.User;
