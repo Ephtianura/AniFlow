@@ -22,6 +22,7 @@ services:
     restart: always
     environment:
       NODE_ENV: production
+      SITE_URL: ${SITE_URL}
       NEXT_PUBLIC_API_URL: ${API_URL}
       NEXT_PUBLIC_HUB_URL: ${HUB_URL}
       NEXT_PUBLIC_CDN_URL: ${CDN_URL}

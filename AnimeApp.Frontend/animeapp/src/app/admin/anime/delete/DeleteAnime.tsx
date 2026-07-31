@@ -85,7 +85,7 @@ export default function DeleteAnime() {
 
                     <div className="flex flex-col items-start md:flex-row gap-6">
                         <img
-                            src={selectedAnime.posterUrl || "NoFound.jpg"}
+                            src={selectedAnime.posterUrl || "/NotFoundPurple.webp"}
                             alt="poster"
                             className="w-full md:w-75 aspect-5/7 object-cover rounded-lg shadow-inner shrink-0"
                         />

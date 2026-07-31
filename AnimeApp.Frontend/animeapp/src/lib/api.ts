@@ -16,6 +16,10 @@ export async function apiFetch<T>(
 
   const headers = new Headers(options.headers || {});
 
+  if (!headers.has("User-Agent")) {
+    headers.set("User-Agent", "AniFlowFrontendSSR/1.0");
+  }
+
   // 🔐 SSR cookies 
   if (options.cookieHeader) {
     headers.set("Cookie", options.cookieHeader);

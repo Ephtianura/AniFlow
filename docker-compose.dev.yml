@@ -29,6 +29,7 @@ services:
       - "3000:3000"
     environment:
       NODE_ENV: development
+      SITE_URL: ${SITE_URL}
       NEXT_PUBLIC_API_URL: http://localhost:5000/api
 
   postgres:
