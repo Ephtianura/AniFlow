@@ -19,9 +19,43 @@ interface Props {
 
 export async function generateMetadata({ params }: Props) {
     const { id } = await params;
-    const user = await getUserPage(id)
+    const user = await getUserPage(id);
+
     return {
-        title: `${user.nickname} | AniFlow`
+        title: `${user.nickname} | AniFlow`,
+
+        description:
+            `Профіль користувача ${user.nickname} на AniFlow.` +
+            `Дивіться аніме, створюйте списки та діліться своїми вподобаннями.`,
+
+        openGraph: {
+            title: `${user.nickname} | AniFlow`,
+            description:
+                `Профіль ${user.nickname} на AniFlow. ` +
+                `Середній бал ${user.averageScore} · ` +
+                `${formatWatchTime(user.timeSpent)} часу за переглядом.`,
+            images: [
+                {
+                    url: user.avatarUrl,
+                    alt: `${user.nickname} – AniFlow`,
+                },
+            ],
+            type: "profile",
+        },
+
+        twitter: {
+            card: "summary_large_image",
+            title: `${user.nickname} | AniFlow`,
+            description:
+                `Профіль ${user.nickname} на AniFlow. ` +
+                `Середній бал ${user.averageScore} · ` +
+                `${formatWatchTime(user.timeSpent)} часу за переглядом.`,
+            images: [user.bannerUrl],
+        },
+
+        alternates: {
+            canonical: `https://aniflow.xyz/user/${id}`,
+        },
     };
 }
 

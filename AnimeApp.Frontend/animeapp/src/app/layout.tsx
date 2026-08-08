@@ -17,7 +17,37 @@ import VisitTracker from "@/components/VisitTracker";
 export const metadata: Metadata = {
   title: "AniFlow",
   description: "Дивитися аніме онлайн українською мовою в високій якості",
+
+  icons: {
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/icon-48x48.png', sizes: '48x48', type: 'image/png' },
+      { url: '/icon-192x192.png', sizes: '192x192', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+  },
+
+  openGraph: {
+      siteName: 'AniFlow',
+      images: [
+        {
+          url: '/icon-192x192.png', 
+          alt: `AniFlow`,
+        },
+      ],
+      locale: 'uk_UA',
+      type: 'website',
+    },
+
+    twitter: {
+      card: 'summary_large_image',
+      creator: `@Ephtianura`,
+      images: ["/aniflow-large-image.webp"],
+    },
 };
+
 export const viewport = {
   width: "device-width",
   initialScale: 1,

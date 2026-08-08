@@ -25,8 +25,33 @@ export async function generateMetadata({ params, }: { params: { animeUrl: string
     const title = pullUkrTitle(anime.titles);
     return {
         title: `${title} | AniFlow`,
-        description: `${anime?.description?.slice(0, 80)} Дивитись всі серіі онлайн українською на AniFlow`
-            || `Дивитися аніме ${title} українською мовою на AniFlow`,
+        description:
+            anime?.description
+                ? `${anime.description.slice(0, 80)} Дивитись всі серії онлайн українською на AniFlow`
+                : `Дивитися аніме ${title} українською мовою на AniFlow`,
+
+        openGraph: {
+            title: `${title} – Дивитися онлайн`,
+            description: `Аніме ${title?.slice(0, 50)} – дивитись онлайн: ${anime.description}`,
+            images: [
+                {
+                    url: anime.posterUrl,
+                    alt: title,
+                },
+            ],
+            type: 'video.tv_show',
+        },
+
+        twitter: {
+            card: 'summary_large_image',
+            title: title,
+            description: anime.description,
+            images: [anime.posterUrl],
+        },
+
+        alternates: {
+            canonical: `https://aniflow.xyz/anime/${anime.url}`,
+        },
     };
 }
 
