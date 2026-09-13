@@ -3,6 +3,7 @@ using AnimeApp.API.Helpers;
 using AnimeApp.Application.Contracts;
 using AnimeApp.Application.Contracts.App;
 using AnimeApp.Core.Contracts;
+using AnimeApp.Core.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StackExchange.Redis;

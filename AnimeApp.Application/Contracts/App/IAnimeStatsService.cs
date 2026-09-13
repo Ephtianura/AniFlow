@@ -1,4 +1,5 @@
 ﻿using AnimeApp.Core.Contracts;
+using AnimeApp.Core.Dto;
 
 namespace AnimeApp.Application.Contracts.App
 {

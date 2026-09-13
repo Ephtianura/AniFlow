@@ -1,7 +1,7 @@
 ﻿using AnimeApp.Core.Enums;
 using AnimeApp.Core.Models;
 
-namespace AnimeApp.Core.Contracts
+namespace AnimeApp.Core.Dto
 {
     public record UserAnimeWithDetails
      (

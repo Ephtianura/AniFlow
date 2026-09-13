@@ -68,8 +68,30 @@ export default async function AnimePage({ params, }: { params: { animeUrl: strin
         playersPromise,
     ]);
 
+    const title = pullUkrTitle(anime.titles) || 'Аніме';
+
+    const jsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'VideoObject',
+        'name': `${title} – дивитися онлайн українською`,
+        'description': anime.description
+            ? anime.description.slice(0, 150)
+            : `Дивитися аніме ${title} українською мовою онлайн у високій якості на AniFlow.`,
+        'thumbnailUrl': [
+            ...(anime.screenshotsUrls?.slice(0, 3) || []),
+            anime.posterUrl,
+        ],
+        'uploadDate': anime.createdAt ? new Date(anime.createdAt).toISOString() : new Date().toISOString(),
+        'contentUrl': `https://aniflow.xyz/anime/${anime.url}`,
+        'embedUrl': `https://aniflow.xyz/anime/${anime.url}#anime-player`,
+    };
+
     return (
         <WhiteCard>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
             <AnimeIdProvider animeId={anime.id} userAnime={userStatus}>
                 {/* Помістити дані користувача у сховище */}
                 <UserAnimeHydrator data={userStatus} />

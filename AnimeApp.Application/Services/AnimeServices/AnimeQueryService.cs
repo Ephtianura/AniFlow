@@ -140,10 +140,9 @@ namespace AnimeApp.Application.Services.AnimeServices
                 : _fileStorage.GetUrl(posterFileName);
 
         private List<string>? GetScreenshotsUrls(List<string>? screenshotsFileNames) =>
-            screenshotsFileNames?.Any() == true
-                ? screenshotsFileNames.ConvertAll(_fileStorage.GetUrl)
-                : null;
-
+         screenshotsFileNames?.Take(100)
+             .Select(_fileStorage.GetUrl)
+             .ToList();
 
         private List<VoiceEpisodeSet> NormalizeEpisodes(List<VoiceEpisodeSet> episodes)
         {

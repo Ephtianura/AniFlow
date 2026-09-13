@@ -75,7 +75,7 @@ export default function OstsPreview({ anime }: Props) {
     return (
         <>
             <div className="mt-3 select-none">
-                <h4 className="text-primary-black text-2xl font-medium mb-3">Медія</h4>
+                <h4 className="text-primary-black text-2xl font-medium mb-3">Медіа</h4>
 
                 <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                     {visibleVideos.map((item, i) => {

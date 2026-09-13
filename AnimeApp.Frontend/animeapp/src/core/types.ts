@@ -267,3 +267,10 @@ export interface PendingRequestResponse {
   createdAt: string; 
   isOnline: boolean;
 }
+
+export interface AnimeSitemap {
+  title: string
+  posterUrl: string | null
+  url: string
+  updatedAt: string
+}

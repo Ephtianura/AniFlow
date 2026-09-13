@@ -139,6 +139,15 @@ namespace AnimeApp.Core.Models
 
         // ================= Методи =================
 
+        public string OfficialUkrTitle =>
+                Titles?.FirstOrDefault(t =>
+                        t.Type == TitleType.Official &&
+                        t.Language == TitleLanguage.Ukrainian)?.Value ??
+            Titles?.FirstOrDefault(t =>
+                        t.Type == TitleType.Official &&
+                        t.Language == TitleLanguage.English)?.Value
+                ?? OfficialRomajiTitle;
+
         public string OfficialRomajiTitle =>
                 Titles?.FirstOrDefault(t =>
                         t.Type == TitleType.Official &&

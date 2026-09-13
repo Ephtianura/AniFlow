@@ -1,6 +1,6 @@
 ﻿using AnimeApp.Core.Enums;
 
-namespace AnimeApp.Core.Contracts
+namespace AnimeApp.Core.Dto
 {
     public class UserListsStatsDto
     {

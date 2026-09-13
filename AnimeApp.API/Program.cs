@@ -29,7 +29,7 @@ builder.Services
         .AddCustomValidation()          // Filters
         .AddValidation()                // FluentValidation
         .AddMapping()                   // Auto Mapper
-        .AddServicesDI()                // DI сервісів, репозиторіїв та інфраструктури
+        .AddServicesDI()                // Dependencies Injection (DI)
         .AddAuth(configuration)         // Auth
         .AddAws(configuration)          // AWS S3 
         .AddQuartzJobs()                // Quartz

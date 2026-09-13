@@ -33,6 +33,7 @@ namespace AnimeApp.API.Extensions
             services.AddScoped<IUserAnimeService, UserAnimeService>();
             services.AddScoped<IStatsService, StatsService>();
             services.AddScoped<IUserFriendService, UserFriendService>();
+            services.AddScoped<ISitemapService, SitemapService>();
 
             // DI Repositories
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -44,6 +45,7 @@ namespace AnimeApp.API.Extensions
             services.AddScoped<IIdCatalogRepository, IdCatalogRepository>();
             services.AddScoped<IStatsRepository, StatsRepository>();
             services.AddScoped<IUserFriendRepository, UserFriendRepository>();
+            services.AddScoped<ISitemapRepository, SitemapRepository>();
 
             // DI Infrastructure
             services.AddScoped<IAuthService, AuthService>();

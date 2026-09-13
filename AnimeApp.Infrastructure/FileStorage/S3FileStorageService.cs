@@ -186,5 +186,15 @@ namespace AnimeApp.Infrastructure.FileStorage
             key = key.TrimStart('/');
             return $"{_baseUrl}/{key}";
         }
+
+        public List<string> GetUrls(List<string> keys)
+        {
+            var result = new List<string>(keys.Count);
+
+            foreach (var key in keys)
+                result.Add(GetUrl(key));
+
+            return result;
+        }
     }
 }
