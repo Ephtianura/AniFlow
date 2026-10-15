@@ -70,7 +70,7 @@ export default function NotificationsDropdown({ requests, onRemoveRequest, onDec
     }
 
     return (
-        <div className="absolute top-full right-0 mt-2 w-105 rounded-xl border border-hr-clr bg-white shadow-2xl z-50 overflow-hidden">
+        <div className="rounded-2xl border border-hr-clr bg-white shadow-2xl overflow-hidden">
             <div className="px-4 py-3 border-b border-[#DFDFDF]">
                 <h4 className="font-medium text-[1.5rem]">Сповіщення</h4>
             </div>
