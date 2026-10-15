@@ -57,26 +57,34 @@ export default async function Navbar() {
         {/* Колонка 3 - Профіль пошук вийти */}
         <div className="flex items-center text-md py-1 font-light ">
 
-          {/* Ім'я */}
+          {/* Аватар + Ім'я */}
           <UserAvatar me={me} />
+
+          {/* {me && (
+              <div className="hidden lg:flex">
+                <NotificationsButton
+                  unreadCount={me?.unreadNotificationsCount ?? 0}
+                />
+              </div>
+            )} */}
 
           <div className="flex items-center lg:px-3 lg:py-2 ">
 
+            {/* Повідомлення */}
             {me && (
-              <div className="lg:border-l border-gray-text-light ">
+              <div className="lg:border-l border-gray-text-light hidden md:flex px-4 mt-0.5">
                 <NotificationsButton
                   unreadCount={me?.unreadNotificationsCount ?? 0}
                 />
               </div>
             )}
 
-
+            {/* Пошук */}
             <div className="lg:border-x border-gray-text-light">
-              {/* Пошук */}
               <SearchBar />
             </div>
-          </div>
 
+          </div>
 
           {/* Вийти / Увійти */}
           <LoginButtons me={me} />
@@ -85,12 +93,19 @@ export default async function Navbar() {
       </div>
 
       {/* Мобільна версія */}
-      <div className="md:hidden flex relative items-center justify-between w-full px-3 py-2 h-15">
+      <div className="md:hidden flex relative items-center justify-between w-full px-0 xs:px-3 py-2 h-15">
 
-        <div className="">
+        <div className="flex items-center">
           <UserAvatar me={me} />
+          {me && (
+          <div className="flex md:hidden mt-1">
+            <NotificationsButton
+              unreadCount={me?.unreadNotificationsCount ?? 0}
+            />
+          </div>
+        )}
         </div>
-
+        
 
         <Link href="/" className="absolute left-1/2 transform -translate-x-1/2 font-bold text-xl transition-colors 
         flex items-center gap-2">
