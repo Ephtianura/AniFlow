@@ -1,0 +1,17 @@
+﻿using AniFlow.Application.Dto.Responses.Anime;
+
+namespace AniFlow.Application.Dto.Responses.User
+{
+    public class UserAnimeListResponse
+    {
+        public int Favorites { get; set; } // Кількість Улюблених
+        public int Watching { get; set; } // Кількість епізодів які дивиться
+        public int Completed { get; set; } // Кількість епізодів які завершив
+        public int Planned { get; set; } // Кількість епізодів які запланував
+        public int Dropped { get; set; } // Кількість епізодів які бросив
+        public int Rewatching { get; set; } // Кількість епізодів які переглядає
+        public int On_hold { get; set; } // Кількість епізодів які переглядає
+        public int TotalAnime { get; set; } // Загальна кількість аніме доданих до списку
+        public List<AnimeInListResponse> Animes { get; set; } = [];
+    }
+}

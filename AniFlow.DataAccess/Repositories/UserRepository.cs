@@ -1,0 +1,105 @@
+﻿using AniFlow.Core.Contracts;
+using AniFlow.Core.Dto;
+using AniFlow.Core.Enums;
+using AniFlow.Core.Filters;
+using AniFlow.Core.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace AniFlow.DataAccess.Repositories
+{
+    public class UserRepository(AniFlowDbContext db) : IUserRepository
+    {
+        private readonly AniFlowDbContext _dbContext = db;
+
+        public Task<bool> ExistsAsync(int userId)
+             => _dbContext.Users.AnyAsync(u => u.Id == userId);
+
+        public async Task<User?> GetByIdAsync(int id) =>
+            await _dbContext.Users.FindAsync(id);
+
+        public async Task<User?> GetByEmailAsync(string email) => 
+            await _dbContext.Users
+                .FirstOrDefaultAsync(u => u.Email == email.ToLower());
+
+        public async Task<UserMeRawResponse?> GetMeAsync(int userId)
+        {
+            return await _dbContext.Users
+                .Where(u => u.Id == userId)
+                .Select(u => new UserMeRawResponse
+                {
+                    Id = u.Id,
+                    Nickname = u.Nickname,
+                    AvatarFileName = u.AvatarFileName,
+                    Role = u.Role,
+
+                    UnreadNotificationsCount = _dbContext.UserFriends
+                        .Count(uf => uf.ReceiverId == userId && uf.Status == FriendStatus.Pending)
+                })
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<PagedResult<User>> GetFilteredAsync(UserFilter filter)
+        {
+            var query = _dbContext.Users.AsQueryable();
+
+            // 🔍 Пошук по ніку або пошті
+            if (!string.IsNullOrWhiteSpace(filter.Search))
+            {
+                var term = filter.Search.Trim().ToLower();
+                query = query.Where(u =>
+                    u.Nickname.ToLower().Contains(term) ||
+                    u.Email.ToLower().Contains(term));
+            }
+
+            // 🎭 Фільтр по ролі
+            if (filter.Role.HasValue)
+                query = query.Where(u => u.Role == filter.Role);
+
+            // 📅 Діапазон по датам реєстрації
+            if (filter.RegisteredFrom.HasValue)
+                query = query.Where(u => u.DateOfRegistration >= filter.RegisteredFrom);
+            if (filter.RegisteredTo.HasValue)
+                query = query.Where(u => u.DateOfRegistration <= filter.RegisteredTo);
+
+            // 🔽 Сортування
+            query = filter.SortBy?.ToLower() switch
+            {
+                "fullname" => filter.SortDesc ? query.OrderByDescending(u => u.Nickname)
+                                              : query.OrderBy(u => u.Nickname),
+                "email" => filter.SortDesc ? query.OrderByDescending(u => u.Email)
+                                           : query.OrderBy(u => u.Email),
+                "registrationdate" => filter.SortDesc ? query.OrderByDescending(u => u.DateOfRegistration)
+                                                      : query.OrderBy(u => u.DateOfRegistration),
+                _ => query.OrderBy(u => u.Nickname) // За замовчуванням
+            };
+
+            // 📄 Пагінація
+            var totalCount = await query.CountAsync();
+            var items = await query
+                .Skip((filter.Page - 1) * filter.PageSize)
+                .Take(filter.PageSize)
+                .ToListAsync();
+
+            return new PagedResult<User>(items, totalCount, filter.Page, filter.PageSize);
+        }
+
+
+        public async Task AddAsync(User user)
+        {
+            await _dbContext.Users.AddAsync(user);
+            await _dbContext.SaveChangesAsync();
+        }
+        public async Task UpdateAsync(User user)
+        {
+            _dbContext.Users.Update(user);
+            await _dbContext.SaveChangesAsync();
+        }
+        public async Task DeleteAsync(User user)
+        {
+            _dbContext.Users.Remove(user);
+            await _dbContext.SaveChangesAsync();
+        }
+    }
+}
+
+

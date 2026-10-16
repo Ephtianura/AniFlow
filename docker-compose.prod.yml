@@ -1,8 +1,8 @@
 services:
   # API
   api:
-    container_name: api_animeapp
-    image: ${DOCKER_USERNAME_ENV}/api_animeapp:latest
+    container_name: api_aniflow
+    image: ${DOCKER_USERNAME_ENV}/api_aniflow:latest
     restart: always
     environment:
       ASPNETCORE_ENVIRONMENT: Production
@@ -17,8 +17,8 @@ services:
 
   # Frontend
   frontend:
-    container_name: frontend_animeapp
-    image: ${DOCKER_USERNAME_ENV}/frontend_animeapp:latest
+    container_name: frontend_aniflow
+    image: ${DOCKER_USERNAME_ENV}/frontend_aniflow:latest
     restart: always
     environment:
       NODE_ENV: production
@@ -29,6 +29,8 @@ services:
 
   postgres:
     restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
   redis:
     restart: always

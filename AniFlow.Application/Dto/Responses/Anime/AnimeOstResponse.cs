@@ -1,0 +1,15 @@
+﻿using AniFlow.Core.Enums;
+
+namespace AniFlow.Application.Dto.Responses.Anime
+{
+    public record AnimeOstResponse(
+        int Id,
+        string Title,
+        string? Description,
+        string? Author,
+        OstType Type,
+        string? SpotifyUrl,
+        int Index,
+        List<AnimeVideoResponse> Videos
+    );
+}

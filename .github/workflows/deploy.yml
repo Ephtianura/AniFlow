@@ -23,19 +23,19 @@ jobs:
           uses: docker/build-push-action@v5
           with:
             context: .
-            file: AnimeApp.API/Dockerfile
+            file: AniFlow.API/Dockerfile
             push: true
-            tags: ${{ secrets.DOCKER_USERNAME }}/api_animeapp:latest
+            tags: ${{ secrets.DOCKER_USERNAME }}/api_aniflow:latest
             cache-from: type=gha
             cache-to: type=gha,mode=max
 
         - name: Build and Push Frontend Image
           uses: docker/build-push-action@v5
           with:
-            context: ./AnimeApp.Frontend/animeapp
-            file: ./AnimeApp.Frontend/animeapp/Dockerfile
+            context: ./AniFlow.Frontend/aniflow
+            file: ./AniFlow.Frontend/aniflow/Dockerfile
             push: true
-            tags: ${{ secrets.DOCKER_USERNAME }}/frontend_animeapp:latest
+            tags: ${{ secrets.DOCKER_USERNAME }}/frontend_aniflow:latest
             cache-from: type=gha
             cache-to: type=gha,mode=max
             build-args: |
