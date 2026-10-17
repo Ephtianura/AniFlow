@@ -1,0 +1,10 @@
+﻿namespace AniFlow.Application.Dto.Requests.Genre
+{
+    public record UpdateGenreRequest(
+        string? NameEn,
+        string? NameUa,
+        string? NameRu,
+        string? Slug,
+        TagType? Type
+        );
+}

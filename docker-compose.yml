@@ -2,18 +2,16 @@ services:
   # Database
   postgres:
     image: postgres:16
-    container_name: postgres_animeapp
+    container_name: postgres_aniflow
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
 
   # Cache
   redis:
     image: redis:7
-    container_name: redis_animeapp
+    container_name: redis_aniflow
     command:
       [
         "redis-server",
@@ -34,7 +32,7 @@ services:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
     volumes:
-      - aniflow_rabbitmq_data:/var/lib/rabbitmq
+      - rabbitmq_data:/var/lib/rabbitmq
 
   # Seq
   seq:
@@ -44,10 +42,11 @@ services:
       ACCEPT_EULA: "Y"
       SEQ_FIRSTRUN_ADMINPASSWORD: ${SEQ_ADMINPASSWORD}
     volumes:
-      - aniflow_seq_data:/data
+      - seq_data:/data
 
 volumes:
   postgres_data:
-  aniflow_rabbitmq_data:
-  aniflow_seq_data:
+  rabbitmq_data:
+  seq_data:
   keys:
+

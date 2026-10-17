@@ -1,0 +1,36 @@
+﻿using AniFlow.Application.Dto.Responses.Studio;
+using AniFlow.Core.Enums;
+
+namespace AniFlow.Application.Dto.Responses.Anime
+{
+    public class AnimesResponse
+    {
+        public int Id { get; set; }
+
+        public List<TitleResponse> Titles { get; set; } = [];
+        public string Url { get; set; } = null!;
+
+        public string? PosterUrl { get; set; }
+
+        public DateTime? AiredOn { get; set; }
+        public DateTime? ReleasedOn { get; set; }
+
+        public double Score { get; set; }
+        public int? Episodes { get; set; }
+        public int? EpisodesAired { get; set; }
+        public SeasonEnum? Season { get; set; }
+        public int? Year { get; set; }
+
+        public AnimeRatingEnum? Rating { get; set; }
+        public AnimeKindEnum? Kind { get; set; }
+        public AnimeStatusEnum? Status { get; set; }
+
+        public string? Description { get; set; } = string.Empty;
+
+        public List<GenreResponse> Genres { get; set; } = [];
+        public StudioAnimeResponse? Studio { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
+    }
+}

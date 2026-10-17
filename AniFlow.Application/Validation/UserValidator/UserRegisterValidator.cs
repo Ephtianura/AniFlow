@@ -1,0 +1,25 @@
+﻿using AniFlow.Application.Dto.Requests.User;
+using FluentValidation;
+
+namespace AniFlow.Application.Validation.UserValidator
+{
+    public class UserRegisterValidator : AbstractValidator<RegisterUserRequest>
+
+    {
+        public UserRegisterValidator()
+        {
+            RuleFor(u => u.Nickname)
+                .NotEmpty().WithMessage("Nickname is required")
+                .MaximumLength(100).WithMessage("Maximum name length is 100 characters.");
+
+            RuleFor(u => u.Email)
+                .NotEmpty().WithMessage("Email is required")
+                .EmailAddress().WithMessage("Invalid email format");
+
+            RuleFor(x => x.Password)
+                     .NotEmpty().WithMessage("Password is required")
+                     .MinimumLength(8).WithMessage("Password must be at least 8 characters")
+                     .Matches(@"^[a-zA-Z0-9!@#$%^&*()_+\-=\[\]{};':""\\|,.<>/?`~]*$").WithMessage("Password must contain only Latin letters and digits");
+        }
+    }
+}
