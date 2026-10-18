@@ -1,5 +1,4 @@
 import FriendsPreview from "@/app/profile/_components/FriendsPreview";
-import { getFriendsById } from "@/app/profile/_functions/getFriends";
 import { FriendResponse } from "@/core/types";
 import Link from "next/link";
 import { FaUser, FaUserFriends } from "react-icons/fa";
@@ -8,7 +7,6 @@ type Props = {
   friends: FriendResponse[];
   userId: string;
 };
-
 
 export default async function UserSidebar({ friends, userId }: Props) {
 

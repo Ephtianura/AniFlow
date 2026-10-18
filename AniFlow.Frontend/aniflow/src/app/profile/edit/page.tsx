@@ -2,8 +2,9 @@ import ProfileImages from "../_components/ProfileImages";
 import { formatRegisterDate } from "../_functions/formatRegisterDate";
 import { getProfile } from "../_functions/getProfile";
 import EditForm from "../_components/EditProfileForm";
+import { Metadata } from "next";
 
-export const metadata = {
+export const metadata: Metadata = {
     title: "Мої налаштування | AniFlow",
     description:
         "Керуйте своїм акаунтом: змінюйте аватар, банер, нікнейм, email та пароль у налаштуваннях AniFlow.",

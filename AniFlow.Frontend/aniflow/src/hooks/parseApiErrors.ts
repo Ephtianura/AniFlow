@@ -1,6 +1,6 @@
 import { getKawaiiError, KawaiiErrorType } from "@/hooks/getKawaiiError";
 
-export function parseApiErrors(res: Response, data: any): string[] {
+export function parseApiErrors(data: any): string[] {
   try {
     if (!data) {
       return [getKawaiiError(KawaiiErrorType.Server)];
@@ -22,7 +22,7 @@ export function parseApiErrors(res: Response, data: any): string[] {
     if (data.error) return [data.error];
 
     return [getKawaiiError(KawaiiErrorType.Server)];
-  } catch (e) {
+  } catch {
     return [getKawaiiError(KawaiiErrorType.Server)];
   }
 }

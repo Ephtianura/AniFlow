@@ -1,6 +1,7 @@
+import { Metadata } from "next";
 import Link from "next/link";
 
-export const metadata = {
+export const metadata: Metadata = {
     title: "404 – Сторінка не знайдена | AniFlow",
     description:
         "Шкода, але такої сторінки не існує.",

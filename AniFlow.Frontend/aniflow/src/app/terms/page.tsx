@@ -1,7 +1,8 @@
 import WhiteCard from "@/components/WhiteCard";
 import Link from "next/link";
+import { Metadata } from "next";
 
-export const metadata = {
+export const metadata: Metadata = {
     title: "Угода користувача – AniFlow",
     description: "Умови використання сервісу AniFlow"
 };

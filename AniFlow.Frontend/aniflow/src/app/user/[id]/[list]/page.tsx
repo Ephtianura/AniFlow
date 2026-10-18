@@ -9,6 +9,7 @@ import { getUserAnimeListByUserId } from "./getUserAnimeListByUserId";
 import { MyListParam } from "@/app/profile/mylist/[myList]/page";
 import { UserStatsRow } from "@/app/profile/_components/UserStatsRow";
 import { formatWatchTime } from "@/app/profile/_functions/formatWatchTime";
+import { Metadata } from "next";
 
 interface Props {
     params: Promise<{
@@ -17,7 +18,7 @@ interface Props {
     }>;
 }
 
-export async function generateMetadata({ params }: Props) {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { id } = await params;
     const user = await getUserPage(id);
 
@@ -34,12 +35,13 @@ export async function generateMetadata({ params }: Props) {
                 `Профіль ${user.nickname} на AniFlow. ` +
                 `Середній бал ${user.averageScore} · ` +
                 `${formatWatchTime(user.timeSpent)} часу за переглядом.`,
-            images: [
-                {
+            ...(user.avatarUrl && {
+                images: [{
                     url: user.avatarUrl,
                     alt: `${user.nickname} – AniFlow`,
-                },
-            ],
+                },],
+            }),
+
             type: "profile",
         },
 
@@ -50,7 +52,9 @@ export async function generateMetadata({ params }: Props) {
                 `Профіль ${user.nickname} на AniFlow. ` +
                 `Середній бал ${user.averageScore} · ` +
                 `${formatWatchTime(user.timeSpent)} часу за переглядом.`,
-            images: [user.bannerUrl],
+            ...(user.bannerUrl && {
+                images: [user.bannerUrl],
+            }),
         },
 
         alternates: {

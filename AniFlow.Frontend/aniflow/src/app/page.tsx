@@ -7,8 +7,9 @@ import { MdNavigateNext } from 'react-icons/md';
 import AnimeHomeUpdates from '@/components/AnimeHomeUpdates';
 import AboutAniflow from '@/components/AboutAniflow';
 import AnimeHomeNews from '@/components/AnimeHomeNews';
+import { Metadata } from 'next';
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "AniFlow – дивитись Аніме онлайн безкоштовно українською",
   description:
     "Дивись аніме онлайн безкоштовно: нові серії, популярні тайтли та зручний каталог. Українська локалізація, швидкий доступ і перегляд у HD"

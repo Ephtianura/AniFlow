@@ -27,7 +27,7 @@ export default function HeartButton() {
                 method: nextValue ? "PATCH" : "DELETE",
                 body: JSON.stringify({ isFavorite: true }),
             });
-        } catch (error) {
+        } catch {
             setFavorite(!nextValue)
             toast.error("Не вдалося додати до улюбленного :<");
         }

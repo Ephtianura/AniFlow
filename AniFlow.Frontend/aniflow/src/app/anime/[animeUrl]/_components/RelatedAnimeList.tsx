@@ -4,7 +4,7 @@ import pullUkrTitle from "../_functions/pullUkrTitle";
 import { AnimeKindEnum, AnimeKindMap } from "@/core/enums/AnimeKind";
 import { RelationKindEnum, RelationKindMap } from "@/core/enums/RelationKind";
 
-interface Props {
+interface RelatedAnimeProps {
     relateds: RelatedAnime[];
 }
 
@@ -15,7 +15,7 @@ function episodesText(count: number | undefined) {
     return `${count} епізодів`;
 }
 
-export const RelatedAnimeList: React.FC<Props> = ({ relateds }) => {
+export const RelatedAnimeList = ({ relateds }: RelatedAnimeProps) => {
     if (!relateds || relateds.length === 0) return null;
 
     const getAnimeKindLabel = (kind?: string | AnimeKindEnum | null) => {
@@ -38,11 +38,11 @@ export const RelatedAnimeList: React.FC<Props> = ({ relateds }) => {
                     const airedYear = rel.airedOn ? new Date(rel.airedOn).getFullYear() : rel.year;
 
                     return (
-                        <div key={rel.id} className="flex flex-col gap-1 max-w-[300px]">
+                        <div key={rel.id} className="flex flex-col gap-1 max-w-75">
                             <Link href={`/anime/${rel.url}`} className="text-primary-black truncate underline hover:text-primary">
                                 {title}
                             </Link>
-                            <div className="flex gap-2 min-w-[200px] items-center">
+                            <div className="flex gap-2 min-w-50 items-center">
                                 <Link href={`/anime/${rel.url}`} className="text-primary-black underline hover:text-primary cursor-pointer">
                                     <img
                                         src={rel.posterUrl || "/NotFoundPurple.webp"}

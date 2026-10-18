@@ -120,7 +120,7 @@ function SortableItem({
         if (item.isUploading || isDragging) return;
         if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
 
-        // Небольшой таймаут в 400мс, чтобы превью не стреляло при быстром пролёте курсора
+        // Таймаут в 400мс, чтобы превью не стреляло при быстром пролёте курсора
         hoverTimeoutRef.current = setTimeout(() => {
             setShowPreview(true);
         }, 1000);
@@ -147,7 +147,7 @@ function SortableItem({
                     : "border-gray-200"
             }`}
         >
-            {/* Наш вынесенный компонент всплывающего превью */}
+            {/* Всплывающее превью */}
             {!item.isUploading && (
                 <ScreenshotHoverPreview src={item.previewUrl} isVisible={showPreview} />
             )}

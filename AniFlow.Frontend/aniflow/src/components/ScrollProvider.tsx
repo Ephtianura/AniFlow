@@ -2,7 +2,6 @@
 
 import { ReactNode } from "react";
 import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
-//@ts-ignore
 import "overlayscrollbars/overlayscrollbars.css";
 
 type Props = {

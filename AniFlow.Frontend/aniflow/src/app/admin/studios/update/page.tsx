@@ -1,6 +1,7 @@
 import { StudioSearch } from "../../_components/StudioSearch";
+import { Metadata } from "next";
 
-export const metadata = {
+export const metadata: Metadata = {
     title: "Редагування студій | AniFlow"
 };
 

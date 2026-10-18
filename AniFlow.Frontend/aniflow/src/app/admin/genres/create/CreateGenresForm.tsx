@@ -3,7 +3,6 @@
 import { apiFetch } from "@/lib/api";
 import { toast } from "react-toastify";
 import CustomSelect from "@/components/CustomSelect";
-import GenreCapsule from "../_components/GenreCapsule";
 import { Genre } from "@/core/types";
 import { useRouter } from "next/navigation";
 import { useCreateGenreForm, CreateGenreValues } from "../../studios/_components/useGenreForm";

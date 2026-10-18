@@ -1,6 +1,7 @@
+import { Metadata } from "next";
 import DeleteAnime from "./DeleteAnime";
 
-export const metadata = {
+export const metadata: Metadata = {
     title: "Видалення аніме | AniFlow",
 };
 

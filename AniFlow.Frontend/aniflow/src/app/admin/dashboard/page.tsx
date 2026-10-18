@@ -7,8 +7,9 @@ import { DashboardPulseDto, TopAnimeDto } from "@/core/stats";
 import SyncControlPanel from "./SyncControlPanel";
 import { headers } from "next/headers";
 import { Animes, PagedResult } from "@/core/types";
+import { Metadata } from "next";
 
-export const metadata = {
+export const metadata: Metadata = {
     title: "Панель управління | Aniflow"
 }
 export default async function AdminDashboard() {

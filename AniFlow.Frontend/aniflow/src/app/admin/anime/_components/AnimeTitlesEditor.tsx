@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useFormContext, useFieldArray, Controller, useWatch } from "react-hook-form";
+import { useState, useEffect } from "react";
+import { useFormContext, useFieldArray, Controller } from "react-hook-form";
 import { IoClose } from "react-icons/io5";
 import { TitleLanguage, TitleType } from "@/core/enums/AnimeTitle";
 import { AnimeFormValues } from "./useAnimeForm";
@@ -23,7 +23,7 @@ interface LocalTitle {
     type: TitleType;
 }
 
-export const AnimeTitlesEditor: React.FC<AnimeTitlesEditorProps> = ({ animeId, initialTitles }) => {
+export const AnimeTitlesEditor = ({ animeId, initialTitles }: AnimeTitlesEditorProps) => {
     const isEditMode = !!animeId;
 
     // =========================================================================

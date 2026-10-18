@@ -1,14 +1,12 @@
 import type { Metadata } from "next";
 
-//@ts-ignore
 import "./globals.css";
-//@ts-ignore
 import "react-toastify/dist/ReactToastify.css";
 
 import Navbar from '@/components/Navbar/Navbar';
 import Footer from '@/components/Footer';
 import { ToastContainer } from "react-toastify";
-import { ThemeProvider } from 'next-themes'
+// import { ThemeProvider } from 'next-themes'
 import MobileFooter from "@/components/MobileFooter";
 import GlobalOstPlayer from "./anime/[animeUrl]/_components/GlobalPlayer/GlobalOstPlayer";
 import { SignalRProvider } from "@/components/SignalRContext";

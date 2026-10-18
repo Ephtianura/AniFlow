@@ -7,9 +7,6 @@ import { getMe } from "../../hooks/getMe";
 import BurgerMenuButton from "./BurgerMenuButton";
 import Logo from "../Logo";
 import RandomAnimeButton from "./RandomAnimeButton";
-import { MdOutlineSearch } from "react-icons/md";
-import clsx from "clsx";
-import { RiNotificationFill } from "react-icons/ri";
 import NotificationsButton from "./NotificationsButton";
 
 

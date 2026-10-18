@@ -110,7 +110,7 @@ export default function SearchBar() {
                                     style={{ overflow: "hidden" }}
                                     className="absolute z-50 top-full left-0 w-full shadow-lg rounded-xs mt-1 max-h-[550px] overflow-x-hidden bg-white origin-top"
                                 >
-                                    <AnimeDropDown animes={animes} onClose={() => setOpen(false)} />
+                                    <AnimeDropDown animes={animes} />
                                 </motion.div>
                             )}
                         </div>

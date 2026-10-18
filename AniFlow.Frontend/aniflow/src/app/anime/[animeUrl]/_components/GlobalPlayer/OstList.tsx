@@ -1,7 +1,6 @@
 "use client";
 
 import { OstType } from "@/core/enums/OstType";
-import { AnimeOstResponse, AnimeVideoResponse } from "@/core/types";
 import Link from "next/link";
 import { FaSpotify } from "react-icons/fa6";
 import ListControlButtons from "./ListControlButtons";

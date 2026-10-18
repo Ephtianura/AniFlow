@@ -18,8 +18,9 @@ import Rating from './_components/Rating';
 import OstsPreview from './_components/OstsPreview';
 import Nsfw from './_components/Nsfw';
 import ExternalLinks from './_components/ExternalLinks';
+import { Metadata } from 'next';
 
-export async function generateMetadata({ params, }: { params: { animeUrl: string }; }) {
+export async function generateMetadata({ params, }: { params: { animeUrl: string }; }): Promise<Metadata> {
     const { animeUrl } = await params;
     const anime = await getAnime(animeUrl);
     const title = pullUkrTitle(anime.titles);
@@ -33,12 +34,13 @@ export async function generateMetadata({ params, }: { params: { animeUrl: string
         openGraph: {
             title: `${title} – Дивитися онлайн`,
             description: `Аніме ${title?.slice(0, 50)} – дивитись онлайн: ${anime.description}`,
-            images: [
+            ...(anime.posterUrl && {images: [
                 {
                     url: anime.posterUrl,
                     alt: title,
                 },
             ],
+            }),
             type: 'video.tv_show',
         },
 
@@ -46,7 +48,7 @@ export async function generateMetadata({ params, }: { params: { animeUrl: string
             card: 'summary_large_image',
             title: title,
             description: anime.description,
-            images: [anime.posterUrl],
+            ...(anime.posterUrl && { images: [anime.posterUrl] }),
         },
 
         alternates: {

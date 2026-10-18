@@ -1,9 +1,4 @@
-import React from "react";
 import { GenresNav } from "./_components/GenresNav";
-
-interface GenresLayout {
-    children: React.ReactNode;
-}
 
 export default function GenresLayout({
     children,

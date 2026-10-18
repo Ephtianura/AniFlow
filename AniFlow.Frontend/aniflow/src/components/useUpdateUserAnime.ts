@@ -4,13 +4,11 @@ import { useState } from "react";
 export type MyListOption = "None" | "Planned" | "Watching" | "Completed" | "Rewatching" | "On_hold" | "Dropped";
 
 export function useUpdateUserAnime() {
-    const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
 
     const updateAnime = async (animeId: number, list: MyListOption | null = null, rating: number | null = null) => {
         if (list === null && rating === null) return;
-        setLoading(true);
         setError(null);
         setSuccess(null);
 
@@ -33,10 +31,8 @@ export function useUpdateUserAnime() {
             setSuccess("Оновлено успішно!");
         } catch (err: any) {
             setError(err.message || "Помилка");
-        } finally {
-            setLoading(false);
-        }
+        } finally {}
     };
 
-    return { updateAnime, loading, error, success };
+    return { updateAnime, error, success };
 }

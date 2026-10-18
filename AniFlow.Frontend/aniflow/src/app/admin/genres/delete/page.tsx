@@ -1,7 +1,8 @@
 import { getGenres } from "@/hooks/getGenres";
 import DeleteGenresForm from "./DeleteGenresForm";
+import { Metadata } from "next";
 
-export const metadata = {
+export const metadata: Metadata = {
     title: "Видалення жанрів | AniFlow"
 };
 

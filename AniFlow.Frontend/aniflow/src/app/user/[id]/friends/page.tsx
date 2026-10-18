@@ -1,8 +1,3 @@
-
-// export async function generateMetadata({ params, }: Props) {
-//     const { id } = await params;
-//     const profilePromise = getProfileById(id);
-
 import { getFriendsById } from "@/app/profile/_functions/getFriends";
 import { getUserPage } from "../[list]/getUserPage";
 import { formatRegisterDate } from "@/app/profile/_functions/formatRegisterDate";
@@ -11,6 +6,7 @@ import FriendsGrid from "@/app/profile/friends/FriendsGrid";
 import WhiteCard from "@/components/WhiteCard";
 import { UserStatsRow } from "@/app/profile/_components/UserStatsRow";
 import { formatWatchTime } from "@/app/profile/_functions/formatWatchTime";
+import { Metadata } from "next";
 
 interface Props {
     params: Promise<{
@@ -18,7 +14,7 @@ interface Props {
     }>;
 }
 
-export async function generateMetadata({ params }: Props) {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { id } = await params;
     const user = await getUserPage(id)
     return {

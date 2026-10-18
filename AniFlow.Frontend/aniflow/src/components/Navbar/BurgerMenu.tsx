@@ -10,9 +10,8 @@ import { logout } from "@/hooks/logout";
 import { UserRole } from "@/core/enums/UserRole";
 import { FiHome } from "react-icons/fi";
 import { LuLibraryBig } from "react-icons/lu";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { createPortal } from 'react-dom';
-import { RiNotificationFill } from "react-icons/ri";
 
 type Props = {
     me: UserMeResponse | null;

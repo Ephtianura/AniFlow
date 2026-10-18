@@ -1,13 +1,11 @@
 "use client";
 
-import React from "react";
-
 interface GenreTileProps {
     name: string;
     isSelected: boolean;
 } 
 
-export const GenreTile: React.FC<GenreTileProps> = ({ name, isSelected }) => {
+export const GenreTile = ({ name, isSelected }: GenreTileProps) => {
     return (
         <div
             className={`px-2.5 py-1.25 rounded cursor-pointer hover:bg-gray-300 

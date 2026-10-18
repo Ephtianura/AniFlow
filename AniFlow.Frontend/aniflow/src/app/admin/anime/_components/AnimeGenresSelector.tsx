@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useFormContext } from "react-hook-form";
 import { Genre } from "@/core/types";
 import { AnimeFormValues } from "./useAnimeForm";
@@ -16,10 +16,10 @@ interface AnimeGenresSelectorProps {
     initialGenreIds?: number[];
 }
 
-export const AnimeGenresSelector: React.FC<AnimeGenresSelectorProps> = ({ genres, animeId, initialGenreIds }) => {
+export const AnimeGenresSelector = ({ genres, animeId, initialGenreIds }: AnimeGenresSelectorProps) => {
     const isEditMode = !!animeId;
     const { setValue, getValues } = useFormContext<AnimeFormValues>();
-    
+
     const [selectedGenres, setSelectedGenres] = useState<number[]>([]);
     const [savedGenres, setSavedGenres] = useState<number[]>([]);
     const [isSaving, setIsSaving] = useState(false);
@@ -66,7 +66,7 @@ export const AnimeGenresSelector: React.FC<AnimeGenresSelectorProps> = ({ genres
 
     const handleReset = () => {
         setSelectedGenres([]);
-        
+
         if (!isEditMode) {
             setValue("genresIds", [], {
                 shouldValidate: true,
@@ -94,15 +94,15 @@ export const AnimeGenresSelector: React.FC<AnimeGenresSelectorProps> = ({ genres
             setIsSaving(false);
         }
     };
-    
+
     return (
         <div className="space-y-4">
-<LeaveConfirmationModal isDirty={isDirty} />
+            <LeaveConfirmationModal isDirty={isDirty} />
             <div className="flex items-center justify-between h-8 gap-2">
                 <h2 className="font-medium text-xl ">
                     <span className="hidden sm:block">Теги та жанри</span>
                     <span className="sm:hidden">Жанри</span>
-                    </h2>
+                </h2>
                 <div className="flex items-center gap-4">
                     {isEditMode && isDirty && (
                         <button

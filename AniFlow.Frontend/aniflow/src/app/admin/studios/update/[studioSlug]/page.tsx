@@ -1,7 +1,8 @@
+import { Metadata } from "next";
 import { getStudio } from "../getStudio";
 import UpdateStudio from "./UpdateStudio";
 
-export async function generateMetadata({ params, }: { params: { studioSlug: string }; }) {
+export async function generateMetadata({ params, }: { params: { studioSlug: string }; }): Promise<Metadata> {
     const { studioSlug } = await params;
     const studio = await getStudio(studioSlug);
     return {

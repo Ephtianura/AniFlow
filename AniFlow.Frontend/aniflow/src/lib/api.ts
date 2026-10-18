@@ -32,19 +32,15 @@ export async function apiFetch<T>(
     }
   }
 
-  if (process.env.NODE_ENV ===  "development") {
-      console.log(
-        "➡️ API Request:",
-        `${API_URL}${endpoint}`,
-        "| Options:",
-        options,
-        // "| Cache: ",
-        // options?.cache,
-        // "| Headers:",
-        // headers,
-        // "| Credentials: include",
-      );
-    }
+  if (process.env.NODE_ENV === "development") {
+    console.log(
+      "➡️ API Request:",
+      `${API_URL}${endpoint}`,
+      "| Options:",
+      options,
+      // "| Cache: ",// options?.cache,// "| Headers:",// headers,// "| Credentials: include",
+    );
+  }
 
   let res: any = null;
   try {
@@ -56,7 +52,9 @@ export async function apiFetch<T>(
     });
     clearTimeout(id);
   } catch (error) {
+    if (process.env.NODE_ENV === "development") {
       console.error("❌ API FETCH FAILED:", `${API_URL}${endpoint}`, error);
+    }
     throw {
       status: 0,
       messages: [getKawaiiError(KawaiiErrorType.Network)],
@@ -72,8 +70,8 @@ export async function apiFetch<T>(
     data = null;
   }
 
-  // Важная отладка (не трогать)
-  if (process.env.NODE_ENV ===  "development") {
+  // Важная отладка
+  if (process.env.NODE_ENV === "development") {
     console.log(
       "📤 API Response:",
       endpoint,
@@ -86,7 +84,7 @@ export async function apiFetch<T>(
 
   // Парсинг ошибок
   if (!res.ok) {
-    const messages = parseApiErrors(res, data);
+    const messages = parseApiErrors(data);
     throw {
       status: res.status,
       messages,

@@ -15,7 +15,7 @@ export async function getFriends() {
     // return Array(8)
     // .fill(null)
     // .flatMap(() => friends);
-  } catch (e: any) {
+  } catch {
     return [];
   }
 }
@@ -26,7 +26,7 @@ export async function getFriendsById(id: number | string) {
       next: { revalidate: 0 },
     });
     return friends;
-  } catch (e: any) {
+  } catch {
     return [];
   }
 }

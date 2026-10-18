@@ -1,11 +1,12 @@
 import { getAnime } from "@/app/anime/[animeUrl]/_functions/getAnime";
 import pullUkrTitle from "@/app/anime/[animeUrl]/_functions/pullUkrTitle";
 import { apiFetch } from "@/lib/api";
-import { Genre, Studio } from "@/core/types";
+import { Studio } from "@/core/types";
 import UpdateAnimeForms from "./UpdateAnimeForms";
 import { getGenres } from "@/hooks/getGenres";
+import { Metadata } from "next";
 
-export async function generateMetadata({ params, }: { params: { animeUrl: string }; }) {
+export async function generateMetadata({ params, }: { params: { animeUrl: string }; }): Promise<Metadata> {
     const { animeUrl } = await params;
     const anime = await getAnime(animeUrl);
     const title = pullUkrTitle(anime.titles);
@@ -23,8 +24,8 @@ export default async function UpdateAnimePage({ params, }: { params: { animeUrl:
     if (anime.studio != null) {
         try {
             studio = await apiFetch<Studio>(`/studios/${anime.studio.id}`) ?? null;
-        } catch (err) {
-            console.error(err);
+        } catch (err: any) {
+            console.error(err.message);
         }
     }
 

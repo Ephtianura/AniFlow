@@ -1,6 +1,6 @@
 import Link from "next/link";
 import AnimeCardPoster from "./AnimeCardPoster";
-import { AnimeKindEnum, AnimeKindMap } from "@/core/enums/AnimeKind";
+import { AnimeKindEnum } from "@/core/enums/AnimeKind";
 import { Genre } from "@/core/types";
 import AnimeDescription from "@/app/anime/[animeUrl]/_components/AnimeDescription";
 import { KindLink } from "./KindLink";

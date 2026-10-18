@@ -51,6 +51,8 @@ export default function OstsPreview({ anime }: Props) {
             })),
     ];
 
+    if (allVideos.length === 0) return null;
+    
     const visibleVideos = (allVideos ?? []).slice(0, 5);
 
     const openPlayer = usePlayerStore((state) => state.openPlayer);

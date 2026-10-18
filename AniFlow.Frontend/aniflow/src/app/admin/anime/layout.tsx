@@ -1,9 +1,4 @@
-import React from "react";
 import { AnimesNav } from "./_components/AnimesNav";
-
-interface AnimesLayout {
-    children: React.ReactNode;
-}
 
 export default function AnimesLayout({
     children,

@@ -8,7 +8,6 @@ import { toast } from "react-toastify";
 import { getKawaiiError, KawaiiErrorType } from "@/hooks/getKawaiiError";
 
 export default function LoginForm() {
-    const [error, setError] = useState(null);
     const [form, setForm] = useState({
         email: "",
         password: ""
@@ -57,8 +56,6 @@ export default function LoginForm() {
                         />
                     </div>
 
-                    {error && <p className="text-red-500 mt-2">{error}</p>}
-
                     <button className="btn-purple mx-auto rounded-sm mt-4 cursor-pointer text-white text-lg font-medium px-10 py-2">
                         Увійти
                     </button>
@@ -73,6 +70,9 @@ export default function LoginForm() {
         </div >
     );
 }
+
+// const [error, setError] = useState(null);
+// {error && <p className="text-red-500 mt-2">{error}</p>}
 
 // Вывод масива каваи ошибок
 // catch (err) {

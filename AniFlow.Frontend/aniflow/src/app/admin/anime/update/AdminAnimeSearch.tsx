@@ -17,11 +17,11 @@ interface AdminAnimeSearchProps {
     onSelect?: (anime: Animes) => void;
 }
 
-export const AdminAnimeSearch: React.FC<AdminAnimeSearchProps> = ({
+export const AdminAnimeSearch = ({
     onSelect,
     hrefTemplate,
     placeholder = "Пошук аніме..."
-}) => {
+}: AdminAnimeSearchProps) => {
     const [searchQuery, setSearchQuery] = useState("");
     const [searchResults, setSearchResults] = useState<Animes[]>([]);
     const [showDropdown, setShowDropdown] = useState(false);
@@ -41,8 +41,8 @@ export const AdminAnimeSearch: React.FC<AdminAnimeSearchProps> = ({
                 );
                 setSearchResults(results.items || []);
                 setShowDropdown(true);
-            } catch (err) {
-                console.error("Помилка пошуку:", err);
+            } catch (err: any) {
+                console.error("Помилка пошуку:", err.message);
                 setSearchResults([]);
                 setShowDropdown(false);
             }

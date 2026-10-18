@@ -3,21 +3,18 @@
 import { useState } from "react";
 import { IoSearch } from "react-icons/io5";
 import ScreenshotsViewer from "./ScreenshotsViewer";
-
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
-import clsx from "clsx";
 
 interface ScreenshotsPreviewProps {
     images: string[];
 }
 
 export default function ScreenshotsPreview({ images }: ScreenshotsPreviewProps) {
-    if (!images || images.length <= 0) return null;
-
-    const [isSwiperReady, setIsSwiperReady] = useState(false);
     const [open, setOpen] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
+
+    if (!images || images.length <= 0) return null;
 
     const openViewer = (index: number) => {
         setCurrentIndex(index);
@@ -30,11 +27,8 @@ export default function ScreenshotsPreview({ images }: ScreenshotsPreviewProps) 
             <div className="select-none w-full h-full">
                 <h4 className="text-primary-black text-2xl font-medium">Кадри</h4>
 
-
-                <div className="">
-
+                <div>
                     <Swiper
-                        onInit={() => setIsSwiperReady(true)}
                         slidesPerView={"auto"}
                     >
                         {visibleImages.map((src, i) => {
@@ -89,7 +83,6 @@ export default function ScreenshotsPreview({ images }: ScreenshotsPreviewProps) 
 }
 
 {/* <Swiper
-    onInit={() => setIsSwiperReady(true)}
     spaceBetween={0}
     slidesOffsetAfter={0}
     slidesPerView={4}

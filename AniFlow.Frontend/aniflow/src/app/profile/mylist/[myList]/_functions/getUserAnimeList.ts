@@ -24,9 +24,7 @@ export async function getUserAnimeList(
       next: { revalidate: 0 },
     });
     return userStatus;
-  } catch (e: any) {
+  } catch {
     return null;
   }
 }
-
-

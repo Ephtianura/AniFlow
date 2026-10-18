@@ -14,11 +14,11 @@ type Props = {
 }
 
 export default function AnimeHomeSeason({ seasonAnimes }: Props) {
-    if (seasonAnimes == null || seasonAnimes.items.length == 0) return null;
-
     const [isBeginning, setIsBeginning] = useState(true);
     const [isEnd, setIsEnd] = useState(false);
     const [isSwiperReady, setIsSwiperReady] = useState(false);
+
+    if (seasonAnimes == null || seasonAnimes.items.length == 0) return null;
 
     return (
         <div className="select-none group relative">

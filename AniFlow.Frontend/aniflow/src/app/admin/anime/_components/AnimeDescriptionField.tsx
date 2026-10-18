@@ -3,7 +3,6 @@
 import { useMemo } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import SimpleMDE from "react-simplemde-editor";
-//@ts-ignore
 import "easymde/dist/easymde.min.css";
 
 interface AnimeDescriptionFieldProps {

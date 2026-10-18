@@ -11,16 +11,16 @@ export default function AnimeDescription({ description, className }: Props) {
         <div className={`text-primary-black prose prose-invert max-w-none [&_p:last-child]:mb-0!  ${className}`}>
             <ReactMarkdown
                 components={{
-                    a: ({ node, ...props }) => (
+                    a: (props) => (
                         <a
                             {...props}
                             className="text-primary hover:text-purple-700 hover:underline"
                         />
                     ),
-                    p: ({ node, ...props }) => (
+                    p: (props) => (
                         <p
                             {...props}
-                            className={`mb-4! last:mb-0 line-clamp-18  ${className}`}
+                            className={`mb-4! last:mb-0 line-clamp-18 ${className}`}
                         />
                     ),
                 }}

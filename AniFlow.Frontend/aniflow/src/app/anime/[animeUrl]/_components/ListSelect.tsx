@@ -67,7 +67,7 @@ export default function ListSelect() {
                     method: "DELETE",
                     body: JSON.stringify(payload),
                 });
-            } catch (error) {
+            } catch {
                 setMyList(prevList);
                 toast.error("Не вдалося прибрати зі списку :<");
             }
@@ -84,7 +84,7 @@ export default function ListSelect() {
                     method: "PATCH",
                     body: JSON.stringify(payload),
                 });
-            } catch (error) {
+            } catch {
                 setMyList(prevList);
                 toast.error("Не вдалося додати до списку :<");
             }

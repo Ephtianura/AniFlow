@@ -1,4 +1,5 @@
 "use client";
+
 import { BsFillStarFill } from "react-icons/bs";
 import { useState } from "react";
 import { useUpdateUserAnime } from "./useUpdateUserAnime";
@@ -9,7 +10,7 @@ interface Props {
 }
 
 export default function AnimeRating({ animeId, currentRating }: Props) {
-    const { updateAnime, loading, error, success } = useUpdateUserAnime();
+    const { updateAnime, error, success } = useUpdateUserAnime();
     const [rating, setRating] = useState<number>(currentRating ?? 0);
     const [hover, setHover] = useState<number>(0);
 

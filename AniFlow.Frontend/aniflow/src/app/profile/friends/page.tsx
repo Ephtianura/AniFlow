@@ -3,9 +3,9 @@ import { formatRegisterDate } from "../_functions/formatRegisterDate";
 import { getProfile } from "../_functions/getProfile";
 import { getFriends } from "../_functions/getFriends";
 import FriendsGrid from "./FriendsGrid";
+import { Metadata } from "next";
 
-
-export const metadata = {
+export const metadata: Metadata = {
     title: "Мої друзі | AniFlow",
 };
 

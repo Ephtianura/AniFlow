@@ -3,7 +3,7 @@
 
 import { getKawaiiError, KawaiiErrorType } from "@/hooks/getKawaiiError";
 
-export default function ErrorPage({ error, reset }: { error: Error; reset: () => void }) {
+export default function ErrorPage({ error }: { error: Error }) {
     const kawaiError = getKawaiiError(KawaiiErrorType.Server)
 
     return (

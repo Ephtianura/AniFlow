@@ -11,7 +11,7 @@ export async function getMe() {
       next: { revalidate: 0 },
     });
     return userMe;
-  } catch (e: any) {
+  } catch {
     return null;
   }
 }

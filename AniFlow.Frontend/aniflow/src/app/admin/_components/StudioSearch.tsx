@@ -11,11 +11,7 @@ interface StudioSearchProps {
     onSelect?: (studio: Studio) => void;
 }
 
-export const StudioSearch: React.FC<StudioSearchProps> = ({ 
-    onSelect, 
-    hrefTemplate, 
-    placeholder = "Пошук студії" 
-}) => {
+export const StudioSearch = ({ onSelect, hrefTemplate, placeholder = "Пошук студії" }: StudioSearchProps) => {
     const [searchQuery, setSearchQuery] = useState("");
     const [searchResults, setSearchResults] = useState<Studio[]>([]);
     const [showDropdown, setShowDropdown] = useState(false);
@@ -23,26 +19,33 @@ export const StudioSearch: React.FC<StudioSearchProps> = ({
 
     useEffect(() => {
         if (searchQuery.trim().length < 3) {
-            setSearchResults([]);
-            setShowDropdown(false);
             return;
         }
+
+        let cancelled = false;
 
         const delayDebounceFn = setTimeout(async () => {
             try {
                 const results = await apiFetch<PagedResult<Studio>>(
                     `/Studios?search=${encodeURIComponent(searchQuery)}&sortBy=Name&sortDesc=false`
                 );
+
+                if (cancelled) return;
+
                 setSearchResults(results.items || []);
                 setShowDropdown(true);
-            } catch (err) {
-                console.error(err);
+            } catch (err: any) {
+                if (cancelled) return;
+                console.error(err.message);
                 setSearchResults([]);
                 setShowDropdown(false);
             }
         }, 350);
 
-        return () => clearTimeout(delayDebounceFn);
+        return () => {
+            cancelled = true;
+            clearTimeout(delayDebounceFn);
+        };
     }, [searchQuery]);
 
     useEffect(() => {
@@ -61,13 +64,22 @@ export const StudioSearch: React.FC<StudioSearchProps> = ({
         setShowDropdown(false);
     };
 
+    const handleSearchChange = (value: string) => {
+        setSearchQuery(value);
+
+        if (value.trim().length < 3) {
+            setSearchResults([]);
+            setShowDropdown(false);
+        }
+    };
+
     return (
         <div className="relative w-full" ref={dropdownRef}>
             <input
                 type="text"
                 placeholder={placeholder}
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => handleSearchChange(e.target.value)}
                 onFocus={() => searchQuery.length >= 3 && setShowDropdown(true)}
                 className="btn-primary w-full"
             />

@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { IoClose } from "react-icons/io5";
 import { BiSolidStar } from "react-icons/bi";
 import { apiFetch } from "@/lib/api";
 import { toast } from "react-toastify";
-import { RelatedAnime, Anime } from "@/core/types";
+import { RelatedAnime } from "@/core/types";
 import { RelationKindEnum, RelationKindMap } from "@/core/enums/RelationKind";
 import { AnimeKindMap } from "@/core/enums/AnimeKind";
 import { AdminAnimeSearch } from "../AdminAnimeSearch";
@@ -26,7 +26,7 @@ interface LocalRelatedItem {
     animeData: RelatedAnime;
 }
 
-export const RelatedAnimeSelector: React.FC<RelatedAnimeSelectorProps> = ({ animeId, initialRelateds }) => {
+export const RelatedAnimeSelector = ({ animeId, initialRelateds }: RelatedAnimeSelectorProps) => {
     const [items, setItems] = useState<LocalRelatedItem[]>([]);
     const [savedItems, setSavedItems] = useState<LocalRelatedItem[]>([]);
     const [isSaving, setIsSaving] = useState(false);

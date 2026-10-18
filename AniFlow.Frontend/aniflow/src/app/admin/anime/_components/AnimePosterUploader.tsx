@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { IoClose } from "react-icons/io5";
 import { TbFileUpload } from "react-icons/tb";
@@ -13,7 +13,7 @@ interface AnimePosterUploaderProps {
     initialUrl?: string | null;
 }
 
-export const AnimePosterUploader: React.FC<AnimePosterUploaderProps> = ({ animeId, initialUrl }) => {
+export const AnimePosterUploader = ({ animeId, initialUrl }: AnimePosterUploaderProps) => {
     const isEditMode = !!animeId;
     const { setValue } = useFormContext();
 
@@ -22,7 +22,7 @@ export const AnimePosterUploader: React.FC<AnimePosterUploaderProps> = ({ animeI
     const [savedUrl, setSavedUrl] = useState<string>("");
     const [filePreview, setFilePreview] = useState<string | null>(null);
     const [isUploading, setIsUploading] = useState(false);
-    const [isDragging, setIsDragging] = useState<boolean>(false); 
+    const [isDragging, setIsDragging] = useState<boolean>(false);
 
     useEffect(() => {
         if (isEditMode && initialUrl) {
@@ -86,7 +86,7 @@ export const AnimePosterUploader: React.FC<AnimePosterUploaderProps> = ({ animeI
 
         if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
             const files = Array.from(e.dataTransfer.files);
-            
+
             if (files.length > 1) {
                 toast.warning("Постер може бути лише один. Вибрано перше зображення");
             }
@@ -161,15 +161,14 @@ export const AnimePosterUploader: React.FC<AnimePosterUploaderProps> = ({ animeI
     };
 
     return (
-        <div 
+        <div
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
-            className={`flex flex-col items-center p-4 rounded-lg border w-full max-w-75 transition-all duration-200 ${
-                isDragging 
-                    ? "bg-purple-50/60 border-purple-400 border-dashed ring-4 ring-purple-100" 
+            className={`flex flex-col items-center p-4 rounded-lg border w-full max-w-75 transition-all duration-200 ${isDragging
+                    ? "bg-purple-50/60 border-purple-400 border-dashed ring-4 ring-purple-100"
                     : "bg-gray-50 border-gray-200"
-            }`}
+                }`}
         >
             <LeaveConfirmationModal isDirty={isDirty} />
             <h2 className="font-medium text-xl mb-2">Постер</h2>

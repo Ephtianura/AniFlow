@@ -6,8 +6,9 @@ import { formatWatchTime } from "./_functions/formatWatchTime";
 import { formatRegisterDate } from "./_functions/formatRegisterDate";
 import { MyListEnum } from "@/core/enums/MyList";
 import { UserStatsRow } from "./_components/UserStatsRow";
+import { Metadata } from "next";
 
-export const metadata = {
+export const metadata: Metadata = {
     title: "Профіль | AniFlow",
     description:
         "Переглядайте статистику, списки аніме, улюблені тайтли та активність на AniFlow!",

@@ -1,7 +1,8 @@
 
 import { AdminAnimeSearch } from "./AdminAnimeSearch";
+import { Metadata } from "next";
 
-export const metadata = {
+export const metadata: Metadata = {
     title: "Редагування аніме | AniFlow"
 };
 

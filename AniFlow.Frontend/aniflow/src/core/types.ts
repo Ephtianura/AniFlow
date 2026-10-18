@@ -1,4 +1,3 @@
-import { number } from "zod";
 import { AnimeKindEnum } from "./enums/AnimeKind";
 import { AnimeRatingEnum } from "./enums/AnimeRating";
 import { AnimeSource } from "./enums/AnimeSource";

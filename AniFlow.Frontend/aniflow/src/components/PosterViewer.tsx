@@ -12,6 +12,14 @@ export default function PosterViewer({ posterUrl}: PosterViewerProps) {
     const [open, setOpen] = useState(false);
     const [closing, setClosing] = useState(false);
 
+    const handleClose = () => {
+        setClosing(true);
+        setTimeout(() => {
+            setOpen(false);
+            setClosing(false);
+        }, 300);
+    };
+
     useEffect(() => {
         if (!open) return;
 
@@ -22,14 +30,6 @@ export default function PosterViewer({ posterUrl}: PosterViewerProps) {
         window.addEventListener("keydown", handleKey);
         return () => window.removeEventListener("keydown", handleKey);
     }, [open]);
-
-    const handleClose = () => {
-        setClosing(true);
-        setTimeout(() => {
-            setOpen(false);
-            setClosing(false);
-        }, 300);
-    };
 
     const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
         if ((e.target as HTMLDivElement).id === "poster-backdrop") handleClose();
@@ -51,8 +51,8 @@ export default function PosterViewer({ posterUrl}: PosterViewerProps) {
                     </div>
                 </div>
 
-                <div className='sm:hidden absolute right-2 top-2 z-10 w-10 h-10 flex items-center justify-center 
-                bg-white/10 rounded-full pt-2 backdrop-blur-sm'>
+                <div className={`sm:hidden absolute right-2 top-2 z-10 w-10 h-10 flex items-center justify-center 
+                bg-white/10 rounded-full pt-2 backdrop-blur-sm`}>
                     <HeartButton />
                 </div>
             </div>

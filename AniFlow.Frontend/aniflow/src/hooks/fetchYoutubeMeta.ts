@@ -11,7 +11,7 @@ export const fetchYoutubeMeta = async (videoUrl: string) => {
       title: data.title.trim() || "Трек",
       author: data.author_name.trim() || "YouTube"
     };
-  } catch (error) {
+  } catch {
     return {
       title: "Трек",
       author: "YouTube"

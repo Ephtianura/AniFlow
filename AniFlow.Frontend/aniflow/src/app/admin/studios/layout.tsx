@@ -1,11 +1,6 @@
-import React from "react";
 import { StudiosNav } from "./_components/StudiosNav";
 
-interface AnimesLayout {
-    children: React.ReactNode;
-}
-
-export default function StydiosLayout({
+export default function StudiosLayout({
     children,
 }: {
     children: React.ReactNode;

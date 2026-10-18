@@ -13,7 +13,7 @@ import { AnimeScreenshotsUploader } from "./AnimeScreenshotsUploader";
 import { AdminAnimeSearch } from "../AdminAnimeSearch";
 import Link from "next/link";
 import { RelatedAnimeSelector } from "./RelatedAnimeSelector";
-import { FaPlay } from "react-icons/fa";
+// import { FaPlay } from "react-icons/fa";
 
 type Props = {
     anime: Anime

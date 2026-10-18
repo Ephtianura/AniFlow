@@ -1,7 +1,6 @@
 import { MyListEnum } from "@/core/enums/MyList";
 import { UserAnimeList } from "@/core/types";
 import { apiFetch } from "@/lib/api";
-import { headers } from "next/headers";
 
 export async function getUserAnimeListByUserId(
   userId: string,

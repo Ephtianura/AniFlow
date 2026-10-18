@@ -1,4 +1,3 @@
-import React from "react";
 import ProfileSidebars from "@/app/profile/_components/ProfileSidebars";
 import WhiteCard from "@/components/WhiteCard";
 

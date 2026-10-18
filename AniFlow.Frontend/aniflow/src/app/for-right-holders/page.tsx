@@ -1,6 +1,7 @@
 import WhiteCard from "@/components/WhiteCard";
+import { Metadata } from "next";
 
-export const metadata = {
+export const metadata: Metadata = {
     title: "Для правовласників – AniFlow",
     description: "Інформація для правовласників щодо контенту на AniFlow"
 };

@@ -1,6 +1,8 @@
+// REFACTORING!: 
+
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { RiFolderUploadLine } from "react-icons/ri";
 import { apiFetch } from "@/lib/api";
 import { toast } from "react-toastify";
@@ -19,7 +21,7 @@ interface AnimeScreenshotsUploaderProps {
     initialScreenshots: string[] | null;
 }
 
-export const AnimeScreenshotsUploader: React.FC<AnimeScreenshotsUploaderProps> = ({ animeId, initialScreenshots }) => {
+export const AnimeScreenshotsUploader = ({ animeId, initialScreenshots }: AnimeScreenshotsUploaderProps) => {
     const [items, setItems] = useState<ScreenshotItem[]>([]);
     const [savedScreenshots, setSavedScreenshots] = useState<string[]>([]);
     const [inputUrl, setInputUrl] = useState<string>("");
@@ -166,7 +168,7 @@ export const AnimeScreenshotsUploader: React.FC<AnimeScreenshotsUploaderProps> =
                     ? { ...item, s3Name: cleanName, isUploading: false }
                     : item
             ));
-        } catch (err) {
+        } catch {
             toast.error("Не вдалося завантажити зображення по URL");
             setItems(prev => prev.filter(item => item.id !== localId));
         }

@@ -15,7 +15,7 @@ interface AnimeStudioSelectorProps {
     initialStudio?: Studio | null;
 }
 
-export const AnimeStudioSelector: React.FC<AnimeStudioSelectorProps> = ({ animeId, initialStudio }) => {
+export const AnimeStudioSelector= ({ animeId, initialStudio }: AnimeStudioSelectorProps) => {
     const isEditMode = !!animeId;
     const { setValue, getValues, watch } = useFormContext<AnimeFormValues>();
 

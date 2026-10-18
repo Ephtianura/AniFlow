@@ -16,7 +16,6 @@ export default function PlayerVideoContainer({ isFullscreen }: PlayerVideoContai
         currentTrack,
         isPlaying,
         isMini,
-        isOpen,
         volume,
         duration,
         playerRef,
@@ -52,7 +51,7 @@ export default function PlayerVideoContainer({ isFullscreen }: PlayerVideoContai
                 await videoContainerRef.current.requestFullscreen();
                 setShowControls(true);
             }
-        } catch (error) { toast.error("Сьогодні, на жаль, без фул-скріну ¯\\_(ツ)_/¯") }
+        } catch { toast.error("Сьогодні, на жаль, без фулл-скріну ¯\\_(ツ)_/¯") }
     };
 
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -69,26 +68,7 @@ export default function PlayerVideoContainer({ isFullscreen }: PlayerVideoContai
         }, 2000);
     };
 
-    // const togglePictureInPicture = async () => {
-    //     if (!videoContainerRef.current) return;
-    //     try {
-    //         const videoElement = videoContainerRef.current.querySelector("video");
-    //         console.log(videoElement); // null
-    //         if (videoElement) {
-    //             if (document.pictureInPictureElement) await document.exitPictureInPicture();
-    //             else await videoElement.requestPictureInPicture();
-    //         } else {
-    //             if (document.pictureInPictureElement) await document.exitPictureInPicture();
-    //             else if ('requestPictureInPicture' in videoContainerRef.current) {
-    //                 // @ts-ignore
-    //                 await videoContainerRef.current.requestPictureInPicture();
-    //             }
-    //         }
-    //     } catch (error) { toast.error("Сьогодні, на жаль, без PIP ¯\\_(ツ)_/¯") }
-    // };
-
     if (!currentTrack) return null;
-
 
     return (
         <div

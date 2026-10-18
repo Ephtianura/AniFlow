@@ -5,7 +5,7 @@ export async function getPlayers(malId?: number) {
   if (!malId) return [];
   try {
     return await apiFetch<PlayerEpisodeSet[]>(`/anime/episodes/${malId}`);
-  } catch (err) {
+  } catch {
     return [];
   }
 }

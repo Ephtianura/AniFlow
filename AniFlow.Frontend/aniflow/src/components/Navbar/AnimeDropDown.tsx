@@ -9,9 +9,8 @@ import { AnimeKindMap } from "@/core/enums/AnimeKind";
 
 type Props = {
     animes: Animes[]
-    onClose: () => void;
 }
-export default function AnimeDropDown({ animes, onClose }: Props) {
+export default function AnimeDropDown({ animes }: Props) {
 
     return (
         <WhiteCard className="overflow-y-auto transparent-scroll max-h-[550px]">

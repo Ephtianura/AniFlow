@@ -1,7 +1,6 @@
 'use client';
 
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/react';
-import { FaSort } from 'react-icons/fa';
 
 interface Option<T> {
   value: T;
@@ -21,7 +20,6 @@ export default function PlayerEpisodeSelect<T>({
   onChange,
   options,
   placeholder = "",
-  className = ""
 }: UniversalSelectProps<T>) {
   const selectedOption = options.find(opt => opt.value === value);
 

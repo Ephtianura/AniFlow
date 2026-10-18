@@ -37,7 +37,6 @@ export default function EditForm({ profile }: Props) {
             setPassword("");
             router.push("/profile/edit");
         } catch (err: any) {
-            console.error(err);
             toast.error(`Помилка оновлення профілю ${err.message}`);
         } finally {
             setWriting(false);

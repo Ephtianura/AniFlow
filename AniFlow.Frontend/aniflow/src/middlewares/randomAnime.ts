@@ -9,7 +9,7 @@ export async function randomAnimeMiddleware(request: NextRequest) {
       if (anime?.slug) {
         return NextResponse.redirect(new URL(`/anime/${anime.slug}`, request.url));
       }
-    } catch (e) {}
+    } catch {}
     return NextResponse.redirect(new URL('/animes', request.url));
   }
   

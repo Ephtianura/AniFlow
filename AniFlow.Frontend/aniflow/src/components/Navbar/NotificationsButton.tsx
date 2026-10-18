@@ -46,7 +46,7 @@ export default function NotificationsButton({ unreadCount }: Props) {
                 const data = await apiFetch<PendingRequestResponse[]>('/friends/requests');
                 setRequests(data)
                 setLoaded(true);
-            } catch (err: any) { }
+            } catch { }
         }
     };
 

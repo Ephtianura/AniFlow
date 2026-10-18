@@ -1,4 +1,3 @@
-import React from "react";
 import UserSidebars from "./[list]/UserSidebars";
 import { getFriendsById } from "@/app/profile/_functions/getFriends";
 

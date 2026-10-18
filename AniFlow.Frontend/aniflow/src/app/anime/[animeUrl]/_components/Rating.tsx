@@ -8,7 +8,6 @@ import clsx from 'clsx';
 import { useAnimeId } from './animeIdProvider';
 import { toast } from 'react-toastify';
 import { RiStarOffFill } from "react-icons/ri";
-import { motion, AnimatePresence } from "framer-motion";
 
 interface RatingProps {
     score: number;
@@ -52,7 +51,7 @@ export default function Rating({ score, totalScores }: RatingProps) {
                 method: method,
                 body: JSON.stringify(body),
             });
-        } catch (error) {
+        } catch {
             setUserRating(prevRating);
             toast.error("Не вдалося оновити оцінку :<");
         }

@@ -2,9 +2,10 @@ import { AdminDashboardStatsDto, UserListsStatsDto } from "@/core/stats";
 import { apiFetch } from "@/lib/api";
 import AnimeStatistic from "./AnimeStatistic";
 import { headers } from "next/headers";
+import type { Metadata } from 'next'
 
-export const metadata = {
-    title: "Статистика аніме | AniFlow"
+export const metadata: Metadata = {
+    title: 'Статистика аніме | AniFlow',
 }
 
 const DEFAULT_ANIME_STATS: AdminDashboardStatsDto = {
@@ -33,22 +34,20 @@ const DEFAULT_USER_LIST_STATS: UserListsStatsDto = {
 export default async function AnimeStatisticPage() {
     let animeStats = DEFAULT_ANIME_STATS;
     let userListStats = DEFAULT_USER_LIST_STATS;
-
-        const cookieHeader = (await headers()).get("cookie") ?? "";
-
+    const cookieHeader = (await headers()).get("cookie") ?? "";
 
     try {
-        animeStats = await apiFetch<AdminDashboardStatsDto>("/stats/anime-dashboard",{cookieHeader});
+        animeStats = await apiFetch<AdminDashboardStatsDto>("/stats/anime-dashboard", { cookieHeader });
     }
     catch (err: any) {
-        console.error("Помилка завантаження аніме статистики:", err);
+        console.error("Помилка завантаження аніме статистики:", err.message);
     }
 
     try {
-        userListStats = await apiFetch<UserListsStatsDto>("/stats/user-lists",{cookieHeader});
+        userListStats = await apiFetch<UserListsStatsDto>("/stats/user-lists", { cookieHeader });
     }
     catch (err: any) {
-        console.error("Помилка завантаження статистики користувачів:", err);
+        console.error("Помилка завантаження статистики користувачів:", err.message);
     }
 
     return (

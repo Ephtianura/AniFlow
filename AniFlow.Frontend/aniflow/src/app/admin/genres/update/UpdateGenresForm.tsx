@@ -26,7 +26,7 @@ export default function UpdateGenrePage({ genres }: Props) {
     const [localType, setLocalType] = useState<TagType>(TagType.Genre);
 
     const methods = useUpdateGenreForm();
-    const { register, handleSubmit, setValue, watch, reset, formState: { isSubmitting, isDirty, dirtyFields } } = methods;
+    const { register, handleSubmit, setValue,  reset, formState: { isSubmitting, isDirty } } = methods;
 
     const router = useRouter();
 

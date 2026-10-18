@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useFormContext, Controller } from "react-hook-form";
 import { AnimeStatusEnum, AnimeStatusMap } from "@/core/enums/AnimeStatus";
 import { AnimeRatingEnum } from "@/core/enums/AnimeRating";
@@ -21,7 +21,7 @@ interface AnimeMainDataProps {
     initialData?: any;
 }
 
-export const AnimeMainData: React.FC<AnimeMainDataProps> = ({ animeId, initialData }) => {
+export const AnimeMainData = ({ animeId, initialData }: AnimeMainDataProps) => {
     const isEditMode = !!animeId;
     const { register, control, formState: { errors } } = useFormContext<AnimeFormValues>();
 

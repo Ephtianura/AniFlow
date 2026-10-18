@@ -1,11 +1,11 @@
-import React from "react";
 import WhiteCard from "@/components/WhiteCard";
 import { getMe } from "@/hooks/getMe";
 import { UserRole } from "@/core/enums/UserRole";
 import { notFound } from "next/navigation";
 import AdminSidebars from "./_components/AdminSidebars";
+import { Metadata } from "next";
 
-export async function generateMetadata() {
+export async function generateMetadata(): Promise<Metadata> {
     const me = await getMe();
     if (!me || me.role !== UserRole.Admin) {
         notFound(); 

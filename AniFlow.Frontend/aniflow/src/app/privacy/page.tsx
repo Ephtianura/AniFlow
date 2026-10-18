@@ -1,7 +1,8 @@
 import WhiteCard from "@/components/WhiteCard";
 import Link from "next/link";
+import { Metadata } from "next";
 
-export const metadata = {
+export const metadata: Metadata = {
     title: "Політика конфіденційності – AniFlow",
     description: "Як AniFlow обробляє та захищає ваші дані"
 };

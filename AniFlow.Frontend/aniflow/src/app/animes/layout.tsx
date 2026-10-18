@@ -1,4 +1,6 @@
-export const metadata = {
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
     title: "Каталог аніме | AniFlow",
     description:
         "Великий каталог аніме: нові серії та популярні тайтли українською мовою. Зручні фільтри та перегляд онлайн безкоштовно на AniFlow.",

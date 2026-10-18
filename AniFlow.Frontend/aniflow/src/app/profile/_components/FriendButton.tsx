@@ -1,9 +1,9 @@
 "use client"
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { User } from '@/core/types';
-import { FaUserPlus, FaUserCheck, FaUserClock, FaUserMinus } from 'react-icons/fa6';
+import { FaUserPlus, FaUserCheck, FaUserClock } from 'react-icons/fa6';
 import { FriendshipStatus } from '@/core/enums/FriendshipStatus';
 import { apiFetch } from '@/lib/api';
 import { toast } from 'react-toastify';

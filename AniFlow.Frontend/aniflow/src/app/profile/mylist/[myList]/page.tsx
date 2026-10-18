@@ -6,8 +6,9 @@ import { redirect } from "next/navigation";
 import ProfileImages from "../../_components/ProfileImages";
 import { getProfile } from "../../_functions/getProfile";
 import { formatRegisterDate } from "../../_functions/formatRegisterDate";
+import { Metadata } from "next";
 
-export const metadata = {
+export const metadata: Metadata = {
     title: "Список аніме | AniFlow"
 };
 

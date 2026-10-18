@@ -8,7 +8,7 @@ import { AnimeKindEnum, AnimeKindMap } from "@/core/enums/AnimeKind";
 import { SeasonMap } from "@/core/enums/Season";
 import { AnimeSourceMap } from "@/core/enums/AnimeSource";
 
-interface Props {
+interface AnimeInfoProps {
     anime: Anime;
 }
 
@@ -20,22 +20,18 @@ export function formatDuration(minutes: number, kind?: AnimeKindEnum | null) {
 
     let result = "";
 
-    if (hrs > 0)
-        result += `${hrs} год.`;
-    if (mins > 0)
-        result += (hrs > 0 ? " " : "") + `${mins} хв.`;
+    if (hrs > 0) result += `${hrs} год.`;
+    if (mins > 0) result += (hrs > 0 ? " " : "") + `${mins} хв.`;
 
-    // Если фильм — без слова "серія"
-    if (kind === AnimeKindEnum.Movie) {
-        return result;
-    }
+    // Якщо фільм - без слова "серія"
+    if (kind === AnimeKindEnum.Movie) return result;
 
-    // Если не фильм → добавляем " ~ серія"
+    // Якщо не фільм → додаємо "~ серія"
     return result + " ~ серія";
 }
 
 
-export const AnimeInfo: React.FC<Props> = ({ anime }) => {
+export const AnimeInfo = ({ anime }: AnimeInfoProps) => {
     const formatted = formatAnimeDates(anime);
     const visibleGenres = anime.genres.slice(0, 15);
     return (

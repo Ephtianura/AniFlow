@@ -3,13 +3,14 @@
 import Link from "next/link";
 import { RiMovie2AiLine } from "react-icons/ri";
 import { FaMasksTheater } from "react-icons/fa6";
-import { FaChartBar, FaTheaterMasks } from "react-icons/fa";
-import { DiRedis } from "react-icons/di";
+import { FaChartBar } from "react-icons/fa";
 import { LuBuilding2 } from "react-icons/lu";
-import { FaUsers } from "react-icons/fa";
 import { TbHomeStats } from "react-icons/tb";
 import { usePathname } from "next/navigation";
 
+// import { FaUsers } from "react-icons/fa";
+// import { FaTheaterMasks } from "react-icons/fa";
+// import { DiRedis } from "react-icons/di";
 
 export default function AdminSidebar() {
   const pathname = usePathname();

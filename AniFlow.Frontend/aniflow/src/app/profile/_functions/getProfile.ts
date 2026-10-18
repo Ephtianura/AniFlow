@@ -13,7 +13,7 @@ export async function getProfile() {
       next: { revalidate: 0 },
     });
     return userStatus;
-  } catch (e: any) {
+  } catch {
     redirect("/login");
   }
 }

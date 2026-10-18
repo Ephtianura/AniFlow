@@ -5,7 +5,9 @@
 // import { formatRegisterDate } from "../_functions/formatRegisterDate";
 // import { getProfile } from "../_functions/getProfile";
 
-// export const metadata = {
+// import { Metadata } from "next";
+
+// export const metadata: Metadata = {
 //     title: "Сповіщення | AniFlow",
 // };
 

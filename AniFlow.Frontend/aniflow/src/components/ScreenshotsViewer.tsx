@@ -1,7 +1,8 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { IoClose, IoChevronBack, IoChevronForward } from "react-icons/io5";
-import React from "react";
+
 interface ScreenshotsViewerProps {
     images: string[];
     currentIndex: number;
@@ -10,9 +11,16 @@ interface ScreenshotsViewerProps {
 }
 
 export default function ScreenshotsViewer({ images, currentIndex, onClose, onChangeIndex }: ScreenshotsViewerProps) {
-    const [closing, setClosing] = React.useState(false);
+    const [closing, setClosing] = useState(false);
 
-    React.useEffect(() => {
+    const next = () => onChangeIndex((currentIndex + 1) % images.length);
+    const prev = () => onChangeIndex((currentIndex - 1 + images.length) % images.length);
+    const handleClose = () => {
+        setClosing(true);
+        setTimeout(onClose, 300);
+    };
+
+    useEffect(() => {
         const handleKey = (e: KeyboardEvent) => {
             if (e.key === "ArrowLeft") prev();
             if (e.key === "ArrowRight") next();
@@ -22,14 +30,6 @@ export default function ScreenshotsViewer({ images, currentIndex, onClose, onCha
         return () => window.removeEventListener("keydown", handleKey);
     }, [currentIndex]);
 
-    const next = () => onChangeIndex((currentIndex + 1) % images.length);
-    const prev = () => onChangeIndex((currentIndex - 1 + images.length) % images.length);
-
-    const handleClose = () => {
-        setClosing(true);
-        setTimeout(onClose, 300);
-    };
-
     const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
         if ((e.target as HTMLDivElement).id === "backdrop") handleClose();
     };
@@ -38,9 +38,8 @@ export default function ScreenshotsViewer({ images, currentIndex, onClose, onCha
         <div
             id="backdrop"
             onClick={handleBackdropClick}
-            className={`fixed inset-0 bg-black/80 z-9999 flex flex-col items-center justify-center transition-opacity duration-300 ${
-                closing ? "opacity-0" : "opacity-100"
-            }`}
+            className={`fixed inset-0 bg-black/80 z-9999 flex flex-col items-center justify-center transition-opacity duration-300 ${closing ? "opacity-0" : "opacity-100"
+                }`}
         >
             <div className="absolute top-0 w-full h-15 bg-black/40 backdrop-blur flex items-center justify-between px-6 text-white text-lg">
                 <span>{currentIndex + 1} / {images.length}</span>

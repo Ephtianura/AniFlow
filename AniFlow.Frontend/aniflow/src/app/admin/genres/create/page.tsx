@@ -1,8 +1,9 @@
 
 import { getGenres } from "@/hooks/getGenres";
 import CreateGenresForm from "./CreateGenresForm";
+import { Metadata } from "next";
 
-export const metadata = {
+export const metadata: Metadata = {
     title: "Створення жанрів | AniFlow"
 }
 

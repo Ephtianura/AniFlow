@@ -24,7 +24,7 @@ export default function SyncControlPanel() {
             const successMessage = "Операція виконана успішно!";
             toast.success(successMessage);
         } catch (error: any) {
-            console.error(error);
+            console.error(error.message);
             toast.error(error?.message || "Сталася помилка при виконанні запиту");
         } finally {
             setLoadingAction(null);

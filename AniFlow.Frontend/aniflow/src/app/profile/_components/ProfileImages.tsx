@@ -53,7 +53,6 @@ export default function ProfileImages({
             setAvatarUrl(res.avatarUrl);
             toast.success("Аватар оновлено успішно!");
         } catch (err: any) {
-            console.error(err);
             toast.error(`Помилка оновлення аватара ${err.message}`)
         };
     }
@@ -69,7 +68,6 @@ export default function ProfileImages({
             setBannerUrl(res.bannerUrl);
             toast.success("Банер оновлено успішно!");
         } catch (err: any) {
-            console.error(err);
             toast.error(`Помилка оновлення банеру ${err.message}`)
         };
     }

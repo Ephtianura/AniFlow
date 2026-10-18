@@ -1,10 +1,8 @@
-// Зробити "And"-"Or" в жанрах. Приклад: ?genres-is-drama-and-!idols-and-comedy
+// TODO: Зробити "And"-"Or" в жанрах. Приклад: ?genres-is-drama-and-!idols-and-comedy
 
 "use client";
 
-//@ts-ignore
 import 'nouislider/dist/nouislider.css';
-//@ts-ignore
 import '@/styles/nouislider-custom.css';
 import { useState, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";

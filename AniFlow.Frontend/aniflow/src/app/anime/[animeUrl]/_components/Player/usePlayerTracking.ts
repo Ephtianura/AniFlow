@@ -1,13 +1,14 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { apiFetch } from "@/lib/api";
 
 export function usePlayerTracking(animeId: number, episodeNumber: number) {
   const hasTrackedRef = useRef(false);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     hasTrackedRef.current = false;
     if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = null;
   }, [animeId, episodeNumber]);
 
   useEffect(() => {
@@ -16,7 +17,7 @@ export function usePlayerTracking(animeId: number, episodeNumber: number) {
     };
   }, []);
 
-  const handleInteraction = () => {
+  const handleInteraction = useCallback(() => {
     if (hasTrackedRef.current || timerRef.current) return;
 
     timerRef.current = setTimeout(() => {
@@ -29,7 +30,7 @@ export function usePlayerTracking(animeId: number, episodeNumber: number) {
 
       timerRef.current = null;
     }, 5000);
-  };
+  }, [animeId, episodeNumber]);
 
   useEffect(() => {
     const handleBlur = () => {
@@ -40,7 +41,7 @@ export function usePlayerTracking(animeId: number, episodeNumber: number) {
 
     window.addEventListener("blur", handleBlur);
     return () => window.removeEventListener("blur", handleBlur);
-  }, [animeId, episodeNumber]);
+  }, [handleInteraction]);
 
   return handleInteraction;
 }

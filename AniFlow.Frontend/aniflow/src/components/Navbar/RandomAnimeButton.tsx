@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useRouter } from "next/navigation";
@@ -12,6 +13,8 @@ export default function RandomAnimeButton() {
     };
 
     return (
+        // Так надо. <a/> 
+        // eslint-disable-next-line @next/next/no-html-link-for-pages
         <a
             href="/anime/random"
             onClick={handleRandomAnime}

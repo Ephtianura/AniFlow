@@ -1,9 +1,9 @@
 "use client";
 
-import { BarChart, Bar, XAxis, YAxis, Tooltip, PieChart, Pie, Cell, CartesianGrid, Legend, ResponsiveContainer } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, PieChart, Pie, Cell, CartesianGrid, Legend, ResponsiveContainer, BarRectangleItem } from "recharts";
 import WhiteCard from '@/components/WhiteCard';
 
-import { FaCalendarDays, FaCloudSun, FaMasksTheater, FaRankingStar, FaRegHeart } from "react-icons/fa6";
+import { FaCalendarDays, FaCloudSun, FaMasksTheater, FaRankingStar } from "react-icons/fa6";
 import { BiSolidStar } from "react-icons/bi";
 import { RiProgress3Fill } from "react-icons/ri";
 import { PiFilmSlate } from "react-icons/pi";
@@ -55,6 +55,25 @@ export default function AnimeStatistic({ animeStats, userListStats }: AnimeStati
         ukName: userListLabels[item.listType] || item.listType
     }));
 
+    const navigateByPayload = (
+        item: BarRectangleItem,
+        field: 'slug' | 'url',
+        getPath: (value: string) => string
+    ) => {
+        const payload: unknown = item.payload;
+
+        if (
+            typeof payload === 'object' &&
+            payload !== null &&
+            field in payload
+        ) {
+            const value = payload[field as keyof typeof payload];
+
+            if (typeof value === 'string') {
+                router.push(getPath(value));
+            }
+        }
+    };
     return (
         <div className="select-none">
             <h1 className="text-4xl font-extrabold mb-8 text-primary text-center tracking-tight">
@@ -106,7 +125,10 @@ export default function AnimeStatistic({ animeStats, userListStats }: AnimeStati
                                     fill="#6366f1"
                                     radius={[4, 4, 0, 0]}
                                     name="Кількість"
-                                    onClick={(data: any) => router.push(`/animes?year=${data.year}`)}
+                                    onClick={(bri: BarRectangleItem) => {
+                                        const year = bri.payload.year;
+                                        router.push(`/animes?year=${year}`);
+                                    }}
                                     className="cursor-pointer"
                                 />
                             </BarChart>
@@ -189,12 +211,16 @@ export default function AnimeStatistic({ animeStats, userListStats }: AnimeStati
                                 tick={{ fontSize: 13 }}
                             />
                             <Tooltip />
-                            <Bar dataKey="count" radius={[0, 4, 4, 0]} name="Кількість"
-                                onClick={(data: any) => router.push(`/animes?genres=${data.slug}`)} className="cursor-pointer">
+                            <Bar
+                                dataKey="count"
+                                radius={[0, 4, 4, 0]}
+                                name="Кількість"
+                                onClick={(item: BarRectangleItem) => navigateByPayload( item, 'slug', value => `/animes?genres=${encodeURIComponent(value)}` ) }
+                                className="cursor-pointer"
+                            >
                                 {animeStats.byGenre.map((_, idx) => (
                                     <Cell key={idx} fill={COLORS[idx % COLORS.length]} />
                                 ))}
-
                             </Bar>
                         </BarChart>
                     </ResponsiveContainer>
@@ -212,7 +238,7 @@ export default function AnimeStatistic({ animeStats, userListStats }: AnimeStati
                             <YAxis type="number" domain={[minAvgScore, 10]} />
                             <Tooltip />
                             <Bar dataKey="avgScore" radius={[4, 4, 0, 0]} name="Середня оцінка"
-                                onClick={(data: any) => router.push(`/animes?genres=${data.slug}`)} className="cursor-pointer">
+                                onClick={(item: BarRectangleItem) => navigateByPayload( item, 'slug', value => `/animes?genres=${encodeURIComponent(value)}` ) } className="cursor-pointer">
                                 {animeStats.avgScoreByGenre.map((entry, idx) => (
                                     <Cell key={idx} fill={entry.avgScore > 7.5 ? "#10b981" : "#3b82f6"} />
                                 ))}
@@ -272,8 +298,15 @@ export default function AnimeStatistic({ animeStats, userListStats }: AnimeStati
                             <XAxis dataKey="studio" tick={{ fontSize: 10, angle: -20, textAnchor: 'end' }} height={50} />
                             <YAxis />
                             <Tooltip />
-                            <Bar dataKey="count" fill="#10b981" radius={[4, 4, 0, 0]} name="Тайтлів" className="cursor-pointer"
-                                onClick={(data: any) => router.push(`/animes?studio=${data.slug}`)}
+                            <Bar
+                                dataKey="count"
+                                fill="#10b981"
+                                radius={[4, 4, 4, 4]}
+                                name="Тайтлів"
+                                className="cursor-pointer"
+                                onClick={(item: BarRectangleItem) =>
+                                    navigateByPayload(item, 'slug', value => `/animes?studio=${encodeURIComponent(value)}`)
+                                }
                             />
                         </BarChart>
                     </ResponsiveContainer>
@@ -316,8 +349,15 @@ export default function AnimeStatistic({ animeStats, userListStats }: AnimeStati
                                     tickFormatter={(value) => value.length > 22 ? value.slice(0, 20) + "…" : value}
                                 />
                                 <Tooltip />
-                                <Bar dataKey="score" fill="#f43f5e" radius={[0, 4, 4, 0]} name="★ Рейтинг"
-                                    onClick={(data: any) => router.push(`/anime/${data.url}`)} className="cursor-pointer"
+                                <Bar
+                                    dataKey="score"
+                                    fill="#f43f5e"
+                                    radius={[0, 4, 4, 0]}
+                                    name="★ Рейтинг"
+                                    className="cursor-pointer"
+                                    onClick={(item: BarRectangleItem) =>
+                                        navigateByPayload(item, 'url', value => `/anime/${encodeURIComponent(value)}`)
+                                    }
                                 />
                             </BarChart>
                         </ResponsiveContainer>

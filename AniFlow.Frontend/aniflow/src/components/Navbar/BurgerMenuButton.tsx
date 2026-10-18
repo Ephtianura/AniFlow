@@ -4,7 +4,7 @@ import { UserMeResponse } from "@/core/types";
 import { RxHamburgerMenu } from "react-icons/rx";
 import BurgerMenu from "./BurgerMenu";
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 
 type Props = {
     me: UserMeResponse | null

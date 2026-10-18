@@ -1,13 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
+import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { apiFetch } from '@/lib/api';
 import { PendingRequestResponse } from '@/core/types';
-import { formatRegisterDate } from '@/app/profile/_functions/formatRegisterDate';
-import { FaCheck } from 'react-icons/fa6';
-import { formatLastOnlineDate } from '@/app/profile/_functions/formatLastOnlineDate';
 import NotificationRequestCard from './FriendRequestCard';
 
 interface ExtendedRequest extends PendingRequestResponse {

@@ -1,8 +1,8 @@
-
+import { Metadata } from "next";
 import CreateAnimeForms from "./CreateAnimeForms";
 import { getGenres } from "@/hooks/getGenres";
 
-export const metadata = {
+export const metadata: Metadata = {
     title: "Створення аніме | AniFlow"
 };
 
