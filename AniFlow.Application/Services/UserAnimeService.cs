@@ -119,7 +119,7 @@ namespace AniFlow.Application.Services
                             Type = t.Type
                         }),
 
-                    PosterUrl = !string.IsNullOrEmpty(ua.Anime.PosterFileName)
+                    PosterUrl = !string.IsNullOrWhiteSpace(ua.Anime.PosterFileName)
                         ? _fileStorage.GetUrl(ua.Anime.PosterFileName)
                         : null,
                     Kind = ua.Anime.Kind,
@@ -136,6 +136,7 @@ namespace AniFlow.Application.Services
                 Completed = Completed,
                 Planned = Planned,
                 Dropped = Dropped,
+                On_hold = On_Hold,
                 Rewatching = Rewatching,
                 TotalAnime = TotalAnime,
                 Animes = animes

@@ -95,7 +95,7 @@ namespace AniFlow.Application.Services.Importing
                 {
                     _logger.LogInformation(LogEvents.NewAnimeFound, "Знайдено нове аніме! MoonId: {MoonId}, MalId: {MalId}", update.MoonId, update.MalId);
                     catalogEntry = AnimeIdCatalog.Create(update.MoonId, update.MalId ?? 0);
-                    await _catalogRep.AddAsync(catalogEntry);
+                    _catalogRep.Add(catalogEntry);
                     await _unitOfWork.SaveChangesAsync();
                     _logger.LogInformation("Запис у каталогу створено! Починаємо створювати аніме...");
                     await _publishEndpoint.Publish(new ParseNewAnimeCommand(catalogEntry.MoonId));

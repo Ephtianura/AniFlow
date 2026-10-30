@@ -47,24 +47,19 @@ namespace AniFlow.DataAccess.Repositories
                 .OrderBy(i => i.MoonId)
                 .ToListAsync();
 
-        public async Task AddAsync(AnimeIdCatalog catalog)
-        {
-            await _dbContext.AnimeIdCatalog.AddAsync(catalog);
-        }
+        public void Add(AnimeIdCatalog catalog) => 
+            _dbContext.AnimeIdCatalog.Add(catalog);
         public async Task AddRangeAsync(IEnumerable<AnimeIdCatalog> catalog)
         {
             if (catalog?.Any() != true) return;
             await _dbContext.AnimeIdCatalog.AddRangeAsync(catalog);
         }
-        public async Task UpdateAsync(AnimeIdCatalog catalog)
-        {
-            _dbContext.AnimeIdCatalog.Update(catalog);
-        }
-        public async Task DeleteAsync(AnimeIdCatalog catalog)
-        {
-            _dbContext.AnimeIdCatalog.Remove(catalog);
-        }
 
-        
+        public void Update(AnimeIdCatalog catalog) 
+            => _dbContext.AnimeIdCatalog.Update(catalog);
+
+        public void Delete(AnimeIdCatalog catalog) => 
+            _dbContext.AnimeIdCatalog.Remove(catalog);
+
     }
 }

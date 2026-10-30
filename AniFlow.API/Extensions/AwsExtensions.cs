@@ -21,7 +21,7 @@ namespace AniFlow.API.Extensions
                     Timeout = TimeSpan.FromSeconds(5)
                 };
 
-                if (!string.IsNullOrEmpty(config["AWS:Region"]))
+                if (!string.IsNullOrWhiteSpace(config["AWS:Region"]))
                 {
                     s3Config.AuthenticationRegion = config["AWS:Region"];
                 }

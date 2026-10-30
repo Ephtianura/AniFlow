@@ -80,7 +80,7 @@ namespace AniFlow.Application.Services.Importing
 
                 anime.Source = AniBuilder.MapSource(raw.Source);
 
-                await MutateOsts(anime, raw.Osts, raw.Videos);
+                MutateOsts(anime, raw.Osts, raw.Videos);
                 anime.ExternalLinks = raw.External;
 
                 await ImportScreenshots(anime, raw.MalId);
@@ -126,7 +126,7 @@ namespace AniFlow.Application.Services.Importing
         }
 
 
-        private async Task MutateOsts(Anime anime, List<OstDto>? osts, List<VideoDto>? videos)
+        private void MutateOsts(Anime anime, List<OstDto>? osts, List<VideoDto>? videos)
         {
             try
             {
@@ -239,7 +239,7 @@ namespace AniFlow.Application.Services.Importing
 
                 // --- ШАГ 1: Намагаємося шукати по реальним даним (Пісня/Автор) ---
                 if (vDesc.Contains(ostTitle) || vTitle.Contains(ostTitle)) return ost;
-                if (!string.IsNullOrEmpty(ostAuthor) && (vDesc.Contains(ostAuthor) || vTitle.Contains(ostAuthor))) return ost;
+                if (!string.IsNullOrWhiteSpace(ostAuthor) && (vDesc.Contains(ostAuthor) || vTitle.Contains(ostAuthor))) return ost;
 
                 // --- ШАГ 2: "Запасний" пошук по індексу ---
                 if (rawOsts == null) return null;

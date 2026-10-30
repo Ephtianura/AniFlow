@@ -102,7 +102,7 @@ public class AnimeUpdateRequestValidator : AbstractValidator<AnimeUpdateRequest>
         // ================= Description ==================
         RuleFor(r => r.Description)
             .MaximumLength(5000)
-            .When(r => !string.IsNullOrEmpty(r.Description))
+            .When(r => !string.IsNullOrWhiteSpace(r.Description))
             .WithMessage("Description cannot exceed 5000 characters.");
     }
 }

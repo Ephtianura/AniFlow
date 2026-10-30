@@ -4,7 +4,6 @@ using FluentValidation;
 namespace AniFlow.Application.Validation.UserValidator
 {
     public class UserRegisterValidator : AbstractValidator<RegisterUserRequest>
-
     {
         public UserRegisterValidator()
         {

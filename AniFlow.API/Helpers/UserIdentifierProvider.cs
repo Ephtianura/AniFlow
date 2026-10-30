@@ -21,7 +21,7 @@ namespace AniFlow.API.Helpers
             }
 
             // Якщо гість – намагаємось дістати куку guest_session_id
-            if (httpContext.Request.Cookies.TryGetValue("guest_session_id", out var guestGuid) && !string.IsNullOrEmpty(guestGuid))
+            if (httpContext.Request.Cookies.TryGetValue("guest_session_id", out var guestGuid) && !string.IsNullOrWhiteSpace(guestGuid))
             {
                 return $"guest_cookie_{guestGuid}";
             }

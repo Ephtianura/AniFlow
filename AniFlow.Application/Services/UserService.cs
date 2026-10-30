@@ -94,9 +94,9 @@ namespace AniFlow.Application.Services
         {
             var user = await GetUserByIdAsync(userId);
 
-            if (!string.IsNullOrEmpty(request.Nickname) && request.Nickname != user.Nickname)
+            if (!string.IsNullOrWhiteSpace(request.Nickname) && request.Nickname != user.Nickname)
                 user.ChangeNickname(request.Nickname);
-            if (!string.IsNullOrEmpty(request.Email) && request.Email != user.Email)
+            if (!string.IsNullOrWhiteSpace(request.Email) && request.Email != user.Email)
             {
                 var existing = await _usersRepository.GetByEmailAsync(request.Email.Trim().ToLower());
                 if (existing != null && existing.Id != userId)
@@ -104,7 +104,7 @@ namespace AniFlow.Application.Services
 
                 user.ChangeEmail(request.Email.Trim().ToLower());
             }
-            if (!string.IsNullOrEmpty(request.Password))
+            if (!string.IsNullOrWhiteSpace(request.Password))
                 user.ChangePassword(_passwordHasher.Generate(request.Password));
 
             await _unitOfWork.SaveChangesAsync();
@@ -114,9 +114,9 @@ namespace AniFlow.Application.Services
         {
             var user = await GetUserByIdAsync(userId);
 
-            if (!string.IsNullOrEmpty(request.Nickname) && request.Nickname != user.Nickname)
+            if (!string.IsNullOrWhiteSpace(request.Nickname) && request.Nickname != user.Nickname)
                 user.ChangeNickname(request.Nickname);
-            if (!string.IsNullOrEmpty(request.Email) && request.Email != user.Email)
+            if (!string.IsNullOrWhiteSpace(request.Email) && request.Email != user.Email)
             {
                 var existing = await _usersRepository.GetByEmailAsync(request.Email.Trim().ToLower());
                 if (existing != null && existing.Id != userId)

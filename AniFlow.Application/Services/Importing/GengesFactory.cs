@@ -28,7 +28,7 @@ namespace AniFlow.Application.Services.Importing
 
         public async Task<CreateUpdateResult> ImportGenresFromRaw(TagsDto raw)
         {
-            var genres = await BuildGenresFromRaw(raw);
+            var genres = BuildGenresFromRaw(raw);
             var exists = await _genreRep.GetByNamesAsync(
                 genres.ConvertAll(g => g.NameEn), 
                 genres.Select(g => g.NameUa).OfType<string>().ToList());
@@ -63,7 +63,7 @@ namespace AniFlow.Application.Services.Importing
 
        
 
-        public async Task<List<Genre>> BuildGenresFromRaw(TagsDto raw)
+        public List<Genre> BuildGenresFromRaw(TagsDto raw)
         {
             List<Genre> genres = [];
 

@@ -17,21 +17,22 @@ namespace AniFlow.Infrastructure.Auth
         {
             Claim[] claims =
                 [
-                    new("userId", user.Id.ToString()),
-                    new Claim(ClaimTypes.Name, user.Nickname),
-                    new Claim(ClaimTypes.Email, user.Email),
-                    new Claim(ClaimTypes.Role, user.Role.ToString())
+                    new ("userId", user.Id.ToString()),
+                    new (ClaimTypes.Name, user.Nickname),
+                    new (ClaimTypes.Email, user.Email),
+                    new (ClaimTypes.Role, user.Role.ToString())
                 ];
 
             var signingCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.Secretkey)),
-                SecurityAlgorithms.HmacSha256);
+                SecurityAlgorithms.HmacSha256
+            );
 
             var token = new JwtSecurityToken(
                 claims: claims,
-                signingCredentials: signingCredentials,
-                expires: DateTime.UtcNow.AddHours(_options.ExpiresHours)
-                );
+                expires: DateTime.UtcNow.AddHours(_options.ExpiresHours),
+                signingCredentials: signingCredentials
+            );
 
             var tokenValue = new JwtSecurityTokenHandler().WriteToken(token);
 
