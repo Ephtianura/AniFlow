@@ -52,7 +52,7 @@ export const AnimeInfo = ({ anime }: AnimeInfoProps) => {
                     </>
                 )}
 
-                {anime.episodes && (
+                {!!(anime.episodes) && (
                     <>
                         <p className="text-gray-dark">Епізоди</p>
                         <p className="text-primary-black">
@@ -108,7 +108,7 @@ export const AnimeInfo = ({ anime }: AnimeInfoProps) => {
                     </>
                 )}
 
-                {(anime.season || anime.year) && (
+                {!!(anime.season || anime.year) && (
                     <>
                         <p className="text-gray-dark">Сезон</p>
                         <p className="text-primary hover:underline hover:text-purple-700 cursor-pointer">

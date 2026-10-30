@@ -203,7 +203,7 @@ export default function DashboardPulse({ pulse, topAnime, newAnime }: DashboardP
                 <img
                   src={anime.posterUrl || "/NotFoundPurple.webp"}
                   alt="poster"
-                  className='w-15 acpect-5/7 object-cover shrink-0 rounded-lg'
+                  className='w-15 aspect-5/7 object-cover shrink-0 rounded-lg'
                 />
                 <div className="flex flex-col min-w-0">
                   <span className="text-sm font-semibold text-gray-700 group-hover:text-primary transition-colors line-clamp-2">
