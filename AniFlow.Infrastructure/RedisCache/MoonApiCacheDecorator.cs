@@ -49,7 +49,7 @@ namespace AniFlow.Infrastructure.RedisCache
             if (cached != null)
                 return cached;
 
-            var episodes = await _moonApi.GetEpisodes(malId);
+            var episodes = await _moonApi.GetEpisodes(malId, ct);
 
             await _cache.SetAsync(key, episodes, TimeSpan.FromHours(1));
 
