@@ -12,10 +12,10 @@ namespace AniFlow.DataAccess.Repositories
     {
         private readonly AniFlowDbContext _dbContext = db;
 
-        public async Task<Anime?> GetByIdAsync(int id) =>
-             await _dbContext.Animes.FirstOrDefaultAsync(a => a.Id == id);
+        public async Task<Anime?> GetByIdAsync(int id, CancellationToken ct) =>
+             await _dbContext.Animes.FirstOrDefaultAsync(a => a.Id == id, ct);
 
-        public async Task<Anime?> GetFullByIdAsync(int id)
+        public async Task<Anime?> GetFullByIdAsync(int id, CancellationToken ct)
         {
             return await _dbContext.Animes
                 .AsNoTracking()
@@ -29,7 +29,19 @@ namespace AniFlow.DataAccess.Repositories
                 .Include(a => a.Relateds)
                     .ThenInclude(r => r.RelatedAnime)
 
-                .FirstOrDefaultAsync(a => a.Id == id);
+                .FirstOrDefaultAsync(a => a.Id == id, ct);
+        }
+
+        public async Task<(bool Exists, List<string>? Screenshots)> GetScreenshots(int id, CancellationToken ct)
+        {
+            var anime = await _dbContext.Animes
+                .Where(a => a.Id == id)
+                .Select(a => new { a.ScreenshotsFileName })
+                .FirstOrDefaultAsync(ct);
+
+            return anime is null
+                ? (false, null)
+                : (true, anime.ScreenshotsFileName);
         }
 
         public async Task<Anime?> GetWithGenresStudioByIdAsync(int id)
@@ -53,14 +65,14 @@ namespace AniFlow.DataAccess.Repositories
         public Task<Anime?> GetByMalIdAsync(int malId) =>
           _dbContext.Animes.FirstOrDefaultAsync(a => a.MalId == malId);
 
-        public async Task<Anime?> GetRandomAsync()
+        public async Task<Anime?> GetRandomAsync(CancellationToken ct)
         {
-            var ids = await _dbContext.Animes.Select(a => a.Id).ToListAsync();
+            var ids = await _dbContext.Animes.Select(a => a.Id).ToListAsync(ct);
             if (ids.Count == 0) return null;
 
             var randomId = ids[Random.Shared.Next(ids.Count)];
 
-            return await GetFullByIdAsync(randomId);
+            return await GetFullByIdAsync(randomId, ct);
         }
 
         // ======================================== TODO:
@@ -76,12 +88,12 @@ namespace AniFlow.DataAccess.Repositories
             return result as string;
         }
 
-        public async Task<List<int>> GetAllMixedIdsAsync()
+        public async Task<List<int>> GetAllMixedIdsAsync(CancellationToken ct)
         {
             var allIds = await _dbContext.Animes
                 .AsNoTracking()
                 .Select(x => x.Id)
-                .ToListAsync();
+                .ToListAsync(ct);
 
             Random rng = Random.Shared;
             int n = allIds.Count;
@@ -99,7 +111,7 @@ namespace AniFlow.DataAccess.Repositories
 
 
 
-        public async Task<PagedResult<Anime>> GetFilteredAsync(AnimeFilter filter)
+        public async Task<PagedResult<Anime>> GetFilteredAsync(AnimeFilter filter, CancellationToken ct)
         {
             filter.Normalize();
             var query = _dbContext.Animes
@@ -223,16 +235,16 @@ namespace AniFlow.DataAccess.Repositories
             var items = await query
                 .Skip((filter.Page - 1) * filter.PageSize)
                 .Take(filter.PageSize)
-                .ToListAsync();
+                .ToListAsync(ct);
 
             return new PagedResult<Anime>(items, totalCount, filter.Page, filter.PageSize);
         }
 
-        public async Task AddAsync(Anime anime)
+        public void Add(Anime anime)
         {
-            await _dbContext.Animes.AddAsync(anime);
+            _dbContext.Animes.Add(anime);
         }
-        public async Task UpdateAsync(Anime anime)
+        public void Update(Anime anime)
         {
             _dbContext.Animes.Update(anime);
         }
@@ -241,7 +253,7 @@ namespace AniFlow.DataAccess.Repositories
         {
             _dbContext.Animes.Remove(anime);
             await _dbContext.SaveChangesAsync();
-        }               
+        }
     }
 }
 

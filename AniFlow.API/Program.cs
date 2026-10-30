@@ -45,10 +45,13 @@ builder.Services
 
 var app = builder.Build();
 
-await app.Services.ApplyMigrationsAsync();
+// Exception Middleware
+app.UseMiddleware<ExceptionMiddleware>();
 
 // Serilog
 app.UseSerilogRequestLogging();
+
+await app.Services.ApplyMigrationsAsync();
 
 // Swagger
 if (app.Environment.IsDevelopment())
@@ -67,9 +70,6 @@ app.UseCookiePolicy(new CookiePolicyOptions
     HttpOnly = HttpOnlyPolicy.Always,
     Secure = CookieSecurePolicy.Always,
 });
-
-// Exception Middleware
-app.UseMiddleware<ExceptionMiddleware>();
 
 if (!app.Environment.IsDevelopment())
     app.UseForwardedHeaders();

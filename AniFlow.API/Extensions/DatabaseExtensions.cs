@@ -1,6 +1,6 @@
 ﻿using AniFlow.DataAccess;
 using Microsoft.EntityFrameworkCore;
-using Npgsql; 
+using Npgsql;
 
 namespace AniFlow.API.Extensions
 {
@@ -11,7 +11,7 @@ namespace AniFlow.API.Extensions
             var connectionString = config.GetConnectionString(nameof(AniFlowDbContext));
 
             var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionString);
-            dataSourceBuilder.EnableDynamicJson(); 
+            dataSourceBuilder.EnableDynamicJson();
 
             var dataSource = dataSourceBuilder.Build();
 

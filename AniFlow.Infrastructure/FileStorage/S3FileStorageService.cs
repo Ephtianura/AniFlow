@@ -17,7 +17,7 @@ namespace AniFlow.Infrastructure.FileStorage
     {
         private readonly HttpClient _httpClient = httpClient;
         private readonly IAmazonS3 _s3Client = s3Client;
-        private ILogger<S3FileStorageService> _logger = logger;
+        private readonly ILogger<S3FileStorageService> _logger = logger;
         private readonly string _bucketName = bucketName;
         private readonly string _baseUrl = config["AWS:PublicUrl"]!.TrimEnd('/');
 
@@ -65,7 +65,7 @@ namespace AniFlow.Infrastructure.FileStorage
                         response.StatusCode == System.Net.HttpStatusCode.SeeOther)
                     {
                         var location = response.Headers.Location?.ToString();
-                        if (string.IsNullOrEmpty(location)) return null;
+                        if (string.IsNullOrWhiteSpace(location)) return null;
 
                         currentUrl = location;
                         response.Dispose(); // Звільняємо ресурси старого запиту перед наступним кроком
@@ -117,7 +117,7 @@ namespace AniFlow.Infrastructure.FileStorage
 
         public async Task<List<string>> UploadImagesFromUrlsAsync(IEnumerable<string> urls, string folder, CancellationToken ct = default)
         {
-            var urlList = urls.Distinct().ToList(); 
+            var urlList = urls.Distinct().ToList();
             var results = new List<string>();
 
             const int batchSize = 10;

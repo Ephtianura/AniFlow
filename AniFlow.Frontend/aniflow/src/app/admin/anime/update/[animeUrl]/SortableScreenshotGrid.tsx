@@ -153,7 +153,7 @@ function SortableItem({
             )}
 
             <img
-                src={item.previewUrl}
+                src={item.previewUrl ?? "404.gif"}
                 alt="screenshot"
                 loading="lazy"
                 className={`w-full h-full object-cover select-none ${

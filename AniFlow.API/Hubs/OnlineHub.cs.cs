@@ -87,16 +87,14 @@ namespace AniFlow.API.Hubs
             string isoDateString = disconnectTime.ToString("o"); 
             await _redis.StringSetAsync(cacheKey, isoDateString, TimeSpan.FromDays(7));
 
-            using (var scope = _scopeFactory.CreateScope())
-            {
-                var dbContext = scope.ServiceProvider.GetRequiredService<AniFlowDbContext>();
+            using var scope = _scopeFactory.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<AniFlowDbContext>();
 
-                var user = await dbContext.Users.FindAsync(userId);
-                if (user != null)
-                {
-                    user.ChangeLastOnline(disconnectTime);
-                    await dbContext.SaveChangesAsync();
-                }
+            var user = await dbContext.Users.FindAsync(userId);
+            if (user != null)
+            {
+                user.ChangeLastOnline(disconnectTime);
+                await dbContext.SaveChangesAsync();
             }
         }
 

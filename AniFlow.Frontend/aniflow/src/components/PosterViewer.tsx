@@ -44,7 +44,7 @@ export default function PosterViewer({ posterUrl}: PosterViewerProps) {
                         src={posterUrl || "/NotFoundPurple.webp"}
                         alt="poster"
                         className="w-full h-full aspect-5/7 object-cover rounded"
-                        
+                        fetchPriority="high"
                     />
                     <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 flex items-center justify-center transition">
                         <IoSearch className="text-white w-10 h-10" />

@@ -21,7 +21,7 @@ namespace AniFlow.Application.Validation.UserValidator
 
             // 🔹 Сортування — якщо вказано, то лише дозволені поля
             RuleFor(f => f.SortBy)
-                .Must(s => string.IsNullOrEmpty(s) ||
+                .Must(s => string.IsNullOrWhiteSpace(s) ||
                            new[] { "FullName", "Email", "RegistrationDate" }
                                .Contains(s, StringComparer.OrdinalIgnoreCase))
                 .WithMessage("Поле сортування має бути одним із: FullName, Email, RegistrationDate");

@@ -18,7 +18,7 @@ export default function ScreenshotHoverPreview({ src, isVisible }: HoverPreviewP
                 }`}
             >
                 <img 
-                    src={src} 
+                    src={src?? "404.gif"} 
                     alt="Enlarged preview" 
                     className="w-full h-full object-contain max-h-[70vh] select-none"
                 />

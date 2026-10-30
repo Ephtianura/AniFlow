@@ -56,7 +56,7 @@ namespace AniFlow.Application.Services.Importing
         {
             string? poster = null;
 
-            if (!string.IsNullOrEmpty(studioRaw.Image))
+            if (!string.IsNullOrWhiteSpace(studioRaw.Image))
             {
                 poster = await _fileStorage.UploadImageFromUrlAsync(
                     studioRaw.Image,

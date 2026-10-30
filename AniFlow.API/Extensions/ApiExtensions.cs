@@ -8,9 +8,7 @@ namespace AniFlow.API.Extensions
 {
     public static class ApiExtensions
     {
-        public static void AddApiAuthentication(
-            this IServiceCollection services,
-            JwtOptions jwtOptions)
+        public static void AddApiAuthentication(this IServiceCollection services, JwtOptions jwtOptions)
         {
             services.AddAuthentication(options =>
             {
@@ -27,9 +25,8 @@ namespace AniFlow.API.Extensions
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(
                     Encoding.UTF8.GetBytes(jwtOptions.Secretkey)),
-                    RoleClaimType = ClaimTypes.Role 
+                    RoleClaimType = ClaimTypes.Role
                 };
-
 
                 options.Events = new JwtBearerEvents
                 {

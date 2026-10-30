@@ -1,4 +1,4 @@
-﻿namespace AniFlow.Application.Exceptions
+﻿namespace AniFlow.API.Middleware.Exceptions
 {
     
     // Коли з токена не вдалося витягти userId (відсутня claim)    

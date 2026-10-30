@@ -5,7 +5,7 @@ import OnlineIndicator from "./OnlineIndicator";
 type Props = {
     friends: FriendResponse[];
 };
-
+// TODO: сделать фиксированный размер 27 для картинки
 export default function FriendsPreview({ friends }: Props) {
     return (
         <div className="flex flex-col gap-2">
@@ -29,13 +29,14 @@ export default function FriendsPreview({ friends }: Props) {
                                 <img
                                     src={friend.avatarUrl || `/NotFoundPurpleSquare.webp`}
                                     alt="avatar"
-                                    className="shrink-0 object-cover aspect-square rounded-full pointer-events-none"
+                                    className="shrink-0 object-cover w-27 aspect-square rounded-full pointer-events-none"
                                 />
+                                {/* Серая иконка для друзей офлайн */}
                                 {/* <img
                                     src={friend.avatarUrl || `/NotFoundPurpleSquare.webp`}
                                     alt="avatar"
                                     className={`shrink-0 object-cover aspect-square rounded-full transition
-                    ${friend.isOnline ? "" : "grayscale opacity-60"}`}
+                                    ${friend.isOnline ? "" : "grayscale opacity-60"}`}
                                 /> */}
                                 <OnlineIndicator isOnline={friend.isOnline} />
 

@@ -40,7 +40,7 @@ namespace AniFlow.Infrastructure.RedisCache
             return tags;
         }
 
-        public async Task<List<VoiceEpisodeSet>> GetEpisodes(int malId)
+        public async Task<List<VoiceEpisodeSet>> GetEpisodes(int malId, CancellationToken ct)
         {
             var key = $"moon:episodes:{malId}";
 

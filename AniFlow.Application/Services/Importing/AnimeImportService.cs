@@ -66,22 +66,22 @@ namespace AniFlow.Application.Services.Importing
                 if (catalog == null)
                 {
                     catalog = AnimeIdCatalog.Create(request.MoonId, raw.MalId, anime.KodikId, true);
-                    await _catalogRep.AddAsync(catalog);
+                    _catalogRep.Add(catalog);
                 }
                 else
                 {
                     catalog.MarkAsParsed();
-                    await _catalogRep.UpdateAsync(catalog);
+                    _catalogRep.Update(catalog);
                 }
 
-                await _animeRep.AddAsync(anime);
+                _animeRep.Add(anime);
 
                 await _unitOfWork.SaveChangesAsync();
 
                 _logger.LogInformation("Аніме {AnimeName} успішно збережено в базу, іде оновлення Url... MoonId: {MoonId}", anime.Titles.FirstOrDefault(), request.MoonId);
 
                 anime.UpdateUrl($"{anime.Url}-{anime.Id}");
-                await _animeRep.UpdateAsync(anime);
+                _animeRep.Update(anime);
                 await _unitOfWork.SaveChangesAsync();
                 _logger.LogInformation(LogEvents.AnimeUrlUpdated, "Url для аніме {AnimeName} оновлено! Url: {Url} MoonId: {MoonId}", anime.Titles.FirstOrDefault(), anime.Url, request.MoonId);
 
@@ -182,7 +182,7 @@ namespace AniFlow.Application.Services.Importing
                 if (catalog != null)
                 {
                     catalog.MarkAsParsed();
-                    await _catalogRep.UpdateAsync(catalog);
+                    _catalogRep.Update(catalog);
                     await _unitOfWork.SaveChangesAsync();
                     _logger.LogInformation(LogEvents.AnimeImportCompleted, "Парсінг по MoonId: {MoonId} завершений за {ElapsedMs}ms. Аніме вже існує. MalId: {MalId}",
                         anime.MoonId, sw.ElapsedMilliseconds, malId);

@@ -11,7 +11,7 @@ namespace AniFlow.Application.Contracts.Infra
         Task<AnimeFullRaw> GetFullAnimeInfo(int moonId);
 
         /// <summary> Повертає інформацію про всі серії аніме по MalID </summary>
-        Task<List<VoiceEpisodeSet>> GetEpisodes(int malId);
+        Task<List<VoiceEpisodeSet>> GetEpisodes(int malId, CancellationToken ct);
 
         /// <summary> Повертає список 100 останніх опублікованих епізодів </summary>
         Task<List<EpisodeRecent>> LastAnimeUpdated();

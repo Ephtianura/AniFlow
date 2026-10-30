@@ -1,4 +1,5 @@
 import { getAnime } from "@/app/anime/[animeUrl]/_functions/getAnime";
+import { getAnimeScreenshots } from "@/app/anime/[animeUrl]/_functions/getAnimeScreenshots";
 import pullUkrTitle from "@/app/anime/[animeUrl]/_functions/pullUkrTitle";
 import { apiFetch } from "@/lib/api";
 import { Studio } from "@/core/types";
@@ -20,6 +21,8 @@ export default async function UpdateAnimePage({ params, }: { params: { animeUrl:
 
     const anime = await getAnime(animeUrl)
 
+    const screenshots = await getAnimeScreenshots(anime.id)
+
     let studio: Studio | null = null;
     if (anime.studio != null) {
         try {
@@ -32,6 +35,6 @@ export default async function UpdateAnimePage({ params, }: { params: { animeUrl:
     const genres = await getGenres();
 
     return (
-        <UpdateAnimeForms genres={genres} studio={studio} anime={anime} />
+        <UpdateAnimeForms genres={genres} studio={studio} anime={anime} screenshots={screenshots}/>
     );
 };

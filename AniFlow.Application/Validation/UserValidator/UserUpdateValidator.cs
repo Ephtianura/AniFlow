@@ -9,18 +9,18 @@ namespace AniFlow.Application.Validation.UserValidator
         {
             RuleFor(u => u.Nickname)
                 .MaximumLength(100)
-                .When(u => !string.IsNullOrEmpty(u.Nickname))
+                .When(u => !string.IsNullOrWhiteSpace(u.Nickname))
                 .WithMessage("Maximum name length is 100 characters.");
 
             RuleFor(u => u.Email)
                 .EmailAddress()
-                .When(u => !string.IsNullOrEmpty(u.Email))
+                .When(u => !string.IsNullOrWhiteSpace(u.Email))
                 .WithMessage("Invalid email format");
 
             RuleFor(u => u.Password)
                 .MinimumLength(8)
                 .Matches("^[a-zA-Z0-9]*$")
-                .When(u => !string.IsNullOrEmpty(u.Password))
+                .When(u => !string.IsNullOrWhiteSpace(u.Password))
                 .WithMessage("Password must contain only Latin letters and digits");
         }
     }

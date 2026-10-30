@@ -32,10 +32,10 @@ namespace AniFlow.DataAccess
             ApplyTouch();
             return base.SaveChanges();
         }
-        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        public override Task<int> SaveChangesAsync(CancellationToken ct = default)
         {
             ApplyTouch();
-            return base.SaveChangesAsync(cancellationToken);
+            return base.SaveChangesAsync(ct);
         }
         private void ApplyTouch()
         {

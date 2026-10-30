@@ -14,10 +14,13 @@ namespace AniFlow.Api.Controllers
     [Authorize(Policy = "AdminPolicy")]
     [Route("api/anime")]
     public class AdminAnimeController(
-        IAnimeCommandService animeCommandService,
+        IAnimeCommandService animeCommand,
+        IAnimeQueryService animeQuery,
         IS3FileStorageService fileStorage) : ControllerBase
     {
-        private readonly IAnimeCommandService _animeCommandService = animeCommandService;
+        private readonly IAnimeCommandService _animeCommand = animeCommand;
+        private readonly IAnimeQueryService _animeQuery = animeQuery;
+
         private readonly IS3FileStorageService _fileStorage = fileStorage;
 
 
@@ -25,7 +28,7 @@ namespace AniFlow.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<AnimeCreateResponse>> Create([FromBody] AnimeCreateRequest request)
         {
-            var response = await _animeCommandService.CreateAsync(request);
+            var response = await _animeCommand.CreateAsync(request);
             return CreatedAtRoute(
                 "GetAnimeById",
                 new { id = response.Id },
@@ -37,15 +40,15 @@ namespace AniFlow.Api.Controllers
         [HttpPatch("{id}")]
         public async Task<ActionResult> UpdateBase(int id, [FromBody] AnimeUpdateRequest request)
         {
-            await _animeCommandService.UpdateBaseAsync(id, request);
+            await _animeCommand.UpdateBaseAsync(id, request);
             return Ok(new ApiResponse("Anime succesfully updated"));
         }
 
         /// <summary> Завантажує та оновлює файли (постер, скріншоти) через multipart/form-data. </summary>
         [HttpPatch("{id}/files")]
-        public async Task<ActionResult> UpdateFiles(int id, [FromForm] AnimeUpdateFilesRequest request)
+        public async Task<ActionResult> UpdateFiles(int id, [FromForm] AnimeUpdateFilesRequest request, CancellationToken ct)
         {
-            await _animeCommandService.UpdateFilesAsync(id, request);
+            await _animeCommand.UpdateFilesAsync(id, request, ct);
             return Ok(new ApiResponse("Anime files succesfully updated"));
         }
 
@@ -53,6 +56,7 @@ namespace AniFlow.Api.Controllers
         /// Синхронізує список скріншотів аніме та їх порядок.
         /// </summary>
         /// <remarks>
+        /// Приймає ВІДНОСНИЙ ШЛЯХ скріншотів в S3, наприклад: "anime-screenshots/file.jpg"
         /// Переданий список вважається кінцевим станом скріншотів аніме.
         /// Скріншоти, відсутні в запиті, будуть видалені.
         /// Нові скріншоти будуть додані. Але вони вже мусять бути попередньо завантажені за <b>/anime/screenshots/upload-file</b>
@@ -60,12 +64,13 @@ namespace AniFlow.Api.Controllers
         /// </remarks>
         /// <param name="id">Ідентифікатор аніме.</param>
         /// <param name="request">Список скріншотів у бажаному порядку відображення.</param>
+        /// <param name="ct"></param>
         /// <response code="200">Список скріншотів успішно оновлено.</response>
         /// <response code="404">Аніме не знайдено.</response>
         [HttpPut("{id}/screenshots/sync")]
-        public async Task<ActionResult> OrderScreenshots(int id, [FromBody] AnimeOrderScreenshotsRequest request)
+        public async Task<ActionResult> OrderScreenshots(int id, [FromBody] AnimeOrderScreenshotsRequest request, CancellationToken ct)
         {
-            await _animeCommandService.OrderScreenshots(id, request);
+            await _animeCommand.OrderScreenshots(id, request, ct);
             return Ok(new ApiResponse("Screenshots successfully synchronized"));
         }
         /// <summary>
@@ -81,7 +86,14 @@ namespace AniFlow.Api.Controllers
         [HttpPut("{id}/related")]
         public async Task<ActionResult> UpdateRelated(int id, [FromBody] RelatedsAnimeRequest request)
         {
-            var response = await _animeCommandService.UpdateRelated(id, request);
+            var response = await _animeCommand.UpdateRelated(id, request);
+            return Ok(response);
+        }
+
+        [HttpGet("{id}/screenshots")]
+        public async Task<ActionResult> GetScreenshots(int id, CancellationToken ct)
+        {
+            var response = await _animeQuery.GetScreenshots(id, ct);
             return Ok(response);
         }
 
@@ -108,9 +120,9 @@ namespace AniFlow.Api.Controllers
 
         /// <summary> Повністю видаляє аніме. </summary>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int id, CancellationToken ct)
         {
-            await _animeCommandService.DeleteAsync(id);
+            await _animeCommand.DeleteAsync(id, ct);
             return NoContent();
         }
 

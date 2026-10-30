@@ -8,10 +8,8 @@ namespace AniFlow.API.Extensions
     {
         public static IServiceCollection AddValidation(this IServiceCollection services)
         {
-            services
-                .AddFluentValidationAutoValidation()
-                .AddFluentValidationClientsideAdapters();
-            //builder.Services.AddValidatorsFromAssemblyContaining<UserRegisterValidator>();
+            services.AddFluentValidationAutoValidation()
+                    .AddFluentValidationClientsideAdapters();
 
             services.AddValidatorsFromAssemblyContaining<AnimeCreateValidator>();
 
@@ -19,3 +17,4 @@ namespace AniFlow.API.Extensions
         }
     }
 }
+    

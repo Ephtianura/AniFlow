@@ -10,21 +10,23 @@ namespace AniFlow.Application.Contracts.App
     {
         /// <summary> Повертає аніме по ID </summary>
         /// <exception cref="NotFoundException"></exception>
-        Task<AnimeResponse> GetByIdAsync(int id);
+        Task<AnimeResponse> GetByIdAsync(int id, CancellationToken ct);
 
         /// <summary> Повертає рандомне аніме </summary>
         /// <exception cref="NotFoundException"></exception>
-        Task<AnimeResponse> GetRandomAsync();
+        Task<AnimeResponse> GetRandomAsync(CancellationToken ct);
 
         /// <summary> Повертає аніме за фільтром </summary>
-        Task<PagedResult<AnimesResponse>> GetFilteredAsync(AnimeFilter filter);
+        Task<PagedResult<AnimesResponse>> GetFilteredAsync(AnimeFilter filter, CancellationToken ct);
 
         /// <summary> Повертає озвучки всіх плеєрів </summary>
-        Task<List<PlayerEpisodeSet>> GetEpisodes(int malId);
+        Task<List<PlayerEpisodeSet>> GetEpisodes(int malId, CancellationToken ct);
 
         /// <summary> Повертає список ID всіх аніме </summary>
-        Task<List<int>> GetIdsAsync();
-        Task<AnimeSlugResponse> GetRandomSlugAsync();
+        Task<List<int>> GetIdsAsync(CancellationToken ct);
+        Task<AnimeSlugResponse> GetRandomSlugAsync(CancellationToken ct);
+        Task<List<string>?> GetScreenshots(int id, CancellationToken ct);
+
     }
 
     public interface IAnimeCommandService
@@ -41,11 +43,11 @@ namespace AniFlow.Application.Contracts.App
         /// <summary> Оновлює файли аніме (скріншоти, постер) </summary>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="NotFoundException"></exception>
-        Task UpdateFilesAsync(int id, AnimeUpdateFilesRequest request);
+        Task UpdateFilesAsync(int id, AnimeUpdateFilesRequest request, CancellationToken ct);
 
         /// <summary> Видаляє аніме а також його медіа файли </summary>
         /// <exception cref="NotFoundException"></exception>
-        Task DeleteAsync(int id);
+        Task DeleteAsync(int id, CancellationToken ct);
 
         /// <summary>
         /// Синхронізує список скріншотів аніме та їх порядок.
@@ -59,7 +61,7 @@ namespace AniFlow.Application.Contracts.App
         /// <param name="id">Ідентифікатор аніме.</param>
         /// <param name="request"> Список скріншотів у бажаному порядку відображення. </param>
         /// <exception cref="NotFoundException"></exception>
-        Task OrderScreenshots(int id, AnimeOrderScreenshotsRequest request);
+        Task OrderScreenshots(int id, AnimeOrderScreenshotsRequest request, CancellationToken ct);
         Task<RelatedUpdateResult> UpdateRelated(int animeId, RelatedsAnimeRequest request);
     }
 }

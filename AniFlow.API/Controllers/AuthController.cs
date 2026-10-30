@@ -3,7 +3,6 @@ using AniFlow.Application.Contracts.App;
 using AniFlow.Application.Dto.Requests.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace AniFlow.API.Controllers
 {
@@ -13,7 +12,6 @@ namespace AniFlow.API.Controllers
     public class AuthController(IAuthService authService, IConfiguration config) : ControllerBase
     {
         private readonly IAuthService _authService = authService;
-
         private readonly IConfiguration _config = config;
 
         /// <summary> Реєструє нового користувача. </summary>
@@ -58,11 +56,11 @@ namespace AniFlow.API.Controllers
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.None,
-                Expires = DateTimeOffset.UtcNow.AddDays(-1), 
-                Path = "/" 
+                Expires = DateTimeOffset.UtcNow.AddDays(-1),
+                Path = "/"
             };
 
-            if (!string.IsNullOrEmpty(cookieDomain))
+            if (!string.IsNullOrWhiteSpace(cookieDomain))
             {
                 cookieOptions.Domain = cookieDomain;
             }
@@ -72,7 +70,7 @@ namespace AniFlow.API.Controllers
                 HttpContext.Response.Cookies.Delete("cookies", cookieOptions);
             }
 
-            return Ok(new { message = "Logged out successfully" });
+            return Ok(new ApiResponse("Logged out successfully"));
         }
 
         /// <summary> Тест для адміна. </summary>
@@ -98,7 +96,7 @@ namespace AniFlow.API.Controllers
                 Expires = DateTimeOffset.UtcNow.AddDays(7)
             };
 
-            if (!string.IsNullOrEmpty(cookieDomain))
+            if (!string.IsNullOrWhiteSpace(cookieDomain))
             {
                 cookieOptions.Domain = cookieDomain;
             }
@@ -107,4 +105,3 @@ namespace AniFlow.API.Controllers
         }
     }
 }
- 

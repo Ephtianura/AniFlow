@@ -12,7 +12,7 @@ using System.Text.Json;
 namespace AniFlow.Api.Controllers
 {
     [ApiController]
-    [Route("api/")]
+    [Route("api")]
     public class StatsController(IAnimeStatsService animeStatsService,
         IStatsService statsService,
         IConnectionMultiplexer redisConnection) : ControllerBase
@@ -73,9 +73,9 @@ namespace AniFlow.Api.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Отримує поточні показники панелі моніторингу з кешу Redis або сервісу статистики.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Поточні показники панелі моніторингу.</returns>
         [HttpGet("pulse")]
         [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> GetPulse()
@@ -96,9 +96,8 @@ namespace AniFlow.Api.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Реєструє унікального відвідувача та враховує нову сесію відвідування.
         /// </summary>
-        /// <returns></returns>
         [HttpPost("track-visit")]
         public async Task<IActionResult> TrackVisit()
         {
@@ -126,10 +125,9 @@ namespace AniFlow.Api.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Реєструє перегляд епізоду аніме із захистом від повторного обліку протягом 30 хвилин.
         /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
+        /// <param name="request">Дані про переглянуте аніме та номер епізоду.</param>
         [HttpPost("track-view")]
         public async Task<IActionResult> TrackView([FromBody] TrackViewRequest request)
         {
@@ -157,10 +155,9 @@ namespace AniFlow.Api.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Отримує топ-10 аніме за кількістю переглядів за останні сім днів.
         /// </summary>
-        /// <param name="dto"></param>
-        /// <returns></returns>
+        /// <returns>Список аніме з найбільшою кількістю переглядів.</returns>
         [HttpGet("anime/top")]
         public async Task<IActionResult> GetTopAnimeByViewsAsync()
         {
@@ -172,9 +169,8 @@ namespace AniFlow.Api.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Зберігає накопичену глобальну статистику за поточний день у постійне сховище.
         /// </summary>
-        /// <returns></returns>
         [HttpPost("metrics/flush")]
         [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> FlushDailyGlobalStatsAsync()
@@ -182,6 +178,10 @@ namespace AniFlow.Api.Controllers
             await _statsService.FlushDailyGlobalStatsAsync();
             return Ok();
         }
+
+        /// <summary>
+        /// Зберігає накопичену статистику переглядів епізодів аніме за поточний день у постійне сховище.
+        /// </summary>
         [HttpPost("metrics/anime/flush")]
         [Authorize(Policy = "AdminPolicy")]
         public async Task<IActionResult> FlushDailyAnimeEpisodeStatsAsync()
@@ -189,7 +189,6 @@ namespace AniFlow.Api.Controllers
             await _statsService.FlushDailyAnimeEpisodeStatsAsync();
             return Ok();
         }
-
 
     }
 }

@@ -1,4 +1,4 @@
-﻿using AniFlow.Application.Exceptions;
+﻿using AniFlow.API.Middleware.Exceptions;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
 
@@ -17,7 +17,7 @@ namespace AniFlow.API.Controllers
 
             var userIdClaim = user.FindFirst("userId")?.Value;
 
-            if (string.IsNullOrEmpty(userIdClaim))
+            if (string.IsNullOrWhiteSpace(userIdClaim))
                 throw new MissingUserIdClaimException();
             if (!int.TryParse(userIdClaim, out var userId))
                 throw new InvalidUserIdFormatException();
@@ -37,7 +37,7 @@ namespace AniFlow.API.Controllers
 
             var userIdClaim = user.FindFirst("userId")?.Value;
 
-            if (string.IsNullOrEmpty(userIdClaim))
+            if (string.IsNullOrWhiteSpace(userIdClaim))
                 return null;
 
             if (!int.TryParse(userIdClaim, out var userId))
