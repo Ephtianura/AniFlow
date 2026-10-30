@@ -32,7 +32,7 @@ export const RelatedAnimeList = ({ relateds }: RelatedAnimeProps) => {
             <h4 className="text-primary-black text-2xl font-medium">Пов'язане</h4>
             <hr className="text-[#CCCCCC] my-4" />
 
-            <div className="flex gap-4 overflow-x-auto">
+            <div className="flex gap-4 overflow-x-auto transparent-scroll">
                 {relateds.map(rel => {
                     const title = pullUkrTitle(rel.titles)
                     const airedYear = rel.airedOn ? new Date(rel.airedOn).getFullYear() : rel.year;

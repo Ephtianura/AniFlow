@@ -25,8 +25,8 @@ const tabsConfig: TabConfigItem[] = [
     { key: MyListEnum.Watching, label: "Дивлюсь", icon: HiMiniEye },
     { key: MyListEnum.Completed, label: "Переглянуто", icon: FaBookmark },
     { key: MyListEnum.Planned, label: "Заплановано", icon: FaClock },
-    { key: MyListEnum.On_hold, label: "Відкладено", icon: FaPause },
     { key: MyListEnum.Rewatching, label: "Переглядаю знову", icon: FaRedo },
+    { key: MyListEnum.On_hold, label: "Відкладено", icon: FaPause },
     { key: MyListEnum.Dropped, label: "Кинуто", icon: FaTrash },
 ];
 

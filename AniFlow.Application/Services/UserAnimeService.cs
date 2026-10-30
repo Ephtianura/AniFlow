@@ -34,7 +34,7 @@ namespace AniFlow.Application.Services
             var userAnimes = await _userAnimesRepo.GetStatsDataByUserIdAsync(userId);
 
             // Калькулятор статистики. Кількість аніме в кожному зі списків
-            var (Favorites, Watching, Completed, Planned, Dropped, Rewatching, TotalAnime) =
+            var (Favorites, Watching, Completed, Planned, Dropped, On_Hold, Rewatching, TotalAnime) =
                CalculateUserStatistic(userAnimes);
 
             // Сума всіх переглянутих епізодів
@@ -84,6 +84,7 @@ namespace AniFlow.Application.Services
                 Completed = Completed,
                 Planned = Planned,
                 Dropped = Dropped,
+                On_Hold = On_Hold,
                 Rewatching = Rewatching,
                 TotalAnime = TotalAnime,
                 TotalEpisodes = totalEpisodes,
@@ -101,7 +102,7 @@ namespace AniFlow.Application.Services
             var statsData = await _userAnimesRepo.GetStatsDataByUserIdAsync(userId);
 
             // Калькулятор статистики. Кількість аніме в кожному зі списків
-            var (Favorites, Watching, Completed, Planned, Dropped, Rewatching, TotalAnime) =
+            var (Favorites, Watching, Completed, Planned, Dropped, On_Hold, Rewatching, TotalAnime) =
                 CalculateUserStatistic(statsData);
             var animes = filteredData
                 .ConvertAll(ua => new AnimeInListResponse
@@ -276,22 +277,23 @@ namespace AniFlow.Application.Services
         /// <item><c>TotalAnime</c> — загальна кількість аніме у списку користувача</item>
         /// </list>
         /// </returns>
-        private static (int Favorites, int Watching, int Completed, int Planned, int Dropped, int Rewatching, int TotalAnime)
+        private static (int Favorites, int Watching, int Completed, int Planned, int Dropped, int On_Hold, int Rewatching, int TotalAnime)
             CalculateUserStatistic(ICollection<UserAnimeStatsData> userAnimes)
         {
             if (userAnimes == null || userAnimes.Count == 0)
-                return (0, 0, 0, 0, 0, 0, 0);
+                return (0, 0, 0, 0, 0, 0, 0, 0);
 
             int favorites = userAnimes.Count(ua => ua.IsFavorite);
             int watching = userAnimes.Count(ua => ua.MyList == MyListEnum.Watching);
             int completed = userAnimes.Count(ua => ua.MyList == MyListEnum.Completed);
             int planned = userAnimes.Count(ua => ua.MyList == MyListEnum.Planned);
             int dropped = userAnimes.Count(ua => ua.MyList == MyListEnum.Dropped);
+            int on_hold = userAnimes.Count(ua => ua.MyList == MyListEnum.On_hold);
             int rewatching = userAnimes.Count(ua => ua.MyList == MyListEnum.Rewatching);
 
             int totalAnime = userAnimes.Count;
 
-            return (favorites, watching, completed, planned, dropped, rewatching, totalAnime);
+            return (favorites, watching, completed, planned, dropped, on_hold, rewatching, totalAnime);
         }
 
     }

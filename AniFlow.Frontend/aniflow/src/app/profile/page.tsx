@@ -51,8 +51,9 @@ export default async function ProfileHome() {
                             watching: profile.watching,
                             completed: profile.completed,
                             planned: profile.planned,
-                            dropped: profile.dropped,
                             rewatching: profile.rewatching,
+                            on_hold: profile.on_Hold,
+                            dropped: profile.dropped,
                         }}
                     />
 
@@ -60,12 +61,13 @@ export default async function ProfileHome() {
 
                         {/* Левая колонка */}
                         <div className="flex flex-col gap-1">
+                            <ListRow href={"profile/mylist/Favorites"} title="Улюблене" count={profile.favorites} color="bg-purple-200" />
                             <ListRow href={`profile/mylist/${MyListEnum.Watching}`} title="Дивлюсь" count={profile.watching} color="bg-blue-100" />
                             <ListRow href={`profile/mylist/${MyListEnum.Completed}`} title="Переглянуто" count={profile.completed} color="bg-green-100" />
                             <ListRow href={`profile/mylist/${MyListEnum.Planned}`} title="Заплановано" count={profile.planned} color="bg-yellow-100" />
+                            <ListRow href={`profile/mylist/${MyListEnum.Rewatching}`} title="Передивляюсь" count={profile.rewatching} color="bg-orange-100" />
+                            <ListRow href={`profile/mylist/${MyListEnum.On_hold}`} title="Відкладено" count={profile.on_Hold} color="bg-gray-100" />
                             <ListRow href={`profile/mylist/${MyListEnum.Dropped}`} title="Кинуто" count={profile.dropped} color="bg-red-100" />
-                            <ListRow href={`profile/mylist/${MyListEnum.Rewatching}`} title="Передивляюсь" count={profile.rewatching} color="bg-gray-200" />
-                            <ListRow href={"profile/mylist/Favorites"} title="Улюблене" count={profile.favorites} color="bg-purple-200" />
                         </div>
 
                         {/* Правая колонка */}

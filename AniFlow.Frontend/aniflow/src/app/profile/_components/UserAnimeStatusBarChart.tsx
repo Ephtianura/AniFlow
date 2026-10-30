@@ -7,8 +7,9 @@ interface StatusBarChartProps {
         watching: number;
         completed: number;
         planned: number;
-        dropped: number;
         rewatching: number;
+        on_hold: number;
+        dropped: number;
     };
 }
 
@@ -17,8 +18,10 @@ export default function StatusBarChart({ stats }: StatusBarChartProps) {
         { label: "Дивлюсь", value: stats.watching, color: "bg-blue-100" },
         { label: "Переглянуто", value: stats.completed, color: "bg-green-100" },
         { label: "Заплановано", value: stats.planned, color: "bg-yellow-100" },
-        { label: "Кинуто", value: stats.dropped, color: "bg-red-100" },
+        { label: "Відкладено", value: stats.on_hold, color: "bg-orange-100" },
         { label: "Передивляюсь", value: stats.rewatching, color: "bg-gray-200" },
+        { label: "Кинуто", value: stats.dropped, color: "bg-red-100" },
+
     ];
 
     const total = segments.reduce((sum, s) => sum + s.value, 0);
@@ -41,7 +44,6 @@ export default function StatusBarChart({ stats }: StatusBarChartProps) {
                         <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap z-10">
                             {s.label}: {s.value}
                         </div>
-
                     )}
                 </div>
             ))}

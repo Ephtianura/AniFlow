@@ -189,6 +189,7 @@ export interface UserProfile {
   watching: number;
   completed: number;
   planned: number;
+  on_Hold: number;
   dropped: number;
   rewatching: number;
   totalAnime: number;

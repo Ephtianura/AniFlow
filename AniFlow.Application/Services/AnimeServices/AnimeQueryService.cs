@@ -44,6 +44,7 @@ namespace AniFlow.Application.Services.AnimeServices
                       RelationKindEnum.Sequel => 1,
                       _ => 2
                   })
+                  .ThenBy(r => r.Year)
                   .ToList();
 
             response.PosterUrl = GetPosterUrl(anime.PosterFileName);
