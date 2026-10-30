@@ -16,12 +16,13 @@ import { RelatedAnimeSelector } from "./RelatedAnimeSelector";
 // import { FaPlay } from "react-icons/fa";
 
 type Props = {
-    anime: Anime
-    genres: Genre[]
+    anime: Anime;
+    genres: Genre[];
     studio: Studio | null;
+    screenshots: string[] | null;
 }
 
-export default function UpdateAnimeForms({ anime, genres, studio }: Props) {
+export default function UpdateAnimeForms({ anime, genres, studio, screenshots }: Props) {
     if (!genres) toast.warning("Не вдалося завантажити жанри")
 
     const methods = useAnimeForm(anime);
@@ -48,7 +49,7 @@ export default function UpdateAnimeForms({ anime, genres, studio }: Props) {
 
                 <hr className="text-hr-clr" />
 
-                <AnimeScreenshotsUploader animeId={anime.id} initialScreenshots={anime.screenshotsUrls} />
+                <AnimeScreenshotsUploader animeId={anime.id} initialScreenshots={screenshots} />
 
                 <hr className="text-hr-clr" />
 

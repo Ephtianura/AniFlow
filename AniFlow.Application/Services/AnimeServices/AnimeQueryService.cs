@@ -25,11 +25,11 @@ namespace AniFlow.Application.Services.AnimeServices
         private readonly IMapper _mapper = mapper;
         private readonly ILogger<AnimeQueryService> _logger = logger;
 
-        public async Task<AnimeResponse> GetByIdAsync(int animeId)
+        public async Task<AnimeResponse> GetByIdAsync(int animeId, CancellationToken ct)
         {
             //_logger.LogWarning("Тест логування");
 
-            var anime = await GetFullAnimeOrThrowAsync(animeId);
+            var anime = await GetFullAnimeOrThrowAsync(animeId, ct);
 
 
             anime.Promos = anime.Promos.Where(p => p.AnimeOstId == null).ToList();
@@ -62,9 +62,9 @@ namespace AniFlow.Application.Services.AnimeServices
             return response;
         }
 
-        public async Task<AnimeResponse> GetRandomAsync()
+        public async Task<AnimeResponse> GetRandomAsync(CancellationToken ct)
         {
-            var anime = await _animeRep.GetRandomAsync() ?? throw new NotFoundException("Anime");
+            var anime = await _animeRep.GetRandomAsync(ct) ?? throw new NotFoundException("Anime");
             var response = _mapper.Map<AnimeResponse>(anime);
 
             response.PosterUrl = GetPosterUrl(anime.PosterFileName);
@@ -73,15 +73,15 @@ namespace AniFlow.Application.Services.AnimeServices
             return response;
         }
 
-        public async Task<AnimeSlugResponse> GetRandomSlugAsync()
+        public async Task<AnimeSlugResponse> GetRandomSlugAsync(CancellationToken ct)
         {
             var slug = await _animeRep.GetRandomSlugAsync();
             return new AnimeSlugResponse(slug);
         }
 
-        public async Task<PagedResult<AnimesResponse>> GetFilteredAsync(AnimeFilter filter)
+        public async Task<PagedResult<AnimesResponse>> GetFilteredAsync(AnimeFilter filter, CancellationToken ct)
         {
-            var pagedResult = await _animeRep.GetFilteredAsync(filter);
+            var pagedResult = await _animeRep.GetFilteredAsync(filter, ct);
 
             var mappedItems = pagedResult.Items.Select(a =>
             {
@@ -101,7 +101,7 @@ namespace AniFlow.Application.Services.AnimeServices
             );
         }
 
-        public async Task<List<PlayerEpisodeSet>> GetEpisodes(int malId)
+        public async Task<List<PlayerEpisodeSet>> GetEpisodes(int malId, CancellationToken ct)
         {
             List<PlayerEpisodeSet> result = [];
 
@@ -109,7 +109,7 @@ namespace AniFlow.Application.Services.AnimeServices
             List<VoiceEpisodeSet> moon = [];
             try
             {
-                moon = await _moonApi.GetEpisodes(malId);
+                moon = await _moonApi.GetEpisodes(malId, ct);
             }
             catch (ExternalApiException ex)
             {
@@ -126,14 +126,24 @@ namespace AniFlow.Application.Services.AnimeServices
             return result;
         }
 
-        public Task<List<int>> GetIdsAsync() => _animeRep.GetAllMixedIdsAsync();
+        public async Task<List<string>?> GetScreenshots(int id, CancellationToken ct)
+        {
+            var (Exists, Screenshots) = await _animeRep.GetScreenshots(id, ct);
+
+            if (!Exists) throw new NotFoundException("Anime", id);
+
+            return Screenshots;
+        }
+
+        public Task<List<int>> GetIdsAsync(CancellationToken ct) => _animeRep.GetAllMixedIdsAsync(ct);
 
         // ============================== private methods ====================================
 
+        #region private
         /// <summary> Повертає повну сутність аніме по айді </summary>
         /// <exception cref="NotFoundException"></exception>
-        private async Task<Anime> GetFullAnimeOrThrowAsync(int animeId) =>
-            await _animeRep.GetFullByIdAsync(animeId) ?? throw new NotFoundException("Anime", animeId);
+        private async Task<Anime> GetFullAnimeOrThrowAsync(int animeId, CancellationToken ct) =>
+            await _animeRep.GetFullByIdAsync(animeId, ct) ?? throw new NotFoundException("Anime", animeId);
 
         private string? GetPosterUrl(string? posterFileName) =>
             string.IsNullOrWhiteSpace(posterFileName)
@@ -198,7 +208,6 @@ namespace AniFlow.Application.Services.AnimeServices
                 }
             }
         }
-
-
+        #endregion
     }
 }

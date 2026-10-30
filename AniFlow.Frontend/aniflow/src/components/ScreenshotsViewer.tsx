@@ -48,7 +48,12 @@ export default function ScreenshotsViewer({ images, currentIndex, onClose, onCha
                 </button>
             </div>
 
-            <img src={images[currentIndex]} className="max-h-[80vh] max-w-[90vw] object-contain rounded" alt="" />
+            <img
+                src={images[currentIndex]}
+                className="max-h-[80vh] max-w-[90vw] object-contain rounded"
+                alt={`Кадр ${currentIndex}`}
+                loading="lazy"
+            />
 
             <button onClick={prev} className="absolute left-6 top-1/2 -translate-y-1/2 p-3 bg-black/40 rounded-full cursor-pointer ">
                 <IoChevronBack className="text-white w-8 h-8 " />

@@ -96,7 +96,7 @@ namespace AniFlow.Application.Services.AnimeServices
                 Nsfw = request.Nsfw
             });
 
-            await _animeRep.AddAsync(anime);
+            _animeRep.Add(anime);
             await _unitOfWork.SaveChangesAsync();
             // Генерація URL з офіційного Romaji title
             anime.UpdateUrl(AniBuilder.GenerateSlug(officialRomajiTitle.Value, anime.Id));
@@ -215,14 +215,14 @@ namespace AniFlow.Application.Services.AnimeServices
         }
 
         // Update Files
-        public async Task UpdateFilesAsync(int animeId, AnimeUpdateFilesRequest request)
+        public async Task UpdateFilesAsync(int animeId, AnimeUpdateFilesRequest request, CancellationToken ct)
         {
             if (request.Poster == null && string.IsNullOrWhiteSpace(request.PosterUrl) &&
                (request.Screenshots == null || !request.Screenshots.Any()) &&
                 (request.ScreenshotUrls == null || !request.ScreenshotUrls.Any()))
                 throw new ArgumentException("Необхідно завантажити хоча б постер чи один скріншот.");
 
-            var anime = await GetAnimeOrThrowAsync(animeId);
+            var anime = await GetAnimeOrThrowAsync(animeId, ct);
 
             // ===================== Оновлення постера =====================
             if (request.Poster != null)
@@ -267,9 +267,9 @@ namespace AniFlow.Application.Services.AnimeServices
         }
 
         // Delete
-        public async Task DeleteAsync(int animeId)
+        public async Task DeleteAsync(int animeId, CancellationToken ct)
         {
-            var anime = await GetAnimeOrThrowAsync(animeId);
+            var anime = await GetAnimeOrThrowAsync(animeId, ct);
 
             var filesToDelete = new List<string>();
 
@@ -302,13 +302,13 @@ namespace AniFlow.Application.Services.AnimeServices
         }
 
         // Order
-        public async Task OrderScreenshots(int animeId, AnimeOrderScreenshotsRequest request)
+        public async Task OrderScreenshots(int animeId, AnimeOrderScreenshotsRequest request, CancellationToken ct)
         {
-            var anime = await GetAnimeOrThrowAsync(animeId);
+            var anime = await GetAnimeOrThrowAsync(animeId, ct);
 
             var currentScreenshots = anime.ScreenshotsFileName ?? [];
 
-            var candidateToDelete = currentScreenshots.Except(currentScreenshots).ToList();
+            var candidateToDelete = currentScreenshots.Except(request.OrderedScreenshots).ToList();
 
             var realDeletedFromS3 = new List<string>();
 
@@ -324,13 +324,6 @@ namespace AniFlow.Application.Services.AnimeServices
                     _logger.LogWarning("Не вдалося видалити скріншоти для аніме {AnimeTitle}. AnimeId: {AnimeId}. S3Errors: {S3Errors}",
                         anime.OfficialRomajiTitle, animeId, s3Result.Errors);
                 }
-            }
-
-            var failedToDelete = candidateToDelete.Except(realDeletedFromS3).ToList();
-
-            if (failedToDelete.Count != 0)
-            {
-                request.OrderedScreenshots.AddRange(failedToDelete);
             }
 
             anime.UpdateScreenshotsFileName(request.OrderedScreenshots);
@@ -428,8 +421,8 @@ namespace AniFlow.Application.Services.AnimeServices
 
         /// <summary> Повертає аніме по айді </summary>
         /// <exception cref="NotFoundException"></exception>
-        private async Task<Anime> GetAnimeOrThrowAsync(int animeId) =>
-            await _animeRep.GetByIdAsync(animeId) ?? throw new NotFoundException("Anime", animeId);
+        private async Task<Anime> GetAnimeOrThrowAsync(int animeId, CancellationToken ct) =>
+            await _animeRep.GetByIdAsync(animeId, ct) ?? throw new NotFoundException("Anime", animeId);
 
     }
 }

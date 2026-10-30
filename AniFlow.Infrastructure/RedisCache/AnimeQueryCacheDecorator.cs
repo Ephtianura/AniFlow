@@ -11,7 +11,7 @@ namespace AniFlow.Infrastructure.RedisCache
         private readonly IRedisCache _cache = cache;
         private readonly IAnimeQueryService _queryService = queryService;
 
-        public async Task<AnimeResponse> GetByIdAsync(int id)
+        public async Task<AnimeResponse> GetByIdAsync(int id, CancellationToken ct)
         {
             var key = $"anime:id:{id}";
 
@@ -20,14 +20,14 @@ namespace AniFlow.Infrastructure.RedisCache
             if (cached != null)
                 return cached;
 
-            var anime = await _queryService.GetByIdAsync(id);
+            var anime = await _queryService.GetByIdAsync(id, ct);
 
             await _cache.SetAsync(key, anime, TimeSpan.FromMinutes(15));
 
             return anime;
         }
 
-        public async Task<PagedResult<AnimesResponse>> GetFilteredAsync(AnimeFilter filter)
+        public async Task<PagedResult<AnimesResponse>> GetFilteredAsync(AnimeFilter filter, CancellationToken ct)
         {
             var key = "anime:filter:" + filter.ToCacheKey();
 
@@ -35,20 +35,20 @@ namespace AniFlow.Infrastructure.RedisCache
             if (cached != null)
                 return cached;
 
-            var animes = await _queryService.GetFilteredAsync(filter);
+            var animes = await _queryService.GetFilteredAsync(filter, ct);
 
             await _cache.SetAsync(key, animes, TimeSpan.FromMinutes(5));
 
             return animes;
         }
 
-        public Task<AnimeSlugResponse> GetRandomSlugAsync() => _queryService.GetRandomSlugAsync();
+        public Task<AnimeSlugResponse> GetRandomSlugAsync(CancellationToken ct) => _queryService.GetRandomSlugAsync(ct);
 
         /// <summary> Кешує рандомні аніме. </summary>
         /// <returns> Одне рандомне аніме з кешу або бази </returns>
         /// 
         ///              !Не використовується.!
-        public async Task<AnimeResponse> GetRandomAsync()
+        public async Task<AnimeResponse> GetRandomAsync(CancellationToken ct)
         {
             // Ідемо в редіс, отримувати список рандомних айді
             List<int>? cachedIds = await _cache.GetAsync<List<int>>("anime:random:ids:");
@@ -63,11 +63,11 @@ namespace AniFlow.Infrastructure.RedisCache
                 int cachedId = cachedIds[Random.Shared.Next(cachedIds.Count)];
 
                 // Шукаємо це аніме в редісі якщо нема записуємо
-                return await GetByIdAsync(cachedId);
+                return await GetByIdAsync(cachedId, ct);
             }
 
             // Якщо список в кешу пустий - Ідемо до бази отримувати нові рандомні айдішки
-            List<int> animeIds = await _queryService.GetIdsAsync();
+            List<int> animeIds = await _queryService.GetIdsAsync(ct);
 
             if (animeIds.Count == 0)
                 throw new ArgumentException("Anime is missing");
@@ -79,14 +79,14 @@ namespace AniFlow.Infrastructure.RedisCache
             int animeId = animeIds[Random.Shared.Next(animeIds.Count)];
 
             // Пробуємо подивитись спочатку анімешку в редіске якщо нема - на базу
-            return await GetByIdAsync(animeId);
+            return await GetByIdAsync(animeId, ct);
         }
 
         /// <summary>
         /// Повертає iframe-епізоди та кешує результат на 1 годину,
         /// щоб зменшити навантаження на балансери.
         /// </summary>
-        public async Task<List<PlayerEpisodeSet>> GetEpisodes(int malId)
+        public async Task<List<PlayerEpisodeSet>> GetEpisodes(int malId, CancellationToken ct)
         {
             var key = $"anime:episodes:{malId}";
 
@@ -95,14 +95,15 @@ namespace AniFlow.Infrastructure.RedisCache
             if (cached != null)
                 return cached;
 
-            var episodes = await _queryService.GetEpisodes(malId);
+            var episodes = await _queryService.GetEpisodes(malId, ct);
 
             await _cache.SetAsync(key, episodes, TimeSpan.FromHours(1));
 
             return episodes;
         }
 
-        public Task<List<int>> GetIdsAsync() => _queryService.GetIdsAsync();
+        public Task<List<int>> GetIdsAsync(CancellationToken ct) => _queryService.GetIdsAsync(ct);
 
+        public Task<List<string>?> GetScreenshots(int id, CancellationToken ct) => _queryService.GetScreenshots(id, ct);
     }
 }

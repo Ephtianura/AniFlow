@@ -28,36 +28,25 @@ export const AnimeScreenshotsUploader = ({ animeId, initialScreenshots }: AnimeS
     const [isSyncing, setIsSyncing] = useState<boolean>(false);
     const [isDragging, setIsDragging] = useState<boolean>(false);
 
+    const cdnPrefix = process.env.NEXT_PUBLIC_CDN_URL || "";
+
+    const getPreviewUrl = (s3Key: string) => {
+        if (!s3Key) return "";
+        if (s3Key.startsWith("blob:")) return s3Key;
+        return `${cdnPrefix}/${s3Key}`;
+    };
+
     useEffect(() => {
         if (initialScreenshots && initialScreenshots.length > 0) {
-            const mapped = initialScreenshots.map((name, idx) => {
-                const cdnPrefix = process.env.NEXT_PUBLIC_CDN_URL || "";
-
-                let cleanS3Name = name;
-                if (cdnPrefix && cleanS3Name.startsWith(cdnPrefix)) {
-                    cleanS3Name = cleanS3Name.replace(cdnPrefix, "");
-                }
-
-                cleanS3Name = cleanS3Name.replace(/^\/+/, "");
-
-                if (cleanS3Name.startsWith("images/anime-screenshots")) {
-                    cleanS3Name = cleanS3Name.replace("images/", "");
-                }
-
-                return {
-                    id: `init-${idx}-${cleanS3Name}`,
-                    s3Name: cleanS3Name,
-                    previewUrl: cleanS3Name.startsWith("http")
-                        ? cleanS3Name
-                        : `${cdnPrefix}/images/${cleanS3Name}`, 
-                    isUploading: false
-                };
-            });
+            const mapped = initialScreenshots.map((name, idx) => ({
+                id: `init-${idx}-${name}`,
+                s3Name: name,
+                previewUrl: getPreviewUrl(name),
+                isUploading: false
+            }));
 
             setItems(mapped);
-
-            const cleanSaved = mapped.map(i => i.s3Name);
-            setSavedScreenshots(cleanSaved);
+            setSavedScreenshots(initialScreenshots);
         } else {
             setItems([]);
             setSavedScreenshots([]);
@@ -74,15 +63,12 @@ export const AnimeScreenshotsUploader = ({ animeId, initialScreenshots }: AnimeS
         const imageFiles = files.filter(file => file.type.startsWith("image/"));
         if (imageFiles.length === 0) return;
 
-        const newItems: ScreenshotItem[] = imageFiles.map((file, idx) => {
-            const localId = `file-${Date.now()}-${idx}`;
-            return {
-                id: localId,
-                s3Name: "",
-                previewUrl: URL.createObjectURL(file),
-                isUploading: true
-            };
-        });
+        const newItems: ScreenshotItem[] = imageFiles.map((file, idx) => ({
+            id: `file-${Date.now()}-${idx}`,
+            s3Name: "",
+            previewUrl: URL.createObjectURL(file),
+            isUploading: true
+        }));
 
         setItems(prev => [...prev, ...newItems]);
 
@@ -96,16 +82,28 @@ export const AnimeScreenshotsUploader = ({ animeId, initialScreenshots }: AnimeS
                 body: formData
             })
                 .then((res) => {
-                    const cleanName = res.url.replace(/^images\//, "").replace(/^\/+/, "");
-                    setItems(prev => prev.map(item =>
-                        item.id === targetId
-                            ? { ...item, s3Name: cleanName, isUploading: false }
-                            : item
-                    ));
+                    setItems(prev => {
+                        const target = prev.find(item => item.id === targetId);
+                        if (target && target.previewUrl.startsWith("blob:")) {
+                            URL.revokeObjectURL(target.previewUrl);
+                        }
+
+                        return prev.map(item =>
+                            item.id === targetId
+                                ? { ...item, s3Name: res.url, previewUrl: getPreviewUrl(res.url), isUploading: false }
+                                : item
+                        );
+                    });
                 })
                 .catch(() => {
                     toast.error(`Не вдалося завантажити файл: ${file.name}`);
-                    setItems(prev => prev.filter(item => item.id !== targetId));
+                    setItems(prev => {
+                        const target = prev.find(item => item.id === targetId);
+                        if (target && target.previewUrl.startsWith("blob:")) {
+                            URL.revokeObjectURL(target.previewUrl);
+                        }
+                        return prev.filter(item => item.id !== targetId);
+                    });
                 });
         });
     };
@@ -115,19 +113,16 @@ export const AnimeScreenshotsUploader = ({ animeId, initialScreenshots }: AnimeS
         processFiles(Array.from(e.target.files));
         e.target.value = "";
     };
-
     const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault();
         e.stopPropagation();
         setIsDragging(true);
     };
-
     const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault();
         e.stopPropagation();
         setIsDragging(false);
     };
-
     const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault();
         e.stopPropagation();
@@ -161,11 +156,9 @@ export const AnimeScreenshotsUploader = ({ animeId, initialScreenshots }: AnimeS
                 headers: { "Content-Type": "application/json" }
             });
 
-            const cleanName = res.url.replace(/^images\//, "").replace(/^\/+/, "");
-
             setItems(prev => prev.map(item =>
                 item.id === localId
-                    ? { ...item, s3Name: cleanName, isUploading: false }
+                    ? { ...item, s3Name: res.url, previewUrl: getPreviewUrl(res.url), isUploading: false }
                     : item
             ));
         } catch {
@@ -198,7 +191,7 @@ export const AnimeScreenshotsUploader = ({ animeId, initialScreenshots }: AnimeS
                 headers: { "Content-Type": "application/json" }
             });
 
-            toast.success("Скріншоти та їх порядок успешно збережено!");
+            toast.success("Скріншоти та їх порядок успішно збережено!");
             setSavedScreenshots(finalS3Names);
         } catch (err: any) {
             toast.error(err.message || "Помилка при синхронізації");
@@ -233,7 +226,7 @@ export const AnimeScreenshotsUploader = ({ animeId, initialScreenshots }: AnimeS
                     </button>
                 )}
             </div>
-
+ 
             <div className="flex flex-wrap gap-3 items-center">
                 <div>
                     <input

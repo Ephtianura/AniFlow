@@ -19,9 +19,9 @@ namespace AniFlow.Infrastructure.RedisCache
             await _cache.RemoveByPrefixAsync("anime:filter:");
         }
 
-        public async Task UpdateFilesAsync(int id, AnimeUpdateFilesRequest request)
+        public async Task UpdateFilesAsync(int id, AnimeUpdateFilesRequest request, CancellationToken ct)
         {
-            await _commandService.UpdateFilesAsync(id, request);
+            await _commandService.UpdateFilesAsync(id, request, ct);
 
             var key = $"anime:id:{id}";
             await _cache.RemoveAsync(key);
@@ -40,18 +40,18 @@ namespace AniFlow.Infrastructure.RedisCache
             return response;
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id, CancellationToken ct)
         {
-            await _commandService.DeleteAsync(id);
+            await _commandService.DeleteAsync(id, ct);
 
             await _cache.RemoveAsync($"anime:id:{id}");
             await _cache.RemoveByPrefixAsync("anime:filter:");
         }
 
-        public async Task OrderScreenshots(int id, AnimeOrderScreenshotsRequest request)
+        public async Task OrderScreenshots(int id, AnimeOrderScreenshotsRequest request, CancellationToken ct)
         {
             var key = $"anime:id:{id}";
-            await _commandService.OrderScreenshots(id, request);
+            await _commandService.OrderScreenshots(id, request, ct);
             await _cache.RemoveAsync(key);
         }
 
@@ -69,5 +69,6 @@ namespace AniFlow.Infrastructure.RedisCache
             await _cache.RemoveMultipleAsync(cacheKeys);
             return result;
         }
+
     }
 }

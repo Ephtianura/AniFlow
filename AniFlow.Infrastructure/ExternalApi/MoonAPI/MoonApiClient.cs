@@ -98,13 +98,13 @@ namespace AniFlow.Infrastructure.ExternalApi.MoonAPI
             });
         }
 
-        public Task<List<VoiceEpisodeSet>> GetEpisodes(int malId)
+        public Task<List<VoiceEpisodeSet>> GetEpisodes(int malId, CancellationToken ct)
         {
             var url = $"4.0/episodes?api_key={_apiKey}&id={malId}";
 
             return ExecuteMoonAsync(async () =>
             {
-                var response = await _httpClient.GetFromJsonAsync<Dictionary<string, List<MoonEpisodeDto>>>(url)
+                var response = await _httpClient.GetFromJsonAsync<Dictionary<string, List<MoonEpisodeDto>>>(url, ct)
                     ?? throw new ExternalApiEmptyResponseException("Moon API returned empty response");
                 return response.Select(x => new VoiceEpisodeSet(
                         Voice: x.Key,

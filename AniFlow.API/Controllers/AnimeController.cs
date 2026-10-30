@@ -16,9 +16,9 @@ namespace AniFlow.Api.Controllers
 
         /// <summary> Повертає повну інформацію про аніме по ID. </summary>
         [HttpGet("{id}", Name = "GetAnimeById")]
-        public async Task<ActionResult<AnimeResponse>> GetById(int id)
+        public async Task<ActionResult<AnimeResponse>> GetById(int id, CancellationToken ct)
         {
-            var anime = await _animeQueryService.GetByIdAsync(id);
+            var anime = await _animeQueryService.GetByIdAsync(id, ct);
             return Ok(anime);
         }
 
@@ -26,28 +26,28 @@ namespace AniFlow.Api.Controllers
         /// <remarks> Приклад запиту: <i>kusuriya-no-hitorigoto-2nd-season-1</i> </remarks>
         /// <exception cref="ArgumentException"></exception>
         [HttpGet("slug/{slug}")]
-        public async Task<ActionResult<AnimeUserResponse>> GetBySlug(string slug)
+        public async Task<ActionResult<AnimeUserResponse>> GetBySlug(string slug, CancellationToken ct)
         {
             var id = Helper.ExtractId(slug) ?? throw new ArgumentException("Invalid slug");
-            var anime = await _animeQueryService.GetByIdAsync(id);
+            var anime = await _animeQueryService.GetByIdAsync(id, ct);
             return Ok(anime);
         }
 
         /// <summary> Повертає аніме за фільтром. </summary>
         [HttpGet]
         [AllowInvalidModelState]
-        public async Task<ActionResult<PagedResult<AnimesResponse>>> GetFiltered([FromQuery] AnimeFilter filter)
+        public async Task<ActionResult<PagedResult<AnimesResponse>>> GetFiltered([FromQuery] AnimeFilter filter, CancellationToken ct)
         {
             filter.Normalize();
-            var animes = await _animeQueryService.GetFilteredAsync(filter);
+            var animes = await _animeQueryService.GetFilteredAsync(filter, ct);
             return Ok(animes);
         }
 
         /// <summary> Повертає рандомний слуг. </summary>
         [HttpGet("random/slug")]
-        public async Task<ActionResult<AnimeSlugResponse>> GetRandomSlug()
+        public async Task<ActionResult<AnimeSlugResponse>> GetRandomSlug(CancellationToken ct)
         {
-            var slug = await _animeQueryService.GetRandomSlugAsync();
+            var slug = await _animeQueryService.GetRandomSlugAsync(ct);
             return Ok(slug);
         }
 
@@ -56,15 +56,16 @@ namespace AniFlow.Api.Controllers
         /// Кожен плеєра містить доступні озвучки та список епізодів для кожної озвучки.
         /// </summary>
         /// <param name="malId"> Ідентифікатор аніме в MyAnimeList. </param>
+        /// <param name="ct"></param>
         /// <returns> Колекцію плеєрів з вкладеною структурою озвучок та епізодів. </returns>
         /// <remarks> 
         ///     <para>MyAnimeListId = ShikimoriId</para>
         ///     <para>Приклад запиту: <b>52034</b></para>
         /// </remarks>
         [HttpGet("episodes/{malId}")]
-        public async Task<ActionResult<PlayerEpisodeSet>> GetEpisodes(int malId)
+        public async Task<ActionResult<PlayerEpisodeSet>> GetEpisodes(int malId, CancellationToken ct)
         {
-            var episodes = await _animeQueryService.GetEpisodes(malId);
+            var episodes = await _animeQueryService.GetEpisodes(malId, ct);
             return Ok(episodes);
         }
 
@@ -72,9 +73,9 @@ namespace AniFlow.Api.Controllers
 
         /// <summary> Повертає рандомне аніме. Legacy. </summary>
         [HttpGet("random")]
-        public async Task<ActionResult<AnimeResponse>> GetRandom()
+        public async Task<ActionResult<AnimeResponse>> GetRandom(CancellationToken ct)
         {
-            var anime = await _animeQueryService.GetRandomAsync();
+            var anime = await _animeQueryService.GetRandomAsync(ct);
             return Ok(anime);
         }
 

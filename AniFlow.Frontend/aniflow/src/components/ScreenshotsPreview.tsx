@@ -48,6 +48,7 @@ export default function ScreenshotsPreview({ images }: ScreenshotsPreviewProps) 
                                         <img
                                             src={src}
                                             className="w-full h-full object-cover aspect-video shrink-0"
+                                            loading="lazy"
                                             alt={`Кадр ${i}`}
                                         />
 
