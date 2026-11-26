@@ -11,6 +11,7 @@ import MobileFooter from "@/components/MobileFooter";
 import GlobalOstPlayer from "./anime/[animeUrl]/_components/GlobalPlayer/GlobalOstPlayer";
 import { SignalRProvider } from "@/components/SignalRContext";
 import VisitTracker from "@/components/VisitTracker";
+import { GoogleTagManager } from '@next/third-parties/google'
 
 export const metadata: Metadata = {
   title: "AniFlow",
@@ -28,22 +29,22 @@ export const metadata: Metadata = {
   },
 
   openGraph: {
-      siteName: 'AniFlow',
-      images: [
-        {
-          url: '/icon-192x192.png', 
-          alt: `AniFlow`,
-        },
-      ],
-      locale: 'uk_UA',
-      type: 'website',
-    },
+    siteName: 'AniFlow',
+    images: [
+      {
+        url: '/icon-192x192.png',
+        alt: `AniFlow`,
+      },
+    ],
+    locale: 'uk_UA',
+    type: 'website',
+  },
 
-    twitter: {
-      card: 'summary_large_image',
-      creator: `@Ephtianura`,
-      images: ["/aniflow-large-image.webp"],
-    },
+  twitter: {
+    card: 'summary_large_image',
+    creator: `@Ephtianura`,
+    images: ["/aniflow-large-image.webp"],
+  },
 };
 
 export const viewport = {
@@ -89,7 +90,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Footer />
         <div className="mb-16 md:mb-0" />
         <MobileFooter />
-        <VisitTracker/>
+        <VisitTracker />
+        {process.env.NODE_ENV === 'production' && (
+          <GoogleTagManager gtmId="GTM-TV56Z55S" />
+        )}
       </body>
     </html >
   );
