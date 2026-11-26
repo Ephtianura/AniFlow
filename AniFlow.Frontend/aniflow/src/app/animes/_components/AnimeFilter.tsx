@@ -15,6 +15,7 @@ import { AnimeKindEnum, AnimeKindMap } from "@/core/enums/AnimeKind";
 import { Genre } from "@/core/types";
 import CustomSelect from "../../../components/CustomSelect";
 import MultiSelect from "../../../components/MultiSelect";
+import { sendGTMEvent } from '@next/third-parties/google';
 
 export enum Filters {
   Genres = "genres",
@@ -186,6 +187,16 @@ export default function AnimeFilter() {
     if (cleanForCompare(currentParamsString) === cleanForCompare(nextParamsString)) {
       return;
     }
+
+    sendGTMEvent({
+      event: "anime_filter",
+      genres: localGenres.join(","),
+      kind: localKind || null,
+      status: localStatus || null,
+      rating: localRating || null,
+      aired_from: localAired[0] !== defaultAired[0] ? localAired[0] : null,
+      aired_to: localAired[1] !== defaultAired[1] ? localAired[1] : null,
+    });
 
     router.push(`/animes?${nextParamsString}`);
   };

@@ -6,6 +6,7 @@ import WhiteCard from "@/components/WhiteCard";
 import { login } from "@/hooks/login";
 import { toast } from "react-toastify";
 import { getKawaiiError, KawaiiErrorType } from "@/hooks/getKawaiiError";
+import { sendGTMEvent } from "@next/third-parties/google";
 
 export default function LoginForm() {
     const [form, setForm] = useState({
@@ -16,6 +17,12 @@ export default function LoginForm() {
         e.preventDefault();
         try {
             await login(form);
+
+            sendGTMEvent({
+                event: 'sign_in',
+                method: 'email'
+            });
+
             window.location.href = "/";
         } catch (err: any) {
             const message = Array.isArray(err.messages)

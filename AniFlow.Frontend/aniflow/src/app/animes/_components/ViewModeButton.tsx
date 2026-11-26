@@ -6,20 +6,27 @@ import { BsGrid3X3GapFill } from "react-icons/bs";
 import { IoGrid } from "react-icons/io5";
 import { useUpdateQuery } from "../_functions/useUpdateQuery";
 import { ViewMode } from "@/components/AnimeCard";
-
+import { sendGTMEvent } from "@next/third-parties/google";
 
 type Props = {
     view?: ViewMode;
 }
+
 export default function ViewModeButton({ view }: Props) {
     const [viewMode, setViewMode] = useState<ViewMode>(view || "list");
     const updateQuery = useUpdateQuery();
 
     const updateView = (view: ViewMode) => {
         if (viewMode === view) return;
-        updateQuery("view", view);   
+
+        updateQuery("view", view);
         setViewMode(view);
-    }
+
+        sendGTMEvent({
+            event: "view_mode_change",
+            view_mode: view,
+        });
+    };
 
     return (
         <div className='flex gap-3 items-center text-primary-grey'>

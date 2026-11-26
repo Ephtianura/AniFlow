@@ -12,13 +12,18 @@ import { MyListEnum, MyListMap } from "@/core/enums/MyList";
 import { apiFetch } from "@/lib/api";
 import { useAnimeId } from "./animeIdProvider";
 import { toast } from "react-toastify";
+import { sendGTMEvent } from "@next/third-parties/google";
+
+interface ListSelectProps {
+    animeName: string
+}
 
 type Option = {
     value: string;
     label: string;
 };
 
-export default function ListSelect() {
+export default function ListSelect({ animeName }: ListSelectProps) {
     const { animeId, userAnime } = useAnimeId();
     const [myList, setMyList] = useState(userAnime?.myList ?? null)
 
@@ -57,7 +62,7 @@ export default function ListSelect() {
             setSelected(option);
         }
         if (option?.value === "__remove__") {
-          
+
             const prevList = option.value;
             const payload = { myList: true };
             setSelected(null);
@@ -66,6 +71,12 @@ export default function ListSelect() {
                 await apiFetch(`/user/me/${animeId}`, {
                     method: "DELETE",
                     body: JSON.stringify(payload),
+                });
+                sendGTMEvent({
+                    event: "anime_list_remove",
+                    anime_id: animeId,
+                    anime_name: animeName,
+                    previous_list: prevList,
                 });
             } catch {
                 setMyList(prevList);
@@ -83,6 +94,16 @@ export default function ListSelect() {
                 await apiFetch(`/user/me/${animeId}`, {
                     method: "PATCH",
                     body: JSON.stringify(payload),
+                });
+
+                sendGTMEvent({
+                    event: prevList
+                        ? "anime_list_change"
+                        : "anime_list_add",
+                    anime_id: animeId,
+                    anime_name: animeName,
+                    previous_list: prevList,
+                    new_list: option.value,
                 });
             } catch {
                 setMyList(prevList);

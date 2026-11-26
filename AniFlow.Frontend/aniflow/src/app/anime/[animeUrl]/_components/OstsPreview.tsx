@@ -6,6 +6,7 @@ import { usePlayerStore } from "@/stores/usePlayerStore";
 import { getTitle } from "../_functions/getTitle";
 import { TitleLanguage, TitleType } from "@/core/enums/AnimeTitle";
 import { getYoutubeThumbnail } from "../../../../hooks/getYoutubeThumbnail";
+import { sendGTMEvent } from "@next/third-parties/google";
 
 type Props = {
     anime: Anime
@@ -52,7 +53,7 @@ export default function OstsPreview({ anime }: Props) {
     ];
 
     if (allVideos.length === 0) return null;
-    
+
     const visibleVideos = (allVideos ?? []).slice(0, 5);
 
     const openPlayer = usePlayerStore((state) => state.openPlayer);
@@ -64,6 +65,17 @@ export default function OstsPreview({ anime }: Props) {
                 : `promo-${item.video.id}`;
 
         if (!id) return;
+
+        sendGTMEvent({
+            event: "ost_play",
+            anime_id: anime.id,
+            anime_name: animeTitle,
+            track_id: item.video.id,
+            track_name: item.type === "ost" ? item.ost.title : "promo",
+            track_type: item.type,
+            track_kind: item.type === "ost" ? item.ost.type : "promo",
+            video_kind: item.video.kind,
+        });
 
         openPlayer({
             animeTitle,

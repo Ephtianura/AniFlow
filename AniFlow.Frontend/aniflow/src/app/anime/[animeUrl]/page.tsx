@@ -19,6 +19,7 @@ import OstsPreview from './_components/OstsPreview';
 import Nsfw from './_components/Nsfw';
 import ExternalLinks from './_components/ExternalLinks';
 import { Metadata } from 'next';
+import AnimeViewTracker from './_components/AnimeViewTracker';
 
 export async function generateMetadata({ params, }: { params: { animeUrl: string }; }): Promise<Metadata> {
     const { animeUrl } = await params;
@@ -34,12 +35,13 @@ export async function generateMetadata({ params, }: { params: { animeUrl: string
         openGraph: {
             title: `${title} – Дивитися онлайн`,
             description: `Аніме ${title?.slice(0, 50)} – дивитись онлайн: ${anime.description}`,
-            ...(anime.posterUrl && {images: [
-                {
-                    url: anime.posterUrl,
-                    alt: title,
-                },
-            ],
+            ...(anime.posterUrl && {
+                images: [
+                    {
+                        url: anime.posterUrl,
+                        alt: title,
+                    },
+                ],
             }),
             type: 'video.tv_show',
         },
@@ -94,6 +96,7 @@ export default async function AnimePage({ params, }: { params: { animeUrl: strin
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
             />
+            <AnimeViewTracker animeId={anime.id} animeName={title} />
             <AnimeIdProvider animeId={anime.id} userAnime={userStatus}>
                 {/* Помістити дані користувача у сховище */}
                 <UserAnimeHydrator data={userStatus} />
@@ -111,13 +114,16 @@ export default async function AnimePage({ params, }: { params: { animeUrl: strin
 
                             {/* Постер */}
                             {/* Та додати до обраного */}
-                            <PosterViewer posterUrl={anime.posterUrl} />
+                            <PosterViewer
+                                posterUrl={anime.posterUrl}
+                                animeName={title}
+                            />
 
                             {/* Кнопка та список */}
                             <WhiteCard>
                                 <div className="flex flex-col gap-2">
                                     <WatchButton />
-                                    <ListSelect />
+                                    <ListSelect animeName={title} />
                                 </div>
                             </WhiteCard>
                         </div>
@@ -134,7 +140,8 @@ export default async function AnimePage({ params, }: { params: { animeUrl: strin
                             <div className="order-1">
                                 <Rating
                                     score={anime.score}
-                                    totalScores={anime.totalScores}
+                                    totalScores={anime.totalScores} 
+                                    animeName={title}
                                 />
                             </div>
 
@@ -175,7 +182,12 @@ export default async function AnimePage({ params, }: { params: { animeUrl: strin
 
                     {/* Плеєр */}
                     <div id="anime-player">
-                        <AnimePlayer titles={anime.titles} rating={anime.rating} players={players} animeId={anime.id} />
+                        <AnimePlayer
+                            titles={anime.titles}
+                            rating={anime.rating}
+                            players={players}
+                            animeId={anime.id}
+                        />
                     </div>
 
                 </div>

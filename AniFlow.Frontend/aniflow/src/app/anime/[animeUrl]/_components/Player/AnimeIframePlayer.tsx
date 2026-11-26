@@ -6,14 +6,20 @@ interface PlayerProps {
   iframeSrc?: string;
   animeId: number;
   episodeNumber: number;
+  animeName: string,
+  translationName: string,
+  playerName: string
 }
 
 export default function AnimeIframePlayer({
   iframeSrc,
   animeId,
   episodeNumber,
+  animeName,
+  translationName,
+  playerName
 }: PlayerProps) {
-  const handleInteraction = usePlayerTracking(animeId, episodeNumber);
+  const handleInteraction = usePlayerTracking(animeId, episodeNumber, animeName, translationName, playerName);
 
   if (!iframeSrc) {
     return <div className="w-full aspect-video mb-2 rounded bg-neutral-900 animate-pulse" />;

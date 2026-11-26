@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { getKawaiiError, KawaiiErrorType } from "@/hooks/getKawaiiError";
 import Checkbox from "@mui/material/Checkbox";
 import { purple } from "@mui/material/colors";
+import { sendGTMEvent } from "@next/third-parties/google";
 
 export default function RegisterForm() {
     const [isAgreed, setIsAgreed] = useState(false);
@@ -18,11 +19,16 @@ export default function RegisterForm() {
         password: ""
     });
 
-
     const onSubmit = async (e: React.SubmitEvent) => {
         e.preventDefault();
         try {
             await register(form);
+            
+            sendGTMEvent({
+                event: 'sign_up',
+                method: 'email'
+            });
+
             window.location.href = "/";
         } catch (err: any) {
             const message = Array.isArray(err.messages)
