@@ -2,11 +2,15 @@
 
 import { LuDices } from 'react-icons/lu';
 import { useRouter } from 'next/navigation';
+import { sendGTMEvent } from '@next/third-parties/google';
 
 export default function MobileRandomButton() {
     const router = useRouter();
 
     const handleRandomAnime = (e: React.MouseEvent) => {
+        sendGTMEvent({
+            event: "random_anime",
+        });
         e.preventDefault();
         router.refresh();
         router.push(`/anime/random?t=${Date.now()}`);

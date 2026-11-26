@@ -1,12 +1,16 @@
 
 "use client"
 
+import { sendGTMEvent } from "@next/third-parties/google";
 import { useRouter } from "next/navigation";
 
 export default function RandomAnimeButton() {
     const router = useRouter();
 
     const handleRandomAnime = (e: React.MouseEvent) => {
+        sendGTMEvent({
+            event: "random_anime",
+        });
         e.preventDefault();
         router.refresh();
         router.push(`/anime/random?t=${Date.now()}`);
