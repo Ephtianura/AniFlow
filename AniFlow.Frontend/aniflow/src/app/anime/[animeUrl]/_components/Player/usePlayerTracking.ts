@@ -1,7 +1,14 @@
 import { useCallback, useEffect, useRef } from "react";
 import { apiFetch } from "@/lib/api";
+import { sendGTMEvent } from "@next/third-parties/google";
 
-export function usePlayerTracking(animeId: number, episodeNumber: number) {
+export function usePlayerTracking(
+  animeId: number,
+  episodeNumber: number,
+  animeName: string,
+  translationName: string,
+  playerName: string,
+) {
   const hasTrackedRef = useRef(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -22,6 +29,15 @@ export function usePlayerTracking(animeId: number, episodeNumber: number) {
 
     timerRef.current = setTimeout(() => {
       hasTrackedRef.current = true;
+
+      sendGTMEvent({
+        event: "player_start",
+        anime_id: animeId,
+        anime_name: animeName,
+        episode_number: episodeNumber,
+        translation_name: translationName,
+        player_name: playerName,
+      });
 
       apiFetch("/track-view", {
         method: "POST",

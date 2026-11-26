@@ -6,9 +6,10 @@ import { IoClose, IoSearch } from "react-icons/io5";
 
 interface PosterViewerProps {
     posterUrl: string | null;
+    animeName: string
 }
 
-export default function PosterViewer({ posterUrl}: PosterViewerProps) {
+export default function PosterViewer({ posterUrl, animeName }: PosterViewerProps) {
     const [open, setOpen] = useState(false);
     const [closing, setClosing] = useState(false);
 
@@ -53,7 +54,7 @@ export default function PosterViewer({ posterUrl}: PosterViewerProps) {
 
                 <div className={`sm:hidden absolute right-2 top-2 z-10 w-10 h-10 flex items-center justify-center 
                 bg-white/10 rounded-full pt-2 backdrop-blur-sm`}>
-                    <HeartButton />
+                    <HeartButton animeName={animeName} />
                 </div>
             </div>
 

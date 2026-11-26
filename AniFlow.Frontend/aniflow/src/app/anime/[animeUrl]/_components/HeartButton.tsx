@@ -5,9 +5,14 @@ import { FaHeart, FaRegHeart } from "react-icons/fa6";
 import { toast } from "react-toastify";
 import { useAnimeId } from "./animeIdProvider";
 import { useState } from "react";
+import { sendGTMEvent } from "@next/third-parties/google";
+
+interface HeartButtonProps {
+    animeName: string
+}
 
 // Зпростив архітектуру
-export default function HeartButton() {
+export default function HeartButton({ animeName }: HeartButtonProps) {
     const { animeId, userAnime } = useAnimeId();
     const [isFavorite, setFavorite] = useState(userAnime?.isFavorite ?? false)
 
@@ -26,6 +31,11 @@ export default function HeartButton() {
             await apiFetch(`/user/me/${animeId}`, {
                 method: nextValue ? "PATCH" : "DELETE",
                 body: JSON.stringify({ isFavorite: true }),
+            });
+            sendGTMEvent({
+                event: nextValue ? "add_to_favorites" : "remove_from_favorites",
+                anime_id: animeId,
+                anime_name: animeName,
             });
         } catch {
             setFavorite(!nextValue)

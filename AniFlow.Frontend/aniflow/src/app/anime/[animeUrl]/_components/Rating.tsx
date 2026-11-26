@@ -8,10 +8,12 @@ import clsx from 'clsx';
 import { useAnimeId } from './animeIdProvider';
 import { toast } from 'react-toastify';
 import { RiStarOffFill } from "react-icons/ri";
+import { sendGTMEvent } from '@next/third-parties/google';
 
 interface RatingProps {
     score: number;
     totalScores: number;
+    animeName: string
 }
 
 const RATING_LABELS: Record<number, string> = {
@@ -27,7 +29,7 @@ const RATING_LABELS: Record<number, string> = {
     10: "Шедевр"
 };
 
-export default function Rating({ score, totalScores }: RatingProps) {
+export default function Rating({ score, totalScores, animeName }: RatingProps) {
     const { animeId, userAnime } = useAnimeId();
     const [userRating, setUserRating] = useState(userAnime?.rating ?? 0);
     const [hoveredRating, setHoveredRating] = useState<number | null>(null);
@@ -50,6 +52,12 @@ export default function Rating({ score, totalScores }: RatingProps) {
             await apiFetch(`/user/me/${animeId}`, {
                 method: method,
                 body: JSON.stringify(body),
+            });
+            sendGTMEvent({
+                event: isDelete ? "remove_anime_rating" : "rate_anime",
+                anime_id: animeId,
+                anime_name: animeName,
+                ...(isDelete ? {} : { rating: val }),
             });
         } catch {
             setUserRating(prevRating);
@@ -149,7 +157,7 @@ export default function Rating({ score, totalScores }: RatingProps) {
 
                         </motion.div>
                     </AnimatePresence> */}
-                    
+
                     <div className={clsx(
                         "absolute z-10 bg-[#B3B3B3] flex transition-all duration-300 overflow-hidden flex-col items-center py-2 px-2 gap-2 w-full left-0 top-full",
                         "md:flex-row md:items-center md:px-2 md:gap-1 md:left-full md:top-0 md:w-max md:h-full",
@@ -208,7 +216,7 @@ export default function Rating({ score, totalScores }: RatingProps) {
                 </div>
             </div>
             <div className='hidden sm:block'>
-                <HeartButton />
+                <HeartButton animeName={animeName} />
             </div>
         </div>
     );

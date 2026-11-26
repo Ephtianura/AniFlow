@@ -1,4 +1,4 @@
-"use client"; 
+"use client";
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
@@ -7,6 +7,7 @@ import { Animes, PagedResult } from "@/core/types";
 import { apiFetch } from "@/lib/api";
 import AnimeDropDown from "./AnimeDropDown";
 import clsx from "clsx";
+import { sendGTMEvent } from "@next/third-parties/google";
 
 export default function SearchBar() {
     const [open, setOpen] = useState(false);
@@ -45,6 +46,21 @@ export default function SearchBar() {
                 setAnimes([]);
             }
         }, 400);
+
+        return () => clearTimeout(timeout);
+    }, [searchQuery]);
+
+    // Отправка поискового запроса в статистику
+    useEffect(() => {
+        const query = searchQuery.trim();
+        if (!query) return;
+
+        const timeout = setTimeout(() => {
+            sendGTMEvent({
+                event: "anime_search",
+                search_term: query,
+            });
+        }, 5000);
 
         return () => clearTimeout(timeout);
     }, [searchQuery]);

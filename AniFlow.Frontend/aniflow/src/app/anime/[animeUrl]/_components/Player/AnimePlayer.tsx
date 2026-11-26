@@ -150,7 +150,14 @@ export default function AnimePlayer({ titles, rating, players, animeId }: Props)
                     <div className="flex flex-col grow gap-2">
 
                         {/* iframe */}
-                        <AnimeIframePlayer iframeSrc={iframeSrc!} animeId={animeId} episodeNumber={selectedEpisode} />
+                        <AnimeIframePlayer
+                            iframeSrc={iframeSrc!}
+                            animeId={animeId}
+                            animeName={title || "Аніме"}
+                            episodeNumber={selectedEpisode}
+                            translationName={selectedPlayer?.voices?.[selectedVoiceIndex]?.voice ?? "Unknown"}
+                            playerName={selectedPlayer?.player ?? "Unknown"}
+                        />
 
                         {/* Вибір серії */}
                         <>
